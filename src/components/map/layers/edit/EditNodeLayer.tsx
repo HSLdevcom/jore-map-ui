@@ -87,7 +87,6 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     }) => {
         const node = this.props.nodeStore!.node;
 
-        const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         const onNodeClick = () => {
             const clickParams: INodeClickParams = { node };
             EventHelper.trigger('nodeClick', clickParams);
@@ -102,7 +101,11 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
-                isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
+                isHighlighted={false}
+                isDisabled={false}
+                radius={
+                    node.stop && nodeLocationType === 'coordinates' ? node.stop.radius : undefined
+                }
                 onClick={onNodeClick}
                 onMoveMarker={this.onMoveMarker(nodeLocationType)}
             />

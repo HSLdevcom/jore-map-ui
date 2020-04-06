@@ -20,7 +20,7 @@ enum NodeHighlightColor {
 interface INodeMarkerProps {
     coordinates: L.LatLng;
     nodeType: NodeType;
-    isSelected: boolean;
+    isHighlighted: boolean;
     nodeLocationType: NodeLocationType;
     nodeId?: string;
     shortId?: string;
@@ -105,16 +105,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
             nodeLocationType,
             isDisabled,
             isTimeAlignmentStop,
-            isSelected
+            isHighlighted
         } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
         res.push(
-            NodeUtils.getNodeTypeClass(nodeType, {
+            ...NodeUtils.getNodeTypeClasses(nodeType, {
                 nodeLocationType,
                 isNodeDisabled: isDisabled,
                 isNodeTimeAlignment: isTimeAlignmentStop,
-                isNodeHighlighted: isSelected
+                isNodeHighlighted: isHighlighted
             })
         );
 
@@ -152,7 +152,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderStopRadiusCircle = () => {
         const { nodeType, radius, coordinates } = this.props;
 
-        if (!this.props.isSelected || nodeType !== NodeType.STOP || !radius) {
+        if (nodeType !== NodeType.STOP || !radius) {
             return null;
         }
 

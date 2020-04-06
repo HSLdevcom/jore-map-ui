@@ -122,9 +122,7 @@ class NodeForm extends Component<INodeViewProps> {
                                 <div
                                     className={classnames(
                                         s.labelIcon,
-                                        NodeUtils.getNodeTypeClass(node.type, {
-                                            isNodeHighlighted: true
-                                        })
+                                        ...NodeUtils.getNodeTypeClasses(node.type, {})
                                     )}
                                 />
                             </div>

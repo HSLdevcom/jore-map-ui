@@ -134,7 +134,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isSelected={this.props.mapStore!.selectedNodeId === node.id}
+                isHighlighted={this.props.mapStore!.selectedNodeId === node.id}
                 isDisabled={isDisabled}
                 isTimeAlignmentStop={isTimeAlignmentStop}
                 onContextMenu={openPopup}
