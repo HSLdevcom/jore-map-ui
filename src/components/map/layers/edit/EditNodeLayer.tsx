@@ -101,8 +101,11 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
-                isSelected={false}
+                isHighlighted={false}
                 isDisabled={false}
+                radius={
+                    node.stop && nodeLocationType === 'coordinates' ? node.stop.radius : undefined
+                }
                 onClick={onNodeClick}
                 onMoveMarker={this.onMoveMarker(nodeLocationType)}
             />

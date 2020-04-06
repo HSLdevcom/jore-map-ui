@@ -80,7 +80,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps> {
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isSelected={this.props.mapStore!.selectedNodeId === node.id}
+                isHighlighted={this.props.mapStore!.selectedNodeId === node.id}
                 onClick={onNeighborLinkClick}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
