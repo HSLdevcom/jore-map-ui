@@ -74,6 +74,7 @@ class NodeForm extends Component<INodeViewProps> {
                                 label={isNodeIdEditable ? 'SOLMUN TUNNUS (5 num.' : 'SOLMUN TUNNUS'}
                                 disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
                                 validationResult={invalidPropertiesMap['id']}
+                                data-cy='nodeId'
                             />
                             {isNodeIdEditable && (
                                 <Dropdown
@@ -88,6 +89,7 @@ class NodeForm extends Component<INodeViewProps> {
                                     selected={node.idSuffix}
                                     items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
                                     validationResult={invalidPropertiesMap['idSuffix']}
+                                    data-cy='idSuffix'
                                 />
                             )}
                         </div>
@@ -162,6 +164,7 @@ class NodeForm extends Component<INodeViewProps> {
                                         ? onChangeNodeProperty('measurementType')
                                         : undefined
                                 }
+                                data-cy='measurementType'
                             />
                         </div>
                     )}

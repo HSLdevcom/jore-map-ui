@@ -87,17 +87,19 @@ class RouteStore {
         this._isNewRoute = isNewRoute;
         const customValidatorMap: ICustomValidatorMap = {
             id: {
-                validator: (route: IRoute, property: string, routeId: string) => {
-                    if (!this._isNewRoute) return;
-                    if (Boolean(this._existingRouteIds.includes(routeId))) {
-                        const validationResult: IValidationResult = {
-                            isValid: false,
-                            errorMessage: `Reitti ${routeId} on jo olemassa.`
-                        };
-                        return validationResult;
+                validators: [
+                    (route: IRoute, property: string, routeId: string) => {
+                        if (!this._isNewRoute) return;
+                        if (Boolean(this._existingRouteIds.includes(routeId))) {
+                            const validationResult: IValidationResult = {
+                                isValid: false,
+                                errorMessage: `Reitti ${routeId} on jo olemassa.`
+                            };
+                            return validationResult;
+                        }
+                        return;
                     }
-                    return;
-                }
+                ]
             }
         };
         this._validationStore.init(this._route, routeValidationModel, customValidatorMap);

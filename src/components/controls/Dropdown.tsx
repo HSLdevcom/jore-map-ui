@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { observer } from 'mobx-react';
 import React from 'react';
-import Select from 'react-select';
+import Select, { components } from 'react-select';
 import { InputActionMeta } from 'react-select/src/types';
 import { IValidationResult } from '~/validation/FormValidator';
 import Loader from '../shared/loader/Loader';
@@ -184,6 +184,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                             }
                             hideSelectedOptions={Boolean(isSelectedOptionHidden)}
                             className={isBackgroundGrey ? s.greyBackground : ''}
+                            components={{ Option: CustomOption }}
                         />
                     </div>
                     <div>
@@ -196,6 +197,14 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         );
     }
 }
+
+const CustomOption = (props: any) => {
+    return (
+        <components.Option {...props}>
+            <span {...props} data-cy='dropdownOption' />
+        </components.Option>
+    );
+};
 
 const _getCustomStyles = (props: IDropdownProps) => {
     // Giving styles with style object (TODO: better way would be to use classnames)
