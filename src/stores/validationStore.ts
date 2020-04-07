@@ -57,7 +57,6 @@ class ValidationStore<ValidationObject, ValidationModel> {
         if (validatorResult) {
             this._invalidPropertiesMap[property] = validatorResult;
         }
-        if (!validatorResult?.isValid) return;
 
         if (!isDependentPropertiesValidationPrevented) {
             this.validateDependentProperties(property);
