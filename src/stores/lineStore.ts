@@ -81,17 +81,19 @@ class LineStore {
 
         const customValidatorMap: ICustomValidatorMap = {
             id: {
-                validator: (line: ILine, property: string, lineId: string) => {
-                    if (!this._isNewLine) return;
-                    if (this.isLineAlreadyFound(lineId)) {
-                        const validationResult: IValidationResult = {
-                            isValid: false,
-                            errorMessage: `Linja ${lineId} on jo olemassa.`
-                        };
-                        return validationResult;
+                validators: [
+                    (line: ILine, property: string, lineId: string) => {
+                        if (!this._isNewLine) return;
+                        if (this.isLineAlreadyFound(lineId)) {
+                            const validationResult: IValidationResult = {
+                                isValid: false,
+                                errorMessage: `Linja ${lineId} on jo olemassa.`
+                            };
+                            return validationResult;
+                        }
+                        return;
                     }
-                    return;
-                }
+                ]
             }
         };
 

@@ -188,14 +188,30 @@ class RoutePathStore {
             }
             return;
         };
+        const validateStartTimeBeforeEndTime = (routePath: IRoutePath) => {
+            if (routePath.startTime.getTime() > routePath.endTime.getTime()) {
+                const validationResult: IValidationResult = {
+                    isValid: false,
+                    errorMessage:
+                        'Reitinsuunnan loppupäivämäärän täytyy olla alkupäivämäärän jälkeen.'
+                };
+                return validationResult;
+            }
+            return;
+        }
+
         const customValidatorMap: ICustomValidatorMap = {
             direction: {
-                validator: validatePrimaryKey,
+                validators: [validatePrimaryKey],
                 dependentProperties: ['startTime']
             },
             startTime: {
-                validator: validatePrimaryKey,
-                dependentProperties: ['direction']
+                validators: [validatePrimaryKey, validateStartTimeBeforeEndTime],
+                dependentProperties: ['direction', 'endTime']
+            },
+            endTime: {
+                validators: [validateStartTimeBeforeEndTime],
+                dependentProperties: ['startTime']
             }
         };
 

@@ -185,46 +185,53 @@ class NodeStore {
 
         const customValidatorMap: ICustomValidatorMap = {
             id: {
-                validator: (node: INode, property: string, nodeId: string) => {
-                    if (this.isNodeIdEditable) {
-                        const validationResult = FormValidator.validateProperty(
-                            editableNodeIdValidationModel.id,
-                            nodeId
-                        );
-                        return validationResult;
+                validators: [
+                    (node: INode, property: string, nodeId: string) => {
+                        if (this.isNodeIdEditable) {
+                            const validationResult = FormValidator.validateProperty(
+                                editableNodeIdValidationModel.id,
+                                nodeId
+                            );
+                            return validationResult;
+                        }
+                        return;
                     }
-                    return;
-                }
+                ]
             },
             idSuffix: {
-                validator: (node: INode, property: string, idSuffix: string) => {
-                    if (this.isNodeIdEditable) {
-                        const validationResult = FormValidator.validateProperty(
-                            editableNodeIdValidationModel.idSuffix,
-                            idSuffix
-                        );
-                        return validationResult;
+                validators: [
+                    (node: INode, property: string, idSuffix: string) => {
+                        if (this.isNodeIdEditable) {
+                            const validationResult = FormValidator.validateProperty(
+                                editableNodeIdValidationModel.idSuffix,
+                                idSuffix
+                            );
+                            return validationResult;
+                        }
+                        return;
                     }
-                    return;
-                }
+                ]
             },
             measurementType: {
-                validator: (node: INode, property: string, measurementType: string) => {
-                    if (node.type === NodeType.STOP) {
+                validators: [
+                    (node: INode, property: string, measurementType: string) => {
+                        if (node.type === NodeType.STOP) {
+                            const validationResult = FormValidator.validateProperty(
+                                'required|min:1|max:1|string',
+                                measurementType
+                            );
+                            return validationResult;
+                        }
                         const validationResult = FormValidator.validateProperty(
-                            'required|min:1|max:1|string',
+                            'min:0|max:0|string',
                             measurementType
                         );
                         return validationResult;
                     }
-                    const validationResult = FormValidator.validateProperty(
-                        'min:0|max:0|string',
-                        measurementType
-                    );
-                    return validationResult;
-                }
+                ]
             },
             type: {
+                validators: [],
                 dependentProperties: ['measurementType']
             }
         };

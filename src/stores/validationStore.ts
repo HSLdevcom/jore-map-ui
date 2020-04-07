@@ -3,8 +3,8 @@ import { observable } from 'mobx';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
 interface ICustomValidatorObject {
-    validator?: Function; // Use undefined if you wan't to call validation for dependentProperties but not call validation for the main property
-    // TODO: use typings so that each element in string should be key in ValidationModel
+    validators: Function[]; // If left empty, dependentProperties will still be validated
+    // TODO: use typings so that each element in dependentProperties should be key in ValidationModel
     dependentProperties?: string[]; // List of properties that also need to be validated when the main property is validated
 }
 
@@ -59,7 +59,9 @@ class ValidationStore<ValidationObject, ValidationModel> {
         }
         if (!validatorResult?.isValid) return;
 
-        this.validateDependentProperties(property, isDependentPropertiesValidationPrevented);
+        if (!isDependentPropertiesValidationPrevented) {
+            this.validateDependentProperties(property);
+        }
     };
 
     public validateAllProperties = () => {
@@ -92,15 +94,24 @@ class ValidationStore<ValidationObject, ValidationModel> {
     private validateWithCustomValidator = (property: string, value: any) => {
         const customValidatorObject = this._customValidatorMap?.[property];
         let validatorResult: IValidationResult | undefined;
-        if (this._customValidatorMap && customValidatorObject && customValidatorObject.validator) {
-            validatorResult = customValidatorObject?.validator(this._validationObject!, property, value);
+        const validators = customValidatorObject?.validators;
+
+        if (this._customValidatorMap && validators && validators.length > 0) {
+            validators.some(validator => {
+                const tempValidatiorResult = validator(this._validationObject!, property, value);
+                if (tempValidatiorResult) {
+                    validatorResult = tempValidatiorResult;
+                    return true;
+                }
+                return false;
+            });
         }
         return validatorResult;
     }
 
-    private validateDependentProperties = (property: string, isDependentPropertiesValidationPrevented?: boolean) => {
+    private validateDependentProperties = (property: string) => {
         const customValidatorObject = this._customValidatorMap?.[property];
-        if (!isDependentPropertiesValidationPrevented && customValidatorObject && customValidatorObject.dependentProperties) {
+        if (customValidatorObject && customValidatorObject.dependentProperties) {
             customValidatorObject.dependentProperties.forEach(prop => this.validateProperty(prop, true));
         }
     }
