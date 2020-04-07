@@ -36,7 +36,11 @@ class Alert extends React.Component<IAlertProps> {
                     {alertStore.type === AlertType.Loader && <Loader size='small' />}
                     {alertStore.message}
                     {alertStore.isCancelButtonVisible && (
-                        <Button className={s.closeAlertButton} onClick={this.closeAlert}>
+                        <Button
+                            className={s.closeAlertButton}
+                            onClick={this.closeAlert}
+                            data-cy='closeAlertButton'
+                        >
                             OK
                         </Button>
                     )}

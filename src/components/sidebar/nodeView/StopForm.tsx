@@ -292,6 +292,7 @@ class StopForm extends Component<IStopFormProps> {
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
                             validationResult={stopInvalidPropertiesMap['stopAreaId']}
+                            data-cy='stopArea'
                         />
                         {!isReadOnly && (
                             <>
@@ -389,6 +390,7 @@ class StopForm extends Component<IStopFormProps> {
                             disabled={isEditingDisabled}
                             label='KUNTA'
                             validationResult={stopInvalidPropertiesMap['municipality']}
+                            data-cy='municipality'
                         />
                     </div>
                 </div>
@@ -406,6 +408,7 @@ class StopForm extends Component<IStopFormProps> {
                             disabled={isEditingDisabled}
                             label='VYÖHYKE'
                             validationResult={stopInvalidPropertiesMap['section']}
+                            data-cy='section'
                         />
                         <Dropdown
                             onChange={updateStopProperty!('roof')}
@@ -414,6 +417,7 @@ class StopForm extends Component<IStopFormProps> {
                             disabled={isEditingDisabled}
                             label='PYSÄKKIKATOS'
                             validationResult={stopInvalidPropertiesMap['roof']}
+                            data-cy='roof'
                         />
                     </div>
                     <div className={s.flexRow}>

@@ -86,6 +86,49 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('hastusNameInput').type('zxc123');
         cy.saveButtonShouldBeActive('confirmView');
     });
+
+    it('Can create a stop in lahti by using custom generated node id', () => {
+        cy.hslLoginWriteAccess();
+
+        cy.visit('node/new/60.991759:25.664062');
+        cy.getTestElement('closeAlertButton').click();
+
+        cy.saveButtonShouldNotBeActive();
+
+        cy.getTestElement('nodeId').type('12345');
+
+        cy.getTestElement('idSuffix').type('01');
+        cy.getTestElement('dropdownOption')
+            .first()
+            .click();
+
+        cy.getTestElement('measurementType').type('Laskettu');
+        cy.getTestElement('dropdownOption')
+            .first()
+            .click();
+
+        cy.getTestElement('stopArea').click();
+        cy.getTestElement('dropdownOption')
+            .eq(2)
+            .click();
+
+        cy.getTestElement('municipality').click();
+        cy.getTestElement('dropdownOption')
+            .first()
+            .click();
+
+        cy.getTestElement('section').click();
+        cy.getTestElement('dropdownOption')
+            .eq(2)
+            .click();
+
+        cy.getTestElement('roof').click();
+        cy.getTestElement('dropdownOption')
+            .first()
+            .click();
+
+        cy.saveButtonShouldBeActive();
+    });
 });
 
 const _openStop = () => {
