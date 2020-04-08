@@ -138,7 +138,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
-        const isLoading = Boolean(!this.props.mapStore!.coordinates);
+        const isMapInteractionRestricted = this.props.mapStore!.isMapInteractionRestricted;
         const routes = toJS(this.props.routeListStore!.routes);
         return (
             <div className={s.mapView} data-cy='mapView'>
@@ -148,7 +148,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     zoomControl={false}
                     id={s.mapLeaflet}
                     editable={true}
-                    className={isLoading ? s.disableInteraction : ''}
+                    className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
                     <TileLayer
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'

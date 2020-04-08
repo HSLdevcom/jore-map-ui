@@ -52,6 +52,16 @@ class MapStore {
     }
 
     @computed
+    get isMapInteractionRestricted(): boolean {
+        return !Boolean(this.coordinates);
+    }
+
+    @computed
+    get areNetworkLayersHidden(): boolean {
+        return this.isMapInteractionRestricted || this.zoom <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL;
+    }
+
+    @computed
     get displayCoordinateSystem(): CoordinateSystem {
         return this._displayCoordinateSystem;
     }

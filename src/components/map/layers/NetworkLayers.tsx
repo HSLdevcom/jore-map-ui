@@ -244,12 +244,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     };
 
     render() {
-        const mapZoomLevel = this.props.mapStore!.zoom;
-        if (mapZoomLevel <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
-            return null;
-        }
-        if (!this.props.mapStore!.coordinates) return null;
-
+        if (this.props.mapStore!.areNetworkLayersHidden) return null;
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
         const nodeSize = this.props.networkStore!.nodeSize;
