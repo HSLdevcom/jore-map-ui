@@ -1,15 +1,16 @@
+import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
-import { IRoute } from '~/models';
 import { MapStore } from '~/stores/mapStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import { LeafletContext } from '../Map';
 import RoutePathLayer from './RoutePathLayer';
 
 interface RouteLayerProps {
-    mapStore?: MapStore;
-    routes: IRoute[];
     leaflet: LeafletContext;
+    mapStore?: MapStore;
+    routeListStore?: RouteListStore;
 }
 
 interface IRouteLayerState {
@@ -17,7 +18,7 @@ interface IRouteLayerState {
     hoveredPolylines: string[];
 }
 
-@inject('mapStore')
+@inject('mapStore', 'routeListStore')
 @observer
 class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     constructor(props: RouteLayerProps) {
@@ -81,7 +82,8 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     };
 
     render() {
-        return this.props.routes.map(route => {
+        const routes = toJS(this.props.routeListStore!.routes);
+        return routes.map(route => {
             return (
                 <RoutePathLayer
                     key={route.id}
