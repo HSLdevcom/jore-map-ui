@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component, ReactNode } from 'react';
 import StartNodeType from '~/enums/startNodeType';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams
@@ -122,7 +122,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderStartMarker = () => {
-        if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
+        if (this.props.toolbarStore!.isSelected(ToolbarToolType.AddNewRoutePathLink)) {
             // Hiding start marker if we set target node adding new links.
             // Due to the UI otherwise getting messy
             return null;

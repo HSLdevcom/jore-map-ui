@@ -9,7 +9,7 @@ import { Button, Checkbox, Dropdown } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import { INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -117,7 +117,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             this.props.routePathLinkMassEditStore!.isMassEditSelectionEnabled
         ) {
             const selectedTool = this.props.toolbarStore!.selectedTool;
-            if (selectedTool && selectedTool.toolType !== ToolbarTool.SelectNetworkEntity) {
+            if (selectedTool && selectedTool.toolType !== ToolbarToolType.SelectNetworkEntity) {
                 this.props.errorStore!.addError(
                     `Pysäkkien massa editointi editointi estetty, sulje ensin aktiivinen karttatyökalu.`
                 );

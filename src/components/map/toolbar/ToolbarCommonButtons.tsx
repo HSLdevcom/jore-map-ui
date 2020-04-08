@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import { FiExternalLink, FiPlus, FiPrinter } from 'react-icons/fi';
 import { TiLink } from 'react-icons/ti';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import Navigator from '~/routing/navigator';
 import ToolbarStore from '~/stores/toolbarStore';
 import MapControlButton from '../mapControls/MapControlButton';
@@ -20,7 +20,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
         window.open(path, '_blank');
     };
 
-    private selectTool = (tool: ToolbarTool) => () => {
+    private selectTool = (tool: ToolbarToolType) => () => {
         ToolbarStore.selectTool(tool);
     };
 
@@ -30,16 +30,16 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                 {this.props.hasWriteAccess && (
                     <>
                         <MapControlButton
-                            onClick={this.selectTool(ToolbarTool.AddNetworkNode)}
-                            isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkNode)}
+                            onClick={this.selectTool(ToolbarToolType.AddNetworkNode)}
+                            isActive={ToolbarStore.isSelected(ToolbarToolType.AddNetworkNode)}
                             isDisabled={false}
                             label='Lisää solmu'
                         >
                             <FiPlus />
                         </MapControlButton>
                         <MapControlButton
-                            onClick={this.selectTool(ToolbarTool.AddNetworkLink)}
-                            isActive={ToolbarStore.isSelected(ToolbarTool.AddNetworkLink)}
+                            onClick={this.selectTool(ToolbarToolType.AddNetworkLink)}
+                            isActive={ToolbarStore.isSelected(ToolbarToolType.AddNetworkLink)}
                             isDisabled={false}
                             label='Lisää linkki'
                         >
@@ -50,7 +50,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                 <MapControlButton
                     onClick={this.print}
                     isActive={false}
-                    isDisabled={ToolbarStore.isDisabled(ToolbarTool.Print)}
+                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.Print)}
                     label='Tulosta kartta'
                 >
                     <FiPrinter />

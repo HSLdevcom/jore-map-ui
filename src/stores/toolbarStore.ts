@@ -8,7 +8,7 @@ import PrintTool from '~/components/map/tools/PrintTool';
 import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkTool';
 import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityTool';
 import SplitLinkTool from '~/components/map/tools/SplitLinkTool';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 
 const defaultTool = new SelectNetworkEntityTool();
 
@@ -29,11 +29,11 @@ TOOL_LIST.forEach(tool => {
     TOOLS[toolInstance.toolType] = toolInstance;
 });
 
-const DEFAULT_DISABLED_TOOLS = [ToolbarTool.Print];
+const DEFAULT_DISABLED_TOOLS = [ToolbarToolType.Print];
 
 class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
-    @observable private _disabledTools: ToolbarTool[];
+    @observable private _disabledTools: ToolbarToolType[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
     @observable private _areUndoButtonsDisabled: boolean;
 
@@ -64,7 +64,7 @@ class ToolbarStore {
     }
 
     @action
-    public selectTool = (tool: ToolbarTool | null) => {
+    public selectTool = (tool: ToolbarToolType | null) => {
         if (this._selectedTool) {
             this._selectedTool.deactivate();
         }
@@ -72,7 +72,7 @@ class ToolbarStore {
         // deselect current tool
         if (
             tool === null ||
-            tool === ToolbarTool.SelectNetworkEntity ||
+            tool === ToolbarToolType.SelectNetworkEntity ||
             (this._selectedTool && this._selectedTool.toolType === tool)
         ) {
             // Network click event also triggers mapClick event
@@ -96,7 +96,7 @@ class ToolbarStore {
     };
 
     @action
-    public setDisabledTools(disabledTools: ToolbarTool[] | null) {
+    public setDisabledTools(disabledTools: ToolbarToolType[] | null) {
         if (disabledTools) {
             this._disabledTools = disabledTools;
         } else {
@@ -115,11 +115,11 @@ class ToolbarStore {
         this._selectedTool.activate();
     }
 
-    public isSelected = (tool: ToolbarTool): boolean => {
+    public isSelected = (tool: ToolbarToolType): boolean => {
         return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     };
 
-    public isDisabled = (tool: ToolbarTool): boolean => {
+    public isDisabled = (tool: ToolbarToolType): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
     };
 }

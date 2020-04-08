@@ -1,4 +1,4 @@
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
@@ -13,7 +13,7 @@ import BaseTool from './BaseTool';
 class AddNetworkLinkTool implements BaseTool {
     private startNodeId: string | null = null;
     private endNodeId: string | null = null;
-    public toolType = ToolbarTool.AddNetworkLink;
+    public toolType = ToolbarToolType.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
         'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';

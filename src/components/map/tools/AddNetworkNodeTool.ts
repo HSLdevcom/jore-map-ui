@@ -1,4 +1,4 @@
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper from '~/helpers/EventHelper';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -10,7 +10,7 @@ import { roundLatLng } from '~/utils/geomUtils';
 import BaseTool from './BaseTool';
 
 class AddNetworkNodeTool implements BaseTool {
-    public toolType = ToolbarTool.AddNetworkNode;
+    public toolType = ToolbarToolType.AddNetworkNode;
     public toolHelpHeader = 'Luo uusi solmu';
     public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
 

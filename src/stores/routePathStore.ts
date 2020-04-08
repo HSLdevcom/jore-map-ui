@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
@@ -599,9 +599,9 @@ class RoutePathStore {
             this.resetChanges();
             const selectedTool = ToolbarStore.selectedTool;
             if (selectedTool &&
-                (selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
-                    || selectedTool.toolType === ToolbarTool.RemoveRoutePathLink
-                    || selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool)) {
+                (selectedTool.toolType === ToolbarToolType.AddNewRoutePathLink
+                    || selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink
+                    || selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)) {
                 ToolbarStore.selectDefaultTool();
             }
         } else {

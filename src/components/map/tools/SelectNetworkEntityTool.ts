@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper from '~/helpers/EventHelper';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
@@ -17,7 +17,7 @@ import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEnt
 import BaseTool from './BaseTool';
 
 class SelectNetworkEntityTool implements BaseTool {
-    public toolType = ToolbarTool.SelectNetworkEntity;
+    public toolType = ToolbarToolType.SelectNetworkEntity;
     public activate() {
         EventHelper.on('mapClick', this.onMapClick);
     }

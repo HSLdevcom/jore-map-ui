@@ -11,7 +11,7 @@ import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/share
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventHelper from '~/helpers/EventHelper';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
@@ -170,7 +170,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     isNewRoutePath: this.props.isNewRoutePath
                 });
             }
-            this.props.toolbarStore!.selectTool(ToolbarTool.AddNewRoutePathLink);
+            this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
         } catch (e) {
             this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
         }
