@@ -122,6 +122,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 `'kumoa' ja 'tee uudestaan' estetty. Sulje ensin valitut pysäkit.`
             );
         } else {
+            this.props.routePathStore!.setIsEditingDisabled(false);
             undo();
         }
     };
@@ -354,9 +355,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             !this.props.routePathStore!.isDirty ||
             !isGeometryValid ||
             !this.props.routePathStore!.isFormValid;
-        const copySegmentStore = this.props.routePathCopySegmentStore;
+        const routePathCopySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
-            copySegmentStore!.startNode && copySegmentStore!.endNode;
+            routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
         const isSavePrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
         return (
             <div className={s.routePathView} data-cy='routePathView'>

@@ -27,6 +27,7 @@ class ExtendRoutePathTool implements BaseTool {
         EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
         EventHelper.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         this.highlightClickableNodes();
+        RoutePathStore.setIsEditingDisabled(false);
     }
     public deactivate() {
         this.reset();
