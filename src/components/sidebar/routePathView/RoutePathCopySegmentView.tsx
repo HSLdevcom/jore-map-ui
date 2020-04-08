@@ -9,11 +9,10 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import { AlertStore, AlertType } from '~/stores/alertStore';
-import {
-    RoutePathCopySegmentStore
-} from '~/stores/routePathCopySegmentStore';
+import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
+import SidebarHeader from '../SidebarHeader';
 import * as s from './routePathCopySegmentView.scss';
 
 interface IRoutePathCopySegmentViewProps {
@@ -180,6 +179,9 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             </div>
         );
     };
+    private closeEditing = () => {
+        this.props.routePathCopySegmentStore!.clear();
+    };
 
     render() {
         const isLoading = this.props.routePathCopySegmentStore!.isLoading;
@@ -195,7 +197,14 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
 
         return (
             <div className={s.routePathCopySegmentView}>
-                <div className={s.topic}>Kopioitavat reitinsuuntasegmentit</div>
+                <SidebarHeader
+                    className={s.header}
+                    onCloseButtonClick={this.closeEditing}
+                    isBackButtonVisible={true}
+                    isCloseButtonVisible={false}
+                >
+                    Kopioitavat reitinsuuntasegmentit
+                </SidebarHeader>
                 {
                     {
                         hasError: this.renderErrorMessage(),

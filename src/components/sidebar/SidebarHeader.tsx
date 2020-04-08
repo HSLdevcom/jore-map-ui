@@ -12,6 +12,7 @@ import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
     children: ReactNode;
+    className?: string;
     isEditing?: boolean;
     isEditButtonVisible?: boolean;
     isEditPromptHidden?: boolean;
@@ -84,7 +85,13 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
 
     render() {
         return (
-            <div className={s.sidebarHeaderView} data-cy='sidebarHeaderView'>
+            <div
+                className={classnames(
+                    s.sidebarHeaderView,
+                    this.props.className ? this.props.className : undefined
+                )}
+                data-cy='sidebarHeaderView'
+            >
                 <div className={s.topic}>{this.props.children}</div>
                 <div className={s.buttonContainer}>
                     {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
