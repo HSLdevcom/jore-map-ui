@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
+import ToolbarTool from '~/enums/toolbarTool';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
@@ -12,6 +13,8 @@ import routePathValidationModel, {
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
+import RoutePathCopySegmentStore from './routePathCopySegmentStore';
+import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 // Is the neighbor to add either startNode or endNode
@@ -499,6 +502,7 @@ class RoutePathStore {
         if (this._oldRoutePath) {
             this.init({ routePath: this._oldRoutePath, isNewRoutePath: this._isNewRoutePath });
         }
+        RoutePathCopySegmentStore.clear();
     };
 
     @action
@@ -593,6 +597,13 @@ class RoutePathStore {
         this.setNeighborRoutePathLinks([]);
         if (this._isEditingDisabled) {
             this.resetChanges();
+            const selectedTool = ToolbarStore.selectedTool;
+            if (selectedTool &&
+                (selectedTool.toolType === ToolbarTool.AddNewRoutePathLink
+                    || selectedTool.toolType === ToolbarTool.RemoveRoutePathLink
+                    || selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool)) {
+                ToolbarStore.selectDefaultTool();
+            }
         } else {
             this._validationStore.validateAllProperties();
         }

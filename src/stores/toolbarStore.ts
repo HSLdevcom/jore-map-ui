@@ -110,7 +110,7 @@ class ToolbarStore {
     };
 
     @action
-    private selectDefaultTool() {
+    public selectDefaultTool() {
         this._selectedTool = defaultTool;
         this._selectedTool.activate();
     }

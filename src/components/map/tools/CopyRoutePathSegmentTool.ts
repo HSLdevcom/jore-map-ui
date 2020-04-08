@@ -23,6 +23,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         EventHelper.on('nodeClick', this.onNodeClick);
         EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
         this.highlightClickableNodes();
+        RoutePathStore.setIsEditingDisabled(false);
     }
     public deactivate() {
         EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
@@ -75,10 +76,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         const endNode = RoutePathCopySegmentStore.endNode;
         if (!startNode || !endNode) return;
 
-        if (
-            !this.isStartNodeOnRoutePath(startNode.id) &&
-            !this.isEndNodeOnRoutePath(endNode.id)
-        ) {
+        if (!this.isStartNodeOnRoutePath(startNode.id) && !this.isEndNodeOnRoutePath(endNode.id)) {
             ErrorStore.addError(
                 'Ainakin toisen kopioitavan välin alku- tai loppusolmuista on kuuluttava reitinsuuntaan, johon segmentti kopioidaan.'
             );

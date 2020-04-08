@@ -9,7 +9,9 @@ class RemoveRoutePathLinkTool implements BaseTool {
     public toolType = ToolbarTool.RemoveRoutePathLink;
     public toolHelpHeader = 'Poista reitin linkki';
     public toolHelpText = 'Poista reitin linkki klikkaamalla sitä kartalta.';
-    public activate() {}
+    public activate() {
+        RoutePathStore.setIsEditingDisabled(false);
+    }
     public deactivate() {}
 
     public onRoutePathLinkClick = (id: string) => async (clickEvent: any) => {
