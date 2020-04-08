@@ -16,13 +16,9 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import HttpUtils from '~/utils/HttpUtils';
 import '~/utils/KeyEventHandler';
-import ErrorBar from './ErrorBar';
-import NavigationBar from './NavigationBar';
+import AppFrame from './AppFrame';
 import * as s from './app.scss';
 import Login from './login/Login';
-import Map from './map/Map';
-import OverlayContainer from './overlays/OverlayContainer';
-import Sidebar from './sidebar/Sidebar';
 
 interface IAppState {
     isLoginInProgress: boolean;
@@ -81,24 +77,6 @@ class App extends React.Component<IAppProps, IAppState> {
         this.fetchSaveLock();
     };
 
-    private renderApp = () => {
-        if (this.state.isCodeListQueryInProgress) return <div>Ladataan sovellusta...</div>;
-
-        return (
-            <>
-                <NavigationBar />
-                <div className={s.appContent}>
-                    {/* Map needs to be rendered before <Sidebar /> so that listeners get initialized before Views set map coordinates. */}
-                    <Map>
-                        <ErrorBar />
-                    </Map>
-                    <Sidebar />
-                </div>
-                <OverlayContainer />
-            </>
-        );
-    };
-
     private initCodeLists = async () => {
         try {
             const codeLists = await CodeListService.fetchAllCodeLists();
@@ -140,6 +118,7 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.state.isLoginInProgress) {
             return <div>Ladataan sovellusta...</div>;
         }
+
         return (
             <div className={s.appView}>
                 <Router history={history}>
@@ -150,7 +129,7 @@ class App extends React.Component<IAppProps, IAppState> {
                             render={this.renderAfterLogin}
                         />
                         <Route path='/login' component={Login} />
-                        <Route component={() => this.renderApp()} />
+                        <Route path={'*'} component={AppFrame} />
                     </Switch>
                 </Router>
             </div>

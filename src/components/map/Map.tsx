@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import * as L from 'leaflet';
 import 'leaflet-editable';
 import 'leaflet/dist/leaflet.css';
-import { reaction, toJS, IReactionDisposer } from 'mobx';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
@@ -138,8 +138,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
-        const isLoading = Boolean(!this.props.mapStore!.coordinates);
-        const routes = toJS(this.props.routeListStore!.routes);
+        const isMapInteractionRestricted = this.props.mapStore!.isMapInteractionRestricted;
         return (
             <div className={s.mapView} data-cy='mapView'>
                 {this.props.children}
@@ -148,7 +147,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     zoomControl={false}
                     id={s.mapLeaflet}
                     editable={true}
-                    className={isLoading ? s.disableInteraction : ''}
+                    className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
                     <TileLayer
                         url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
@@ -168,7 +167,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
-                    <RouteLayer routes={routes} />
+                    <RouteLayer />
                     <EditRoutePathLayer />
                     <PopupLayer />
                     <StopAreaLayer />
