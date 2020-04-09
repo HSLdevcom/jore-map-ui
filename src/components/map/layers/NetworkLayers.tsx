@@ -151,10 +151,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 let radius: any;
                 switch (this.props.networkStore!.nodeSize) {
                     case NodeSize.normal:
-                        radius = 5;
+                        radius = 6;
                         break;
                     case NodeSize.large:
-                        radius = 6;
+                        radius = 7;
                         break;
                     default:
                         throw new Error(
