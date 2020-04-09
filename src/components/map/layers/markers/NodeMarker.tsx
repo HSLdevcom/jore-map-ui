@@ -33,9 +33,12 @@ interface INodeMarkerProps {
     isTimeAlignmentStop?: boolean;
     highlight?: { isHighlighted: boolean; color?: NodeHighlightColor };
     forcedVisibleNodeLabels?: NodeLabel[];
+    hasHighZIndex?: boolean;
     markerClasses?: string[];
     popupContent?: string; // static markup language (HTML)
     onContextMenu?: Function;
+    onMouseOver?: Function;
+    onMouseOut?: Function;
     onClick?: Function;
     onMoveMarker?: (coordinates: L.LatLng) => void;
     mapStore?: MapStore;
@@ -200,19 +203,25 @@ class NodeMarker extends Component<INodeMarkerProps> {
             nodeLocationType,
             isDraggable,
             isClickDisabled,
+            hasHighZIndex,
             onMoveMarker,
-            onContextMenu
+            onContextMenu,
+            onMouseOver,
+            onMouseOut
         } = this.props;
         return (
             <LeafletMarker
                 ref={this.markerRef}
                 onContextMenu={onContextMenu}
+                onMouseOver={onMouseOver}
+                onMouseOut={onMouseOut}
                 onClick={this.onMarkerClick}
                 draggable={isDraggable}
                 icon={this.renderNodeMarkerIcon({ nodeLocationType })}
                 position={coordinates}
                 onDragEnd={onMoveMarker && this.onMoveMarker()}
                 interactive={!isClickDisabled}
+                zIndexOffset={hasHighZIndex ? 1000 : 0}
             >
                 {this.renderStopRadiusCircle()}
             </LeafletMarker>
