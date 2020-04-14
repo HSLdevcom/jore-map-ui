@@ -12,6 +12,6 @@ export default interface IExternalLine {
     linkuka?: string;
     linviimpvm?: Date;
     linjlkohde?: string;
-    vaihtoaika?: number;
+    vaihtoaika: number;
     linkorvtyyppi?: string;
 }
