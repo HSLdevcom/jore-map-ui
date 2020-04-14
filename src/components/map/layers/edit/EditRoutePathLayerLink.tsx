@@ -38,12 +38,6 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderLink = (routePathLink: IRoutePathLink) => {
-        const onRoutePathLinkClick =
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick
-                ? this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
-                : () => this.props.highlightItemById(routePathLink.id);
-
         return [
             <Polyline
                 positions={routePathLink.geometry}
@@ -51,7 +45,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={ROUTE_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={onRoutePathLinkClick}
+                onClick={this.handleLinkClick(routePathLink)}
             />,
             this.props.routePathStore!.listHighlightedNodeIds.includes(routePathLink.id) && (
                 <Polyline
@@ -60,10 +54,21 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                     color={ROUTE_COLOR}
                     weight={25}
                     opacity={0.5}
-                    onClick={onRoutePathLinkClick}
+                    onClick={this.handleLinkClick(routePathLink)}
                 />
             )
         ];
+    };
+
+    private handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
+        if (
+            this.props.toolbarStore!.selectedTool &&
+            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick
+        ) {
+            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id);
+        } else {
+            this.props.highlightItemById(routePathLink.id);
+        }
     };
 
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
