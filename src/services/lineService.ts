@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
+import _ from 'lodash';
 import EndpointPath from '~/enums/endpointPath';
 import LineFactory from '~/factories/lineFactory';
 import RouteFactory from '~/factories/routeFactory';
@@ -74,11 +75,22 @@ class LineService {
     };
 
     public static updateLine = async (line: ILine) => {
-        await HttpUtils.updateObject(EndpointPath.LINE, line);
+        const lineSaveModel = _.cloneDeep(line);
+        if (!lineSaveModel.exchangeTime) {
+            lineSaveModel.exchangeTime = 0;
+        }
+        await HttpUtils.updateObject(EndpointPath.LINE, lineSaveModel);
     };
 
-    public static createLine = async (Line: ILine) => {
-        const response = (await HttpUtils.createObject(EndpointPath.LINE, Line)) as ILinePrimaryKey;
+    public static createLine = async (line: ILine) => {
+        const lineSaveModel = _.cloneDeep(line);
+        if (!lineSaveModel.exchangeTime) {
+            lineSaveModel.exchangeTime = 0;
+        }
+        const response = (await HttpUtils.createObject(
+            EndpointPath.LINE,
+            lineSaveModel
+        )) as ILinePrimaryKey;
         return response.id;
     };
 }

@@ -31,6 +31,7 @@ const TextContainer = observer((props: ITextContainerProps) => {
         isInputColorRed,
         ...attrs
     } = props;
+
     return (
         <div className={s.formItem}>
             {label && (
@@ -48,7 +49,7 @@ const TextContainer = observer((props: ITextContainerProps) => {
             >
                 {value instanceof Date
                     ? Moment(value!).format(isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
-                    : value
+                    : value || typeof value === 'number'
                     ? value
                     : '-'}
             </div>
