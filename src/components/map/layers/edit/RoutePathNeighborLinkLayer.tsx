@@ -14,6 +14,7 @@ import SubSites from '~/routing/subSites';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
 import NodeUtils from '~/utils/NodeUtils';
+import { toDateString } from '~/utils/dateUtils';
 import NodeMarker from '../markers/NodeMarker';
 import * as s from './routePathNeighborLinkLayer.scss';
 
@@ -75,7 +76,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                     .slice()
                     .sort((a, b) => (a.routeId < b.routeId ? -1 : 1))
                     .map((routePath, index) => {
-                        const link = routeBuilder
+                        const routePathLink = routeBuilder
                             .to(SubSites.routePath)
                             .toTarget(
                                 ':id',
@@ -88,13 +89,21 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                             .toLink();
                         return (
                             <div className={s.usageListItem} key={index}>
-                                <div className={s.usageListItemTitle}>
-                                    {routePath.originFi}-{routePath.destinationFi}
-                                </div>
-                                <div className={s.usageListItemId}>
-                                    <a href={link} target='_blank'>
+                                <div className={s.routePathLink}>
+                                    <a href={routePathLink} target='_blank'>
                                         {routePath.routeId}
                                     </a>
+                                </div>
+                                <div className={s.direction}>{routePath.direction}</div>
+                                <div>
+                                    <div className={s.place}>{routePath.originFi}</div>
+                                    <div>-</div>
+                                    <div className={s.place}>{routePath.destinationFi}</div>
+                                </div>
+                                <div>
+                                    <div>{toDateString(routePath.startTime)}</div>
+                                    <div>-</div>
+                                    <div>{toDateString(routePath.endTime)}</div>
                                 </div>
                             </div>
                         );

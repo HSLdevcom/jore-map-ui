@@ -25,24 +25,43 @@
     .topic {
         font-weight: bold;
         font-size: $mediumFontSize;
+        text-align: center;
     }
 
     .usageListItem {
+        display: flex;
         font-size: $smallFontSize;
         margin: 2px 0px;
-        white-space: nowrap;
-        display: flex;
-        justify-content: space-between;
-        flex-shrink: 0;
 
-        .usageListItemTitle {
-            text-overflow: ellipsis;
-            overflow: hidden;
+        div {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            white-space: nowrap;
+            margin-left: 3px;
+            margin-right: 3px;
+        }
+        div:first-of-type {
+            margin-left: 0px;
+        }
+        div:last-of-type {
+            margin-right: 0px;
         }
 
-        .usageListItemId {
-            display: inline;
-            margin-left: 5px;
+        .direction {
+            width: 7px;
+        }
+
+        .place {
+            display: block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            width: 75px;
+        }
+
+        .routePathLink {
+            text-align: left;
+            width: 60px;
 
             a {
                 cursor: pointer;
