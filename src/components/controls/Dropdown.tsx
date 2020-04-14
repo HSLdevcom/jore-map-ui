@@ -201,7 +201,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
 const CustomOption = (props: any) => {
     return (
         <components.Option {...props}>
-            <span {...props} data-cy='dropdownOption' />
+            <span data-cy='dropdownOption'>{props.label}</span>
         </components.Option>
     );
 };
