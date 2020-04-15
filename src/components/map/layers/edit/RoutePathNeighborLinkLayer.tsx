@@ -103,7 +103,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 color={this.getNeighborLinkColor(neighborLink)}
                 onClick={onNeighborLinkClick}
                 onContextMenu={() => this.showNodePopup(node, neighborLink.nodeUsageRoutePaths)}
-                isPopupShownOnRightClick={true}
                 onMouseOver={() =>
                     this.highlightRoutePathLink({
                         id: neighborLink.routePathLink.id,
