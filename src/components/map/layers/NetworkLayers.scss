@@ -8,7 +8,7 @@
 
 .stop {
     @extend .networkBase;
-    stroke: #000;
+    stroke: $unusedNodeColor;
     fill: $white;
 
     &.bus {

@@ -1,17 +1,24 @@
-.transitTypeNodeIcon {
+.iconBorder {
     border-style: solid;
     border-radius: 30px;
     display: table;
+}
 
-    .nodeIcon {
+.nodeIcon {
+    border-radius: 10px;
+    background-color: white;
+
+    &.smallSize {
+        height: 10px;
+        width: 10px;
+    }
+    &.normalSize {
         height: 14px;
         width: 14px;
-        border-radius: 10px;
-        background-color: white;
     }
+}
 
-    .timeAlignmentIcon {
-        background: url('~/icons/time.svg');
-        background-color: white;
-    }
+.timeAlignmentIcon {
+    background: url('~/icons/time.svg');
+    background-color: white;
 }
