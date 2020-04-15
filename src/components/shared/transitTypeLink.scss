@@ -2,16 +2,35 @@
 
 .link {
     display: flex;
-    font-size: $largeFontSize;
     font-weight: bold;
     cursor: pointer;
-    padding: 10px;
     align-items: center;
     transition: 0.5s;
 
+    &.small {
+        font-size: $smallFontSize;
+        padding: 3px;
+    }
+    &.medium {
+        font-size: $mediumFontSize;
+        padding: 5px;
+    }
+    &.large {
+        font-size: $largeFontSize;
+        padding: 10px;
+    }
+
     .transitTypeIcon {
         display: flex;
-        padding-right: 10px;
+        &.small {
+            padding-right: 3px;
+        }
+        &.medium {
+            padding-right: 5px;
+        }
+        &.large {
+            padding-right: 10px;
+        }
     }
 }
 .link:hover {

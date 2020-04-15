@@ -48,6 +48,10 @@
             margin-right: 0px;
         }
 
+        .transitTypeLinkWrapper {
+            width: 82px;
+        }
+
         .direction {
             width: 7px;
         }
@@ -57,17 +61,6 @@
             text-overflow: ellipsis;
             overflow: hidden;
             width: 75px;
-        }
-
-        .routePathLink {
-            text-align: left;
-            width: 60px;
-
-            a {
-                cursor: pointer;
-                color: $busBlue;
-                margin: 0 3px;
-            }
         }
     }
 }

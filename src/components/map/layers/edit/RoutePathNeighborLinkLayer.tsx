@@ -5,6 +5,7 @@ import Moment from 'moment';
 import React, { Component } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
+import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventHelper';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
@@ -87,12 +88,23 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                                 ].join(',')
                             )
                             .toLink();
+                        const openRoutePathInNewWindow = () => {
+                            const path = routePathLink; // TODO? + Navigator.getSearch();
+                            window.open(path, '_blank');
+                        };
                         return (
                             <div className={s.usageListItem} key={index}>
-                                <div className={s.routePathLink}>
-                                    <a href={routePathLink} target='_blank'>
-                                        {routePath.routeId}
-                                    </a>
+                                <div className={s.transitTypeLinkWrapper}>
+                                    <TransitTypeLink
+                                        transitType={routePath.transitType!}
+                                        shouldShowTransitTypeIcon={true}
+                                        text={routePath.routeId}
+                                        size='small'
+                                        onClick={openRoutePathInNewWindow}
+                                        hoverText={`Avaa reitin suunta ${
+                                            routePath.routeId
+                                        } uuteen ikkunaan`}
+                                    />
                                 </div>
                                 <div className={s.direction}>{routePath.direction}</div>
                                 <div>
