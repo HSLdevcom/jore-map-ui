@@ -89,14 +89,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     componentDidMount() {
         this._isMounted = true;
-        EventHelper.on(
-            'undo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25)
-        );
-        EventHelper.on(
-            'redo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25)
-        );
+        EventHelper.on('undo', this.undo);
+        EventHelper.on('redo', this.redo);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -106,14 +100,16 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
-        EventHelper.off(
-            'undo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25)
-        );
-        EventHelper.off(
-            'redo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25)
-        );
+        EventHelper.off('undo', this.undo);
+        EventHelper.off('redo', this.redo);
+    }
+
+    private undo = () => {
+        this.undoIfAllowed(this.props.routePathStore!.undo);
+    }
+
+    private redo = () => {
+        this.undoIfAllowed(this.props.routePathStore!.redo);
     }
 
     private undoIfAllowed = (undo: () => void) => {
@@ -370,30 +366,30 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         {this.props.isNewRoutePath ? (
                             `Uusi reitinsuunta reitille ${routePath.routeId}`
                         ) : (
-                            <div className={s.linkContainer}>
-                                <TransitTypeLink
-                                    transitType={routePath.transitType!}
-                                    shouldShowTransitTypeIcon={true}
-                                    text={routePath.lineId!}
-                                    onClick={() =>
-                                        NavigationUtils.openLineView({ lineId: routePath!.lineId! })
-                                    }
-                                    hoverText={`Avaa linja ${routePath.lineId!}`}
-                                />
-                                <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
-                                <TransitTypeLink
-                                    transitType={routePath.transitType!}
-                                    shouldShowTransitTypeIcon={false}
-                                    text={routePath.routeId}
-                                    onClick={() =>
-                                        NavigationUtils.openRouteView({
-                                            routeId: routePath.routeId
-                                        })
-                                    }
-                                    hoverText={`Avaa reitti ${routePath.routeId}`}
-                                />
-                            </div>
-                        )}
+                                <div className={s.linkContainer}>
+                                    <TransitTypeLink
+                                        transitType={routePath.transitType!}
+                                        shouldShowTransitTypeIcon={true}
+                                        text={routePath.lineId!}
+                                        onClick={() =>
+                                            NavigationUtils.openLineView({ lineId: routePath!.lineId! })
+                                        }
+                                        hoverText={`Avaa linja ${routePath.lineId!}`}
+                                    />
+                                    <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
+                                    <TransitTypeLink
+                                        transitType={routePath.transitType!}
+                                        shouldShowTransitTypeIcon={false}
+                                        text={routePath.routeId}
+                                        onClick={() =>
+                                            NavigationUtils.openRouteView({
+                                                routeId: routePath.routeId
+                                            })
+                                        }
+                                        hoverText={`Avaa reitti ${routePath.routeId}`}
+                                    />
+                                </div>
+                            )}
                     </SidebarHeader>
                     <div className={s.subTopic}>
                         <ReactMoment date={routePath.startTime} format='DD.MM.YYYY' /> -{' '}
@@ -407,47 +403,47 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 {isCopyRoutePathSegmentViewVisible ? (
                     <RoutePathCopySegmentView />
                 ) : (
-                    <>
-                        <Tabs>
-                            <TabList
-                                selectedTabIndex={routePathStore!.selectedTabIndex}
-                                setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                        <>
+                            <Tabs>
+                                <TabList
+                                    selectedTabIndex={routePathStore!.selectedTabIndex}
+                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                                >
+                                    <Tab>
+                                        <div>Reitinsuunnan tiedot</div>
+                                    </Tab>
+                                    <Tab>
+                                        <div>Solmut ja linkit</div>
+                                    </Tab>
+                                </TabList>
+                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                                    <ContentItem>
+                                        <RoutePathInfoTab
+                                            isEditingDisabled={isEditingDisabled}
+                                            routePath={this.props.routePathStore!.routePath!}
+                                            invalidPropertiesMap={
+                                                this.props.routePathStore!.invalidPropertiesMap
+                                            }
+                                        />
+                                    </ContentItem>
+                                    <ContentItem>
+                                        <RoutePathLinksTab
+                                            routePath={this.props.routePathStore!.routePath!}
+                                            isEditingDisabled={isEditingDisabled}
+                                        />
+                                    </ContentItem>
+                                </ContentList>
+                            </Tabs>
+                            <SaveButton
+                                onClick={this.showSavePrompt}
+                                isSavePrevented={isSavePrevented}
+                                savePreventedNotification='Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.'
+                                disabled={isSaveButtonDisabled}
                             >
-                                <Tab>
-                                    <div>Reitinsuunnan tiedot</div>
-                                </Tab>
-                                <Tab>
-                                    <div>Solmut ja linkit</div>
-                                </Tab>
-                            </TabList>
-                            <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
-                                <ContentItem>
-                                    <RoutePathInfoTab
-                                        isEditingDisabled={isEditingDisabled}
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        invalidPropertiesMap={
-                                            this.props.routePathStore!.invalidPropertiesMap
-                                        }
-                                    />
-                                </ContentItem>
-                                <ContentItem>
-                                    <RoutePathLinksTab
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        isEditingDisabled={isEditingDisabled}
-                                    />
-                                </ContentItem>
-                            </ContentList>
-                        </Tabs>
-                        <SaveButton
-                            onClick={this.showSavePrompt}
-                            isSavePrevented={isSavePrevented}
-                            savePreventedNotification='Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.'
-                            disabled={isSaveButtonDisabled}
-                        >
-                            {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                        </SaveButton>
-                    </>
-                )}
+                                {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                            </SaveButton>
+                        </>
+                    )}
             </div>
         );
     }
