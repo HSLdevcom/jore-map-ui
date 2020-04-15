@@ -10,7 +10,6 @@ import { PopupStore } from '~/stores/popupStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
-import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 
 enum NodeHighlightColor {
@@ -36,8 +35,6 @@ interface INodeMarkerProps {
     forcedVisibleNodeLabels?: NodeLabel[];
     hasHighZIndex?: boolean;
     markerClasses?: string[];
-    popupContent?: string; // static markup language (HTML)
-    isPopupShownOnRightClick?: boolean;
     onContextMenu?: Function;
     onMouseOver?: Function;
     onMouseOut?: Function;
@@ -58,18 +55,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         forcedVisibleNodeLabels: [],
         markerClasses: []
     };
-    private markerRef: any;
-
-    constructor(props: INodeMarkerProps) {
-        super(props);
-        this.markerRef = React.createRef<LeafletMarker>();
-    }
-
-    componentDidMount() {
-        if (this.props.popupContent) {
-            MarkerPopup.initPopup(this.props.popupContent, this.markerRef);
-        }
-    }
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
@@ -199,15 +184,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         );
     };
 
-    private onContextMenu = () => {
-        const { onContextMenu, isPopupShownOnRightClick } = this.props;
-        if (isPopupShownOnRightClick) {
-        }
-        if (onContextMenu) {
-            onContextMenu();
-        }
-    };
-
     render() {
         const {
             coordinates,
@@ -215,14 +191,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
             isDraggable,
             isClickDisabled,
             hasHighZIndex,
+            onContextMenu,
             onMouseOver,
             onMouseOut,
             onMoveMarker
         } = this.props;
         return (
             <LeafletMarker
-                ref={this.markerRef}
-                onContextMenu={this.onContextMenu}
+                onContextMenu={onContextMenu}
                 onMouseOver={onMouseOver}
                 onMouseOut={onMouseOut}
                 onClick={this.onMarkerClick}
