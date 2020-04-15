@@ -1,22 +1,18 @@
 import _ from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server';
 import { Polyline } from 'react-leaflet';
-import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventHelper';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
 import NodeUtils from '~/utils/NodeUtils';
-import { toDateString } from '~/utils/dateUtils';
 import NodeMarker from '../markers/NodeMarker';
+import { INodeUsagePopupData } from '../popups/NodeUsagePopup';
 import * as s from './routePathNeighborLinkLayer.scss';
 
 const USED_NEIGHBOR_COLOR = '#0dce0a';
@@ -27,6 +23,7 @@ const UNUSED_NEIGHBOR_COLOR_HIGHLIGHT = '#c40608';
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
     mapStore?: MapStore;
+    popupStore?: PopupStore;
 }
 
 interface IRoutePathLayerState {
@@ -38,7 +35,7 @@ interface PolylineRefs {
     [key: string]: any;
 }
 
-@inject('routePathStore', 'mapStore')
+@inject('routePathStore', 'mapStore', 'popupStore')
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     private linkListener: IReactionDisposer;
@@ -68,60 +65,19 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         });
     };
 
-    private getNodeUsageViewMarkup = (routePaths: IRoutePath[]) => {
-        if (!routePaths || routePaths.length === 0) return;
-        return ReactDOMServer.renderToStaticMarkup(
-            <div className={s.nodeUsageList}>
-                <div className={s.topic}>Solmua käyttävät reitinsuunnat</div>
-                {routePaths
-                    .slice()
-                    .sort((a, b) => (a.routeId < b.routeId ? -1 : 1))
-                    .map((routePath, index) => {
-                        const routePathLink = routeBuilder
-                            .to(SubSites.routePath)
-                            .toTarget(
-                                ':id',
-                                [
-                                    routePath.routeId,
-                                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                                    routePath.direction
-                                ].join(',')
-                            )
-                            .toLink();
-                        const openRoutePathInNewWindow = () => {
-                            const path = routePathLink; // TODO? + Navigator.getSearch();
-                            window.open(path, '_blank');
-                        };
-                        return (
-                            <div className={s.usageListItem} key={index}>
-                                <div className={s.transitTypeLinkWrapper}>
-                                    <TransitTypeLink
-                                        transitType={routePath.transitType!}
-                                        shouldShowTransitTypeIcon={true}
-                                        text={routePath.routeId}
-                                        size='small'
-                                        onClick={openRoutePathInNewWindow}
-                                        hoverText={`Avaa reitin suunta ${
-                                            routePath.routeId
-                                        } uuteen ikkunaan`}
-                                    />
-                                </div>
-                                <div className={s.direction}>{routePath.direction}</div>
-                                <div>
-                                    <div className={s.place}>{routePath.originFi}</div>
-                                    <div>-</div>
-                                    <div className={s.place}>{routePath.destinationFi}</div>
-                                </div>
-                                <div>
-                                    <div>{toDateString(routePath.startTime)}</div>
-                                    <div>-</div>
-                                    <div>{toDateString(routePath.endTime)}</div>
-                                </div>
-                            </div>
-                        );
-                    })}
-            </div>
-        );
+    private showNodePopup = (node: INode, routePaths: IRoutePath[]) => {
+        const popupData: INodeUsagePopupData = {
+            routePaths
+        };
+        const nodePopup: IPopupProps = {
+            type: 'nodeUsagePopup',
+            data: popupData,
+            coordinates: node!.coordinates,
+            isCloseButtonVisible: false,
+            isAutoCloseOn: true
+        };
+
+        this.props.popupStore!.showPopup(nodePopup);
     };
 
     private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
@@ -142,11 +98,12 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isHighlighted={this.props.mapStore!.selectedNodeId === node.id}
-                onClick={onNeighborLinkClick}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                popupContent={this.getNodeUsageViewMarkup(neighborLink.nodeUsageRoutePaths)}
                 color={this.getNeighborLinkColor(neighborLink)}
+                onClick={onNeighborLinkClick}
+                onContextMenu={() => this.showNodePopup(node, neighborLink.nodeUsageRoutePaths)}
+                isPopupShownOnRightClick={true}
                 onMouseOver={() =>
                     this.highlightRoutePathLink({
                         id: neighborLink.routePathLink.id,
