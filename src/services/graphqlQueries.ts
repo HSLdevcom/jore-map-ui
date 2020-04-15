@@ -263,6 +263,7 @@ const getAllNodesQuery = () => {
                     soltyyppi
                     sollistunnus
                     solkirjain
+                    transitTypes
                 }
             }
         }
