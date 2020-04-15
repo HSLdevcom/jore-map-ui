@@ -19,9 +19,6 @@ class NodeFactory {
             ...NodeFactory.createNodeBase(externalNode),
             coordinates,
             coordinatesProjection,
-            transitTypes: externalNode.transitTypes
-                ? (externalNode.transitTypes.split(',') as TransitType[])
-                : [],
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
@@ -36,7 +33,10 @@ class NodeFactory {
             type,
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
-            id: externalNode.soltunnus
+            id: externalNode.soltunnus,
+            transitTypes: externalNode.transitTypes
+                ? (externalNode.transitTypes.split(',') as TransitType[])
+                : []
         };
     };
 
@@ -44,9 +44,11 @@ class NodeFactory {
         const coordinates = _getLatLng(
             externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
+        const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
 
         return {
             coordinates,
+            type,
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])

@@ -9,9 +9,12 @@ interface ITransitIconProps {
     transitType: TransitType;
     shouldShowTransitTypeIcon: boolean;
     text: string;
+    size?: size; // defaults to large
     onClick?: () => void;
     hoverText?: string;
 }
+
+type size = 'small' | 'medium' | 'large';
 
 class TransitTypeLink extends React.Component<ITransitIconProps> {
     render() {
@@ -19,19 +22,24 @@ class TransitTypeLink extends React.Component<ITransitIconProps> {
             transitType,
             shouldShowTransitTypeIcon,
             text,
+            size,
             onClick,
             hoverText,
             ...attrs
         } = this.props;
         return (
             <div
-                className={classnames(s.link, TransitTypeUtils.getColorClass(transitType))}
+                className={classnames(
+                    s.link,
+                    TransitTypeUtils.getColorClass(transitType),
+                    s[size || 'large']
+                )}
+                onClick={onClick ? onClick : void 0}
                 title={hoverText ? hoverText : ''}
-                onClick={onClick ? () => onClick() : void 0}
                 {...attrs}
             >
                 {shouldShowTransitTypeIcon && (
-                    <div className={s.transitTypeIcon}>
+                    <div className={classnames(s.transitTypeIcon, s[size || 'large'])}>
                         <TransitIcon transitType={transitType} isWithoutBox={false} />
                     </div>
                 )}

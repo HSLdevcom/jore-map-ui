@@ -18,6 +18,8 @@ $crossroadFill: #cfcfcf;
 $municipalityBorder: #c900ff;
 $municipalityFill: #fff;
 
+$unusedNodeColor: #000;
+
 $blue: rgb(0, 122, 201);
 $red: rgb(201, 0, 0);
 $grey: rgb(102, 102, 102);
@@ -65,6 +67,7 @@ $lightblue: #aaddff;
     mediumFontSize: $mediumFontSize;
     largeFontSize: $largeFontSize;
     busBlue: $busBlue;
+    unusedNodeColor: $unusedNodeColor;
     lightGrey: $lightGrey;
     mediumLightGrey: $mediumLightGrey;
     darkGrey: $darkGrey;

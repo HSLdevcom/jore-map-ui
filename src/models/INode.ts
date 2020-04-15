@@ -12,12 +12,14 @@ interface INodeBase extends INodePrimaryKey {
     shortIdLetter?: string;
     shortIdString?: string;
     type: NodeType;
+    transitTypes?: TransitType[];
 }
 
 interface INodeMapHighlight extends INodePrimaryKey {
     coordinates: L.LatLng;
-    transitTypes: TransitType[];
+    type: NodeType;
     dateRanges: string;
+    transitTypes: TransitType[];
 }
 
 interface INode extends INodeBase {
@@ -28,7 +30,6 @@ interface INode extends INodeBase {
     measurementType?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
-    transitTypes?: TransitType[];
 }
 
 export default INode;

@@ -1,0 +1,24 @@
+.iconBorder {
+    border-style: solid;
+    border-radius: 30px;
+    display: table;
+}
+
+.nodeIcon {
+    border-radius: 10px;
+    background-color: white;
+
+    &.smallSize {
+        height: 10px;
+        width: 10px;
+    }
+    &.normalSize {
+        height: 14px;
+        width: 14px;
+    }
+}
+
+.timeAlignmentIcon {
+    background: url('~/icons/time.svg');
+    background-color: white;
+}

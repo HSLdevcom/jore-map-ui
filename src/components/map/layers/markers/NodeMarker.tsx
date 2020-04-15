@@ -6,10 +6,10 @@ import React, { Component } from 'react';
 import { Circle, Marker as LeafletMarker } from 'react-leaflet';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { PopupStore } from '~/stores/popupStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
-import MarkerPopup from './MarkerPopup';
 import * as s from './nodeMarker.scss';
 
 enum NodeHighlightColor {
@@ -35,13 +35,13 @@ interface INodeMarkerProps {
     forcedVisibleNodeLabels?: NodeLabel[];
     hasHighZIndex?: boolean;
     markerClasses?: string[];
-    popupContent?: string; // static markup language (HTML)
     onContextMenu?: Function;
     onMouseOver?: Function;
     onMouseOut?: Function;
     onClick?: Function;
     onMoveMarker?: (coordinates: L.LatLng) => void;
     mapStore?: MapStore;
+    popupStore?: PopupStore;
 }
 
 const NODE_LABEL_MIN_ZOOM = 14;
@@ -55,19 +55,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         forcedVisibleNodeLabels: [],
         markerClasses: []
     };
-
-    markerRef: any;
-
-    constructor(props: INodeMarkerProps) {
-        super(props);
-        this.markerRef = React.createRef<LeafletMarker>();
-    }
-
-    componentDidMount() {
-        if (this.props.popupContent) {
-            MarkerPopup.initPopup(this.props.popupContent, this.markerRef);
-        }
-    }
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
         if (this.props.onMoveMarker) {
@@ -204,14 +191,13 @@ class NodeMarker extends Component<INodeMarkerProps> {
             isDraggable,
             isClickDisabled,
             hasHighZIndex,
-            onMoveMarker,
             onContextMenu,
             onMouseOver,
-            onMouseOut
+            onMouseOut,
+            onMoveMarker
         } = this.props;
         return (
             <LeafletMarker
-                ref={this.markerRef}
                 onContextMenu={onContextMenu}
                 onMouseOver={onMouseOver}
                 onMouseOut={onMouseOut}
