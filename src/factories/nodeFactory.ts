@@ -44,9 +44,11 @@ class NodeFactory {
         const coordinates = _getLatLng(
             externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
+        const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
 
         return {
             coordinates,
+            type,
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])

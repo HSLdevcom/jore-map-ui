@@ -17,6 +17,7 @@ interface INodeBase extends INodePrimaryKey {
 interface INodeMapHighlight extends INodePrimaryKey {
     coordinates: L.LatLng;
     transitTypes: TransitType[];
+    type: NodeType;
     dateRanges: string;
 }
 

@@ -178,6 +178,7 @@ const getNetworkNodesFromPointQuery = () => {
             ) {
                 nodes {
                     soltunnus
+                    soltyyppi
                     geojson
                     geojsonManual
                     transitTypes

@@ -142,27 +142,13 @@
             height: 100%;
 
             .borderLeftContainer {
-                border-right: 3px solid $blue;
-                width: 50%;
+                border-right: 2px solid $blue; // border width
+                width: calc(50% - 1px); // needs to be half of the border width
             }
         }
         .listIcon {
-            & > div {
-                margin-left: 5px;
-            }
-
-            .iconBorder {
-                border-style: solid;
-                border-radius: 30px;
-                display: table;
-            }
-
-            .nodeIcon {
-                height: 14px;
-                width: 14px;
-                border-radius: 10px;
-                background-color: white;
-            }
+            display: flex;
+            justify-content: center;
         }
     }
 }

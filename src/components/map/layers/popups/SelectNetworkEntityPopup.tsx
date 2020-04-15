@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { IoIosRadioButtonOff } from 'react-icons/io';
 import TransitIcon from '~/components/shared/TransitIcon';
+import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 import navigator from '~/routing/navigator';
@@ -79,9 +79,10 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             onClick={() => this.redirectToNode(node.id, this.props.popupId)}
                             data-cy='node'
                         >
-                            <div className={s.nodeIcon}>
-                                <IoIosRadioButtonOff />
-                            </div>
+                            <TransitTypeNodeIcon
+                                nodeType={node.type}
+                                transitTypes={node.transitTypes}
+                            />
                             <div className={s.linkText}>Solmu {node.id}</div>
                         </div>
                     );

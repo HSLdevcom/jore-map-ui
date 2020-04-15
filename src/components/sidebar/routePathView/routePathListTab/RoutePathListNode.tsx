@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
@@ -6,6 +5,7 @@ import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button, Checkbox, Dropdown } from '~/components/controls';
+import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
@@ -20,7 +20,6 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
-import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
@@ -356,52 +355,6 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private renderListIcon = () => {
-        const node = this.props.node;
-        const routePathLink = this.props.routePathLink;
-
-        const isTimeAlignmentStop =
-            !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0';
-        let nodeIcon = (
-            <div
-                className={classnames(
-                    s.nodeIcon,
-                    isTimeAlignmentStop ? s.timeAlignmentIcon : undefined
-                )}
-            />
-        );
-        const isNodeDisabled =
-            !this.props.isLastNode &&
-            this.props.routePathLink.startNodeType === StartNodeType.DISABLED;
-
-        if (node.type === NodeType.MUNICIPALITY_BORDER) {
-            nodeIcon = this.renderBorder(nodeIcon, '#c900ff');
-        } else if (node.type === NodeType.CROSSROAD) {
-            nodeIcon = this.renderBorder(nodeIcon, '#727272');
-        } else if (isNodeDisabled) {
-            node.transitTypes!.forEach(type => {
-                nodeIcon = this.renderBorder(nodeIcon, TransitTypeUtils.getColor(type), 0.5);
-            });
-        } else if (node.type === NodeType.STOP) {
-            node.transitTypes!.forEach(type => {
-                nodeIcon = this.renderBorder(nodeIcon, TransitTypeUtils.getColor(type));
-            });
-        }
-
-        return nodeIcon;
-    };
-
-    private renderBorder = (icon: React.ReactNode, color: string, opacity?: number) => {
-        return (
-            <div
-                className={s.iconBorder}
-                style={{ borderColor: color, opacity: opacity ? opacity : 1 }}
-            >
-                {icon}
-            </div>
-        );
-    };
-
     private renderBody = () => {
         const node = this.props.node;
         return (
@@ -437,15 +390,27 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     render() {
+        const { node, routePathLink, isFirstNode, isLastNode } = this.props;
         return (
             <RoutePathListItem
-                id={this.props.node.id}
+                id={node.id}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}
                 body={this.renderBody()}
-                listIcon={this.renderListIcon()}
-                isFirstNode={this.props.isFirstNode}
-                isLastNode={this.props.isLastNode}
+                listIcon={
+                    <TransitTypeNodeIcon
+                        nodeType={node.type}
+                        transitTypes={node.transitTypes}
+                        isTimeAlignmentStop={
+                            !isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
+                        }
+                        isDisabled={
+                            !isLastNode && routePathLink.startNodeType === StartNodeType.DISABLED
+                        }
+                    />
+                }
+                isFirstNode={isFirstNode}
+                isLastNode={isLastNode}
                 isItemHighlighted={this.isNodeSelected()}
             />
         );
