@@ -320,9 +320,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     />
                 )}
                 <SaveButton
-                    className={s.saveLineHeadersButton}
                     onClick={this.showSavePrompt}
                     disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
+                    className={s.saveLineHeadersButton}
                 >
                     Tallenna linjan otsikot
                 </SaveButton>

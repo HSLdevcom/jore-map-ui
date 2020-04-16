@@ -121,7 +121,10 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
         if (!route) return null;
         const isRouteFormValid = routeStore.isRouteFormValid;
-        const isSavePrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
+        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
+        const savePreventedNotification = isSaveAllowed
+            ? ''
+            : 'Uuden reitin tallentamista ei vielä tueta, sillä vanha käyttöliittymä ei näytä reittiä ellei sillä ole olemassa olevaa reitinsuuntaa eikä reitinsuuntia voi vielä luoda uudella käyttöliittymällä. Voit kokeilla reitin luontia dev-ympäristössä. Jos haluat luoda reittejä tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={classnames(s.routeView, s.form)}>
                 <SidebarHeader isEditButtonVisible={false} isEditing={true}>
@@ -139,8 +142,8 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                 <SaveButton
                     onClick={this.save}
                     disabled={!isRouteFormValid}
-                    isSavePrevented={isSavePrevented}
-                    savePreventedNotification='Uuden reitin tallentamista ei vielä tueta, sillä vanha käyttöliittymä ei näytä reittiä ellei sillä ole olemassa olevaa reitinsuuntaa eikä reitinsuuntia voi vielä luoda uudella käyttöliittymällä. Voit kokeilla reitin luontia dev-ympäristössä. Jos haluat luoda reittejä tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.'
+                    savePreventedNotification={savePreventedNotification}
+                    isWarningButton={!isSaveAllowed}
                 >
                     Luo uusi reitti
                 </SaveButton>

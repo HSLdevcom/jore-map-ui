@@ -263,7 +263,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         if (routePaths.length === 0) {
             return (
                 <div className={s.routePathListTab}>
-                    <div className={s.noRoutePathsMessage}>Reitillä ei ole reitin suuntia.</div>
+                    <div className={s.noRoutePathsMessage}>Reitillä ei ole reitinsuuntia.</div>
                 </div>
             );
         }

@@ -33,7 +33,6 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import { validateRoutePathLinks } from '~/utils/geomUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
@@ -344,17 +343,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const routePath = routePathStore!.routePath;
         if (!routePath) return null;
 
-        const isGeometryValid = validateRoutePathLinks(routePath.routePathLinks);
         const isEditingDisabled = routePathStore!.isEditingDisabled;
-        const isSaveButtonDisabled =
-            isEditingDisabled ||
-            !this.props.routePathStore!.isDirty ||
-            !isGeometryValid ||
-            !this.props.routePathStore!.isFormValid;
         const routePathCopySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
             routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
-        const isSavePrevented = ENVIRONMENT === 'prod' || ENVIRONMENT === 'stage';
+        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
+        const savePreventedNotification = isSaveAllowed ? routePathStore!.getSavePreventedText() : 'Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
@@ -366,30 +360,30 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         {this.props.isNewRoutePath ? (
                             `Uusi reitinsuunta reitille ${routePath.routeId}`
                         ) : (
-                                <div className={s.linkContainer}>
-                                    <TransitTypeLink
-                                        transitType={routePath.transitType!}
-                                        shouldShowTransitTypeIcon={true}
-                                        text={routePath.lineId!}
-                                        onClick={() =>
-                                            NavigationUtils.openLineView({ lineId: routePath!.lineId! })
-                                        }
-                                        hoverText={`Avaa linja ${routePath.lineId!}`}
-                                    />
-                                    <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
-                                    <TransitTypeLink
-                                        transitType={routePath.transitType!}
-                                        shouldShowTransitTypeIcon={false}
-                                        text={routePath.routeId}
-                                        onClick={() =>
-                                            NavigationUtils.openRouteView({
-                                                routeId: routePath.routeId
-                                            })
-                                        }
-                                        hoverText={`Avaa reitti ${routePath.routeId}`}
-                                    />
-                                </div>
-                            )}
+                            <div className={s.linkContainer}>
+                                <TransitTypeLink
+                                    transitType={routePath.transitType!}
+                                    shouldShowTransitTypeIcon={true}
+                                    text={routePath.lineId!}
+                                    onClick={() =>
+                                        NavigationUtils.openLineView({ lineId: routePath!.lineId! })
+                                    }
+                                    hoverText={`Avaa linja ${routePath.lineId!}`}
+                                />
+                                <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
+                                <TransitTypeLink
+                                    transitType={routePath.transitType!}
+                                    shouldShowTransitTypeIcon={false}
+                                    text={routePath.routeId}
+                                    onClick={() =>
+                                        NavigationUtils.openRouteView({
+                                            routeId: routePath.routeId
+                                        })
+                                    }
+                                    hoverText={`Avaa reitti ${routePath.routeId}`}
+                                />
+                            </div>
+                        )}
                     </SidebarHeader>
                     <div className={s.subTopic}>
                         <ReactMoment date={routePath.startTime} format='DD.MM.YYYY' /> -{' '}
@@ -436,15 +430,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             </Tabs>
                             <SaveButton
                                 onClick={this.showSavePrompt}
-                                isSavePrevented={isSavePrevented}
-                                savePreventedNotification='Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.'
-                                disabled={isSaveButtonDisabled}
+                                disabled={isSaveAllowed && savePreventedNotification.length > 0}
+                                savePreventedNotification={savePreventedNotification}
+                                isWarningButton={!isSaveAllowed}
                             >
                                 {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
                             </SaveButton>
                         </>
                     )}
-            </div>
+                </div>
         );
     }
 }

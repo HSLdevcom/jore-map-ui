@@ -479,8 +479,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     }
                 </div>
                 <SaveButton
-                    disabled={isSaveButtonDisabled}
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
+                    disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
                 >
                     {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </SaveButton>
