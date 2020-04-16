@@ -12,6 +12,7 @@ import routePathValidationModel, {
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import RoutePathValidator from '~/utils/RoutePathValidator';
+import { getText } from '~/utils/textUtils';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import RoutePathCopySegmentStore from './routePathCopySegmentStore';
@@ -521,26 +522,26 @@ class RoutePathStore {
     public getSavePreventedText = (): string => {
         const routePathLinks = this.routePath!.routePathLinks;
         if (this.isEditingDisabled) {
-            return 'Tallennus estetty, editointi ei päällä. Aloita editointi ja tee muutoksia, jonka jälkeen voit tallentaa.'
+            return getText('routePath_savePrevented_isEditingDisabled');
         }
         if (routePathLinks.length === 0) {
-            return 'Tallennus estetty, reitinsuunnan linkit puuttuvat.'
+            return getText('routePath_savePrevented_routePathLinksMissing')
         }
         if (!RoutePathValidator.validateRoutePathLinkCoherency(routePathLinks)) {
-            return 'Tallennus estetty, reitinsuunnan geometria on epävalidi.'
+            return getText('routePath_savePrevented_geometryInvalid')
         }
         const stopIdAppearingTwice = RoutePathValidator.getStopIdThatAppearsTwice(routePathLinks)
         if (stopIdAppearingTwice) {
-            return `Tallennus estetty, pysäkki ${stopIdAppearingTwice} esiintyy kahdesti. Jos käytät samaa pysäkkiä kahdesti, vähintään toisen pysäkin täytyy olla poissa käytöstä.`
+            return getText('routePath_savePrevented_stopAppearingTwice', { stopId: stopIdAppearingTwice })
         }
         if (RoutePathValidator.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
-            return `Tallennus estetty, reitinsuunnan alkusolmu on sama kuin sen loppusolmu.`
+            return getText('routePath_savePrevented_startNodeTheSameAsEndNode')
         }
         if (!this.isFormValid) {
-            return 'Tallennus estetty, tarkista reitinsuunnan tiedot -välilehti.'
+            return getText('routePath_savePrevented_checkRoutePathInfoTab')
         }
         if (!this.isDirty) {
-            return 'Ei tallennettavia muutoksia.';
+            return getText('savePrevented_isNotDirty')
         }
         return '';
     }
