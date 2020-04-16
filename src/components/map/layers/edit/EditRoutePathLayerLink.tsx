@@ -63,9 +63,9 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
         if (
             this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick
+            this.props.toolbarStore!.selectedTool.onRoutePathLinkClick
         ) {
-            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id);
+            this.props.toolbarStore!.selectedTool.onRoutePathLinkClick(routePathLink.id)(e);
         } else {
             this.props.highlightItemById(routePathLink.id);
         }

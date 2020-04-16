@@ -88,14 +88,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     componentDidMount() {
         this._isMounted = true;
-        EventHelper.on(
-            'undo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25)
-        );
-        EventHelper.on(
-            'redo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25)
-        );
+        EventHelper.on('undo', this.undo);
+        EventHelper.on('redo', this.redo);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -105,14 +99,16 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.normal);
         this.props.routePathStore!.clear();
-        EventHelper.off(
-            'undo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.undo), 25)
-        );
-        EventHelper.off(
-            'redo',
-            _.debounce(() => this.undoIfAllowed(this.props.routePathStore!.redo), 25)
-        );
+        EventHelper.off('undo', this.undo);
+        EventHelper.off('redo', this.redo);
+    }
+
+    private undo = () => {
+        this.undoIfAllowed(this.props.routePathStore!.undo);
+    }
+
+    private redo = () => {
+        this.undoIfAllowed(this.props.routePathStore!.redo);
     }
 
     private undoIfAllowed = (undo: () => void) => {
@@ -401,48 +397,48 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 {isCopyRoutePathSegmentViewVisible ? (
                     <RoutePathCopySegmentView />
                 ) : (
-                    <>
-                        <Tabs>
-                            <TabList
-                                selectedTabIndex={routePathStore!.selectedTabIndex}
-                                setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                        <>
+                            <Tabs>
+                                <TabList
+                                    selectedTabIndex={routePathStore!.selectedTabIndex}
+                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                                >
+                                    <Tab>
+                                        <div>Reitinsuunnan tiedot</div>
+                                    </Tab>
+                                    <Tab>
+                                        <div>Solmut ja linkit</div>
+                                    </Tab>
+                                </TabList>
+                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                                    <ContentItem>
+                                        <RoutePathInfoTab
+                                            isEditingDisabled={isEditingDisabled}
+                                            routePath={this.props.routePathStore!.routePath!}
+                                            invalidPropertiesMap={
+                                                this.props.routePathStore!.invalidPropertiesMap
+                                            }
+                                        />
+                                    </ContentItem>
+                                    <ContentItem>
+                                        <RoutePathLinksTab
+                                            routePath={this.props.routePathStore!.routePath!}
+                                            isEditingDisabled={isEditingDisabled}
+                                        />
+                                    </ContentItem>
+                                </ContentList>
+                            </Tabs>
+                            <SaveButton
+                                onClick={this.showSavePrompt}
+                                disabled={isSaveAllowed && savePreventedNotification.length > 0}
+                                savePreventedNotification={savePreventedNotification}
+                                isWarningButton={!isSaveAllowed}
                             >
-                                <Tab>
-                                    <div>Reitinsuunnan tiedot</div>
-                                </Tab>
-                                <Tab>
-                                    <div>Solmut ja linkit</div>
-                                </Tab>
-                            </TabList>
-                            <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
-                                <ContentItem>
-                                    <RoutePathInfoTab
-                                        isEditingDisabled={isEditingDisabled}
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        invalidPropertiesMap={
-                                            this.props.routePathStore!.invalidPropertiesMap
-                                        }
-                                    />
-                                </ContentItem>
-                                <ContentItem>
-                                    <RoutePathLinksTab
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        isEditingDisabled={isEditingDisabled}
-                                    />
-                                </ContentItem>
-                            </ContentList>
-                        </Tabs>
-                        <SaveButton
-                            onClick={this.showSavePrompt}
-                            disabled={isSaveAllowed && savePreventedNotification.length > 0}
-                            savePreventedNotification={savePreventedNotification}
-                            isWarningButton={!isSaveAllowed}
-                        >
-                            {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                        </SaveButton>
-                    </>
-                )}
-            </div>
+                                {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                            </SaveButton>
+                        </>
+                    )}
+                </div>
         );
     }
 }

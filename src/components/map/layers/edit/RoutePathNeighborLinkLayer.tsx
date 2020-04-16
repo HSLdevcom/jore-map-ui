@@ -76,8 +76,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             isCloseButtonVisible: false,
             isAutoCloseOn: true
         };
-
-        this.props.popupStore!.showPopup(nodePopup);
+        if (routePaths.length > 0) {
+            this.props.popupStore!.showPopup(nodePopup);
+        }
     };
 
     private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
