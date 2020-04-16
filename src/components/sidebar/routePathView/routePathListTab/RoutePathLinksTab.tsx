@@ -7,9 +7,9 @@ import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
+import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNode from './RoutePathListNode';
-import RoutePathMassEditView from './RoutePathMassEditView';
 import s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
@@ -135,7 +135,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                 <div className={s.listWrapper}>
                     <div className={s.list}>{this.renderList(routePathLinks)}</div>
                 </div>
-                <RoutePathMassEditView
+                <RoutePathLinkMassEditView
                     isEditingDisabled={this.props.isEditingDisabled}
                     routePathLinks={
                         this.props.routePathLinkMassEditStore!.selectedMassEditRoutePathLinks

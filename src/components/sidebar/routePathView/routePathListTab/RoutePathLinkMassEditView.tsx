@@ -8,16 +8,16 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { RoutePathStore } from '~/stores/routePathStore';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import SidebarHeader from '../../SidebarHeader';
-import s from './routePathMassEditView.scss';
+import s from './routePathLinkMassEditView.scss';
 
-interface IRoutePathMassEditViewProps {
+interface IRoutePathLinkMassEditViewProps {
     routePathLinks: IRoutePathLink[];
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
 }
 
-interface IRoutePathMassEditViewState {
+interface IRoutePathLinkMassEditViewState {
     editMode: EditMode | null;
     destinationFi1: string;
     destinationFi2: string;
@@ -32,9 +32,9 @@ type EditMode = 'via' | 'kilpiVia';
 
 @inject('routePathStore', 'routePathLinkMassEditStore')
 @observer
-class RoutePathMassEditView extends React.Component<
-    IRoutePathMassEditViewProps,
-    IRoutePathMassEditViewState
+class RoutePathLinkMassEditView extends React.Component<
+    IRoutePathLinkMassEditViewProps,
+    IRoutePathLinkMassEditViewState
 > {
     private initialState = {
         editMode: null,
@@ -48,7 +48,7 @@ class RoutePathMassEditView extends React.Component<
     };
     state = this.initialState;
 
-    componentDidUpdate(prevProps: IRoutePathMassEditViewProps) {
+    componentDidUpdate(prevProps: IRoutePathLinkMassEditViewProps) {
         if (prevProps.routePathLinks.length === 0 && this.props.routePathLinks.length > 0) {
             const firstRpLink = this.props.routePathLinks[0];
             this.setState({
@@ -264,4 +264,4 @@ class RoutePathMassEditView extends React.Component<
     }
 }
 
-export default RoutePathMassEditView;
+export default RoutePathLinkMassEditView;
