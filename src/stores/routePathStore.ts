@@ -11,6 +11,7 @@ import routePathValidationModel, {
     IRoutePathValidationModel
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
+import { validateRoutePathLinks } from '~/utils/geomUtils';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import RoutePathCopySegmentStore from './routePathCopySegmentStore';
@@ -515,6 +516,23 @@ class RoutePathStore {
             'startNodeBookScheduleColumnNumber',
             undoState.startNodeBookScheduleColumnNumber
         );
+    }
+
+    public getSavePreventedText = (): string => {
+        const isGeometryValid = validateRoutePathLinks(this.routePath!.routePathLinks);
+        if (this.isEditingDisabled) {
+            return 'Tallennus estetty, editointi ei päällä. Aloita editointi ja tee muutoksia, jonka jälkeen voit tallentaa.'
+        }
+        if (!isGeometryValid) {
+            return 'Tallennus estetty, reitinsuunnan geometria on epävalidi.'
+        }
+        if (!this.isFormValid) {
+            return 'Tallennus estetty, tarkista reitinsuunnan tiedot -välilehti.'
+        }
+        if (!this.isDirty) {
+            return 'Ei tallennettavia muutoksia.';
+        }
+        return '';
     }
 
     public getRoutePathLinkInvalidPropertiesMap = (id: string) => {

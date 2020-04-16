@@ -53,7 +53,7 @@ class NodeUsagePopup extends Component<INodeUsagePopupProps> {
                                         text={routePath.routeId}
                                         size='small'
                                         onClick={openRoutePathInNewWindow}
-                                        hoverText={`Avaa reitin suunta ${
+                                        hoverText={`Avaa reitinsuunta ${
                                             routePath.routeId
                                         } uuteen ikkunaan`}
                                     />

@@ -9,11 +9,11 @@ import * as s from './saveButton.scss';
 
 interface ISaveButtonProps {
     children: React.ReactNode;
-    className?: string;
     onClick: () => void;
-    disabled?: boolean;
-    isSavePrevented?: boolean;
-    savePreventedNotification?: string;
+    disabled: boolean; // disabled save button can still be clicked to show savePreventedNotification
+    savePreventedNotification: string;
+    className?: string;
+    isWarningButton?: boolean;
     isWide?: boolean;
     hasPadding?: boolean; // defaults to true
 }
@@ -24,26 +24,32 @@ const SaveButton = observer((props: ISaveButtonProps) => {
         className,
         onClick,
         disabled,
-        isSavePrevented,
         savePreventedNotification,
+        isWarningButton,
         isWide,
         hasPadding,
         ...attrs
     } = props;
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
-    const isWarningButton = isSaveLockEnabled || isSavePrevented;
-    const typeClass = disabled ? undefined : isWarningButton ? s.warningButton : s.saveButton;
+    let typeClass;
+    if (isSaveLockEnabled || isWarningButton) {
+        typeClass = s.warningButton;
+    } else if (savePreventedNotification.length > 0) {
+        typeClass = s.savePreventedNotificationButton;
+    } else {
+        typeClass = s.saveButton;
+    }
     return (
         <Button
             {...attrs}
             className={classnames(s.saveButtonBase, typeClass, className ? className : undefined)}
             onClick={
-                isWarningButton
+                isSaveLockEnabled || savePreventedNotification.length > 0
                     ? () => showSavePreventedNotification(savePreventedNotification)
                     : onClick
             }
-            disabled={disabled}
+            disabled={disabled && savePreventedNotification.length === 0}
             type={ButtonType.SQUARE}
             isWide={isWide}
             hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}

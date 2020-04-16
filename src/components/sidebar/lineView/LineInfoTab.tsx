@@ -225,6 +225,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                     <SaveButton
                         onClick={this.props.saveLine}
                         disabled={this.props.isLineSaveButtonDisabled}
+                        savePreventedNotification={''}
                     >
                         {this.props.lineStore!.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
                     </SaveButton>

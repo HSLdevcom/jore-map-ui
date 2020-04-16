@@ -16,6 +16,13 @@
     background-color: darken(#00ba11, 10);
 }
 
+.savePreventedNotificationButton {
+    background-color: $disabledGrey;
+}
+.savePreventedNotificationButton:hover {
+    background-color: $disabledGreyHover;
+}
+
 .warningButton {
     background-color: #bebe02;
 }

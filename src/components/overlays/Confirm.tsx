@@ -48,8 +48,9 @@ class Confirm extends React.Component<IConfirmProps> {
                             </Button>
                             {confirmType === 'save' ? (
                                 <SaveButton
-                                    disabled={isConfirmButtonDisabled}
                                     onClick={confirmStore!.confirm}
+                                    disabled={isConfirmButtonDisabled}
+                                    savePreventedNotification={''}
                                     isWide={true}
                                     hasPadding={false}
                                 >

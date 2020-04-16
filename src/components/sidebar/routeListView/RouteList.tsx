@@ -319,6 +319,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                             <SaveButton
                                                 onClick={() => this.showSavePrompt()}
                                                 disabled={isSaveButtonDisabled}
+                                                savePreventedNotification={''}
                                             >
                                                 Tallenna muutokset
                                             </SaveButton>

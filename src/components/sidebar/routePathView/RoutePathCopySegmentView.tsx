@@ -37,14 +37,14 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                 <div className={s.icons}>
                     <div
                         className={s.icon}
-                        title={`Kopioi reitin ${routePath.routeId} reitin suunnan segmentti`}
+                        title={`Kopioi reitin ${routePath.routeId} reitinsuunnan segmentti`}
                         onClick={this.copySegments(routePath)}
                     >
                         <FiCopy />
                     </div>
                     <div
                         className={s.icon}
-                        title={`Avaa reitin ${routePath.routeId} reitin suunta uuteen ikkunaan`}
+                        title={`Avaa reitin ${routePath.routeId} reitinsuunta uuteen ikkunaan`}
                         onClick={this.openRoutePathInNewTab(routePath)}
                     >
                         <FiExternalLink />

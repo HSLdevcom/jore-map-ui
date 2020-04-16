@@ -331,7 +331,11 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                         )}
                     </div>
                 </div>
-                <SaveButton disabled={isSaveButtonDisabled} onClick={() => this.showSavePrompt()}>
+                <SaveButton
+                    onClick={() => this.showSavePrompt()}
+                    disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
+                >
                     {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Tallenna muutokset'}
                 </SaveButton>
             </div>
