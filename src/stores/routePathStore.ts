@@ -11,7 +11,7 @@ import routePathValidationModel, {
     IRoutePathValidationModel
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import { validateRoutePathLinks } from '~/utils/geomUtils';
+import RoutePathValidator from '~/utils/RoutePathValidator';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import RoutePathCopySegmentStore from './routePathCopySegmentStore';
@@ -519,12 +519,22 @@ class RoutePathStore {
     }
 
     public getSavePreventedText = (): string => {
-        const isGeometryValid = validateRoutePathLinks(this.routePath!.routePathLinks);
+        const routePathLinks = this.routePath!.routePathLinks;
         if (this.isEditingDisabled) {
             return 'Tallennus estetty, editointi ei päällä. Aloita editointi ja tee muutoksia, jonka jälkeen voit tallentaa.'
         }
-        if (!isGeometryValid) {
+        if (routePathLinks.length === 0) {
+            return 'Tallennus estetty, reitinsuunnan linkit puuttuvat.'
+        }
+        if (!RoutePathValidator.validateRoutePathLinkCoherency(routePathLinks)) {
             return 'Tallennus estetty, reitinsuunnan geometria on epävalidi.'
+        }
+        const stopIdAppearingTwice = RoutePathValidator.getStopIdThatAppearsTwice(routePathLinks)
+        if (stopIdAppearingTwice) {
+            return `Tallennus estetty, pysäkki ${stopIdAppearingTwice} esiintyy kahdesti. Jos käytät samaa pysäkkiä kahdesti, vähintään toisen pysäkin täytyy olla poissa käytöstä.`
+        }
+        if (RoutePathValidator.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
+            return `Tallennus estetty, reitinsuunnan alkusolmu on sama kuin sen loppusolmu.`
         }
         if (!this.isFormValid) {
             return 'Tallennus estetty, tarkista reitinsuunnan tiedot -välilehti.'
