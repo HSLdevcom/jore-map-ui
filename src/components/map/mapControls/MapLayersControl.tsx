@@ -35,7 +35,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
     }
 
     private toggleTransitType = (type: TransitType) => {
-        NetworkStore.toggleTransitType(type);
+        NetworkStore.toggleSelectedTransitType(type);
     };
 
     private toggleMapLayerVisibility = (mapLayer: MapLayer) => () => {

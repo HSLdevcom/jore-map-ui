@@ -1,6 +1,6 @@
 import constants from '~/constants/constants';
 
-type itemNames = 'origin_url' | 'visible_layers' | 'userTransitType';
+type itemNames = 'origin_url' | 'visible_layers' | 'visible_transitTypes' | 'userTransitType';
 const KEY_PREFIX = constants.LOCAL_STORAGE_KEY_PREFIX;
 
 class LocalStorageHelper {
