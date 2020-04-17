@@ -80,7 +80,7 @@ const isNetworkNodeHidden = ({
             return true;
         }
     } else {
-        if (!NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
+        if (!NetworkStore.isMapLayerVisible(MapLayer.unusedNode)) {
             return true;
         }
     }

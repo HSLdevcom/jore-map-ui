@@ -20,7 +20,7 @@ enum MapLayer { // TODO change name to something better
     node = 'node',
     link = 'link',
     linkPoint = 'linkPoint',
-    nodeWithoutLink = 'nodeWithoutLink'
+    unusedNode = 'unusedNode'
 }
 
 class NetworkStore {
@@ -152,8 +152,8 @@ class NetworkStore {
         if (localStorageVisibleLayers.includes('link')) {
             layers.push(MapLayer.link);
         }
-        if (localStorageVisibleLayers.includes('nodeWithoutLink')) {
-            layers.push(MapLayer.nodeWithoutLink);
+        if (localStorageVisibleLayers.includes('unusedNode')) {
+            layers.push(MapLayer.unusedNode);
         }
         return layers;
     };

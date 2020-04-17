@@ -278,7 +278,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     />
                 )}
                 {(this.props.networkStore!.isMapLayerVisible(MapLayer.node) ||
-                    this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) && (
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.unusedNode)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}

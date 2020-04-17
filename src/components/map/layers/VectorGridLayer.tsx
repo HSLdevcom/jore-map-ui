@@ -31,7 +31,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         const reactionDisposer = reaction(
             () => [
                 NetworkStore.isMapLayerVisible(MapLayer.node),
-                NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink),
+                NetworkStore.isMapLayerVisible(MapLayer.unusedNode),
                 NetworkStore.isMapLayerVisible(MapLayer.link),
                 NetworkStore.isMapLayerVisible(MapLayer.linkPoint),
                 NodeStore.node! && NodeStore.node!.id,

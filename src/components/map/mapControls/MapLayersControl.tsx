@@ -112,8 +112,8 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.nodeWithoutLink)}
-                            checked={NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)}
+                            onClick={this.toggleMapLayerVisibility(MapLayer.unusedNode)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.unusedNode)}
                             content='Käyttämättömät solmut'
                         />
                     </div>
