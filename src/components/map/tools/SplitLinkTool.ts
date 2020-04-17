@@ -21,7 +21,7 @@ class SplitLinkTool implements BaseTool {
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
-        NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
+        NetworkStore.showMapLayer(MapLayer.unusedNode);
         EventHelper.on('networkNodeClick', this.openNodeConfirm);
     }
 

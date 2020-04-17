@@ -19,8 +19,9 @@ class AddNetworkLinkTool implements BaseTool {
         'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
-        NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
+        NetworkStore.showMapLayer(MapLayer.unusedNode);
         NetworkStore.showMapLayer(MapLayer.link);
+        NetworkStore.showMapLayer(MapLayer.unusedLink);
         EventHelper.on('nodeClick', this.onNodeClick);
         EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
     }

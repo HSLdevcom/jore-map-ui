@@ -6,6 +6,7 @@ import * as s from './transitToggleButtonBar.scss';
 
 interface ITtransitToggleButtonBarProps {
     selectedTransitTypes: TransitType[];
+    className?: string;
     toggleSelectedTransitType?: (type: TransitType | null) => void;
     errorMessage?: string;
     disabled?: boolean;
@@ -15,6 +16,7 @@ interface ITtransitToggleButtonBarProps {
 const TransitToggleButtonBar = observer((props: ITtransitToggleButtonBarProps) => {
     const {
         selectedTransitTypes,
+        className,
         toggleSelectedTransitType,
         errorMessage,
         disabled,
@@ -27,7 +29,7 @@ const TransitToggleButtonBar = observer((props: ITtransitToggleButtonBarProps) =
     };
 
     return (
-        <div>
+        <div className={className ? className : undefined}>
             <div className={s.transitToggleButtonBarView}>
                 <TransitToggleButton
                     toggleActivity={toggleType}

@@ -16,7 +16,11 @@ import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
+import {
+    isNetworkLinkHidden,
+    isNetworkLinkPointHidden,
+    isNetworkNodeHidden
+} from '~/utils/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
 import { INodePopupData } from './popups/NodePopup';
@@ -71,11 +75,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 } = properties;
 
                 if (
-                    isNetworkElementHidden({
+                    isNetworkLinkHidden({
                         transitType,
                         startNodeId,
                         endNodeId,
-                        type: MapLayer.link,
                         dateRangesString: dateRangesString!
                     })
                 ) {
@@ -104,11 +107,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 } = properties;
 
                 if (
-                    isNetworkElementHidden({
+                    isNetworkLinkPointHidden({
                         transitType,
                         startNodeId,
                         endNodeId,
-                        type: MapLayer.linkPoint,
                         dateRangesString: dateRangesString!
                     })
                 ) {
@@ -250,7 +252,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const nodeSize = this.props.networkStore!.nodeSize;
         return (
             <>
-                {this.props.networkStore!.isMapLayerVisible(MapLayer.link) && (
+                {(this.props.networkStore!.isMapLayerVisible(MapLayer.link) ||
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.unusedLink)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
@@ -278,7 +281,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     />
                 )}
                 {(this.props.networkStore!.isMapLayerVisible(MapLayer.node) ||
-                    this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) && (
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.unusedNode)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}

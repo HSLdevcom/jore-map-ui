@@ -3,24 +3,17 @@ import Moment from 'moment';
 import TransitType from '~/enums/transitType';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
-const TRANSIT_TYPES = [
-    TransitType.BUS,
-    TransitType.FERRY,
-    TransitType.SUBWAY,
-    TransitType.TRAIN,
-    TransitType.TRAM
-];
-
 enum NodeSize {
     normal,
     large
 }
 
-enum MapLayer { // TODO change name to something better
+enum MapLayer {
     node = 'node',
     link = 'link',
     linkPoint = 'linkPoint',
-    nodeWithoutLink = 'nodeWithoutLink'
+    unusedNode = 'unusedNode',
+    unusedLink = 'unusedLink'
 }
 
 class NetworkStore {
@@ -31,7 +24,7 @@ class NetworkStore {
     private _savedMapLayers: MapLayer[];
 
     constructor() {
-        this._selectedTransitTypes = TRANSIT_TYPES;
+        this._selectedTransitTypes = this.getInitialVisibleTransitTypes();
         this._visibleMapLayers = this.getInitialVisibleMapLayers();
         this._nodeSize = NodeSize.normal;
         this._savedMapLayers = [];
@@ -110,23 +103,19 @@ class NetworkStore {
     };
 
     @action
-    public selectAllTransitTypes = () => {
-        this._selectedTransitTypes = TRANSIT_TYPES;
-    };
-
-    @action
     public setNodeSize = (nodeSize: NodeSize) => {
         this._nodeSize = nodeSize;
     };
 
-    // TODO rename as toggleSelectedTransitType?
     @action
-    public toggleTransitType = (type: TransitType) => {
-        if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+    public toggleSelectedTransitType = (transitType: TransitType) => {
+        if (this._selectedTransitTypes.includes(transitType)) {
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== transitType);
+            _setLocalStorageTransitTypeVisibility({ transitType, isVisible: false });
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
-            this._selectedTransitTypes = this._selectedTransitTypes.concat([type]);
+            this._selectedTransitTypes = this._selectedTransitTypes.concat([transitType]);
+            _setLocalStorageTransitTypeVisibility({ transitType, isVisible: true });
         }
     };
 
@@ -146,16 +135,36 @@ class NetworkStore {
         const layers: MapLayer[] = [];
         if (!Array.isArray(localStorageVisibleLayers)) return [];
 
-        if (localStorageVisibleLayers.includes('node')) {
-            layers.push(MapLayer.node);
-        }
-        if (localStorageVisibleLayers.includes('link')) {
-            layers.push(MapLayer.link);
-        }
-        if (localStorageVisibleLayers.includes('nodeWithoutLink')) {
-            layers.push(MapLayer.nodeWithoutLink);
-        }
+        const addLayer = (layer: MapLayer) => {
+            if (localStorageVisibleLayers.includes(layer)) {
+                layers.push(layer);
+            }
+        };
+        addLayer(MapLayer.node);
+        addLayer(MapLayer.link);
+        addLayer(MapLayer.unusedNode);
+        addLayer(MapLayer.unusedLink);
+
         return layers;
+    };
+
+    private getInitialVisibleTransitTypes = () => {
+        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_transitTypes');
+        const transitTypes: TransitType[] = [];
+        if (!Array.isArray(localStorageVisibleLayers)) return [];
+
+        const addTransitType = (transitType: TransitType) => {
+            if (localStorageVisibleLayers.includes(transitType)) {
+                transitTypes.push(transitType);
+            }
+        };
+        addTransitType(TransitType.BUS);
+        addTransitType(TransitType.FERRY);
+        addTransitType(TransitType.SUBWAY);
+        addTransitType(TransitType.TRAIN);
+        addTransitType(TransitType.TRAM);
+
+        return transitTypes;
     };
 }
 
@@ -182,6 +191,27 @@ const _setLocalStorageLayerVisibility = ({
         layers = layers.filter(l => l !== mapLayer);
     }
     LocalStorageHelper.setItem('visible_layers', layers);
+};
+
+const _setLocalStorageTransitTypeVisibility = ({
+    transitType,
+    isVisible
+}: {
+    transitType: TransitType;
+    isVisible: boolean;
+}) => {
+    const localStorageVisibleTransitTypes = LocalStorageHelper.getItem('visible_transitTypes');
+    let transitTypes: string[] = Array.isArray(localStorageVisibleTransitTypes)
+        ? localStorageVisibleTransitTypes
+        : [];
+    if (isVisible) {
+        if (!transitTypes.includes(transitType)) {
+            transitTypes.push(transitType);
+        }
+    } else {
+        transitTypes = transitTypes.filter(t => t !== transitType);
+    }
+    LocalStorageHelper.setItem('visible_transitTypes', transitTypes);
 };
 
 export default new NetworkStore();
