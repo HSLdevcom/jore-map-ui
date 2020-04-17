@@ -173,7 +173,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                         <Checkbox
                             onClick={this.toggleMapFilter(MapFilter.linkPoint)}
                             checked={MapStore.isMapFilterEnabled(MapFilter.linkPoint)}
-                            content='Pisteiden sijainti (linkin ollessa auki)'
+                            content='Pisteiden sijainti (linkkinäkymässä)'
                         />
                     </div>
                     <div className={s.sectionDivider} />

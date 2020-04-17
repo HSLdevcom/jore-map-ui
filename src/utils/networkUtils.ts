@@ -43,7 +43,7 @@ const _isNetworkElementHidden = ({
     const link = LinkStore.link;
     const node = NodeStore.node;
 
-    if (!dateRanges || !selectedDate) {
+    if (!dateRanges) {
         return !NetworkStore.isMapLayerVisible(MapLayer.unusedLink);
     }
     if (type === MapLayer.link && !NetworkStore!.isMapLayerVisible(MapLayer.link)) {
@@ -51,6 +51,9 @@ const _isNetworkElementHidden = ({
     }
     if (type === MapLayer.linkPoint && !NetworkStore!.isMapLayerVisible(MapLayer.linkPoint)) {
         return true;
+    }
+    if (!selectedDate) {
+        return false;
     }
 
     // the element is related to an opened link
