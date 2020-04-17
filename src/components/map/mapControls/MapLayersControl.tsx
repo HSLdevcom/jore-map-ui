@@ -150,6 +150,13 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
+                            onClick={this.toggleMapLayerVisibility(MapLayer.unusedLink)}
+                            checked={NetworkStore.isMapLayerVisible(MapLayer.unusedLink)}
+                            content='Käyttämättömät linkit'
+                        />
+                    </div>
+                    <div className={s.checkboxContainer}>
+                        <Checkbox
                             onClick={this.toggleMapFilter(MapFilter.arrowDecorator)}
                             checked={MapStore.isMapFilterEnabled(MapFilter.arrowDecorator)}
                             content='Linkkien suuntanuolet'

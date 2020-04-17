@@ -33,6 +33,7 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
                 NetworkStore.isMapLayerVisible(MapLayer.node),
                 NetworkStore.isMapLayerVisible(MapLayer.unusedNode),
                 NetworkStore.isMapLayerVisible(MapLayer.link),
+                NetworkStore.isMapLayerVisible(MapLayer.unusedLink),
                 NetworkStore.isMapLayerVisible(MapLayer.linkPoint),
                 NodeStore.node! && NodeStore.node!.id,
                 LinkStore.link! && LinkStore.link.startNode.id,

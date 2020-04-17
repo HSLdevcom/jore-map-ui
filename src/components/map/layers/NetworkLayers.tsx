@@ -250,7 +250,8 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const nodeSize = this.props.networkStore!.nodeSize;
         return (
             <>
-                {this.props.networkStore!.isMapLayerVisible(MapLayer.link) && (
+                {(this.props.networkStore!.isMapLayerVisible(MapLayer.link) ||
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.unusedLink)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
