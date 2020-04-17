@@ -267,7 +267,6 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         if (routeItems.length < 1) {
             return <Loader />;
         }
-
         const routeIdToEdit = routeStore.routeIdToEdit;
         return (
             <div className={s.routeListView} data-cy='routeListView'>
