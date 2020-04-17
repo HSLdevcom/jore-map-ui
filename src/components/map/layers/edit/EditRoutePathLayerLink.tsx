@@ -39,9 +39,12 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
 
     private renderLink = (routePathLink: IRoutePathLink) => {
         const routePathStore = this.props.routePathStore;
-        const isLinkHighlighted =
-            routePathStore!.highlightedListItemId === routePathLink.id ||
-            routePathStore!.extendedListItemId === routePathLink.id;
+        let isLinkHighlighted;
+        if (routePathStore!.highlightedListItemId) {
+            isLinkHighlighted = routePathStore!.highlightedListItemId === routePathLink.id;
+        } else {
+            isLinkHighlighted = routePathStore!.extendedListItemId === routePathLink.id;
+        }
         return [
             <Polyline
                 positions={routePathLink.geometry}
