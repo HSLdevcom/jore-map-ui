@@ -159,21 +159,21 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                         <Checkbox
                             onClick={this.toggleMapFilter(MapFilter.arrowDecorator)}
                             checked={MapStore.isMapFilterEnabled(MapFilter.arrowDecorator)}
-                            content='Linkkien suuntanuolet'
+                            content='Suuntanuolet'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapLayerVisibility(MapLayer.linkPoint)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.linkPoint)}
-                            content='Linkkien pisteet'
+                            content='Pisteet'
                         />
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
                             onClick={this.toggleMapFilter(MapFilter.linkPoint)}
                             checked={MapStore.isMapFilterEnabled(MapFilter.linkPoint)}
-                            content='Pisteiden geometria'
+                            content='Pisteiden sijainti (linkin ollessa auki)'
                         />
                     </div>
                     <div className={s.sectionDivider} />
