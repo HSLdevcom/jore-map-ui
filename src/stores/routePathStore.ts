@@ -44,10 +44,10 @@ class RoutePathStore {
     @observable private _existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
-    @observable private _extendedListItems: string[];
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _listHighlightedNodeIds: string[];
+    @observable private _extendedListItemId: string | null;
+    @observable private _highlightedListItemId: string | null;
     @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
@@ -60,10 +60,10 @@ class RoutePathStore {
 
     constructor() {
         this._neighborRoutePathLinks = [];
-        this._extendedListItems = [];
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
-        this._listHighlightedNodeIds = [];
+        this._extendedListItemId = null;
+        this._highlightedListItemId = null;
         this._toolHighlightedNodeIds = [];
         this._isEditingDisabled = true;
         this._selectedTabIndex = 0;
@@ -108,11 +108,6 @@ class RoutePathStore {
     }
 
     @computed
-    get extendedListItems() {
-        return this._extendedListItems;
-    }
-
-    @computed
     get selectedTabIndex() {
         return this._selectedTabIndex;
     }
@@ -128,8 +123,13 @@ class RoutePathStore {
     }
 
     @computed
-    get listHighlightedNodeIds() {
-        return this._listHighlightedNodeIds;
+    get extendedListItemId() {
+        return this._extendedListItemId;
+    }
+
+    @computed
+    get highlightedListItemId() {
+        return this._highlightedListItemId;
     }
 
     @computed
@@ -315,22 +315,13 @@ class RoutePathStore {
     };
 
     @action
-    public toggleExtendedListItem = (objectId: string) => {
-        if (this._extendedListItems.some(o => o === objectId)) {
-            this._extendedListItems = this._extendedListItems.filter(o => o !== objectId);
-        } else {
-            this._extendedListItems.push(objectId);
-        }
+    public setExtendedListItemId = (id: string | null) => {
+        this._extendedListItemId = id;
     };
 
     @action
-    public setExtendedListItems = (objectIds: string[]) => {
-        this._extendedListItems = objectIds;
-    };
-
-    @action
-    public setListHighlightedNodeIds = (nodeIds: string[]) => {
-        return (this._listHighlightedNodeIds = nodeIds);
+    public setHighlightedListItemId = (id: string | null) => {
+        this._highlightedListItemId = id;
     };
 
     @action
@@ -556,10 +547,6 @@ class RoutePathStore {
             return rpLink.id === routePathLink.id;
         });
         return index === routePathLinks.length - 1;
-    };
-
-    public isListItemExtended = (objectId: string): boolean => {
-        return this._extendedListItems.some(n => n === objectId);
     };
 
     public getLinkGeom = (linkId: string): L.LatLng[] => {

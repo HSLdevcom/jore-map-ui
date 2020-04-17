@@ -17,15 +17,10 @@ interface IEditRoutePathLayerProps {
 @inject('routePathStore', 'routePathCopySegmentStore', 'mapStore')
 @observer
 class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
-    private highlightItemById = (id: string) => {
+    private setExtendedListItem = (id: string) => {
         // Switch to info tab
         this.props.routePathStore!.setSelectedTabIndex(1);
-        // Close all extended objects, in order to be able to calculate final height of items
-        this.props.routePathStore!.setExtendedListItems([]);
-        // Set extended object, which will trigger automatic scroll
-        this.props.routePathStore!.setExtendedListItems([id]);
-        // Set highlight
-        this.props.routePathStore!.setListHighlightedNodeIds([id]);
+        this.props.routePathStore!.setExtendedListItemId(id);
     };
 
     render() {
@@ -37,8 +32,8 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
             this.props.routePathCopySegmentStore!.endNode;
         return (
             <div>
-                <EditRoutePathLayerNode highlightItemById={this.highlightItemById} />
-                <EditRoutePathLayerLink highlightItemById={this.highlightItemById} />
+                <EditRoutePathLayerNode setExtendedListItem={this.setExtendedListItem} />
+                <EditRoutePathLayerLink setExtendedListItem={this.setExtendedListItem} />
                 {neighborLinks && <RoutePathNeighborLinkLayer />}
                 {isRoutePathCopySegmentLayerVisible && <RoutePathCopySegmentLayer />}
             </div>
