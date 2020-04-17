@@ -16,6 +16,7 @@ import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
+    reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
     mapStore?: MapStore;
     routePathStore?: RoutePathStore;
@@ -120,6 +121,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         return (
             <RoutePathListItem
                 id={this.props.routePathLink.id}
+                reference={this.props.reference}
                 header={this.renderHeader()}
                 body={this.renderBody()}
             />

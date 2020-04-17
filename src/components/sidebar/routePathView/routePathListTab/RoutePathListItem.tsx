@@ -6,9 +6,8 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListItemProps {
-    mapStore?: MapStore;
-    routePathStore?: RoutePathStore;
     id: string;
+    reference: React.RefObject<HTMLDivElement>;
     header: JSX.Element;
     body: JSX.Element;
     isItemHighlighted?: boolean;
@@ -16,6 +15,8 @@ interface IRoutePathListItemProps {
     listIcon?: JSX.Element;
     isLastNode?: boolean;
     isFirstNode?: boolean;
+    mapStore?: MapStore;
+    routePathStore?: RoutePathStore;
 }
 
 @inject('routePathStore', 'mapStore')
@@ -38,6 +39,7 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
         const isItemHighlighted = this.props.isItemHighlighted;
         return (
             <div
+                ref={this.props.reference}
                 className={classnames(
                     s.routePathListItem,
                     this.props.shadowClass,

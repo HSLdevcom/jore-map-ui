@@ -1,3 +1,4 @@
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { IoIosRadioButtonOn } from 'react-icons/io';
@@ -22,6 +23,22 @@ interface IRoutePathLinksTabProps {
 @inject('routePathStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
+    private extendedItemListener: IReactionDisposer;
+    listObjectReferences: { [id: string]: React.RefObject<HTMLDivElement> } = {};
+
+    constructor(props: IRoutePathLinksTabProps) {
+        super(props);
+        this.listObjectReferences = {};
+        this.extendedItemListener = reaction(
+            () => this.props.routePathStore!.extendedListItemId,
+            this.onListItemExtend
+        );
+    }
+
+    componentWillUnmount() {
+        this.extendedItemListener();
+    }
+
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         // Split routePathLinks into sub lists with coherent routePathLinks
         const coherentRoutePathLinksList: IRoutePathLink[][] = [];
@@ -44,10 +61,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
         return coherentRoutePathLinksList.map(routePathLinks =>
             routePathLinks.map((routePathLink, index) => {
+                this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
+                this.listObjectReferences[routePathLink.id] = React.createRef();
                 const result = [
                     this.isNodeVisible(routePathLink.startNode) ? (
                         <RoutePathListNode
                             key={`${routePathLink.id}-${index}-startNode`}
+                            reference={this.listObjectReferences[routePathLink.startNode.id]}
                             node={routePathLink.startNode}
                             routePathLink={routePathLink}
                             isEditingDisabled={this.props.isEditingDisabled}
@@ -58,6 +78,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                     this.isLinksVisible() ? (
                         <RoutePathListLink
                             key={`${routePathLink.id}-${index}-link`}
+                            reference={this.listObjectReferences[routePathLink.id]}
                             routePathLink={routePathLink}
                         />
                     ) : null
@@ -65,9 +86,11 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
                 if (index === routePathLinks.length - 1) {
                     if (this.isNodeVisible(routePathLink.endNode)) {
+                        this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
                         result.push(
                             <RoutePathListNode
                                 key={`${routePathLink.id}-${index}-endNode`}
+                                reference={this.listObjectReferences[routePathLink.endNode.id]}
                                 node={routePathLink.endNode}
                                 routePathLink={routePathLink}
                                 isLastNode={true}
@@ -79,6 +102,23 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                 return result;
             })
         );
+    };
+
+    private onListItemExtend = () => {
+        const extendedListItemId = this.props.routePathStore!.extendedListItemId;
+        if (extendedListItemId) {
+            this.scrollIntoListItem(extendedListItemId);
+        }
+    };
+
+    private scrollIntoListItem = (listItemId: string) => {
+        const item = this.listObjectReferences[listItemId].current!;
+        if (item) {
+            // use setTimeout so that listItem will be extended before scrolling to get the final positioning better
+            setTimeout(() => {
+                item.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }, 25);
+        }
     };
 
     private isNodeVisible = (node: INode) => {
