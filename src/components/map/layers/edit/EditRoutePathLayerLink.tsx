@@ -17,7 +17,7 @@ interface IRoutePathLayerProps {
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    highlightItemById: (id: string) => void;
+    setExtendedListItem: (id: string) => void;
 }
 
 @inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
@@ -38,6 +38,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderLink = (routePathLink: IRoutePathLink) => {
+        const routePathStore = this.props.routePathStore;
+        const isLinkHighlighted =
+            routePathStore!.highlightedListItemId === routePathLink.id ||
+            routePathStore!.extendedListItemId === routePathLink.id;
         return [
             <Polyline
                 positions={routePathLink.geometry}
@@ -47,7 +51,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 opacity={0.8}
                 onClick={this.handleLinkClick(routePathLink)}
             />,
-            this.props.routePathStore!.listHighlightedNodeIds.includes(routePathLink.id) && (
+            isLinkHighlighted && (
                 <Polyline
                     positions={routePathLink.geometry}
                     key={`${routePathLink.id}-highlight`}
@@ -67,7 +71,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         ) {
             this.props.toolbarStore!.selectedTool.onRoutePathLinkClick(routePathLink.id)(e);
         } else {
-            this.props.highlightItemById(routePathLink.id);
+            this.props.setExtendedListItem(routePathLink.id);
         }
     };
 

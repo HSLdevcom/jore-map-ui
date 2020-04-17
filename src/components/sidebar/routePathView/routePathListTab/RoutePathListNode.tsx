@@ -53,13 +53,17 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
+        const isExtended = this.props.routePathStore!.extendedListItemId === node.id;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
         const isLastNode = this.props.isLastNode;
         return (
-            <div className={s.itemHeader} onClick={this.toggleIsExtended} data-cy='itemHeader'>
+            <div
+                className={s.itemHeader}
+                onClick={this.toggleExtendedListItemId}
+                data-cy='itemHeader'
+            >
                 <div className={s.headerSubtopicContainer} title={subTopic}>
                     {subTopic}
                 </div>
@@ -109,7 +113,10 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private toggleIsExtended = () => {
+    private toggleExtendedListItemId = () => {
+        const currentListItemId = this.props.node.id;
+        const routePathStore = this.props.routePathStore;
+
         if (
             !this.props.isLastNode &&
             this.props.node.type === NodeType.STOP &&
@@ -122,14 +129,15 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                 );
                 return;
             }
-            this.props.routePathStore!.setIsEditingDisabled(false);
+            routePathStore!.setIsEditingDisabled(false);
             this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
                 this.props.routePathLink
             );
         } else {
-            this.props.routePathStore!.toggleExtendedListItem(this.props.node.id);
-
-            if (this.props.routePathStore!.isListItemExtended(this.props.node.id)) {
+            if (currentListItemId === routePathStore!.extendedListItemId) {
+                this.props.routePathStore!.setExtendedListItemId(null);
+            } else {
+                this.props.routePathStore!.setExtendedListItemId(currentListItemId);
                 this.props.mapStore!.setMapBounds(this.getBounds());
             }
         }

@@ -22,17 +22,17 @@ interface IRoutePathListItemProps {
 @observer
 class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     private onMouseEnter = () => {
-        this.props.routePathStore!.setListHighlightedNodeIds([this.props.id]);
+        this.props.routePathStore!.setHighlightedListItemId(this.props.id);
     };
 
     private onMouseLeave = () => {
-        if (this.props.routePathStore!.listHighlightedNodeIds.includes(this.props.id)) {
-            this.props.routePathStore!.setListHighlightedNodeIds([]);
+        if (this.props.routePathStore!.highlightedListItemId === this.props.id) {
+            this.props.routePathStore!.setHighlightedListItemId(null);
         }
     };
 
     render() {
-        const isExtended = this.props.routePathStore!.isListItemExtended(this.props.id);
+        const isExtended = this.props.routePathStore!.extendedListItemId === this.props.id;
         const isFirstNode = this.props.isFirstNode;
         const isLastNode = this.props.isLastNode;
         const isItemHighlighted = this.props.isItemHighlighted;

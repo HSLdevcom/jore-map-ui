@@ -200,7 +200,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
         if (itemToShow) {
             this.props.routePathStore!.setSelectedTabIndex(1);
-            this.props.routePathStore!.setExtendedListItems(itemToShow);
+            this.props.routePathStore!.setExtendedListItemId(itemToShow);
             this.props.routePathStore!.removeListFilter(ListFilter.link);
         }
         this._setState({ isLoading: false });

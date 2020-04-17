@@ -22,7 +22,7 @@ interface IRoutePathLayerProps {
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    highlightItemById: (id: string) => void;
+    setExtendedListItem: (id: string) => void;
 }
 
 @inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
@@ -65,11 +65,12 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         isDisabled: boolean;
         key: string;
     }) => {
-        const toolHighlightedNodeIds = this.props.routePathStore!.toolHighlightedNodeIds;
+        const routePathStore = this.props.routePathStore;
+        const toolHighlightedNodeIds = routePathStore!.toolHighlightedNodeIds;
         const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
-        const isNodeHighlightedByList = this.props.routePathStore!.listHighlightedNodeIds.includes(
-            node.id
-        );
+        const isNodeHighlighted =
+            routePathStore!.highlightedListItemId === node.id ||
+            routePathStore!.extendedListItemId === node.id;
 
         // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
         const isClickDisabled = toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
@@ -85,7 +86,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             };
         } else {
             onNodeClick = () => {
-                this.props.highlightItemById(node.id);
+                this.props.setExtendedListItem(node.id);
                 const clickParams: INodeClickParams = { node };
                 EventHelper.trigger('nodeClick', clickParams);
             };
@@ -98,7 +99,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         if (isNodeHighlightedByTool) {
             highlight.isHighlighted = true;
             highlight.color = NodeHighlightColor.GREEN;
-        } else if (isNodeHighlightedByList) {
+        } else if (isNodeHighlighted) {
             highlight.isHighlighted = true;
             highlight.color = NodeHighlightColor.BLUE;
         }

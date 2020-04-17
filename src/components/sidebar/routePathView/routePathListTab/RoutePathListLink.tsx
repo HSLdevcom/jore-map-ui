@@ -28,9 +28,13 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
         const orderNumber = this.props.routePathLink.orderNumber;
-        const isExtended = this.props.routePathStore!.isListItemExtended(id);
+        const isExtended = this.props.routePathStore!.extendedListItemId === id;
         return (
-            <div className={s.itemHeader} onClick={this.toggleIsExtended} data-cy='itemHeader'>
+            <div
+                className={s.itemHeader}
+                onClick={this.toggleExtendedListItemId}
+                data-cy='itemHeader'
+            >
                 <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
                 <div className={s.headerContent}>
                     <div className={s.itemToggle}>
@@ -42,10 +46,13 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     };
 
-    private toggleIsExtended = () => {
-        this.props.routePathStore!.toggleExtendedListItem(this.props.routePathLink.id);
-
-        if (this.props.routePathStore!.isListItemExtended(this.props.routePathLink.id)) {
+    private toggleExtendedListItemId = () => {
+        const currentListItemId = this.props.routePathLink.id;
+        const routePathStore = this.props.routePathStore;
+        if (currentListItemId === routePathStore!.extendedListItemId) {
+            this.props.routePathStore!.setExtendedListItemId(null);
+        } else {
+            this.props.routePathStore!.setExtendedListItemId(currentListItemId);
             this.props.mapStore!.setMapBounds(this.getBounds());
         }
     };
