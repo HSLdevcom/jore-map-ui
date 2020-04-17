@@ -43,6 +43,10 @@ const _isNetworkElementHidden = ({
     const link = LinkStore.link;
     const node = NodeStore.node;
 
+    if (!selectedTransitTypes.includes(transitType)) {
+        return true;
+    }
+
     if (!dateRanges) {
         return !NetworkStore.isMapLayerVisible(MapLayer.unusedLink);
     }
@@ -66,12 +70,7 @@ const _isNetworkElementHidden = ({
     // the element is related to a link that is related to an opened node
     const isLinkRelatedToOpenedNode = node && (node.id === startNodeId || node.id === endNodeId);
 
-    return (
-        !selectedTransitTypes.includes(transitType) ||
-        !_isDateInRanges(selectedDate, dateRanges) ||
-        isLinkOpen ||
-        isLinkRelatedToOpenedNode
-    );
+    return !_isDateInRanges(selectedDate, dateRanges) || isLinkOpen || isLinkRelatedToOpenedNode;
 };
 
 const isNetworkNodeHidden = ({
