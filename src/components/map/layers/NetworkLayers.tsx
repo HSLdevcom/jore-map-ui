@@ -16,7 +16,11 @@ import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
+import {
+    isNetworkLinkHidden,
+    isNetworkLinkPointHidden,
+    isNetworkNodeHidden
+} from '~/utils/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
 import { INodePopupData } from './popups/NodePopup';
@@ -71,11 +75,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 } = properties;
 
                 if (
-                    isNetworkElementHidden({
+                    isNetworkLinkHidden({
                         transitType,
                         startNodeId,
                         endNodeId,
-                        type: MapLayer.link,
                         dateRangesString: dateRangesString!
                     })
                 ) {
@@ -104,11 +107,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 } = properties;
 
                 if (
-                    isNetworkElementHidden({
+                    isNetworkLinkPointHidden({
                         transitType,
                         startNodeId,
                         endNodeId,
-                        type: MapLayer.linkPoint,
                         dateRangesString: dateRangesString!
                     })
                 ) {
