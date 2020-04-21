@@ -107,6 +107,7 @@ class RoutePathFactory {
         };
     }
 
+    // TODO: remove (this is deprecated)
     public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
         const startTime = routePath.startTime;
         startTime.setDate(startTime.getDate() + 1);

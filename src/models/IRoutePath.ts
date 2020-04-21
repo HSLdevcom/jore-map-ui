@@ -1,4 +1,5 @@
 import TransitType from '~/enums/transitType';
+import { IValidationResult } from '~/validation/FormValidator';
 import IRoutePathLink, { IRoutePathLinkSaveModel, IRoutePathSegmentLink } from './IRoutePathLink';
 
 interface IRoutePathPrimaryKey {
@@ -34,6 +35,15 @@ interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties 
     modifiedBy?: string;
 }
 
+interface IMassEditRoutePath {
+    id: string;
+    routePath: IRoutePath;
+    oldStartDate: Date;
+    oldEndDate: Date;
+    validationResult: IValidationResult;
+    isNew: boolean;
+}
+
 interface IRoutePathSegment extends IRoutePathPrimaryKey {
     endTime: Date;
     originFi: string;
@@ -51,6 +61,7 @@ export default IRoutePath;
 export {
     IRoutePathPrimaryKey,
     IViewOnlyRoutePathProperties,
+    IMassEditRoutePath,
     IRoutePathSegment,
     IRoutePathSaveModel
 };

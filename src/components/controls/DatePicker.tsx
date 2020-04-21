@@ -6,7 +6,7 @@ import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { toDateString } from '~/utils/dateUtils';
+import { getMaxDate, getMinDate, toDateString } from '~/utils/dateUtils';
 import * as s from './datePicker.scss';
 
 registerLocale('fi', fi);
@@ -17,6 +17,8 @@ interface IDatePickerProps {
     isClearButtonVisible?: boolean;
     onChange: (date: Date | null) => void;
     onFocus?: () => void;
+    minStartDate?: Date;
+    maxEndDate?: Date;
 }
 
 interface IDatePickerState {
@@ -93,15 +95,9 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     };
 
     render() {
-        const { isClearButtonVisible, isEmptyValueAllowed } = this.props;
-        const minDate = new Date();
-        minDate.setFullYear(1970);
-        minDate.setMonth(0);
-        minDate.setDate(1);
-        const maxDate = new Date();
-        maxDate.setFullYear(2051);
-        maxDate.setMonth(0);
-        maxDate.setDate(1);
+        const { isClearButtonVisible, isEmptyValueAllowed, minStartDate, maxEndDate } = this.props;
+        const minDate = minStartDate ? minStartDate : getMinDate();
+        const maxDate = maxEndDate ? maxEndDate : getMaxDate();
 
         // TODO: scroll to selected year missing from react-datepicker
         // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700

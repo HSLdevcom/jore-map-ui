@@ -1,18 +1,28 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import { IRoute } from '~/models';
 import RouteService from '~/services/routeService';
+import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
+import { RouteListStore } from '~/stores/routeListStore';
 import { RouteStore } from '~/stores/routeStore';
 import RouteForm from '../routeView/RouteForm';
 import * as s from './routeTab.scss';
 
 interface IRouteTabProps {
     route: IRoute;
-    isEditingDisabled: boolean;
+    isEditing: boolean;
     isNewRoute: boolean;
     routeStore?: RouteStore;
+    routeListStore?: RouteListStore;
+    loginStore?: LoginStore;
+    confirmStore?: ConfirmStore;
+    alertStore?: AlertStore;
     errorStore?: ErrorStore;
 }
 
@@ -20,9 +30,10 @@ interface IRouteTabState {
     isLoading: boolean;
 }
 
-@inject('routeStore', 'errorStore')
+@inject('routeStore', 'routeListStore', 'loginStore', 'confirmStore', 'alertStore', 'errorStore')
 @observer
 class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
+    private _isMounted: boolean;
     private existinRouteIds: string[] = [];
 
     constructor(props: IRouteTabProps) {
@@ -32,7 +43,14 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         };
     }
 
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
     componentDidMount() {
+        this._isMounted = true;
         if (this.props.isNewRoute) {
             this.fetchAllRouteIds();
         }
@@ -42,6 +60,10 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         if (this.props.isNewRoute) {
             this.fetchAllRouteIds();
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     private fetchAllRouteIds = async () => {
@@ -59,21 +81,74 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         this.forceUpdate();
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const currentRoute = this.props.routeStore!.route;
+        const oldRoute = this.props.routeStore!.oldRoute;
+        const saveModel: ISaveModel = {
+            type: 'saveModel',
+            newData: currentRoute,
+            oldData: oldRoute,
+            model: 'route'
+        };
+        confirmStore!.openConfirm({
+            content: <SavePrompt models={[saveModel]} />,
+            onConfirm: () => {
+                this.save();
+            }
+        });
+    };
+
+    private save = async () => {
+        const routeStore = this.props.routeStore!;
+        this._setState({ isLoading: true });
+
+        const route = routeStore.route;
+        try {
+            await RouteService.updateRoute(route!);
+            this.props.routeStore!.clear();
+            this.fetchRoute(route.id);
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+        }
+        this.props.routeListStore!.setRouteIdToEdit(null);
+    };
+
+    private fetchRoute = async (routeId: string) => {
+        this._setState({ isLoading: true });
+        const route = await RouteService.fetchRoute(routeId);
+        this.props.routeListStore!.updateRoute(route!);
+        this._setState({ isLoading: false });
+    };
+
     render() {
         const routeStore = this.props.routeStore!;
-        const isEditingDisabled = this.props.isEditingDisabled;
-        const invalidPropertiesMap = isEditingDisabled ? {} : routeStore.invalidPropertiesMap;
-        const route = isEditingDisabled ? this.props.route : routeStore.route;
+        const isEditing = this.props.isEditing;
+        const invalidPropertiesMap = isEditing ? routeStore.invalidPropertiesMap : {};
+        const route = isEditing ? routeStore.route : this.props.route;
         if (!route) return null;
+
+        const isSaveButtonDisabled =
+            !routeStore.route || !(isEditing && routeStore.isDirty) || !routeStore.isRouteFormValid;
         return (
             <div className={classnames(s.routeTab, s.form)}>
                 <RouteForm
                     route={route}
                     isNewRoute={false}
-                    isEditingDisabled={isEditingDisabled}
+                    isEditing={isEditing}
                     onChangeRouteProperty={this.onChangeRouteProperty}
                     invalidPropertiesMap={invalidPropertiesMap}
                 />
+                {this.props.loginStore!.hasWriteAccess && isEditing && (
+                    <SaveButton
+                        onClick={() => this.showSavePrompt()}
+                        disabled={isSaveButtonDisabled}
+                        savePreventedNotification={''}
+                    >
+                        Tallenna muutokset
+                    </SaveButton>
+                )}
             </div>
         );
     }

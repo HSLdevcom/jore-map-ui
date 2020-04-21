@@ -1,20 +1,23 @@
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import { IRoute } from '~/models';
 import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import RoutePathListTab from './RoutePathListTab';
 import RouteTab from './RouteTab';
 
 interface IRouteItemProps {
     route: IRoute;
+    routeIdToEdit: string | null;
     selectedTabIndex: number;
     areAllRoutePathsVisible: boolean;
-    isEditingDisabled: boolean;
     routeListStore?: RouteListStore;
+    routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-@inject('routeListStore', 'mapStore')
+@inject('routeListStore', 'mapStore', 'routePathMassEditStore')
 @observer
 class RouteItem extends React.Component<IRouteItemProps> {
     private setSelectedTabIndex = (index: number) => {
@@ -26,35 +29,38 @@ class RouteItem extends React.Component<IRouteItemProps> {
     };
 
     render() {
-        const isEditingDisabled = this.props.isEditingDisabled;
+        const { route, routeIdToEdit, selectedTabIndex, areAllRoutePathsVisible } = this.props;
+        const isEditingRoutePaths = selectedTabIndex === 0 && route.id === routeIdToEdit;
+        const isEditingRoute = selectedTabIndex === 1 && route.id === routeIdToEdit;
+
+        const routePaths = isEditingRoutePaths
+            ? _.cloneDeep(this.props.routePathMassEditStore!.routePaths)
+            : this.props.route.routePaths;
         return (
             <Tabs>
                 <TabList
-                    selectedTabIndex={this.props.selectedTabIndex}
+                    selectedTabIndex={selectedTabIndex}
                     setSelectedTabIndex={this.setSelectedTabIndex}
                 >
-                    <Tab>
+                    <Tab isDisabled={isEditingRoute}>
                         <div>Reitinsuunnat</div>
                     </Tab>
-                    <Tab>
+                    <Tab isDisabled={isEditingRoutePaths}>
                         <div>Reitin tiedot</div>
                     </Tab>
                 </TabList>
-                <ContentList selectedTabIndex={this.props.selectedTabIndex}>
+                <ContentList selectedTabIndex={selectedTabIndex}>
                     <ContentItem>
                         <RoutePathListTab
-                            key={this.props.route.id}
-                            route={this.props.route}
-                            areAllRoutePathsVisible={this.props.areAllRoutePathsVisible}
+                            key={route.id}
+                            routePaths={routePaths}
+                            isEditing={isEditingRoutePaths}
+                            areAllRoutePathsVisible={areAllRoutePathsVisible}
                             toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}
                         />
                     </ContentItem>
                     <ContentItem>
-                        <RouteTab
-                            route={this.props.route}
-                            isEditingDisabled={isEditingDisabled}
-                            isNewRoute={false}
-                        />
+                        <RouteTab route={route} isEditing={isEditingRoute} isNewRoute={false} />
                     </ContentItem>
                 </ContentList>
             </Tabs>

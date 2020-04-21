@@ -4,8 +4,6 @@ import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
-import SaveButton from '~/components/shared/SaveButton';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import ButtonType from '~/enums/buttonType';
 import { ILine, IRoute } from '~/models';
@@ -22,6 +20,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { IRouteItem, RouteListStore } from '~/stores/routeListStore';
+import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
@@ -43,6 +42,7 @@ interface IRouteListProps {
     mapStore?: MapStore;
     alertStore?: AlertStore;
     loginStore?: LoginStore;
+    routePathMassEditStore?: RoutePathMassEditStore;
 }
 
 interface IRouteListState {
@@ -59,7 +59,8 @@ interface IRouteListState {
     'confirmStore',
     'mapStore',
     'alertStore',
-    'loginStore'
+    'loginStore',
+    'routePathMassEditStore'
 )
 @observer
 class RouteList extends React.Component<IRouteListProps, IRouteListState> {
@@ -84,6 +85,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         await this.fetchRoutes();
 
         this.props.routePathStore!.clear();
@@ -94,6 +96,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 
     componentWillUnmount() {
         this.props.routeStore!.clear();
+        this._isMounted = false;
     }
 
     private fetchRoutes = async () => {
@@ -171,28 +174,43 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
     };
 
     private closeRoutePrompt = (route: IRoute) => {
+        const routeListStore = this.props.routeListStore!;
+        const routeStore = this.props.routeStore!;
+        const routePathMassEditStore = this.props.routePathMassEditStore!;
+        const selectedTabIndex = routeListStore.getRouteItem(route.id)?.selectedTabIndex;
+        const isEditingRoutePaths = selectedTabIndex === 0;
+        const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
         if (
-            this.props.routeStore!.routeIdToEdit === route.id &&
-            this.props.routeStore!.shouldShowUnsavedChangesPrompt
+            routeListStore.routeIdToEdit === route.id &&
+            isDirty
         ) {
             this.props.confirmStore!.openConfirm({
                 content: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat sulkea reitin? Tallentamattomat muutokset kumotaan.`,
                 onConfirm: () => {
-                    this.props.routeStore!.resetChanges();
-                    this.closeRoute(route);
+                    this.closeRoute(route, isEditingRoutePaths);
                 },
                 confirmButtonText: 'Kyllä'
             });
         } else {
-            this.closeRoute(route);
+            this.closeRoute(route, isEditingRoutePaths);
         }
     };
 
-    private closeRoute = (route: IRoute) => {
-        this.props.routeListStore!.removeFromRouteItems(route.id);
-        if (this.props.routeStore!.routeIdToEdit === route.id) {
-            this.props.routeStore!.clear();
+    private closeRoute = (route: IRoute, isEditingRoutePaths: boolean) => {
+        const routeListStore = this.props.routeListStore!;
+        const routeStore = this.props.routeStore!;
+        const routePathMassEditStore = this.props.routePathMassEditStore!;
+
+        if (routeListStore.routeIdToEdit === route.id) {
+            if (isEditingRoutePaths) {
+                routePathMassEditStore.clear();
+            } else {
+                routeStore.clear();
+            }
+            routeListStore.setRouteIdToEdit(null);
         }
+
+        this.props.routeListStore!.removeFromRouteItems(route.id);
         const closeRouteLink = routeBuilder
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)
@@ -200,84 +218,75 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private editRoutePrompt = (route: IRoute) => {
-        const routeStore = this.props.routeStore!;
+    private startEditPrompt = (route: IRoute) => {
         const confirmStore = this.props.confirmStore!;
-        if (!routeStore.isDirty) {
-            routeStore.setRouteToEdit(route);
+        const routeListStore = this.props.routeListStore!;
+        const routeStore = this.props.routeStore!;
+        const routePathMassEditStore = this.props.routePathMassEditStore!;
+
+        const newRouteId = route.id === routeListStore.routeIdToEdit ? null : route.id;
+        const selectedTabIndex = routeListStore.getRouteItem(route.id)?.selectedTabIndex;
+        const isEditingRoutePaths = selectedTabIndex === 0;
+
+        const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
+        if (!isDirty) {
+            this.startEdit({ route, newRouteId, isEditingRoutePaths })
             return;
         }
-        const promptMessage =
-            route.id === routeStore.routeIdToEdit
-                ? `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`
-                : `Sinulla on reitin ${
-                      routeStore.route.routeName
-                  } muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`;
+
+        let promptMessage;
+        if (isEditingRoutePaths) {
+            promptMessage = `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`;
+        }
+        else if (route.id === routeListStore.routeIdToEdit) {
+            promptMessage = `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`;
+        } else {
+            promptMessage = `Sinulla on reitin ${
+                routeStore.route.routeName
+                } muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`;
+        }
+
         confirmStore.openConfirm({
             content: promptMessage,
-            onConfirm: () => routeStore.setRouteToEdit(route),
+            onConfirm: () => {
+                this.startEdit({ route, newRouteId, isEditingRoutePaths })
+            },
             confirmButtonText: 'Kyllä'
         });
     };
 
-    private showSavePrompt = () => {
-        const confirmStore = this.props.confirmStore;
-        const currentRoute = this.props.routeStore!.route;
-        const oldRoute = this.props.routeStore!.oldRoute;
-        const saveModel: ISaveModel = {
-            type: 'saveModel',
-            newData: currentRoute,
-            oldData: oldRoute,
-            model: 'route'
-        };
-        confirmStore!.openConfirm({
-            content: <SavePrompt models={[saveModel]} />,
-            onConfirm: () => {
-                this.save();
-            }
-        });
-    };
-
-    private save = async () => {
+    private startEdit = ({ route, newRouteId, isEditingRoutePaths }: { route: IRoute, newRouteId: string | null, isEditingRoutePaths: boolean }) => {
         const routeStore = this.props.routeStore!;
-        this._setState({ isLoading: true });
-
-        const route = routeStore.route;
-        try {
-            await RouteService.updateRoute(route!);
-            this.props.routeStore!.clear();
-            this.fetchRoute(route.id);
-            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
-        } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+        const routeListStore = this.props.routeListStore!;
+        const routePathMassEditStore = this.props.routePathMassEditStore!;
+        const isEditing = Boolean(newRouteId);
+        routeListStore.setRouteIdToEdit(newRouteId);
+        if (isEditing) {
+            if (isEditingRoutePaths) {
+                routeListStore.setAllRoutePathsVisible(route.id);
+                routePathMassEditStore.init({ routePaths: route.routePaths });
+            } else {
+                routeStore.init({ route, isNewRoute: false });
+            }
+        } else {
+            routePathMassEditStore.clear();
+            routeStore.clear();
         }
-    };
-
-    private fetchRoute = async (routeId: string) => {
-        this._setState({ isLoading: true });
-        const route = await RouteService.fetchRoute(routeId);
-        this.props.routeListStore!.updateRoute(route!);
-        this._setState({ isLoading: false });
     }
 
     render() {
-        const routeStore = this.props.routeStore!;
         const routeListStore = this.props.routeListStore!;
         const routeItems = routeListStore.routeItems;
+        const routeIdToEdit = routeListStore.routeIdToEdit;
         if (routeItems.length < 1) {
             return <Loader />;
         }
-        const routeIdToEdit = routeStore.routeIdToEdit;
         return (
             <div className={s.routeListView} data-cy='routeListView'>
                 <div className={s.routeList}>
                     {routeItems.map((routeItem: IRouteItem, index: number) => {
                         const route = routeItem.route;
                         const isEditing = routeIdToEdit === route.id;
-                        const isSaveButtonDisabled =
-                            !routeStore.route ||
-                            !(isEditing && routeStore.isDirty) ||
-                            !routeStore.isRouteFormValid;
                         const transitType = routeListStore.getLine(route.lineId)?.transitType!;
                         return (
                             <div key={index} className={s.routeListItem}>
@@ -287,7 +296,7 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                     isEditButtonVisible={true}
                                     isEditPromptHidden={true}
                                     onCloseButtonClick={() => this.closeRoutePrompt(route)}
-                                    onEditButtonClick={() => this.editRoutePrompt(route)}
+                                    onEditButtonClick={() => this.startEditPrompt(route)}
                                 >
                                     <TransitTypeLink
                                         transitType={transitType}
@@ -301,28 +310,19 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                 <div className={s.routeItemWrapper}>
                                     <RouteItem
                                         route={route}
+                                        routeIdToEdit={routeIdToEdit}
                                         selectedTabIndex={routeItem.selectedTabIndex}
-                                        areAllRoutePathsVisible={routeItem.areAllRoutePathsVisible}
-                                        isEditingDisabled={!isEditing} />
+                                        areAllRoutePathsVisible={routeItem.areAllRoutePathsVisible} />
                                 </div>
                                 {this.props.loginStore!.hasWriteAccess && (
                                     <div className={s.buttonContainer}>
                                         <Button
                                             onClick={this.redirectToNewRoutePathView(route)}
                                             type={ButtonType.SQUARE}
-                                            disabled={Boolean(routeStore.routeIdToEdit)}
+                                            disabled={Boolean(routeListStore.routeIdToEdit)}
                                         >
                                             {`Luo uusi reitinsuunta reitille ${route.id}`}
                                         </Button>
-                                        {isEditing && (
-                                            <SaveButton
-                                                onClick={() => this.showSavePrompt()}
-                                                disabled={isSaveButtonDisabled}
-                                                savePreventedNotification={''}
-                                            >
-                                                Tallenna muutokset
-                                            </SaveButton>
-                                        )}
                                     </div>
                                 )}
                                 {!this.props.loginStore!.hasWriteAccess && (
@@ -338,3 +338,4 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
 }
 
 export default RouteList;
+

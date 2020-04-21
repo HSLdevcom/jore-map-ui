@@ -5,10 +5,8 @@
     .groupedRoutes {
         padding: 10px 15px;
 
-        .groupedRoutesDate {
-            color: rgb(102, 102, 102);
-            font-weight: 500;
-            font-size: 16px;
+        .groupedRoutesDates {
+            display: flex;
         }
 
         .groupedRoutesContent {
