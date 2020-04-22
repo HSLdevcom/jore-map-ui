@@ -54,10 +54,8 @@ class RoutePathMassEditStore {
 
     @action
     public init = ({ routePaths }: { routePaths: IRoutePath[] }) => {
-        const originalRoutePathOrder = [];
         const massEditRoutePaths: IMassEditRoutePath[] = [];
         _.cloneDeep(routePaths).forEach((rp: IRoutePath) => {
-            originalRoutePathOrder.push(rp.internalId);
             massEditRoutePaths.push({
                 id: rp.internalId,
                 routePath: rp,
