@@ -134,7 +134,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                     <RouteForm
                         route={route}
                         isNewRoute={true}
-                        isEditingDisabled={isEditingDisabled}
+                        isEditing={!isEditingDisabled}
                         onChangeRouteProperty={this.onChangeRouteProperty}
                         invalidPropertiesMap={invalidPropertiesMap}
                     />

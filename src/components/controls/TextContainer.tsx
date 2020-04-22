@@ -18,7 +18,11 @@ const renderValidatorResult = (validationResult?: IValidationResult) => {
     if (!validationResult || !validationResult.errorMessage) {
         return null;
     }
-    return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
+    return (
+        <div className={validationResult.isValid ? s.warningMessage : s.errorMessage}>
+            {validationResult.errorMessage}
+        </div>
+    );
 };
 
 const TextContainer = observer((props: ITextContainerProps) => {

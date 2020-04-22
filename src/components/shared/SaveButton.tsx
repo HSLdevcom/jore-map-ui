@@ -32,12 +32,13 @@ const SaveButton = observer((props: ISaveButtonProps) => {
     } = props;
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
+    const isDisabled = disabled && savePreventedNotification.length === 0;
     let typeClass;
     if (isSaveLockEnabled || isWarningButton) {
         typeClass = s.warningButton;
     } else if (savePreventedNotification.length > 0) {
         typeClass = s.savePreventedNotificationButton;
-    } else {
+    } else if (!isDisabled) {
         typeClass = s.saveButton;
     }
     return (
@@ -49,7 +50,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
                     ? () => showSavePreventedNotification(savePreventedNotification)
                     : onClick
             }
-            disabled={disabled && savePreventedNotification.length === 0}
+            disabled={isDisabled}
             type={ButtonType.SQUARE}
             isWide={isWide}
             hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}

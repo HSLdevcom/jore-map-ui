@@ -1,7 +1,8 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import ColorScale from '~/helpers/ColorScale';
 import { ILine, IRoute, IRoutePath } from '~/models';
 import RoutePathService from '~/services/routePathService';
+import SearchStore from './searchStore';
 
 interface IRouteItem {
     route: IRoute;
@@ -12,12 +13,19 @@ interface IRouteItem {
 class RouteListStore {
     @observable private _routeItems: IRouteItem[];
     @observable private _lines: ILine[];
+    @observable private _routeIdToEdit: string | null;
     private colorScale: ColorScale;
 
     constructor() {
         this._routeItems = [];
         this._lines = [];
+        this._routeIdToEdit = null;
         this.colorScale = new ColorScale();
+
+        reaction(
+            () => this.routeIdToEdit != null,
+            (value: boolean) => SearchStore.setIsSearchDisabled(value)
+        );
     }
 
     @computed
@@ -32,6 +40,11 @@ class RouteListStore {
                 return routeItem.route;
             }
         );
+    }
+
+    @computed
+    get routeIdToEdit(): string | null {
+        return this._routeIdToEdit;
     }
 
     public getLine(lineId: string): ILine | undefined {
@@ -78,8 +91,14 @@ class RouteListStore {
     };
 
     @action
+    public setRouteIdToEdit = (routeId: string | null) => {
+        this._routeIdToEdit = routeId;
+    };
+
+    @action
     public clearRouteItems = () => {
         this._routeItems = [];
+        this._routeIdToEdit = null;
         this.colorScale = new ColorScale();
     };
 
@@ -123,11 +142,21 @@ class RouteListStore {
     };
 
     @action
+    public setAllRoutePathsVisible = (routeId: string) => {
+        const routeItem = this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        routeItem!.areAllRoutePathsVisible = true;
+    };
+
+    @action
     private updateRoutePathLinks = (newRoutePath: IRoutePath, internalId: string) => {
         const oldRoutePath = this.getRoutePath(internalId);
         if (oldRoutePath) {
             oldRoutePath.routePathLinks = newRoutePath.routePathLinks;
         }
+    };
+
+    public getRouteItem = (routeId: string): IRouteItem | undefined => {
+        return this._routeItems.find(routeItem => routeItem.route.id === routeId);
     };
 
     private getRoutePath = (internalId: string): IRoutePath | null => {

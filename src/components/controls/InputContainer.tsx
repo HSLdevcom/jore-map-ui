@@ -25,6 +25,8 @@ interface IInputProps {
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
     onFocus?: () => void;
+    minStartDate?: Date;
+    maxEndDate?: Date;
 }
 
 const InputContainer = observer((props: IInputProps) => {
@@ -44,6 +46,8 @@ const InputContainer = observer((props: IInputProps) => {
         isTimeIncluded,
         isInputLabelDarker,
         onFocus,
+        minStartDate,
+        maxEndDate,
         ...attrs
     } = props;
 
@@ -89,6 +93,8 @@ const InputContainer = observer((props: IInputProps) => {
                     isClearButtonVisible={props.isClearButtonVisibleOnDates}
                     isEmptyValueAllowed={props.isEmptyDateValueAllowed}
                     onFocus={props.onFocus}
+                    minStartDate={props.minStartDate}
+                    maxEndDate={props.maxEndDate}
                 />
             ) : (
                 <input
@@ -112,7 +118,9 @@ const InputContainer = observer((props: IInputProps) => {
             )}
 
             {validationResult && validationResult.errorMessage && (
-                <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+                <div className={validationResult.isValid ? s.warningMessage : s.errorMessage}>
+                    {validationResult.errorMessage}
+                </div>
             )}
         </div>
     );
