@@ -373,7 +373,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
         const groupedRoutePathsToDisplay = this.state.groupedRoutePathsToDisplay;
         const allGroupedRoutePaths = this.state.allGroupedRoutePaths;
-        const isSaveButtonDisabled = false;
+        // TODO: set disabled if form is invalid
+        const isSaveButtonDisabled = !this.props.routePathMassEditStore!.isDirty;
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
