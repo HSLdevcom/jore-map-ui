@@ -179,6 +179,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
     }
 
+    // TODO: move into GroupedRoutePaths.tsx?
     private renderGroupedRoutePaths = (groupedRoutePaths: IRoutePath[][]) => {
         return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
             const hasDirection1 = Boolean(routePaths.find(rp => rp.direction === '1'));
@@ -201,8 +202,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             const first = routePaths[0];
             const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
-            // TODO: pass validationResult
-            const temp: any = {};
+            const validationResult = this.props.routePathMassEditStore!.massEditRoutePaths?.find(m => m.routePath.internalId === first.internalId)?.validationResult;
             return (
                 <div
                     key={header}
@@ -215,7 +215,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         type='date'
                         value={first.startTime}
                         onChange={this.updateStartDates(routePaths)}
-                        validationResult={temp}
+                        validationResult={validationResult}
                         minStartDate={minStartDate}
                         maxEndDate={maxEndDate}
                         />
@@ -225,7 +225,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         type='date'
                         value={first.endTime}
                         onChange={this.updateEndDates(routePaths)}
-                        validationResult={temp}
                         minStartDate={minStartDate}
                         maxEndDate={maxEndDate}
                         />
@@ -373,8 +372,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
         const groupedRoutePathsToDisplay = this.state.groupedRoutePathsToDisplay;
         const allGroupedRoutePaths = this.state.allGroupedRoutePaths;
-        // TODO: set disabled if form is invalid
-        const isSaveButtonDisabled = !this.props.routePathMassEditStore!.isDirty;
+        const isSaveButtonDisabled = !this.props.routePathMassEditStore!.isDirty || !this.props.routePathMassEditStore!.isFormValid;
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}

@@ -118,7 +118,9 @@ const InputContainer = observer((props: IInputProps) => {
             )}
 
             {validationResult && validationResult.errorMessage && (
-                <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+                <div className={validationResult.isValid ? s.warningMessage : s.errorMessage}>
+                    {validationResult.errorMessage}
+                </div>
             )}
         </div>
     );
