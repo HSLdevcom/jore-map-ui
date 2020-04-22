@@ -94,7 +94,7 @@ class RoutePathMassEditStore {
             } else if (prevRoutePathWithGap) {
                 massEditRp.validationResult = {
                     isValid: true,
-                    errorMessage: `Tämän päivämäärän ja edellisen reitinsuunnan päivämäärän (${prevRoutePathWithGap.originFi} - ${prevRoutePathWithGap.destinationFi}, ${Moment(prevRoutePathWithGap.startTime).format('DD.MM.YYYY')} - ${Moment(prevRoutePathWithGap.endTime).format('DD.MM.YYYY')}) välillä on väli.`
+                    errorMessage: `Tämän ja edellisen reitinsuunnan (${prevRoutePathWithGap.originFi} - ${prevRoutePathWithGap.destinationFi}, ${Moment(prevRoutePathWithGap.startTime).format('DD.MM.YYYY')} - ${Moment(prevRoutePathWithGap.endTime).format('DD.MM.YYYY')}) päivämäärät eivät ole jatkuvia.`
                 }
             } else {
                 massEditRp.validationResult = {
