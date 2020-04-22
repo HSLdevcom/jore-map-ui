@@ -199,6 +199,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 maxEndDate = _.cloneDeep(nextGroup[0].startTime);
                 maxEndDate.setDate(maxEndDate.getDate() - 1);
             }
+            const isEditing = this.props.isEditing;
             const first = routePaths[0];
             const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
@@ -209,25 +210,31 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     className={classNames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
                 >
                     <div className={s.groupedRoutesDates}>
-                    <InputContainer
-                        label=''
-                        disabled={!this.props.isEditing}
-                        type='date'
-                        value={first.startTime}
-                        onChange={this.updateStartDates(routePaths)}
-                        validationResult={validationResult}
-                        minStartDate={minStartDate}
-                        maxEndDate={maxEndDate}
+                    {isEditing ? (
+                    <>
+                        <InputContainer
+                            label=''
+                            disabled={!this.props.isEditing}
+                            type='date'
+                            value={first.startTime}
+                            onChange={this.updateStartDates(routePaths)}
+                            validationResult={validationResult}
+                            minStartDate={minStartDate}
+                            maxEndDate={maxEndDate}
                         />
-                    <InputContainer
-                        label=''
-                        disabled={!this.props.isEditing}
-                        type='date'
-                        value={first.endTime}
-                        onChange={this.updateEndDates(routePaths)}
-                        minStartDate={minStartDate}
-                        maxEndDate={maxEndDate}
+                        <InputContainer
+                            label=''
+                            disabled={!this.props.isEditing}
+                            type='date'
+                            value={first.endTime}
+                            onChange={this.updateEndDates(routePaths)}
+                            minStartDate={minStartDate}
+                            maxEndDate={maxEndDate}
                         />
+                    </>
+                    ) : (
+                        <div>{header}</div>
+                    )}
                     </div>
                     <div className={s.groupedRoutesContent}>
                         {this.renderRoutePathList(routePaths)}
@@ -376,7 +383,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
-                {allGroupedRoutePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
+                {!isEditing && allGroupedRoutePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
                     <div
                         className={s.toggleAllRoutePathsVisibleButton}
                         onClick={this.props.toggleAllRoutePathsVisible}
