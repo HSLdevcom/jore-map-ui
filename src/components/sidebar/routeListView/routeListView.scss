@@ -1,4 +1,6 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/form.scss';
+
 .routeListView {
     display: flex;
     flex-direction: column;
@@ -20,6 +22,24 @@
             height: 100%;
             width: 100%;
             background-color: #eef1f3;
+        }
+
+        .routeList {
+            border-top: 1px solid $borderLightGrey;
+
+            .routeListItem:not(:first-child) {
+                padding-top: 10px;
+            }
+        }
+
+        .routeItemWrapper {
+            border-top: 1px solid #bebebe;
+        }
+
+        .buttonContainer {
+            div {
+                margin: 0px 0px 1px 0px;
+            }
         }
     }
 
