@@ -15,6 +15,7 @@ import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
+import { CopyRoutePathPairStore } from '~/stores/copyRoutePathPairStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
@@ -27,6 +28,7 @@ import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import Loader from '../../shared/loader/Loader';
 import SidebarHeader from '../SidebarHeader';
+import CopyRoutePathPairView from './CopyRoutePathPairView';
 import RouteItem from './RouteItem';
 import * as s from './routeList.scss';
 
@@ -40,6 +42,7 @@ interface IRouteListProps {
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
     mapStore?: MapStore;
+    copyRoutePathPairStore?: CopyRoutePathPairStore;
     alertStore?: AlertStore;
     loginStore?: LoginStore;
     routePathMassEditStore?: RoutePathMassEditStore;
@@ -57,6 +60,7 @@ interface IRouteListState {
     'routePathStore',
     'errorStore',
     'confirmStore',
+    'copyRoutePathPairStore',
     'mapStore',
     'alertStore',
     'loginStore',
@@ -163,16 +167,6 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         this.props.mapStore!.setMapBounds(bounds);
     };
 
-    private redirectToNewRoutePathView = (route: IRoute) => () => {
-        const newRoutePathLink = routeBuilder
-            .to(SubSites.newRoutePath)
-            .set(QueryParams.routeId, route.id)
-            .set(QueryParams.lineId, route.lineId)
-            .toLink();
-
-        navigator.goTo({ link: newRoutePathLink });
-    };
-
     private closeRoutePrompt = (route: IRoute) => {
         const routeListStore = this.props.routeListStore!;
         const routeStore = this.props.routeStore!;
@@ -274,12 +268,29 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
         }
     }
 
+    private redirectToNewRoutePathView = (route: IRoute) => () => {
+        const newRoutePathLink = routeBuilder
+            .to(SubSites.newRoutePath)
+            .set(QueryParams.routeId, route.id)
+            .set(QueryParams.lineId, route.lineId)
+            .toLink();
+
+        navigator.goTo({ link: newRoutePathLink });
+    };
+
+    private openCopyRoutePathView = (lineId: string, routeId: string) => () => {
+        this.props.copyRoutePathPairStore!.init({ lineId, routeId });
+    }
+
     render() {
         const routeListStore = this.props.routeListStore!;
         const routeItems = routeListStore.routeItems;
         const routeIdToEdit = routeListStore.routeIdToEdit;
         if (routeItems.length < 1) {
             return <Loader />;
+        }
+        if (this.props.copyRoutePathPairStore!.isVisible) {
+            return <CopyRoutePathPairView />
         }
         return (
             <div className={s.routeListView} data-cy='routeListView'>
@@ -316,12 +327,20 @@ class RouteList extends React.Component<IRouteListProps, IRouteListState> {
                                 </div>
                                 {this.props.loginStore!.hasWriteAccess && (
                                     <div className={s.buttonContainer}>
+                                        { routeListStore.routeIdToEdit && (
+                                            <Button
+                                                onClick={this.openCopyRoutePathView(route!.lineId, route.id)}
+                                                type={ButtonType.SQUARE}
+                                            >
+                                                {`Kopioi reitinsuunta pari reitille ${route.id}`}
+                                            </Button>
+                                        )}
                                         <Button
                                             onClick={this.redirectToNewRoutePathView(route)}
                                             type={ButtonType.SQUARE}
                                             disabled={Boolean(routeListStore.routeIdToEdit)}
                                         >
-                                            {`Luo uusi reitinsuunta reitille ${route.id}`}
+                                            {`Luo reitinsuunta reitille ${route.id}`}
                                         </Button>
                                     </div>
                                 )}

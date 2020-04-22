@@ -9,6 +9,7 @@ import './index.scss';
 import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
 import ConfirmStore from './stores/confirmStore';
+import CopyRoutePathPairStore from './stores/copyRoutePathPairStore';
 import ErrorStore from './stores/errorStore';
 import HighlightEntityStore from './stores/highlightEntityStore';
 import LineHeaderMassEditStore from './stores/lineHeaderMassEditStore';
@@ -47,6 +48,7 @@ const stores = {
     routePathMassEditStore: RoutePathMassEditStore,
     routePathLinkMassEditStore: RoutePathLinkMassEditStore,
     routePathStore: RoutePathStore,
+    copyRoutePathPairStore: CopyRoutePathPairStore,
     routePathCopySegmentStore: RoutePathCopySegmentStore,
     searchStore: SearchStore,
     popupStore: PopupStore,
