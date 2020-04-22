@@ -38,8 +38,7 @@ interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties 
 interface IMassEditRoutePath {
     id: string;
     routePath: IRoutePath;
-    oldStartDate: Date;
-    oldEndDate: Date;
+    oldRoutePath?: IRoutePath;
     validationResult: IValidationResult;
     isNew: boolean;
 }

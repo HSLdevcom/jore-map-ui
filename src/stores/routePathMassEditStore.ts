@@ -29,7 +29,10 @@ class RoutePathMassEditStore {
 
     @computed
     get isDirty() {
-        return Boolean(this._massEditRoutePaths?.find(massEditRp => massEditRp.routePath.startTime.getTime() !== massEditRp.oldStartDate.getTime() || massEditRp.routePath.endTime.getTime() !== massEditRp.oldEndDate.getTime() ))
+        return Boolean(this._massEditRoutePaths?.find(massEditRp =>
+            !massEditRp.oldRoutePath ||
+            massEditRp.routePath.startTime.getTime() !== massEditRp.oldRoutePath.startTime.getTime() ||
+            massEditRp.routePath.endTime.getTime() !== massEditRp.oldRoutePath.endTime.getTime()))
     }
 
     @computed
@@ -59,8 +62,7 @@ class RoutePathMassEditStore {
             massEditRoutePaths.push({
                 id: rp.internalId,
                 routePath: rp,
-                oldEndDate: rp.endTime,
-                oldStartDate: rp.startTime,
+                oldRoutePath: _.cloneDeep(rp),
                 validationResult: { isValid: true },
                 isNew: false
             })

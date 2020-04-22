@@ -6,13 +6,20 @@ import React from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
+import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
+import RoutePathMassEditService from '~/services/routePathMassEditService';
 import RoutePathService from '~/services/routePathService';
+import { AlertStore } from '~/stores/alertStore';
+import { ConfirmStore } from '~/stores/confirmStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
@@ -33,7 +40,11 @@ interface IRoutePathListTabProps {
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
     mapStore?: MapStore;
+    confirmStore?: ConfirmStore;
     userStore?: UserStore;
+    loginStore?: LoginStore;
+    alertStore?: AlertStore;
+    errorStore?: ErrorStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
@@ -46,7 +57,7 @@ interface IRoutePathListTabState {
 
 const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
-@inject('routeListStore', 'mapStore', 'userStore', 'routePathMassEditStore')
+@inject('routeListStore', 'mapStore', 'confirmStore', 'userStore', 'loginStore', 'alertStore', 'errorStore', 'routePathMassEditStore')
 @observer
 class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
     private _isMounted: boolean;
@@ -317,8 +328,42 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             Moment(routePath.endTime).isAfter(Moment());
     };
 
+    private showSavePrompt = () => {
+        const confirmStore = this.props.confirmStore;
+        const saveModels: ISaveModel[] = [];
+        this.props.routePathMassEditStore!.massEditRoutePaths!.forEach(massEditRp => {
+            saveModels.push({
+                type: 'saveModel',
+                newData: massEditRp.routePath,
+                oldData: massEditRp.oldRoutePath ? massEditRp.oldRoutePath : {},
+                subTopic: `${massEditRp.routePath.originFi} - ${massEditRp.routePath.destinationFi}`,
+                model: 'routePath'
+            })
+        });
+        confirmStore!.openConfirm({
+            content: <SavePrompt models={saveModels} />,
+            onConfirm: () => {
+                this.save();
+            }
+        });
+    };
+
+    private save = async () => {
+        this._setState({ isLoading: true });
+
+        try {
+            await RoutePathMassEditService.massEditRoutePaths(this.props.routePathMassEditStore!.massEditRoutePaths!);
+            this.props.routePathMassEditStore!.clear();
+            // TODO: clear & fetch routePaths
+            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+        } catch (e) {
+            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+        }
+        this.props.routeListStore!.setRouteIdToEdit(null);
+    };
+
     render() {
-        const routePaths = this.props.routePaths;
+        const { routePaths, isEditing } = this.props;
         if (routePaths.length === 0) {
             return (
                 <div className={s.routePathListTab}>
@@ -328,6 +373,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
         const groupedRoutePathsToDisplay = this.state.groupedRoutePathsToDisplay;
         const allGroupedRoutePaths = this.state.allGroupedRoutePaths;
+        const isSaveButtonDisabled = false;
         return (
             <div className={s.routePathListTab}>
                 {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
@@ -347,6 +393,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                                   })`}
                         </div>
                     </div>
+                )}
+                {this.props.loginStore!.hasWriteAccess && isEditing && (
+                    <SaveButton
+                        onClick={() => this.showSavePrompt()}
+                        disabled={isSaveButtonDisabled}
+                        savePreventedNotification={''}
+                    >
+                        Tallenna muutokset
+                    </SaveButton>
                 )}
             </div>
         );
