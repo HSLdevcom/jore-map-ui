@@ -13,7 +13,7 @@ class RoutePathFactory {
         return {
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
-            startTime: new Date(externalRoutePath.suuvoimast)
+            startTime: new Date(externalRoutePath.suuvoimast),
         };
     };
 
@@ -26,7 +26,7 @@ class RoutePathFactory {
             [
                 externalRoutePath.reitunnus,
                 externalRoutePath.suuvoimast,
-                externalRoutePath.suusuunta
+                externalRoutePath.suusuunta,
             ].join('-')
         ).toString();
 
@@ -68,7 +68,7 @@ class RoutePathFactory {
             shortNameSw: externalRoutePath.suunimilyhr,
             length: externalRoutePath.suupituus,
             isStartNodeUsingBookSchedule: externalRoutePath.kirjaan === '1',
-            startNodeBookScheduleColumnNumber: externalRoutePath.kirjasarake
+            startNodeBookScheduleColumnNumber: externalRoutePath.kirjasarake,
         };
     };
 
@@ -103,7 +103,7 @@ class RoutePathFactory {
             length: 0,
             exceptionPath: '0',
             isStartNodeUsingBookSchedule: false,
-            startNodeBookScheduleColumnNumber: undefined
+            startNodeBookScheduleColumnNumber: undefined,
         };
     }
 
@@ -114,7 +114,7 @@ class RoutePathFactory {
         return {
             ...routePath,
             // TODO: this is only temporary, but required since starttime is part of ID
-            startTime
+            startTime,
         };
     }
 }

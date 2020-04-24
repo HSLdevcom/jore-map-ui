@@ -62,5 +62,5 @@ export {
     IViewOnlyRoutePathProperties,
     IMassEditRoutePath,
     IRoutePathSegment,
-    IRoutePathSaveModel
+    IRoutePathSaveModel,
 };

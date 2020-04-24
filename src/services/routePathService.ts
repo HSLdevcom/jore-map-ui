@@ -19,15 +19,15 @@ class RoutePathService {
         routeId: string,
         startTime: Date,
         direction: string
-    ): Promise<IRoutePath | null> => {
+    ): Promise<IRoutePath | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathQuery(),
             variables: {
                 routeId,
                 direction,
-                startDate: Moment(startTime).format()
+                startDate: Moment(startTime).format(),
             },
-            fetchPolicy: 'no-cache'
+            fetchPolicy: 'no-cache',
         });
         const externalRoutePath: IExternalRoutePath | null = queryResult.data.routePath;
         if (!externalRoutePath) return null;
@@ -44,17 +44,19 @@ class RoutePathService {
             variables: {
                 routeId: routePathPrimaryKey.routeId,
                 direction: routePathPrimaryKey.direction,
-                startDate: Moment(routePathPrimaryKey.startTime).format()
+                startDate: Moment(routePathPrimaryKey.startTime).format(),
             },
-            fetchPolicy: 'no-cache'
+            fetchPolicy: 'no-cache',
         });
         const nodes: IExternalRoutePathLink[] =
             queryResult.data.routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
-        nodes.sort((a: IExternalRoutePathLink, b: IExternalRoutePathLink) => a.reljarjnro < b.reljarjnro ? -1 : 1);
+        nodes.sort((a: IExternalRoutePathLink, b: IExternalRoutePathLink) =>
+            a.reljarjnro < b.reljarjnro ? -1 : 1
+        );
         const stopNames = {
             firstStopName: _getFirstStopName(nodes),
-            lastStopName: _getLastStopName(nodes)
-        }
+            lastStopName: _getLastStopName(nodes),
+        };
         return stopNames;
     };
 
@@ -64,8 +66,8 @@ class RoutePathService {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllRoutePathPrimaryKeysQuery(),
             variables: {
-                routeId
-            }
+                routeId,
+            },
         });
         return queryResult.data.routePathPrimaryKeys.nodes.map((rp: IExternalRoutePath) =>
             RoutePathFactory.mapExternalRoutePathToRoutePathPrimaryKey(rp)
@@ -84,18 +86,21 @@ class RoutePathService {
                 startNodeId,
                 endNodeId,
                 transitType,
-                date
-            }
+                date,
+            },
         });
         return queryResult.data.routePaths.nodes.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath,lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
         });
     };
 
     public static updateRoutePath = async (newRoutePath: IRoutePath, oldRoutePath: IRoutePath) => {
-        const routePathSaveModel = _createRoutePathSaveModel(_.cloneDeep(newRoutePath), _.cloneDeep(oldRoutePath));
+        const routePathSaveModel = _createRoutePathSaveModel(
+            _.cloneDeep(newRoutePath),
+            _.cloneDeep(oldRoutePath)
+        );
         await HttpUtils.updateObject(EndpointPath.ROUTEPATH, routePathSaveModel);
     };
 
@@ -115,10 +120,11 @@ class RoutePathService {
     ): Promise<IRoutePath[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingLinkQuery(),
-            variables: { startNodeId, endNodeId, transitType }
+            variables: { startNodeId, endNodeId, transitType },
         });
 
-        const externalRoutePathLinks: IExternalRoutePath[] = queryResult.data.get_route_paths_using_link.nodes;
+        const externalRoutePathLinks: IExternalRoutePath[] =
+            queryResult.data.get_route_paths_using_link.nodes;
         return externalRoutePathLinks.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
@@ -129,24 +135,30 @@ class RoutePathService {
     public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
-            variables: { nodeId }
+            variables: { nodeId },
         });
-        const externalRoutePaths: IExternalRoutePath[] = queryResult.data.get_route_paths_using_node.nodes;
+        const externalRoutePaths: IExternalRoutePath[] =
+            queryResult.data.get_route_paths_using_node.nodes;
         return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
             return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
         });
-    }
+    };
 }
 
-const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRoutePath | null): IRoutePathSaveModel => {
+const _createRoutePathSaveModel = (
+    newRoutePath: IRoutePath,
+    oldRoutePath: IRoutePath | null
+): IRoutePathSaveModel => {
     const added: IRoutePathLink[] = [];
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];
     const originals: IRoutePathLink[] = [];
-    newRoutePath.routePathLinks.forEach(rpLink => {
-        const foundOldRoutePathLink = oldRoutePath ? _findRoutePathLink(oldRoutePath, rpLink) : null;
+    newRoutePath.routePathLinks.forEach((rpLink) => {
+        const foundOldRoutePathLink = oldRoutePath
+            ? _findRoutePathLink(oldRoutePath, rpLink)
+            : null;
         if (foundOldRoutePathLink) {
             const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
             // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
@@ -160,11 +172,11 @@ const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRout
                 originals.push(rpLink);
             }
         } else {
-             // If a routePathLink is found from newRoutePath but not in oldRoutePath, add it to added [] list
+            // If a routePathLink is found from newRoutePath but not in oldRoutePath, add it to added [] list
             added.push(rpLink);
         }
     });
-    oldRoutePath?.routePathLinks.forEach(rpLink => {
+    oldRoutePath?.routePathLinks.forEach((rpLink) => {
         const routePathLink = _findRoutePathLink(newRoutePath, rpLink);
         if (!routePathLink) {
             // If a routePathLink from oldRoutePath is not found from newRoutePath, add it to removed [] list
@@ -176,25 +188,31 @@ const _createRoutePathSaveModel = (newRoutePath: IRoutePath, oldRoutePath: IRout
         added,
         modified,
         removed,
-        originals
-    }
+        originals,
+    };
 
     const routePathToSave = {
-        ...newRoutePath
+        ...newRoutePath,
     };
     delete routePathToSave['routePathLinks'];
 
     return {
         routePathLinkSaveModel,
-        routePath: routePathToSave
-    }
-}
+        routePath: routePathToSave,
+    };
+};
 
-const _findRoutePathLink = (routePath: IRoutePath, routePathLink: IRoutePathLink): IRoutePathLink | undefined => {
-    return routePath.routePathLinks.find(rpLink => {
-        return rpLink.startNode.id === routePathLink.startNode.id && rpLink.endNode.id === routePathLink.endNode.id;
-    })
-}
+const _findRoutePathLink = (
+    routePath: IRoutePath,
+    routePathLink: IRoutePathLink
+): IRoutePathLink | undefined => {
+    return routePath.routePathLinks.find((rpLink) => {
+        return (
+            rpLink.startNode.id === routePathLink.startNode.id &&
+            rpLink.endNode.id === routePathLink.endNode.id
+        );
+    });
+};
 
 const _getFirstStopName = (nodes: IExternalRoutePathLink[]) => {
     for (let i = 0; i < nodes.length; i += 1) {
@@ -204,7 +222,7 @@ const _getFirstStopName = (nodes: IExternalRoutePathLink[]) => {
         }
     }
     return '';
-}
+};
 
 const _getLastStopName = (nodes: IExternalRoutePathLink[]) => {
     for (let i = nodes.length - 1; i > 0; i -= 1) {
@@ -214,13 +232,13 @@ const _getLastStopName = (nodes: IExternalRoutePathLink[]) => {
         }
     }
     return '';
-}
+};
 
 const _getValidStopName = (node: IExternalNode): string | null => {
     if (node.soltyyppi === NodeType.STOP && node.pysakkiBySoltunnus?.pysnimi) {
         return node.pysakkiBySoltunnus.pysnimi;
     }
     return null;
-}
+};
 
 export default RoutePathService;

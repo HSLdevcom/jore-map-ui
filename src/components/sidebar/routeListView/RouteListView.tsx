@@ -17,7 +17,7 @@ import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
-import { CopyRoutePathPairStore } from '~/stores/copyRoutePathPairStore';
+import { CopyRoutePathStore } from '~/stores/copyRoutePathStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
@@ -34,7 +34,7 @@ import SearchInput from '../../shared/searchView/SearchInput';
 import SearchResults from '../../shared/searchView/SearchResults';
 import SidebarHeader from '../SidebarHeader';
 import EntityTypeToggles from '../homeView/EntityTypeToggles';
-import CopyRoutePathPairView from './CopyRoutePathPairView';
+import CopyRoutePathView from './CopyRoutePathView';
 import RouteItem from './RouteItem';
 import * as s from './routeListView.scss';
 
@@ -48,7 +48,7 @@ interface IRouteListViewProps {
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
     mapStore?: MapStore;
-    copyRoutePathPairStore?: CopyRoutePathPairStore;
+    copyRoutePathStore?: CopyRoutePathStore;
     alertStore?: AlertStore;
     loginStore?: LoginStore;
     routePathMassEditStore?: RoutePathMassEditStore;
@@ -67,7 +67,7 @@ interface IRouteListViewState {
     'routePathStore',
     'errorStore',
     'confirmStore',
-    'copyRoutePathPairStore',
+    'copyRoutePathStore',
     'mapStore',
     'alertStore',
     'loginStore',
@@ -80,7 +80,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         super(props);
         this.state = {
             routeIds: [],
-            isLoading: false
+            isLoading: false,
         };
     }
 
@@ -122,11 +122,13 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
     private fetchRoutes = async (routeIds: string[]) => {
         if (routeIds) {
             this._setState({ isLoading: true });
-            const currentRouteIds = this.props.routeListStore!.routeItems.map(routeItem => routeItem.route.id);
-            const missingRouteIds = routeIds.filter(id => !currentRouteIds.includes(id));
+            const currentRouteIds = this.props.routeListStore!.routeItems.map(
+                (routeItem) => routeItem.route.id
+            );
+            const missingRouteIds = routeIds.filter((id) => !currentRouteIds.includes(id));
             currentRouteIds
-                .filter(id => !routeIds.includes(id))
-                .forEach(id => this.props.routeListStore!.removeFromRouteItems(id));
+                .filter((id) => !routeIds.includes(id))
+                .forEach((id) => this.props.routeListStore!.removeFromRouteItems(id));
 
             const routeIdsNotFound: string[] = [];
             const promises: Promise<void>[] = [];
@@ -135,7 +137,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             missingRouteIds.map((routeId: string) => {
                 const createPromise = async () => {
                     const route = await RouteService.fetchRoute(routeId, {
-                        areRoutePathLinksExcluded: true
+                        areRoutePathLinksExcluded: true,
                     });
                     if (!route) {
                         routeIdsNotFound.push(routeId);
@@ -152,9 +154,10 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             this.props.routeListStore!.addToLines(missingLines);
             this.props.routeListStore!.addToRouteItems(missingRoutes);
 
-
             if (routeIdsNotFound.length > 0) {
-                this.props.errorStore!.addError(`Reittien (${routeIdsNotFound.join(', ')}) haku epäonnistui.`);
+                this.props.errorStore!.addError(
+                    `Reittien (${routeIdsNotFound.join(', ')}) haku epäonnistui.`
+                );
             }
             this._setState({ routeIds, isLoading: false });
         }
@@ -165,10 +168,10 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         const isLoading = this.state.isLoading;
         if (!routes || isLoading) return;
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-        routes.forEach(route => {
-            route.routePaths.forEach(routePath => {
-                routePath.routePathLinks.forEach(routePathLink => {
-                    routePathLink.geometry.forEach(pos => {
+        routes.forEach((route) => {
+            route.routePaths.forEach((routePath) => {
+                routePath.routePathLinks.forEach((routePathLink) => {
+                    routePathLink.geometry.forEach((pos) => {
                         bounds.extend(pos);
                     });
                 });
@@ -189,16 +192,13 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         const selectedTabIndex = routeListStore.getRouteItem(route.id)?.selectedTabIndex;
         const isEditingRoutePaths = selectedTabIndex === 0;
         const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
-        if (
-            routeListStore.routeIdToEdit === route.id &&
-            isDirty
-        ) {
+        if (routeListStore.routeIdToEdit === route.id && isDirty) {
             this.props.confirmStore!.openConfirm({
                 content: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat sulkea reitin? Tallentamattomat muutokset kumotaan.`,
                 onConfirm: () => {
                     this.closeRoute(route, isEditingRoutePaths);
                 },
-                confirmButtonText: 'Kyllä'
+                confirmButtonText: 'Kyllä',
             });
         } else {
             this.closeRoute(route, isEditingRoutePaths);
@@ -239,32 +239,37 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
         const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
         if (!isDirty) {
-            this.startEdit({ route, newRouteId, isEditingRoutePaths })
+            this.startEdit({ route, newRouteId, isEditingRoutePaths });
             return;
         }
 
         let promptMessage;
         if (isEditingRoutePaths) {
             promptMessage = `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`;
-        }
-        else if (route.id === routeListStore.routeIdToEdit) {
+        } else if (route.id === routeListStore.routeIdToEdit) {
             promptMessage = `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`;
         } else {
-            promptMessage = `Sinulla on reitin ${
-                routeStore.route.routeName
-                } muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`;
+            promptMessage = `Sinulla on reitin ${routeStore.route.routeName} muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`;
         }
 
         confirmStore.openConfirm({
             content: promptMessage,
             onConfirm: () => {
-                this.startEdit({ route, newRouteId, isEditingRoutePaths })
+                this.startEdit({ route, newRouteId, isEditingRoutePaths });
             },
-            confirmButtonText: 'Kyllä'
+            confirmButtonText: 'Kyllä',
         });
     };
 
-    private startEdit = ({ route, newRouteId, isEditingRoutePaths }: { route: IRoute, newRouteId: string | null, isEditingRoutePaths: boolean }) => {
+    private startEdit = ({
+        route,
+        newRouteId,
+        isEditingRoutePaths,
+    }: {
+        route: IRoute;
+        newRouteId: string | null;
+        isEditingRoutePaths: boolean;
+    }) => {
         const routeStore = this.props.routeStore!;
         const routeListStore = this.props.routeListStore!;
         const routePathMassEditStore = this.props.routePathMassEditStore!;
@@ -281,7 +286,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             routePathMassEditStore.clear();
             routeStore.clear();
         }
-    }
+    };
 
     private toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
@@ -297,9 +302,13 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         navigator.goTo({ link: newRoutePathLink });
     };
 
-    private openCopyRoutePathView = (lineId: string, routeId: string) => () => {
-        this.props.copyRoutePathPairStore!.init({ lineId, routeId });
-    }
+    private openCopyRoutePathView = (
+        lineId: string,
+        routeId: string,
+        transitType: TransitType
+    ) => () => {
+        this.props.copyRoutePathStore!.init({ lineId, routeId, transitType });
+    };
 
     private _render = () => {
         const routeListStore = this.props.routeListStore!;
@@ -308,8 +317,8 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         if (routeItems.length < 1) {
             return <Loader />;
         }
-        if (this.props.copyRoutePathPairStore!.isVisible) {
-            return <CopyRoutePathPairView />
+        if (this.props.copyRoutePathStore!.isVisible) {
+            return <CopyRoutePathView />;
         }
         return (
             <>
@@ -326,67 +335,78 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                             <SearchResults />
                         </div>
                     )}
-                <div className={s.routeList}>
-                    {routeItems.map((routeItem: IRouteItem, index: number) => {
-                        const route = routeItem.route;
-                        const isEditing = routeIdToEdit === route.id;
-                        const transitType = routeListStore.getLine(route.lineId)?.transitType!;
-                        return (
-                            <div key={index} className={s.routeListItem}>
-                                <SidebarHeader
-                                    isEditing={isEditing}
-                                    isBackButtonVisible={true}
-                                    isEditButtonVisible={true}
-                                    isEditPromptHidden={true}
-                                    onCloseButtonClick={() => this.closeRoutePrompt(route)}
-                                    onEditButtonClick={() => this.startEditPrompt(route)}
-                                >
-                                    <TransitTypeLink
-                                        transitType={transitType}
-                                        shouldShowTransitTypeIcon={true}
-                                        text={route!.id}
-                                        onClick={() => NavigationUtils.openLineView({ lineId: route!.lineId })}
-                                        hoverText={`Avaa linja ${route!.lineId}`}
-                                        data-cy='routeId'
-                                    />
-                                </SidebarHeader>
-                                <div className={s.routeItemWrapper}>
-                                    <RouteItem
-                                        route={route}
-                                        routeIdToEdit={routeIdToEdit}
-                                        selectedTabIndex={routeItem.selectedTabIndex}
-                                        areAllRoutePathsVisible={routeItem.areAllRoutePathsVisible} />
-                                </div>
-                                {this.props.loginStore!.hasWriteAccess && (
-                                    <div className={s.buttonContainer}>
-                                        { route.id === routeListStore.routeIdToEdit && (
-                                            <Button
-                                                onClick={this.openCopyRoutePathView(route!.lineId, route.id)}
-                                                type={ButtonType.SQUARE}
-                                            >
-                                                {`Kopioi reitinsuunta pari reitille ${route.id}`}
-                                            </Button>
-                                        )}
-                                        <Button
-                                            onClick={this.redirectToNewRoutePathView(route)}
-                                            type={ButtonType.SQUARE}
-                                            disabled={Boolean(routeListStore.routeIdToEdit)}
-                                        >
-                                            {`Luo reitinsuunta reitille ${route.id}`}
-                                        </Button>
+                    <div className={s.routeList}>
+                        {routeItems.map((routeItem: IRouteItem, index: number) => {
+                            const route = routeItem.route;
+                            const isEditing = routeIdToEdit === route.id;
+                            const transitType = routeListStore.getLine(route.lineId)?.transitType!;
+                            return (
+                                <div key={index} className={s.routeListItem}>
+                                    <SidebarHeader
+                                        isEditing={isEditing}
+                                        isBackButtonVisible={true}
+                                        isEditButtonVisible={true}
+                                        isEditPromptHidden={true}
+                                        onCloseButtonClick={() => this.closeRoutePrompt(route)}
+                                        onEditButtonClick={() => this.startEditPrompt(route)}
+                                    >
+                                        <TransitTypeLink
+                                            transitType={transitType}
+                                            shouldShowTransitTypeIcon={true}
+                                            text={route!.id}
+                                            onClick={() =>
+                                                NavigationUtils.openLineView({
+                                                    lineId: route!.lineId,
+                                                })
+                                            }
+                                            hoverText={`Avaa linja ${route!.lineId}`}
+                                            data-cy='routeId'
+                                        />
+                                    </SidebarHeader>
+                                    <div className={s.routeItemWrapper}>
+                                        <RouteItem
+                                            route={route}
+                                            routeIdToEdit={routeIdToEdit}
+                                            selectedTabIndex={routeItem.selectedTabIndex}
+                                            areAllRoutePathsVisible={
+                                                routeItem.areAllRoutePathsVisible
+                                            }
+                                        />
                                     </div>
-                                )}
-                                {!this.props.loginStore!.hasWriteAccess && (
-                                    <div className={s.sectionDivider} />
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
+                                    {this.props.loginStore!.hasWriteAccess && (
+                                        <div className={s.buttonContainer}>
+                                            {route.id === routeListStore.routeIdToEdit && (
+                                                <Button
+                                                    onClick={this.openCopyRoutePathView(
+                                                        route!.lineId,
+                                                        route.id,
+                                                        transitType
+                                                    )}
+                                                    type={ButtonType.SQUARE}
+                                                >
+                                                    {`Kopioi reitinsuunta pari reitille ${route.id}`}
+                                                </Button>
+                                            )}
+                                            <Button
+                                                onClick={this.redirectToNewRoutePathView(route)}
+                                                type={ButtonType.SQUARE}
+                                                disabled={Boolean(routeListStore.routeIdToEdit)}
+                                            >
+                                                {`Luo reitinsuunta reitille ${route.id}`}
+                                            </Button>
+                                        </div>
+                                    )}
+                                    {!this.props.loginStore!.hasWriteAccess && (
+                                        <div className={s.sectionDivider} />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </>
         );
-    }
+    };
 
     render() {
         return (
