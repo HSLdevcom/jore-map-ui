@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
@@ -237,13 +237,16 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             const first = routePaths[0];
             const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
 
-            const validationResult = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                (m) => m.routePath.internalId === first.internalId
-            )?.validationResult;
+            let validationResult;
+            if (isEditing) {
+                validationResult = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
+                    (m) => m.routePath.internalId === first.internalId
+                )?.validationResult;
+            }
             return (
                 <div
                     key={header}
-                    className={classNames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
+                    className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
                 >
                     <div className={s.groupedRoutesDates}>
                         {isEditing ? (
@@ -320,12 +323,22 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             const stopDestinationFi = stopNames?.lastStopName ? stopNames?.lastStopName : '-';
             const stopDestinations = `${stopOriginFi} - ${stopDestinationFi}`;
             const routePathDestinations = `${routePath.originFi} - ${routePath.destinationFi}`;
+            const isEditing = this.props.isEditing;
+            const massEditRp = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
+                (m) => m.routePath.internalId === routePath.internalId
+            )!;
             return (
-                <div className={s.routePathContainer} key={routePath.internalId}>
+                <div
+                    className={classnames(
+                        s.routePathContainer,
+                        isEditing && massEditRp.isNew ? s.highlighAsNew : undefined
+                    )}
+                    key={routePath.internalId}
+                >
                     <div
                         className={
                             shouldHighlightRoutePath
-                                ? classNames(s.routePathInfo, s.highlight)
+                                ? classnames(s.routePathInfo, s.highlight)
                                 : s.routePathInfo
                         }
                     >
