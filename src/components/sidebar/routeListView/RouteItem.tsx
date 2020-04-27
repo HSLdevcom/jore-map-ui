@@ -34,7 +34,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
         const isEditingRoute = selectedTabIndex === 1 && route.id === routeIdToEdit;
 
         const routePaths = isEditingRoutePaths
-            ? this.props.routePathMassEditStore!.routePaths
+            ? _.cloneDeep(this.props.routePathMassEditStore!.routePaths)
             : this.props.route.routePaths;
         return (
             <Tabs>

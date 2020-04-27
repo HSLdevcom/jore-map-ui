@@ -41,6 +41,8 @@ interface IMassEditRoutePath {
     oldRoutePath?: IRoutePath;
     validationResult: IValidationResult;
     isNew: boolean;
+    // TODO? isStartTimeSet
+    // TODO? isEndTimeSet
 }
 
 interface IRoutePathSegment extends IRoutePathPrimaryKey {
