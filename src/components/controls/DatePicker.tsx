@@ -19,6 +19,7 @@ interface IDatePickerProps {
     onFocus?: () => void;
     minStartDate?: Date;
     maxEndDate?: Date;
+    excludeDates?: Date[];
 }
 
 interface IDatePickerState {
@@ -32,7 +33,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         super(props);
         this.state = {
             isOpen: false,
-            selectedDate: this.props.value ? toDateString(this.props.value) : ''
+            selectedDate: this.props.value ? toDateString(this.props.value) : '',
         };
     }
 
@@ -50,7 +51,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         const newValue = this.props.value ? toDateString(this.props.value) : '';
         if (this.state.selectedDate !== newValue) {
             this.setState({
-                selectedDate: newValue
+                selectedDate: newValue,
             });
         }
     }
@@ -77,7 +78,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
 
         const dateString: string | null = getDateString(inputValue);
         this.setState({
-            selectedDate: dateString ? dateString : ''
+            selectedDate: dateString ? dateString : '',
         });
 
         this.closeCalendar();
@@ -95,7 +96,13 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     };
 
     render() {
-        const { isClearButtonVisible, isEmptyValueAllowed, minStartDate, maxEndDate } = this.props;
+        const {
+            isClearButtonVisible,
+            isEmptyValueAllowed,
+            minStartDate,
+            maxEndDate,
+            excludeDates,
+        } = this.props;
         const minDate = minStartDate ? minStartDate : getMinDate();
         const maxDate = maxEndDate ? maxEndDate : getMaxDate();
 
@@ -110,7 +117,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                         value: this.state.selectedDate,
                         onChange: this.onChange,
                         openCalendar: this.openCalendar,
-                        placeholder: 'Syötä päivä'
+                        placeholder: 'Syötä päivä',
                     })}
                     open={this.state.isOpen}
                     onClickOutside={this.closeCalendar}
@@ -131,6 +138,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                     yearDropdownItemNumber={100}
                     minDate={minDate}
                     maxDate={maxDate}
+                    excludeDates={excludeDates}
                     dateFormatCalendar={'dd.MM.yyyy'}
                     popperContainer={_renderCalendarContainer}
                 />
@@ -150,7 +158,7 @@ const renderDatePickerInput = ({
     value,
     isClearButtonVisible,
     isEmptyValueAllowed,
-    openCalendar
+    openCalendar,
 }: {
     onChange: (value: any) => void;
     placeholder: string;

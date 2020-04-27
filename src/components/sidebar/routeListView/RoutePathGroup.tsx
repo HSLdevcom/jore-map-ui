@@ -10,6 +10,7 @@ import InputContainer from '~/components/controls/InputContainer';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
+import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
@@ -28,6 +29,8 @@ interface IRoutePathGroupProps {
     isEditing: boolean;
     areStopNamesLoading: boolean;
     index: number;
+    excludedDatesDirection1: Date[];
+    excludedDatesDirection2: Date[];
     stopNameMap: Map<string, IRoutePathStopNames>;
     removeNewRoutePath: (id: string) => () => void;
     userStore?: UserStore;
@@ -70,31 +73,68 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     };
 
     render() {
-        const { routePaths, nextGroup, prevGroup, index } = this.props;
-        let minStartDate = undefined;
-        let maxEndDate = undefined;
-        if (prevGroup) {
-            minStartDate = _.cloneDeep(prevGroup[0].endTime);
-            minStartDate.setDate(minStartDate.getDate() + 1);
-        }
-        if (nextGroup) {
-            maxEndDate = _.cloneDeep(nextGroup[0].startTime);
-            maxEndDate.setDate(maxEndDate.getDate() - 1);
-        }
-        const isEditing = this.props.isEditing;
+        const {
+            routePaths,
+            nextGroup,
+            prevGroup,
+            isEditing,
+            index,
+            excludedDatesDirection1,
+            excludedDatesDirection2,
+        } = this.props;
         const first = routePaths[0];
         const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
         let validationResult;
+        let excludedDates: Date[] = [];
+        let minStartDate = undefined;
+        let maxEndDate = undefined;
         if (isEditing) {
             validationResult = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
                 (m) => m.routePath.internalId === first.internalId
             )?.validationResult;
+            const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
+                (massEditRp: IMassEditRoutePath) => {
+                    return routePaths.find((rp) => rp.internalId === massEditRp.id);
+                }
+            );
+
+            const isNewRoutePathIncluded = Boolean(
+                currentMassEditRoutePaths!.find((massEditRp) => massEditRp.isNew)
+            );
+            const isOldRoutePathIncluded = Boolean(
+                currentMassEditRoutePaths!.find((massEditRp) => !massEditRp.isNew)
+            );
+            const hasDirection1 = Boolean(
+                currentMassEditRoutePaths!.find(
+                    (massEditRp) => massEditRp.routePath.direction === '1'
+                )
+            );
+            const hasDirection2 = Boolean(
+                currentMassEditRoutePaths!.find(
+                    (massEditRp) => massEditRp.routePath.direction === '2'
+                )
+            );
+
+            if (isNewRoutePathIncluded && hasDirection1) {
+                excludedDates = excludedDatesDirection1;
+            }
+            if (isNewRoutePathIncluded && hasDirection2) {
+                excludedDates = excludedDates.concat(excludedDatesDirection2);
+            }
+
+            if (isOldRoutePathIncluded) {
+                if (prevGroup) {
+                    minStartDate = _.cloneDeep(prevGroup[0].endTime);
+                    minStartDate.setDate(minStartDate.getDate() + 1);
+                }
+                if (nextGroup) {
+                    maxEndDate = _.cloneDeep(nextGroup[0].startTime);
+                    maxEndDate.setDate(maxEndDate.getDate() - 1);
+                }
+            }
         }
         return (
-            <div
-                key={header}
-                className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
-            >
+            <div className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}>
                 <div className={s.groupedRoutesDates}>
                     {isEditing ? (
                         <>
@@ -107,6 +147,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                excludeDates={excludedDates}
                             />
                             <InputContainer
                                 label=''
@@ -116,6 +157,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                excludeDates={excludedDates}
                             />
                         </>
                     ) : (
@@ -137,15 +179,15 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             : '-';
                         const stopDestinations = `${stopOriginFi} - ${stopDestinationFi}`;
                         const routePathDestinations = `${routePath.originFi} - ${routePath.destinationFi}`;
-                        const isEditing = this.props.isEditing;
                         const massEditRp = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
                             (m) => m.routePath.internalId === routePath.internalId
                         )!;
+                        const isNew = massEditRp && massEditRp.isNew;
                         return (
                             <div
                                 className={classnames(
                                     s.routePathContainer,
-                                    isEditing && massEditRp.isNew ? s.highlighAsNew : undefined
+                                    isEditing && isNew ? s.highlighAsNew : undefined
                                 )}
                                 key={routePath.internalId}
                             >
@@ -185,7 +227,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     </div>
                                 </div>
                                 <div className={s.routePathControls}>
-                                    {isEditing && massEditRp.isNew && (
+                                    {isEditing && isNew && (
                                         <Button
                                             className={s.removeNewRoutePathButton}
                                             hasReverseColor={true}

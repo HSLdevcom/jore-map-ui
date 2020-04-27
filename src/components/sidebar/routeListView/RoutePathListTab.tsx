@@ -255,6 +255,19 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const isSaveButtonDisabled =
             !this.props.routePathMassEditStore!.isDirty ||
             !this.props.routePathMassEditStore!.isFormValid;
+        let startAndEndDatesDirection1: Date[] = [];
+        let startAndEndDatesDirection2: Date[] = [];
+        groupedRoutePathsToDisplay.forEach((routePaths: IRoutePath[]) => {
+            routePaths.forEach((routePath: IRoutePath) => {
+                const excludedDates = [routePath.startTime, routePath.endTime];
+                if (routePath.direction === '1') {
+                    startAndEndDatesDirection1 = startAndEndDatesDirection1.concat(excludedDates);
+                } else {
+                    startAndEndDatesDirection2 = startAndEndDatesDirection2.concat(excludedDates);
+                }
+            });
+        });
+
         return (
             <div className={s.routePathListTab}>
                 {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
@@ -274,7 +287,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         hasDirection1,
                         hasDirection2
                     );
-
                     return (
                         <RoutePathGroup
                             key={`routePathGroup-${index}`}
@@ -285,6 +297,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             stopNameMap={this.state.stopNameMap}
                             areStopNamesLoading={this.state.areStopNamesLoading}
                             index={index}
+                            excludedDatesDirection1={startAndEndDatesDirection1}
+                            excludedDatesDirection2={startAndEndDatesDirection2}
                             removeNewRoutePath={this.removeNewRoutePath}
                         />
                     );

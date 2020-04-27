@@ -27,6 +27,7 @@ interface IInputProps {
     onFocus?: () => void;
     minStartDate?: Date;
     maxEndDate?: Date;
+    excludeDates?: Date[];
 }
 
 const InputContainer = observer((props: IInputProps) => {
@@ -95,6 +96,7 @@ const InputContainer = observer((props: IInputProps) => {
                     onFocus={props.onFocus}
                     minStartDate={props.minStartDate}
                     maxEndDate={props.maxEndDate}
+                    excludeDates={props.excludeDates}
                 />
             ) : (
                 <input
