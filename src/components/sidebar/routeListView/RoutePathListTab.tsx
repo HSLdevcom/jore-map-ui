@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
 import { FiInfo } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
@@ -88,7 +89,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentWillMount() {
         this._isMounted = true;
-        this.updateGroupedRoutePathsToDisplay();
+        this.updateGroupedRoutePathsToDisplay(this.props.routePaths);
     }
 
     componentDidUpdate(prevProps: IRoutePathListTabProps) {
@@ -96,7 +97,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             prevProps.areAllRoutePathsVisible !== this.props.areAllRoutePathsVisible ||
             !_.isEqual(prevProps.routePaths, this.props.routePaths)
         ) {
-            this.updateGroupedRoutePathsToDisplay();
+            this.updateGroupedRoutePathsToDisplay(this.props.routePaths);
         }
     }
 
@@ -104,8 +105,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this._isMounted = false;
     }
 
-    private updateGroupedRoutePathsToDisplay = () => {
-        const routePaths = this.props.routePaths;
+    private updateGroupedRoutePathsToDisplay = (routePaths: IRoutePath[]) => {
         const allGroupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
         const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
             ? allGroupedRoutePaths
@@ -367,11 +367,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         </div>
                     </div>
                     <div className={s.routePathControls}>
-                        <ToggleSwitch
-                            onClick={toggleRoutePathVisibility}
-                            value={routePath.visible}
-                            color={routePath.visible ? routePath.color! : '#898989'}
-                        />
+                        {isEditing && massEditRp.isNew && (
+                            <Button
+                                className={s.removeNewRoutePathButton}
+                                hasReverseColor={true}
+                                onClick={this.removeNewRoutePath(routePath.internalId)}
+                            >
+                                <FaTrashAlt />
+                            </Button>
+                        )}
                         <Button
                             className={s.openRoutePathViewButton}
                             hasReverseColor={true}
@@ -380,10 +384,24 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         >
                             <FiInfo />
                         </Button>
+                        <ToggleSwitch
+                            onClick={toggleRoutePathVisibility}
+                            value={routePath.visible}
+                            color={routePath.visible ? routePath.color! : '#898989'}
+                        />
                     </div>
                 </div>
             );
         });
+    };
+
+    private removeNewRoutePath = (id: string) => () => {
+        this.props.routePathMassEditStore!.removeRoutePath(id);
+        // Remove routePath also from current props because routePaths in state doesn't get updated otherwise
+        const routePaths = _.cloneDeep(this.props.routePaths);
+        const removeIndex = routePaths.findIndex((rp) => rp.internalId === id);
+        routePaths.splice(removeIndex, 1);
+        this.updateGroupedRoutePathsToDisplay(routePaths);
     };
 
     private isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {

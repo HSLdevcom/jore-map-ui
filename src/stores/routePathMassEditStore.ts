@@ -92,30 +92,10 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public addRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
-        const newMassEditRoutePaths: IMassEditRoutePath[] = [];
-        let idCounter = this._newRoutePathIdCounter;
-        routePathsToCopy.forEach((rpToCopy) => {
-            const newRoutePathId = `new-${idCounter}`;
-            const newRoutePath = _.cloneDeep(rpToCopy.routePath);
-            const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
-            newRoutePath.direction = rpToCopy.direction;
-            newRoutePath.internalId = newRoutePathId;
-            // TODO? newRoutePath.startTime = undefined;
-            // TODO? newRoutePath.endTime = undefined;
-            newMassEditRoutePaths.push({
-                oldRoutePath,
-                id: newRoutePathId,
-                routePath: newRoutePath,
-                validationResult: {
-                    isValid: true,
-                },
-                isNew: true,
-            });
-            idCounter += 1;
-        });
-        this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
-        this._newRoutePathIdCounter = idCounter;
+    public removeRoutePath = (id: string) => {
+        const removeIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
+        this._massEditRoutePaths!.splice(removeIndex, 1);
+        this.validateMassEditRoutePaths();
     };
 
     @action
@@ -151,6 +131,33 @@ class RoutePathMassEditStore {
             }
             return massEditRp;
         });
+    };
+
+    @action
+    public addRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
+        const newMassEditRoutePaths: IMassEditRoutePath[] = [];
+        let idCounter = this._newRoutePathIdCounter;
+        routePathsToCopy.forEach((rpToCopy) => {
+            const newRoutePathId = `new-${idCounter}`;
+            const newRoutePath = _.cloneDeep(rpToCopy.routePath);
+            const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
+            newRoutePath.direction = rpToCopy.direction;
+            newRoutePath.internalId = newRoutePathId;
+            // TODO? newRoutePath.startTime = undefined;
+            // TODO? newRoutePath.endTime = undefined;
+            newMassEditRoutePaths.push({
+                oldRoutePath,
+                id: newRoutePathId,
+                routePath: newRoutePath,
+                validationResult: {
+                    isValid: true,
+                },
+                isNew: true,
+            });
+            idCounter += 1;
+        });
+        this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
+        this._newRoutePathIdCounter = idCounter;
     };
 
     @action

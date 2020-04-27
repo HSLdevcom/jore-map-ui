@@ -114,8 +114,13 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
 
     private addRoutePathsToCopy = async () => {
         const routePaths: IRoutePath[] = [];
-        for (const index in this.state.selectedRoutePathIds) {
-            const rpId = this.state.selectedRoutePathIds[index];
+        const selectedRoutePathIds = this.state.selectedRoutePathIds;
+        // Empty selected routePathIds to disable copy button right away (prevent clicking it twice)
+        this._setState({
+            selectedRoutePathIds: [],
+        });
+        for (const index in selectedRoutePathIds) {
+            const rpId = selectedRoutePathIds[index];
             const routePathWithoutLinks = this.state.routePathQueryResult.find(
                 (rp) => rp.internalId === rpId
             )!;
@@ -127,9 +132,6 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             routePaths.push(routePathWithLinks!);
         }
         this.props.copyRoutePathStore!.addRoutePathsToCopy(routePaths);
-        this._setState({
-            selectedRoutePathIds: [],
-        });
     };
 
     private onDirectionChange = (id: string) => (value: string) => {

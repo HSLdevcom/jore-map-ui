@@ -73,6 +73,15 @@
     .highlighAsNew {
         background-color: lighten($saveButtonGreen, 50);
     }
+
+    .removeNewRoutePathButton {
+        border: none;
+        color: $red;
+    }
+    .removeNewRoutePathButton:hover {
+        color: white;
+        background-color: $red;
+    }
 }
 
 .routeItemView:first-of-type {
