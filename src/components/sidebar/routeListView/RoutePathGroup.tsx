@@ -17,7 +17,7 @@ import subSites from '~/routing/subSites';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
-import { toDateString } from '~/utils/dateUtils';
+import { getMaxDate, toDateString } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathListTab.scss';
@@ -133,8 +133,14 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 }
             }
         }
+        const startTime =
+            first.startTime.getTime() < getMaxDate().getTime() ? first.startTime : null;
+        const endTime = first.endTime.getTime() < getMaxDate().getTime() ? first.endTime : null;
         return (
-            <div className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}>
+            <div
+                key={`${header}-${index}`}
+                className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
+            >
                 <div className={s.groupedRoutesDates}>
                     {isEditing ? (
                         <>
@@ -142,7 +148,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 label=''
                                 disabled={!this.props.isEditing}
                                 type='date'
-                                value={first.startTime}
+                                value={startTime}
                                 onChange={this.updateStartDates(routePaths)}
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
@@ -153,7 +159,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 label=''
                                 disabled={!this.props.isEditing}
                                 type='date'
-                                value={first.endTime}
+                                value={endTime}
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}

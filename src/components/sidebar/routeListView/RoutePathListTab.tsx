@@ -14,6 +14,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
+import { getMaxDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
@@ -119,6 +120,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         list.forEach((routePaths: IRoutePath[]) => {
             routePaths.sort((a: IRoutePath, b: IRoutePath) => (a.direction === '1' ? -1 : 1));
         });
+
+        if (list[0][0].startTime.getTime() > getMaxDate().getTime()) {
+            const newRoutePaths = _.cloneDeep(list[0]);
+            list.shift();
+            newRoutePaths.forEach((newRp) => {
+                list.unshift([newRp]);
+            });
+        }
+
         return list;
     };
 
@@ -267,7 +277,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 }
             });
         });
-
         return (
             <div className={s.routePathListTab}>
                 {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {

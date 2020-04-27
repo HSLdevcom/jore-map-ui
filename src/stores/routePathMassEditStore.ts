@@ -3,6 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
+import { getMaxDate } from '~/utils/dateUtils';
 import { IRoutePathToCopy } from './copyRoutePathStore';
 import NavigationStore from './navigationStore';
 import RouteListStore from './routeListStore';
@@ -134,7 +135,7 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public addRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
+    public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
         const newMassEditRoutePaths: IMassEditRoutePath[] = [];
         let idCounter = this._newRoutePathIdCounter;
         routePathsToCopy.forEach((rpToCopy) => {
@@ -143,8 +144,11 @@ class RoutePathMassEditStore {
             const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
             newRoutePath.direction = rpToCopy.direction;
             newRoutePath.internalId = newRoutePathId;
-            // TODO? newRoutePath.startTime = undefined;
-            // TODO? newRoutePath.endTime = undefined;
+
+            const maxDatePlusOne = getMaxDate();
+            maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
+            newRoutePath.startTime = _.cloneDeep(maxDatePlusOne);
+            newRoutePath.endTime = _.cloneDeep(maxDatePlusOne);
             newMassEditRoutePaths.push({
                 oldRoutePath,
                 id: newRoutePathId,

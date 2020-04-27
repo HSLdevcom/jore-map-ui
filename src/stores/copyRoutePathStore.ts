@@ -89,7 +89,7 @@ class CopyRoutePathStore {
 
     @action
     public copyRoutePathPair = () => {
-        RoutePathMassEditStore.addRoutePaths(this._routePathsToCopy);
+        RoutePathMassEditStore.addCopiedRoutePaths(this._routePathsToCopy);
         this.clear();
     };
 
