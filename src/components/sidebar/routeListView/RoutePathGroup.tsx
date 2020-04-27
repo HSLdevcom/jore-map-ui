@@ -38,113 +38,6 @@ interface IRoutePathGroupProps {
 @inject('userStore', 'routeListStore', 'routePathMassEditStore')
 @observer
 class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
-    private renderRoutePathList = (routePaths: IRoutePath[]) => {
-        return routePaths.map((routePath: IRoutePath) => {
-            const toggleRoutePathVisibility = () => {
-                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
-            };
-
-            const openRoutePathView = () => {
-                const routePathViewLink = routeBuilder
-                    .to(subSites.routePath)
-                    .toTarget(
-                        ':id',
-                        [
-                            routePath.routeId,
-                            Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                            routePath.direction,
-                        ].join(',')
-                    )
-                    .toLink();
-                navigator.goTo({ link: routePathViewLink });
-            };
-
-            const shouldHighlightRoutePath = this.isCurrentTimeWithinRoutePathTimeSpan(routePath);
-            const stopNames = this.props.stopNameMap.get(routePath.internalId);
-            const isLoading = !stopNames && this.props.areStopNamesLoading;
-            const stopOriginFi = stopNames?.firstStopName ? stopNames.firstStopName : '-';
-            const stopDestinationFi = stopNames?.lastStopName ? stopNames?.lastStopName : '-';
-            const stopDestinations = `${stopOriginFi} - ${stopDestinationFi}`;
-            const routePathDestinations = `${routePath.originFi} - ${routePath.destinationFi}`;
-            const isEditing = this.props.isEditing;
-            const massEditRp = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                (m) => m.routePath.internalId === routePath.internalId
-            )!;
-            return (
-                <div
-                    className={classnames(
-                        s.routePathContainer,
-                        isEditing && massEditRp.isNew ? s.highlighAsNew : undefined
-                    )}
-                    key={routePath.internalId}
-                >
-                    <div
-                        className={
-                            shouldHighlightRoutePath
-                                ? classnames(s.routePathInfo, s.highlight)
-                                : s.routePathInfo
-                        }
-                    >
-                        <div className={s.routePathDirection}>{routePath.direction}</div>
-                        <div>
-                            {isLoading ? (
-                                <Loader
-                                    containerClassName={s.stopNameLoader}
-                                    size='tiny'
-                                    hasNoMargin={true}
-                                />
-                            ) : (
-                                <>
-                                    <div className={s.destinations1}>
-                                        {this.props.userStore!.userTransitType === TransitType.BUS
-                                            ? routePathDestinations
-                                            : stopDestinations}
-                                    </div>
-                                    <div className={s.destinations2}>
-                                        {this.props.userStore!.userTransitType === TransitType.BUS
-                                            ? stopDestinations
-                                            : routePathDestinations}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <div className={s.routePathControls}>
-                        {isEditing && massEditRp.isNew && (
-                            <Button
-                                className={s.removeNewRoutePathButton}
-                                hasReverseColor={true}
-                                onClick={this.props.removeNewRoutePath(routePath.internalId)}
-                            >
-                                <FaTrashAlt />
-                            </Button>
-                        )}
-                        <Button
-                            className={s.openRoutePathViewButton}
-                            hasReverseColor={true}
-                            onClick={openRoutePathView}
-                            data-cy='openRoutePathViewButton'
-                        >
-                            <FiInfo />
-                        </Button>
-                        <ToggleSwitch
-                            onClick={toggleRoutePathVisibility}
-                            value={routePath.visible}
-                            color={routePath.visible ? routePath.color! : '#898989'}
-                        />
-                    </div>
-                </div>
-            );
-        });
-    };
-
-    private isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
-        return (
-            Moment(routePath.startTime).isBefore(Moment()) &&
-            Moment(routePath.endTime).isAfter(Moment())
-        );
-    };
-
     private updateStartDates = (routePaths: IRoutePath[]) => (value: Date) => {
         routePaths.forEach((rp) => {
             this.props.routePathMassEditStore!.updateRoutePathStartDate(rp.internalId, value);
@@ -155,6 +48,25 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         routePaths.forEach((rp) => {
             this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
         });
+    };
+
+    private toggleRoutePathVisibility = (id: string) => () => {
+        this.props.routeListStore!.toggleRoutePathVisibility(id);
+    };
+
+    private openRoutePathView = (routePath: IRoutePath) => () => {
+        const routePathViewLink = routeBuilder
+            .to(subSites.routePath)
+            .toTarget(
+                ':id',
+                [
+                    routePath.routeId,
+                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                    routePath.direction,
+                ].join(',')
+            )
+            .toLink();
+        navigator.goTo({ link: routePathViewLink });
     };
 
     render() {
@@ -210,10 +122,110 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         <div>{header}</div>
                     )}
                 </div>
-                <div className={s.groupedRoutesContent}>{this.renderRoutePathList(routePaths)}</div>
+                <div className={s.groupedRoutesContent}>
+                    {routePaths.map((routePath: IRoutePath) => {
+                        const shouldHighlightRoutePath = _isCurrentTimeWithinRoutePathTimeSpan(
+                            routePath
+                        );
+                        const stopNames = this.props.stopNameMap.get(routePath.internalId);
+                        const isLoading = !stopNames && this.props.areStopNamesLoading;
+                        const stopOriginFi = stopNames?.firstStopName
+                            ? stopNames.firstStopName
+                            : '-';
+                        const stopDestinationFi = stopNames?.lastStopName
+                            ? stopNames?.lastStopName
+                            : '-';
+                        const stopDestinations = `${stopOriginFi} - ${stopDestinationFi}`;
+                        const routePathDestinations = `${routePath.originFi} - ${routePath.destinationFi}`;
+                        const isEditing = this.props.isEditing;
+                        const massEditRp = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
+                            (m) => m.routePath.internalId === routePath.internalId
+                        )!;
+                        return (
+                            <div
+                                className={classnames(
+                                    s.routePathContainer,
+                                    isEditing && massEditRp.isNew ? s.highlighAsNew : undefined
+                                )}
+                                key={routePath.internalId}
+                            >
+                                <div
+                                    className={
+                                        shouldHighlightRoutePath
+                                            ? classnames(s.routePathInfo, s.highlight)
+                                            : s.routePathInfo
+                                    }
+                                >
+                                    <div className={s.routePathDirection}>
+                                        {routePath.direction}
+                                    </div>
+                                    <div>
+                                        {isLoading ? (
+                                            <Loader
+                                                containerClassName={s.stopNameLoader}
+                                                size='tiny'
+                                                hasNoMargin={true}
+                                            />
+                                        ) : (
+                                            <>
+                                                <div className={s.destinations1}>
+                                                    {this.props.userStore!.userTransitType ===
+                                                    TransitType.BUS
+                                                        ? routePathDestinations
+                                                        : stopDestinations}
+                                                </div>
+                                                <div className={s.destinations2}>
+                                                    {this.props.userStore!.userTransitType ===
+                                                    TransitType.BUS
+                                                        ? stopDestinations
+                                                        : routePathDestinations}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className={s.routePathControls}>
+                                    {isEditing && massEditRp.isNew && (
+                                        <Button
+                                            className={s.removeNewRoutePathButton}
+                                            hasReverseColor={true}
+                                            onClick={this.props.removeNewRoutePath(
+                                                routePath.internalId
+                                            )}
+                                        >
+                                            <FaTrashAlt />
+                                        </Button>
+                                    )}
+                                    <Button
+                                        className={s.openRoutePathViewButton}
+                                        hasReverseColor={true}
+                                        onClick={this.openRoutePathView(routePath)}
+                                        data-cy='openRoutePathViewButton'
+                                    >
+                                        <FiInfo />
+                                    </Button>
+                                    <ToggleSwitch
+                                        onClick={this.toggleRoutePathVisibility(
+                                            routePath.internalId
+                                        )}
+                                        value={routePath.visible}
+                                        color={routePath.visible ? routePath.color! : '#898989'}
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         );
     }
 }
+
+const _isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
+    return (
+        Moment(routePath.startTime).isBefore(Moment()) &&
+        Moment(routePath.endTime).isAfter(Moment())
+    );
+};
 
 export default RoutePathGroup;
