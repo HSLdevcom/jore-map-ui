@@ -99,38 +99,57 @@ class RoutePathMassEditStore {
         this.validateMassEditRoutePaths();
     };
 
+    // Expects that routePaths are sorted
     @action
     public validateMassEditRoutePaths = () => {
-        this._massEditRoutePaths!.map((massEditRp: IMassEditRoutePath, index: number) => {
+        this._massEditRoutePaths!.map((currMassEditRp: IMassEditRoutePath, index: number) => {
+            const nextMassEditRp = _findNextMassEditRoutePath(
+                this._massEditRoutePaths!,
+                currMassEditRp,
+                index
+            );
+            if (
+                nextMassEditRp &&
+                nextMassEditRp.routePath.startTime.getTime() <
+                    currMassEditRp.routePath.endTime.getTime()
+            ) {
+                currMassEditRp.validationResult = {
+                    isValid: false,
+                    errorMessage: `Päivämäärät menevät päällekkäin edellisen reitinsuunnan (${_getRoutePathDescription(
+                        nextMassEditRp.routePath
+                    )}) kanssa`,
+                };
+                return currMassEditRp;
+            }
+
             const prevRoutePathWithGap = _getPreviousRoutePathWithGap(
-                massEditRp,
+                currMassEditRp,
                 this._massEditRoutePaths!,
                 index,
-                massEditRp.routePath.direction
+                currMassEditRp.routePath.direction
             );
-            if (massEditRp.routePath.startTime.getTime() > massEditRp.routePath.endTime.getTime()) {
-                massEditRp.validationResult = {
+            if (
+                currMassEditRp.routePath.startTime.getTime() >
+                currMassEditRp.routePath.endTime.getTime()
+            ) {
+                currMassEditRp.validationResult = {
                     isValid: false,
                     errorMessage: 'Alkupäivämäärä on loppupäivämäärän jälkeen.',
                 };
             } else if (prevRoutePathWithGap) {
-                massEditRp.validationResult = {
+                currMassEditRp.validationResult = {
                     isValid: true,
-                    errorMessage: `Tämän ja edellisen reitinsuunnan (${
-                        prevRoutePathWithGap.originFi
-                    } - ${prevRoutePathWithGap.destinationFi}, ${Moment(
-                        prevRoutePathWithGap.startTime
-                    ).format('DD.MM.YYYY')} - ${Moment(prevRoutePathWithGap.endTime).format(
-                        'DD.MM.YYYY'
+                    errorMessage: `Tämän ja edellisen reitinsuunnan (${_getRoutePathDescription(
+                        prevRoutePathWithGap
                     )}) päivämäärät eivät ole jatkuvia.`,
                 };
             } else {
-                massEditRp.validationResult = {
+                currMassEditRp.validationResult = {
                     isValid: true,
                     errorMessage: '',
                 };
             }
-            return massEditRp;
+            return currMassEditRp;
         });
     };
 
@@ -169,6 +188,30 @@ class RoutePathMassEditStore {
         this._massEditRoutePaths = null;
     };
 }
+
+const _getRoutePathDescription = (routePath: IRoutePath) => {
+    return `${routePath.originFi} - ${routePath.destinationFi}, ${Moment(
+        routePath.startTime
+    ).format('DD.MM.YYYY')} - ${Moment(routePath.endTime).format('DD.MM.YYYY')}`;
+};
+
+// Group above the current group
+const _findNextMassEditRoutePath = (
+    massEditRoutePaths: IMassEditRoutePath[],
+    currentMassEditRp: IMassEditRoutePath,
+    index: number
+): IMassEditRoutePath | null => {
+    if (index > 0) {
+        for (let i = index - 1; i >= 0; i -= 1) {
+            if (
+                massEditRoutePaths[i].routePath.direction === currentMassEditRp.routePath.direction
+            ) {
+                return massEditRoutePaths[i];
+            }
+        }
+    }
+    return null;
+};
 
 const _getPreviousRoutePathWithGap = (
     currentMassEditRp: IMassEditRoutePath,

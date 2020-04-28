@@ -341,6 +341,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     }
 }
 
+// Group above the current group
 const _findNextGroup = (
     groupedRoutePaths: IRoutePath[][],
     index: number,
@@ -348,7 +349,6 @@ const _findNextGroup = (
     hasDirection2: boolean
 ): IRoutePath[] | null => {
     if (index > 0) {
-        // Group above the current group
         for (let i = index - 1; i >= 0; i -= 1) {
             const currentGroup = groupedRoutePaths[i];
             if (_hasGroupRoutePathWithDirection(currentGroup, hasDirection1, hasDirection2)) {
@@ -359,6 +359,7 @@ const _findNextGroup = (
     return null;
 };
 
+// Group below the current group
 const _findPrevGroup = (
     groupedRoutePaths: IRoutePath[][],
     index: number,
@@ -366,7 +367,6 @@ const _findPrevGroup = (
     hasDirection2: boolean
 ): IRoutePath[] | null => {
     if (index < groupedRoutePaths.length - 1) {
-        // Group below the current group
         for (let i = index + 1; i < groupedRoutePaths.length; i += 1) {
             const currentGroup = groupedRoutePaths[i];
             if (_hasGroupRoutePathWithDirection(currentGroup, hasDirection1, hasDirection2)) {
