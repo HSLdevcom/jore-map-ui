@@ -5,6 +5,7 @@ import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { FiInfo } from 'react-icons/fi';
+import { IoMdHelpCircleOutline } from 'react-icons/io';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import Loader from '~/components/shared/loader/Loader';
@@ -201,6 +202,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             (m) => m.routePath.internalId === routePath.internalId
                         )!;
                         const isNew = massEditRp && massEditRp.isNew;
+                        const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
                         return (
                             <div
                                 className={classnames(
@@ -264,6 +266,28 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     >
                                         <FiInfo />
                                     </Button>
+                                    {isNew && (
+                                        <Button
+                                            className={s.openRoutePathViewButton}
+                                            onClick={() => void 0}
+                                            hasReverseColor={true}
+                                            title={
+                                                oldRoutePath
+                                                    ? `Kopioitu reitinsuunta: ${toDateString(
+                                                          oldRoutePath.startTime
+                                                      )} - ${toDateString(
+                                                          oldRoutePath.endTime
+                                                      )} | ${oldRoutePath.originFi} - ${
+                                                          oldRoutePath.destinationFi
+                                                      } | ${oldRoutePath.lineId} | ${
+                                                          oldRoutePath.routeId
+                                                      }`
+                                                    : ``
+                                            }
+                                        >
+                                            <IoMdHelpCircleOutline />
+                                        </Button>
+                                    )}
                                     <ToggleSwitch
                                         onClick={this.toggleRoutePathVisibility(
                                             routePath.internalId

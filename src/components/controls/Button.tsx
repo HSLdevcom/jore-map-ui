@@ -9,6 +9,7 @@ interface IButtonProps {
     onClick: () => void;
     type?: ButtonType;
     className?: string;
+    title?: string;
     disabled?: boolean;
     isWide?: boolean;
     hasPadding?: boolean;
@@ -34,6 +35,7 @@ const Button = observer((props: IButtonProps) => {
         onClick,
         type,
         className,
+        title,
         disabled,
         isWide,
         hasPadding,
@@ -62,6 +64,7 @@ const Button = observer((props: IButtonProps) => {
                 hasNoTransition ? null : s.transition
             )}
             onClick={_onClick}
+            title={title ? title : ''}
         >
             {children}
         </div>

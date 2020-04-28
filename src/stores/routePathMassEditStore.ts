@@ -3,7 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
-import { getMaxDate } from '~/utils/dateUtils';
+import { getMaxDate, toDateString } from '~/utils/dateUtils';
 import { IRoutePathToCopy } from './copyRoutePathStore';
 import NavigationStore from './navigationStore';
 import RouteListStore from './routeListStore';
@@ -206,9 +206,9 @@ class RoutePathMassEditStore {
 }
 
 const _getRoutePathDescription = (routePath: IRoutePath) => {
-    return `${routePath.originFi} - ${routePath.destinationFi}, ${Moment(
+    return `${routePath.originFi} - ${routePath.destinationFi}, ${toDateString(
         routePath.startTime
-    ).format('DD.MM.YYYY')} - ${Moment(routePath.endTime).format('DD.MM.YYYY')}`;
+    )} - ${toDateString(routePath.endTime)}`;
 };
 
 // Group above the current group
