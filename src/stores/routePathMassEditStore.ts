@@ -99,10 +99,56 @@ class RoutePathMassEditStore {
         this.validateMassEditRoutePaths();
     };
 
+    @action
+    public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
+        const newMassEditRoutePaths: IMassEditRoutePath[] = [];
+        let idCounter = this._newRoutePathIdCounter;
+        routePathsToCopy.forEach((rpToCopy) => {
+            const newRoutePathId = `new-${idCounter}`;
+            const newRoutePath = _.cloneDeep(rpToCopy.routePath);
+            const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
+            newRoutePath.direction = rpToCopy.direction;
+            newRoutePath.internalId = newRoutePathId;
+
+            const maxDatePlusOne = getMaxDate();
+            maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
+            newRoutePath.startTime = _.cloneDeep(maxDatePlusOne);
+            newRoutePath.endTime = _.cloneDeep(maxDatePlusOne);
+            newMassEditRoutePaths.push({
+                oldRoutePath,
+                id: newRoutePathId,
+                routePath: newRoutePath,
+                validationResult: {
+                    isValid: true,
+                },
+                isNew: true,
+            });
+            idCounter += 1;
+        });
+        this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
+        this._newRoutePathIdCounter = idCounter;
+        this.validateMassEditRoutePaths();
+    };
+
     // Expects that routePaths are sorted
     @action
     public validateMassEditRoutePaths = () => {
         this._massEditRoutePaths!.map((currMassEditRp: IMassEditRoutePath, index: number) => {
+            if (currMassEditRp.routePath.startTime.getTime() > getMaxDate().getTime()) {
+                currMassEditRp.validationResult = {
+                    isValid: false,
+                    errorMessage: 'Aseta alkupäivämäärä',
+                };
+                return currMassEditRp;
+            }
+            if (currMassEditRp.routePath.endTime.getTime() > getMaxDate().getTime()) {
+                currMassEditRp.validationResult = {
+                    isValid: false,
+                    errorMessage: 'Aseta loppupäivämäärä',
+                };
+                return currMassEditRp;
+            }
+
             const nextMassEditRp = _findNextMassEditRoutePath(
                 this._massEditRoutePaths!,
                 currMassEditRp,
@@ -151,36 +197,6 @@ class RoutePathMassEditStore {
             }
             return currMassEditRp;
         });
-    };
-
-    @action
-    public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
-        const newMassEditRoutePaths: IMassEditRoutePath[] = [];
-        let idCounter = this._newRoutePathIdCounter;
-        routePathsToCopy.forEach((rpToCopy) => {
-            const newRoutePathId = `new-${idCounter}`;
-            const newRoutePath = _.cloneDeep(rpToCopy.routePath);
-            const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
-            newRoutePath.direction = rpToCopy.direction;
-            newRoutePath.internalId = newRoutePathId;
-
-            const maxDatePlusOne = getMaxDate();
-            maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
-            newRoutePath.startTime = _.cloneDeep(maxDatePlusOne);
-            newRoutePath.endTime = _.cloneDeep(maxDatePlusOne);
-            newMassEditRoutePaths.push({
-                oldRoutePath,
-                id: newRoutePathId,
-                routePath: newRoutePath,
-                validationResult: {
-                    isValid: true,
-                },
-                isNew: true,
-            });
-            idCounter += 1;
-        });
-        this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
-        this._newRoutePathIdCounter = idCounter;
     };
 
     @action
