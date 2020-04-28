@@ -5,7 +5,7 @@ $hslFont: Gotham Rounded SSm A, Gotham Rounded SSm B, Arial, Georgia, Serif;
 
 $smallFontSize: 0.8rem;
 $mediumFontSize: 1rem;
-$largeFontSize: 1.5rem;
+$extraLargeFontSize: 1.5rem;
 
 $busBlue: rgb(0, 122, 201);
 $tramGreen: rgb(0, 152, 95);
@@ -66,7 +66,7 @@ $lightblue: #aaddff;
 :export {
     smallFontSize: $smallFontSize;
     mediumFontSize: $mediumFontSize;
-    largeFontSize: $largeFontSize;
+    extraLargeFontSize: $extraLargeFontSize;
     busBlue: $busBlue;
     unusedNodeColor: $unusedNodeColor;
     lightGrey: $lightGrey;
