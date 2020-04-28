@@ -89,14 +89,26 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         let minStartDate = undefined;
         let maxEndDate = undefined;
         if (isEditing) {
-            validationResult = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                (m) => m.routePath.internalId === first.internalId
-            )?.validationResult;
             const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
                 (massEditRp: IMassEditRoutePath) => {
                     return routePaths.find((rp) => rp.internalId === massEditRp.id);
                 }
             );
+            // Try to find validationResult with that is invalid (prefered) or has an errorMessage
+            let validationResultInvalid;
+            let validationResultWithErrorMessage;
+            currentMassEditRoutePaths!.forEach((massEditRp: IMassEditRoutePath) => {
+                const validationResult = massEditRp.validationResult;
+                if (!validationResult.isValid) {
+                    validationResultInvalid = validationResult;
+                }
+                if (!_.isEmpty(validationResult.errorMessage)) {
+                    validationResultWithErrorMessage = validationResult;
+                }
+            });
+            validationResult = validationResultInvalid
+                ? validationResultInvalid
+                : validationResultWithErrorMessage;
 
             const isNewRoutePathIncluded = Boolean(
                 currentMassEditRoutePaths!.find((massEditRp) => massEditRp.isNew)
