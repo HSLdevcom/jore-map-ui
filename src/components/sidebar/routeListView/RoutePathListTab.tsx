@@ -93,6 +93,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     }
 
     private updateGroupedRoutePathsToDisplay = (routePaths: IRoutePath[]) => {
+        if (routePaths.length === 0) return;
+
         const allGroupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
         const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
             ? allGroupedRoutePaths
