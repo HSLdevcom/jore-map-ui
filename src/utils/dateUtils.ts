@@ -22,6 +22,7 @@ const getMaxDate = () => {
     const maxDate = new Date();
     maxDate.setFullYear(constants.MAX_YEAR);
     maxDate.setMonth(0);
+    maxDate.setHours(0, 0, 0, 0);
     maxDate.setDate(1);
     return maxDate;
 };
@@ -30,6 +31,7 @@ const getMinDate = () => {
     const minDate = new Date();
     minDate.setFullYear(constants.MIN_YEAR);
     minDate.setMonth(0);
+    minDate.setHours(0, 0, 0, 0);
     minDate.setDate(1);
     return minDate;
 };

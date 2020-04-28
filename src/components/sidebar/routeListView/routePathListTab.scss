@@ -7,10 +7,9 @@
 
         .groupedRoutesDates {
             display: flex;
-
-            .groupedRoutesContent {
-                padding-left: 10px;
-            }
+        }
+        .groupedRoutesContent {
+            margin-top: 5px;
         }
     }
 
@@ -25,7 +24,7 @@
         flex-direction: row;
         -ms-flex-align: center;
         align-items: center;
-        padding-top: 5px;
+        padding: 5px;
 
         .routePathInfo {
             display: flex;
@@ -58,6 +57,7 @@
 
         .routePathControls {
             display: flex;
+            align-items: center;
 
             > * {
                 margin: 0 5px;
@@ -68,6 +68,19 @@
                 padding: 3px;
             }
         }
+    }
+
+    .highlighAsNew {
+        background-color: lighten($saveButtonGreen, 50);
+    }
+
+    .removeNewRoutePathButton {
+        border: none;
+        color: $red;
+    }
+    .removeNewRoutePathButton:hover {
+        color: white;
+        background-color: $red;
     }
 }
 

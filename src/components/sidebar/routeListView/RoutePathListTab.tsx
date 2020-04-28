@@ -1,19 +1,10 @@
-import classNames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
-import { FiInfo } from 'react-icons/fi';
-import { Button } from '~/components/controls';
-import InputContainer from '~/components/controls/InputContainer';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
-import Loader from '~/components/shared/loader/Loader';
-import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import subSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
@@ -23,9 +14,8 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
-import { UserStore } from '~/stores/userStore';
-import { toDateString } from '~/utils/dateUtils';
-import ToggleSwitch from '../../controls/ToggleSwitch';
+import { getMaxDate } from '~/utils/dateUtils';
+import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
 interface IRoutePathStopNames {
@@ -41,7 +31,6 @@ interface IRoutePathListTabProps {
     routeListStore?: RouteListStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
-    userStore?: UserStore;
     loginStore?: LoginStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
@@ -57,7 +46,15 @@ interface IRoutePathListTabState {
 
 const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
-@inject('routeListStore', 'mapStore', 'confirmStore', 'userStore', 'loginStore', 'alertStore', 'errorStore', 'routePathMassEditStore')
+@inject(
+    'routeListStore',
+    'mapStore',
+    'confirmStore',
+    'loginStore',
+    'alertStore',
+    'errorStore',
+    'routePathMassEditStore'
+)
 @observer
 class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
     private _isMounted: boolean;
@@ -67,7 +64,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             stopNameMap: new Map(),
             areStopNamesLoading: true,
             allGroupedRoutePaths: [],
-            groupedRoutePathsToDisplay: []
+            groupedRoutePathsToDisplay: [],
         };
     }
 
@@ -79,12 +76,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentWillMount() {
         this._isMounted = true;
-        this.updateGroupedRoutePathsToDisplay();
+        this.updateGroupedRoutePathsToDisplay(this.props.routePaths);
     }
 
     componentDidUpdate(prevProps: IRoutePathListTabProps) {
-        if (prevProps.areAllRoutePathsVisible !== this.props.areAllRoutePathsVisible || !_.isEqual(prevProps.routePaths, this.props.routePaths)) {
-            this.updateGroupedRoutePathsToDisplay();
+        if (
+            prevProps.areAllRoutePathsVisible !== this.props.areAllRoutePathsVisible ||
+            !_.isEqual(prevProps.routePaths, this.props.routePaths)
+        ) {
+            this.updateGroupedRoutePathsToDisplay(this.props.routePaths);
         }
     }
 
@@ -92,8 +92,9 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this._isMounted = false;
     }
 
-    private updateGroupedRoutePathsToDisplay = () => {
-        const routePaths = this.props.routePaths;
+    private updateGroupedRoutePathsToDisplay = (routePaths: IRoutePath[]) => {
+        if (routePaths.length === 0) return;
+
         const allGroupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
         const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
             ? allGroupedRoutePaths
@@ -101,14 +102,14 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
             allGroupedRoutePaths,
-            groupedRoutePathsToDisplay
+            groupedRoutePathsToDisplay,
         });
         this.setRoutePathsVisible(groupedRoutePathsToDisplay);
-    }
+    };
 
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
         const res = {};
-        routePaths.forEach(rp => {
+        routePaths.forEach((rp) => {
             const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
@@ -119,15 +120,24 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 b[0].startTime.getTime() - a[0].startTime.getTime()
         );
         list.forEach((routePaths: IRoutePath[]) => {
-            routePaths.sort((a: IRoutePath, b: IRoutePath) => a.direction === '1' ? -1 : 1);
+            routePaths.sort((a: IRoutePath, b: IRoutePath) => (a.direction === '1' ? -1 : 1));
         });
+
+        if (list[0][0].startTime.getTime() > getMaxDate().getTime()) {
+            const newRoutePaths = _.cloneDeep(list[0]);
+            list.shift();
+            newRoutePaths.forEach((newRp) => {
+                list.unshift([newRp]);
+            });
+        }
+
         return list;
     };
 
     private fetchStopNames = async (groupedRoutePathsToDisplay: IRoutePath[][]) => {
         const stopNameMap = this.state.stopNameMap;
         this._setState({
-            areStopNamesLoading: true
+            areStopNamesLoading: true,
         });
         const promises: Promise<void>[] = [];
         for (const routePaths of groupedRoutePathsToDisplay) {
@@ -136,13 +146,25 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 const oldStopNames = stopNameMap.get(routePath.internalId);
                 if (!oldStopNames) {
                     const createPromise = async () => {
-                        const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath({
-                            routeId: routePath.routeId,
-                            direction: routePath.direction,
-                            startTime: routePath.startTime
-                        });
+                        let direction = routePath.direction;
+                        let startTime = routePath.startTime;
+                        if (this.props.isEditing) {
+                            // Have to use old routePath's data for querying, current routePath's data might have changed
+                            const oldRoutePath = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
+                                (rp) => rp.id === routePath.internalId
+                            )!.oldRoutePath!;
+                            direction = oldRoutePath.direction;
+                            startTime = oldRoutePath.startTime;
+                        }
+                        const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath(
+                            {
+                                direction,
+                                startTime,
+                                routeId: routePath.routeId,
+                            }
+                        );
                         stopNameMap.set(routePath.internalId, stopNames as IRoutePathStopNames);
-                    }
+                    };
                     promises.push(createPromise());
                 }
             }
@@ -151,10 +173,10 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         Promise.all(promises).then(() => {
             this._setState({
                 stopNameMap,
-                areStopNamesLoading: false
+                areStopNamesLoading: false,
             });
-        })
-    }
+        });
+    };
 
     private setRoutePathsVisible = (groupedRoutePathsToDisplay: IRoutePath[][]) => {
         let isAnyRoutePathVisible = false;
@@ -163,8 +185,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 if (routePath.visible) {
                     isAnyRoutePathVisible = true;
                 }
-            })
-        })
+            });
+        });
         if (!isAnyRoutePathVisible) {
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
@@ -174,183 +196,45 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             routePath.internalId
                         );
                     }
-                })
-            })
+                });
+            });
         }
-    }
-
-    // TODO: move into GroupedRoutePaths.tsx?
-    private renderGroupedRoutePaths = (groupedRoutePaths: IRoutePath[][]) => {
-        return groupedRoutePaths.map((routePaths: IRoutePath[], index) => {
-            const hasDirection1 = Boolean(routePaths.find(rp => rp.direction === '1'));
-            const hasDirection2 = Boolean(routePaths.find(rp => rp.direction === '2'));
-            // Group above the current group
-            const nextGroup: IRoutePath[] | null = _findNextGroup(groupedRoutePaths, index, hasDirection1, hasDirection2);
-            // Group below the current group
-            const prevGroup: IRoutePath[] | null = _findPrevGroup(groupedRoutePaths, index, hasDirection1, hasDirection2);
-
-            let minStartDate = undefined;
-            let maxEndDate = undefined;
-            if (prevGroup) {
-                minStartDate = _.cloneDeep(prevGroup[0].endTime);
-                minStartDate.setDate(minStartDate.getDate() + 1);
-            }
-            if (nextGroup) {
-                maxEndDate = _.cloneDeep(nextGroup[0].startTime);
-                maxEndDate.setDate(maxEndDate.getDate() - 1);
-            }
-            const isEditing = this.props.isEditing;
-            const first = routePaths[0];
-            const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
-
-            const validationResult = this.props.routePathMassEditStore!.massEditRoutePaths?.find(m => m.routePath.internalId === first.internalId)?.validationResult;
-            return (
-                <div
-                    key={header}
-                    className={classNames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
-                >
-                    <div className={s.groupedRoutesDates}>
-                    {isEditing ? (
-                    <>
-                        <InputContainer
-                            label=''
-                            disabled={!this.props.isEditing}
-                            type='date'
-                            value={first.startTime}
-                            onChange={this.updateStartDates(routePaths)}
-                            validationResult={validationResult}
-                            minStartDate={minStartDate}
-                            maxEndDate={maxEndDate}
-                        />
-                        <InputContainer
-                            label=''
-                            disabled={!this.props.isEditing}
-                            type='date'
-                            value={first.endTime}
-                            onChange={this.updateEndDates(routePaths)}
-                            minStartDate={minStartDate}
-                            maxEndDate={maxEndDate}
-                        />
-                    </>
-                    ) : (
-                        <div>{header}</div>
-                    )}
-                    </div>
-                    <div className={s.groupedRoutesContent}>
-                        {this.renderRoutePathList(routePaths)}
-                    </div>
-                </div>
-            );
-        });
-    };
-
-    private updateStartDates = (routePaths: IRoutePath[]) => (value: Date) => {
-        routePaths.forEach(rp => {
-            this.props.routePathMassEditStore!.updateRoutePathStartDate(rp.internalId, value);
-        })
-    }
-
-    private updateEndDates = (routePaths: IRoutePath[]) => (value: Date) => {
-        routePaths.forEach(rp => {
-            this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
-        })
-    }
-
-    private renderRoutePathList = (routePaths: IRoutePath[]) => {
-        return routePaths.map((routePath: IRoutePath) => {
-            const toggleRoutePathVisibility = () => {
-                this.props.routeListStore!.toggleRoutePathVisibility(routePath.internalId);
-            };
-
-            const openRoutePathView = () => {
-                const routePathViewLink = routeBuilder
-                    .to(subSites.routePath)
-                    .toTarget(
-                        ':id',
-                        [
-                            routePath.routeId,
-                            Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                            routePath.direction
-                        ].join(',')
-                    )
-                    .toLink();
-                navigator.goTo({ link: routePathViewLink });
-            };
-
-            const shouldHighlightRoutePath = this.isCurrentTimeWithinRoutePathTimeSpan(routePath);
-            const stopNames = this.state.stopNameMap.get(routePath.internalId);
-            const isLoading = !stopNames && this.state.areStopNamesLoading;
-            const stopOriginFi = stopNames?.firstStopName ? stopNames.firstStopName : '-';
-            const stopDestinationFi = stopNames?.lastStopName ? stopNames?.lastStopName : '-';
-            const stopDestinations = `${stopOriginFi} - ${stopDestinationFi}`;
-            const routePathDestinations = `${routePath.originFi} - ${routePath.destinationFi}`;
-            return (
-                <div className={s.routePathContainer} key={routePath.internalId}>
-                    <div
-                        className={
-                            shouldHighlightRoutePath
-                                ? classNames(s.routePathInfo, s.highlight)
-                                : s.routePathInfo
-                        }
-                    >
-                        <div className={s.routePathDirection}>{routePath.direction}</div>
-                        <div>
-                            {isLoading ? (
-                                <Loader containerClassName={s.stopNameLoader} size='tiny' hasNoMargin={true} />
-                            ) : (
-                                <>
-                                    <div className={s.destinations1}>
-                                        {this.props.userStore!.userTransitType === TransitType.BUS ? routePathDestinations : stopDestinations}
-                                    </div>
-                                    <div className={s.destinations2}>
-                                        {this.props.userStore!.userTransitType === TransitType.BUS ? stopDestinations : routePathDestinations}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                    <div className={s.routePathControls}>
-                        <ToggleSwitch
-                            onClick={toggleRoutePathVisibility}
-                            value={routePath.visible}
-                            color={routePath.visible ? routePath.color! : '#898989'}
-                        />
-                        <Button
-                            className={s.openRoutePathViewButton}
-                            hasReverseColor={true}
-                            onClick={openRoutePathView}
-                            data-cy='openRoutePathViewButton'
-                        >
-                            <FiInfo />
-                        </Button>
-                    </div>
-                </div>
-            );
-        });
     };
 
     private isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
-        return Moment(routePath.startTime).isBefore(Moment()) &&
-            Moment(routePath.endTime).isAfter(Moment());
+        return (
+            Moment(routePath.startTime).isBefore(Moment()) &&
+            Moment(routePath.endTime).isAfter(Moment())
+        );
     };
 
     private showSavePrompt = () => {
         const confirmStore = this.props.confirmStore;
         const saveModels: ISaveModel[] = [];
-        this.props.routePathMassEditStore!.massEditRoutePaths!.forEach(massEditRp => {
+        this.props.routePathMassEditStore!.massEditRoutePaths!.forEach((massEditRp) => {
+            const newRoutePath = _.cloneDeep(massEditRp.routePath);
+            delete newRoutePath.internalId;
+            const oldRoutePath = _.cloneDeep(massEditRp.oldRoutePath);
+            if (oldRoutePath) {
+                delete oldRoutePath['internalId'];
+                if (massEditRp.isNew) {
+                    delete oldRoutePath['startTime'];
+                    delete oldRoutePath['endTime'];
+                }
+            }
             saveModels.push({
                 type: 'saveModel',
-                newData: massEditRp.routePath,
-                oldData: massEditRp.oldRoutePath ? massEditRp.oldRoutePath : {},
-                subTopic: `${massEditRp.routePath.originFi} - ${massEditRp.routePath.destinationFi}`,
-                model: 'routePath'
-            })
+                newData: newRoutePath,
+                oldData: oldRoutePath ? oldRoutePath : {},
+                subTopic: `${newRoutePath.originFi} - ${newRoutePath.destinationFi}`,
+                model: 'routePath',
+            });
         });
         confirmStore!.openConfirm({
             content: <SavePrompt models={saveModels} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -358,7 +242,9 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this._setState({ isLoading: true });
 
         try {
-            await RoutePathMassEditService.massEditRoutePaths(this.props.routePathMassEditStore!.massEditRoutePaths!);
+            await RoutePathMassEditService.massEditRoutePaths(
+                this.props.routePathMassEditStore!.massEditRoutePaths!
+            );
             this.props.routePathMassEditStore!.clear();
             // TODO: clear & fetch routePaths
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
@@ -366,6 +252,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         this.props.routeListStore!.setRouteIdToEdit(null);
+    };
+
+    private removeNewRoutePath = (id: string) => () => {
+        this.props.routePathMassEditStore!.removeRoutePath(id);
+        // Remove routePath also from current props because routePaths in state doesn't get updated otherwise
+        const routePaths = _.cloneDeep(this.props.routePaths);
+        const removeIndex = routePaths.findIndex((rp) => rp.internalId === id);
+        routePaths.splice(removeIndex, 1);
+        this.updateGroupedRoutePathsToDisplay(routePaths);
     };
 
     render() {
@@ -379,10 +274,56 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
         const groupedRoutePathsToDisplay = this.state.groupedRoutePathsToDisplay;
         const allGroupedRoutePaths = this.state.allGroupedRoutePaths;
-        const isSaveButtonDisabled = !this.props.routePathMassEditStore!.isDirty || !this.props.routePathMassEditStore!.isFormValid;
+        const isSaveButtonDisabled =
+            !this.props.routePathMassEditStore!.isDirty ||
+            !this.props.routePathMassEditStore!.isFormValid;
+        let startAndEndDatesDirection1: Date[] = [];
+        let startAndEndDatesDirection2: Date[] = [];
+        groupedRoutePathsToDisplay.forEach((routePaths: IRoutePath[]) => {
+            routePaths.forEach((routePath: IRoutePath) => {
+                const excludedDates = [routePath.startTime, routePath.endTime];
+                if (routePath.direction === '1') {
+                    startAndEndDatesDirection1 = startAndEndDatesDirection1.concat(excludedDates);
+                } else {
+                    startAndEndDatesDirection2 = startAndEndDatesDirection2.concat(excludedDates);
+                }
+            });
+        });
         return (
             <div className={s.routePathListTab}>
-                {this.renderGroupedRoutePaths(groupedRoutePathsToDisplay)}
+                {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
+                    const hasDirection1 = Boolean(routePaths.find((rp) => rp.direction === '1'));
+                    const hasDirection2 = Boolean(routePaths.find((rp) => rp.direction === '2'));
+                    // Group above the current group
+                    const nextGroup: IRoutePath[] | null = _findNextGroup(
+                        groupedRoutePathsToDisplay,
+                        index,
+                        hasDirection1,
+                        hasDirection2
+                    );
+                    // Group below the current group
+                    const prevGroup: IRoutePath[] | null = _findPrevGroup(
+                        groupedRoutePathsToDisplay,
+                        index,
+                        hasDirection1,
+                        hasDirection2
+                    );
+                    return (
+                        <RoutePathGroup
+                            key={`routePathGroup-${index}`}
+                            routePaths={routePaths}
+                            nextGroup={nextGroup}
+                            prevGroup={prevGroup}
+                            isEditing={isEditing}
+                            stopNameMap={this.state.stopNameMap}
+                            areStopNamesLoading={this.state.areStopNamesLoading}
+                            index={index}
+                            excludedDatesDirection1={startAndEndDatesDirection1}
+                            excludedDatesDirection2={startAndEndDatesDirection2}
+                            removeNewRoutePath={this.removeNewRoutePath}
+                        />
+                    );
+                })}
                 {!isEditing && allGroupedRoutePaths.length > ROUTE_PATH_GROUP_SHOW_LIMIT && (
                     <div
                         className={s.toggleAllRoutePathsVisibleButton}
@@ -394,9 +335,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         <div className={s.toggleAllRoutePathsVisibleText}>
                             {this.props.areAllRoutePathsVisible
                                 ? `Piilota reitinsuunnat`
-                                : `Näytä kaikki reitinsuunnat (${
-                                      this.props.routePaths.length
-                                  })`}
+                                : `Näytä kaikki reitinsuunnat (${this.props.routePaths.length})`}
                         </div>
                     </div>
                 )}
@@ -414,12 +353,16 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     }
 }
 
-
-const _findNextGroup = (groupedRoutePaths: IRoutePath[][], index: number, hasDirection1: boolean, hasDirection2: boolean): IRoutePath[] | null => {
+// Group above the current group
+const _findNextGroup = (
+    groupedRoutePaths: IRoutePath[][],
+    index: number,
+    hasDirection1: boolean,
+    hasDirection2: boolean
+): IRoutePath[] | null => {
     if (index > 0) {
-         // Group above the current group
         for (let i = index - 1; i >= 0; i -= 1) {
-            const currentGroup = groupedRoutePaths[i]
+            const currentGroup = groupedRoutePaths[i];
             if (_hasGroupRoutePathWithDirection(currentGroup, hasDirection1, hasDirection2)) {
                 return currentGroup;
             }
@@ -428,11 +371,16 @@ const _findNextGroup = (groupedRoutePaths: IRoutePath[][], index: number, hasDir
     return null;
 };
 
-const _findPrevGroup = (groupedRoutePaths: IRoutePath[][], index: number, hasDirection1: boolean, hasDirection2: boolean): IRoutePath[] | null => {
+// Group below the current group
+const _findPrevGroup = (
+    groupedRoutePaths: IRoutePath[][],
+    index: number,
+    hasDirection1: boolean,
+    hasDirection2: boolean
+): IRoutePath[] | null => {
     if (index < groupedRoutePaths.length - 1) {
-        // Group below the current group
         for (let i = index + 1; i < groupedRoutePaths.length; i += 1) {
-            const currentGroup = groupedRoutePaths[i]
+            const currentGroup = groupedRoutePaths[i];
             if (_hasGroupRoutePathWithDirection(currentGroup, hasDirection1, hasDirection2)) {
                 return currentGroup;
             }
@@ -441,12 +389,18 @@ const _findPrevGroup = (groupedRoutePaths: IRoutePath[][], index: number, hasDir
     return null;
 };
 
-const _hasGroupRoutePathWithDirection = (routePaths: IRoutePath[], hasDirection1: boolean, hasDirection2: boolean) => {
-    return routePaths.find(rp => {
+const _hasGroupRoutePathWithDirection = (
+    routePaths: IRoutePath[],
+    hasDirection1: boolean,
+    hasDirection2: boolean
+) => {
+    return routePaths.find((rp) => {
         if (hasDirection1 && rp.direction === '1') return true;
         if (hasDirection2 && rp.direction === '2') return true;
         return false;
-    })
-}
+    });
+};
 
 export default RoutePathListTab;
+
+export { IRoutePathStopNames };

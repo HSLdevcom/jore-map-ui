@@ -9,6 +9,7 @@ import './index.scss';
 import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
 import ConfirmStore from './stores/confirmStore';
+import CopyRoutePathStore from './stores/copyRoutePathStore';
 import ErrorStore from './stores/errorStore';
 import HighlightEntityStore from './stores/highlightEntityStore';
 import LineHeaderMassEditStore from './stores/lineHeaderMassEditStore';
@@ -47,6 +48,7 @@ const stores = {
     routePathMassEditStore: RoutePathMassEditStore,
     routePathLinkMassEditStore: RoutePathLinkMassEditStore,
     routePathStore: RoutePathStore,
+    copyRoutePathStore: CopyRoutePathStore,
     routePathCopySegmentStore: RoutePathCopySegmentStore,
     searchStore: SearchStore,
     popupStore: PopupStore,
@@ -60,7 +62,7 @@ const stores = {
     confirmStore: ConfirmStore,
     highlightEntityStore: HighlightEntityStore,
     navigationStore: NavigationStore,
-    userStore: UserStore
+    userStore: UserStore,
 };
 
 ReactDOM.render(

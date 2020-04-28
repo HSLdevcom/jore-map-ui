@@ -22,7 +22,7 @@ class RouteService {
     ): Promise<IRoute | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
-            variables: { routeId }
+            variables: { routeId },
         });
         const externalRoute: IExternalRoute = queryResult.data.route;
         if (!externalRoute) {
@@ -40,7 +40,7 @@ class RouteService {
 
     public static fetchAllRouteIds = async (): Promise<string[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllRoutesQuery()
+            query: GraphqlQueries.getAllRoutesQuery(),
         });
 
         return queryResult.data.allReittis.nodes.map(
