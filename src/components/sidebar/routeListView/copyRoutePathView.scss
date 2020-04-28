@@ -82,6 +82,12 @@ $routePathTablePadding: 15px;
             }
         }
 
+        .findRoutePathTable {
+            display: flex;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
         .selectView {
             height: 100%;
             padding: 10px;

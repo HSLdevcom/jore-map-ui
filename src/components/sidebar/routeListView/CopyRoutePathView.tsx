@@ -273,7 +273,12 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                     </div>
                                 ) : (
                                     <>
-                                        <table className={s.routePathTable}>
+                                        <table
+                                            className={classnames(
+                                                s.routePathTable,
+                                                s.findRoutePathTable
+                                            )}
+                                        >
                                             <tbody className={s.routePathTableHeader}>
                                                 <tr>
                                                     <th align='left'>Suunta</th>
