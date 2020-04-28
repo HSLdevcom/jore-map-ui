@@ -154,7 +154,12 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 key={`${header}-${index}`}
                 className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
             >
-                <div className={s.groupedRoutesDates}>
+                <div
+                    className={classnames(
+                        s.groupedRoutesDates,
+                        !isEditing ? s.editingDisabledGroupedRoutesDates : undefined
+                    )}
+                >
                     {isEditing ? (
                         <>
                             <InputContainer
@@ -183,7 +188,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         <div>{header}</div>
                     )}
                 </div>
-                <div className={s.groupedRoutesContent}>
+                <div>
                     {routePaths.map((routePath: IRoutePath) => {
                         const shouldHighlightRoutePath = _isCurrentTimeWithinRoutePathTimeSpan(
                             routePath

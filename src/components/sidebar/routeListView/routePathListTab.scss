@@ -3,13 +3,13 @@
 
 .routePathListTab {
     .groupedRoutes {
-        padding: 10px 15px;
+        padding: 5px 10px;
 
         .groupedRoutesDates {
             display: flex;
         }
-        .groupedRoutesContent {
-            margin-top: 5px;
+        .editingDisabledGroupedRoutesDates {
+            padding: 5px;
         }
     }
 
@@ -24,7 +24,7 @@
         flex-direction: row;
         -ms-flex-align: center;
         align-items: center;
-        padding: 5px;
+        padding-top: 5px;
 
         .routePathInfo {
             display: flex;
