@@ -63,7 +63,7 @@ const SHORT_ID_OPTIONS_MAP = {
     95: ['Jä'],
     96: ['Tu'],
     97: ['Nu'],
-    98: ['Mä']
+    98: ['Mä'],
 };
 
 @inject('codeListStore', 'confirmStore', 'nodeStore')
@@ -73,7 +73,7 @@ class StopForm extends Component<IStopFormProps> {
         return stopAreas.map((stopArea: IStopArea) => {
             const item: IDropdownItem = {
                 value: `${stopArea.id}`,
-                label: `${stopArea.id} - ${stopArea.nameFi}`
+                label: `${stopArea.id} - ${stopArea.nameFi}`,
             };
             return item;
         });
@@ -92,7 +92,7 @@ class StopForm extends Component<IStopFormProps> {
                         );
                         const dropdownItem = {
                             value: nodeIdOption,
-                            label: `${nodeIdOption} - ${codeListLabel}`
+                            label: `${nodeIdOption} - ${codeListLabel}`,
                         };
                         dropdownItems.push(dropdownItem);
                     });
@@ -140,7 +140,7 @@ class StopForm extends Component<IStopFormProps> {
     private openCreateHastusAreaModal = () => {
         this.props.nodeStore!.setHastusArea({
             id: '',
-            name: ''
+            name: '',
         });
         this.props.nodeStore!.setOldHastusArea(null);
         this.props.confirmStore!.openConfirm({
@@ -154,13 +154,13 @@ class StopForm extends Component<IStopFormProps> {
                 this.props.saveHastusArea!({ isNewHastusArea: true });
             },
             confirmButtonText: 'Tallenna',
-            confirmType: 'save'
+            confirmType: 'save',
         });
     };
 
     private openEditHastusAreaModal = () => {
         const currentHastusArea = this.props.hastusAreas.find(
-            hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
+            (hastusArea) => hastusArea.id === this.props.node!.stop!.hastusId
         );
         this.props.nodeStore!.setHastusArea(currentHastusArea!);
         this.props.nodeStore!.setOldHastusArea(currentHastusArea!);
@@ -169,7 +169,7 @@ class StopForm extends Component<IStopFormProps> {
                 <HastusAreaForm
                     isNewHastusArea={false}
                     existingHastusAreas={this.props.hastusAreas.filter(
-                        hastusArea => hastusArea.id !== currentHastusArea!.id
+                        (hastusArea) => hastusArea.id !== currentHastusArea!.id
                     )}
                 />
             ),
@@ -177,7 +177,7 @@ class StopForm extends Component<IStopFormProps> {
                 this.props.saveHastusArea!({ isNewHastusArea: false });
             },
             confirmButtonText: 'Tallenna',
-            confirmType: 'save'
+            confirmType: 'save',
         });
     };
 
@@ -187,7 +187,7 @@ class StopForm extends Component<IStopFormProps> {
         return stopSections.map((stopSection: IStopSectionItem) => {
             const item: IDropdownItem = {
                 value: `${stopSection.selite}`,
-                label: `${stopSection.selite}`
+                label: `${stopSection.selite}`,
             };
             return item;
         });
@@ -197,7 +197,7 @@ class StopForm extends Component<IStopFormProps> {
         return hastusAreas.map((hastusArea: IHastusArea) => {
             const item: IDropdownItem = {
                 value: `${hastusArea.id}`,
-                label: `${hastusArea.id} - ${hastusArea.name}`
+                label: `${hastusArea.id} - ${hastusArea.name}`,
             };
             return item;
         });
@@ -216,17 +216,15 @@ class StopForm extends Component<IStopFormProps> {
             toggleTransitType,
             onNodePropertyChange,
             updateStopProperty,
-            isReadOnly
+            isReadOnly,
         } = this.props;
         const stop = node.stop!;
         const currentHastusArea = hastusAreas.find(
-            hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
+            (hastusArea) => hastusArea.id === this.props.node!.stop!.hastusId
         );
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader isCloseButtonVisible={true} isBackButtonVisible={true}>
-                    Pysäkin tiedot
-                </SidebarHeader>
+                <SidebarHeader>Pysäkin tiedot</SidebarHeader>
                 <div className={s.formSection}>
                     {isTransitToggleButtonBarVisible && (
                         <div className={s.flexRow}>
@@ -249,7 +247,7 @@ class StopForm extends Component<IStopFormProps> {
                             selected={node.shortIdLetter}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             items={this.getShortIdLetterDropdownItems(node.id)}
                         />
@@ -287,7 +285,7 @@ class StopForm extends Component<IStopFormProps> {
                             selected={stop.stopAreaId}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
@@ -403,7 +401,7 @@ class StopForm extends Component<IStopFormProps> {
                             selected={stop.section}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             disabled={isEditingDisabled}
                             label='VYÖHYKE'
@@ -452,7 +450,7 @@ class StopForm extends Component<IStopFormProps> {
                             selected={stop.hastusId}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             disabled={isEditingDisabled}
                             label='HASTUS-PAIKKA'

@@ -61,7 +61,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             nodeIdSuffixOptions: [],
             isNodeIdSuffixQueryLoading: false,
             isRoutePathsUsingNodeQueryLoading: false,
-            routePathsUsingNode: []
+            routePathsUsingNode: [],
         };
     }
 
@@ -132,13 +132,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         if (!nodeId) {
             this.props.alertStore!.setNotificationMessage({
                 message:
-                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.'
+                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.',
             });
             this.props.nodeStore!.setIsNodeIdEditable(true);
             return '';
         }
         return nodeId;
-    }
+    };
 
     private initExistingNode = async (nodeId: string) => {
         const nodeStore = this.props.nodeStore!;
@@ -162,7 +162,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     this.updateSelectedStopAreaId();
                 },
                 oldNode: node!,
-                oldLinks: links!
+                oldLinks: links!,
             });
         } else {
             this.initNode(node!, links!);
@@ -177,38 +177,39 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
-        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: this.props.isNewNode });
+        this.props.nodeStore!.init({
+            node,
+            links,
+            oldNode,
+            oldLinks,
+            isNewNode: this.props.isNewNode,
+        });
     };
 
     private showNodeCachePrompt = ({
         nodeCacheObj,
         promptCancelCallback,
         oldNode,
-        oldLinks
+        oldLinks,
     }: {
         nodeCacheObj: INodeCacheObj;
         promptCancelCallback: Function;
         oldNode?: INode;
         oldLinks?: ILink[];
-        }) => {
+    }) => {
         const nodeStore = this.props.nodeStore;
         this.props.confirmStore!.openConfirm({
             content:
                 'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
             onConfirm: async () => {
-                this.initNode(
-                    nodeCacheObj.node,
-                    nodeCacheObj.links,
-                    oldNode,
-                    oldLinks
-                );
+                this.initNode(nodeCacheObj.node, nodeCacheObj.links, oldNode, oldLinks);
                 this.updateSelectedStopAreaId();
                 await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
                 nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
             },
-            onCancel: async () => await promptCancelCallback()
+            onCancel: async () => await promptCancelCallback(),
         });
     };
 
@@ -230,9 +231,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (e) {
             this.props.errorStore!.addError(
-                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
-                    node.id
-                } (soltunnus), ei onnistunut.`,
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
                 e
             );
             return null;
@@ -244,9 +243,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const routePaths = await RoutePathService.fetchRoutePathsUsingNode(nodeId);
         this._setState({
             isRoutePathsUsingNodeQueryLoading: false,
-            routePathsUsingNode: routePaths
+            routePathsUsingNode: routePaths,
         });
-    }
+    };
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
         let latLngs: L.LatLng[] = [node.coordinates, node.coordinatesProjection];
@@ -279,14 +278,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     .toLink();
                 navigator.goTo({
                     link: nodeViewLink,
-                    shouldSkipUnsavedChangesPrompt: true
+                    shouldSkipUnsavedChangesPrompt: true,
                 });
                 nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
-                await NodeService.updateNode(
-                    nodeStore.node,
-                    nodeStore.getDirtyLinks()
-                );
+                await NodeService.updateNode(nodeStore.node, nodeStore.getDirtyLinks());
                 nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
                 this.initExistingNode(nodeStore.node.id);
                 nodeStore.setIsEditingDisabled(true);
@@ -311,26 +307,31 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             delete currentNode['stop'];
             delete oldNode['stop'];
 
-            if (currentNode.type === NodeType.CROSSROAD || currentNode.type === NodeType.MUNICIPALITY_BORDER) {
+            if (
+                currentNode.type === NodeType.CROSSROAD ||
+                currentNode.type === NodeType.MUNICIPALITY_BORDER
+            ) {
                 delete currentNode['measurementType'];
                 delete currentNode['coordinatesProjection'];
             }
         }
-        const saveModels: (ISaveModel|ITextModel)[] = [{
+        const saveModels: (ISaveModel | ITextModel)[] = [
+            {
                 type: 'saveModel',
                 subTopic: 'Solmu',
                 newData: currentNode,
                 oldData: oldNode,
-                model: 'node'
-        }]
+                model: 'node',
+            },
+        ];
 
         if (!_.isEqual(currentLinks, oldLinks)) {
             const textModel: ITextModel = {
-            type: 'textModel',
-            subTopic: 'Linkit',
-            oldText: 'Vanhat linkit',
-            newText: 'Uudet linkit'
-        }
+                type: 'textModel',
+                subTopic: 'Linkit',
+                oldText: 'Vanhat linkit',
+                newText: 'Uudet linkit',
+            };
             saveModels.push(textModel);
         }
 
@@ -346,7 +347,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 subTopic: 'Pysäkin tiedot',
                 newData: currentStop!,
                 oldData: oldStop!,
-                model: 'stop'
+                model: 'stop',
             };
             saveModels.push(stopSaveModel);
         }
@@ -355,7 +356,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             content: <SavePrompt models={saveModels} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -381,28 +382,30 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const nodeId = await this.fetchNodeId(this.props.nodeStore!.node);
         this.props.nodeStore!.updateNodeProperty('id', nodeId);
         this._setState({ isLoading: false });
-    }
+    };
 
     private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
         if (beginningOfNodeId.length === 5) {
             this._setState({
-                isNodeIdSuffixQueryLoading: true
+                isNodeIdSuffixQueryLoading: true,
             });
-            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(beginningOfNodeId);
+            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
+                beginningOfNodeId
+            );
             // slide(-2): get last two letters of a nodeId
             const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
             this._setState({
                 nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
-                isNodeIdSuffixQueryLoading: false
+                isNodeIdSuffixQueryLoading: false,
             });
         } else {
             if (this.state.nodeIdSuffixOptions.length > 0) {
                 this._setState({
-                    nodeIdSuffixOptions: []
+                    nodeIdSuffixOptions: [],
                 });
             }
         }
-    }
+    };
 
     private toggleTransitType = async (type: TransitType) => {
         const nodeStore = this.props.nodeStore!;
@@ -426,7 +429,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const nodeStore = this.props.nodeStore!;
         const node = nodeStore.node;
         if (this.state.isLoading || !node) {
-            return <div className={s.nodeView}><Loader /></div>
+            return (
+                <div className={s.nodeView}>
+                    <Loader />
+                </div>
+            );
         }
         const isNewNode = this.props.isNewNode;
         const isEditingDisabled = nodeStore.isEditingDisabled;
@@ -442,6 +449,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!isNewNode}
+                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >
@@ -470,13 +479,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             nodeInvalidPropertiesMap={invalidPropertiesMap}
                         />
                     )}
-                    { !isNewNode &&
-                        this.state.isRoutePathsUsingNodeQueryLoading ? (
-                            <Loader size={'small'} />
-                        ) : (
-                            <RoutePathList className={s.routePathList} topic={'Solmua käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingNode} />
-                        )
-                    }
+                    {!isNewNode && this.state.isRoutePathsUsingNodeQueryLoading ? (
+                        <Loader size={'small'} />
+                    ) : (
+                        <RoutePathList
+                            className={s.routePathList}
+                            topic={'Solmua käyttävät reitinsuunnat'}
+                            routePaths={this.state.routePathsUsingNode}
+                        />
+                    )}
                 </div>
                 <SaveButton
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}

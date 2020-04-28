@@ -40,7 +40,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
     constructor(props: IRouteViewProps) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoading: true,
         };
     }
 
@@ -80,7 +80,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         }
 
         this.setState({
-            isLoading: false
+            isLoading: false,
         });
     };
 
@@ -101,10 +101,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
     private redirectToLineView = () => {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
-        const lineViewLink = routeBuilder
-            .to(SubSites.line)
-            .toTarget(':id', lineId)
-            .toLink();
+        const lineViewLink = routeBuilder.to(SubSites.line).toTarget(':id', lineId).toLink();
         navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
@@ -127,7 +124,11 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             : 'Uuden reitin tallentamista ei vielä tueta, sillä vanha käyttöliittymä ei näytä reittiä ellei sillä ole olemassa olevaa reitinsuuntaa eikä reitinsuuntia voi vielä luoda uudella käyttöliittymällä. Voit kokeilla reitin luontia dev-ympäristössä. Jos haluat luoda reittejä tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={classnames(s.routeView, s.form)}>
-                <SidebarHeader isEditButtonVisible={false} isEditing={true}>
+                <SidebarHeader
+                    isBackButtonVisible={true}
+                    isCloseButtonVisible={true}
+                    isEditing={true}
+                >
                     <div>Luo uusi reitti linjalle {lineId}</div>
                 </SidebarHeader>
                 <div className={s.routeFormWrapper}>

@@ -154,9 +154,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             <div className={s.copyRoutePathView}>
                 <SidebarHeader
                     className={s.sidebarHeader}
-                    isCloseButtonVisible={true}
-                    isEditButtonVisible={false}
-                    isBackButtonVisible={false}
+                    isBackButtonVisible={true}
                     isEditPromptHidden={true}
                     onBackButtonClick={() => copyRoutePathStore.clear()}
                 >

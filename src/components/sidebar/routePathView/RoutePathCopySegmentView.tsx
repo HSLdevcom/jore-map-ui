@@ -97,7 +97,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             // orderNumbers start from 1
             let orderNumber =
                 this.props.routePathStore!.routePath!.routePathLinks.find(
-                    link => link.endNode.id === copyStartNodeId
+                    (link) => link.endNode.id === copyStartNodeId
                 )!.orderNumber + 1;
             for (let i = 0; i < segmentsToCopy.length; i += 1) {
                 await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
@@ -105,7 +105,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             }
         } else if (isOppositeDirection) {
             const orderNumber = this.props.routePathStore!.routePath!.routePathLinks.find(
-                link => link.startNode.id === copyEndNodeId
+                (link) => link.startNode.id === copyEndNodeId
             )!.orderNumber;
             for (let i = segmentsToCopy.length - 1; i >= 0; i -= 1) {
                 await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
@@ -121,7 +121,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         this.props.alertStore!.close();
         this.props.alertStore!.setFadeMessage({
             message: 'Segmentti kopioitu!',
-            type: AlertType.Success
+            type: AlertType.Success,
         });
     };
 
@@ -142,7 +142,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                 [
                     routePath.routeId,
                     Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                    routePath.direction
+                    routePath.direction,
                 ].join(',')
             )
             .toLink();
@@ -200,8 +200,8 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                 <SidebarHeader
                     className={s.header}
                     onCloseButtonClick={this.closeEditing}
-                    isBackButtonVisible={true}
-                    isCloseButtonVisible={false}
+                    isCloseButtonVisible={true}
+                    isBackButtonVisible={false}
                 >
                     Kopioitavat reitinsuuntasegmentit
                 </SidebarHeader>
@@ -209,7 +209,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                     {
                         hasError: this.renderErrorMessage(),
                         isLoading: <Loader size='small' />,
-                        showResults: this.renderResults()
+                        showResults: this.renderResults(),
                     }[state]
                 }
             </div>

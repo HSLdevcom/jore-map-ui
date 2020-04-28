@@ -342,7 +342,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                 <div key={index} className={s.routeListItem}>
                                     <SidebarHeader
                                         isEditing={isEditing}
-                                        isBackButtonVisible={true}
+                                        isCloseButtonVisible={true}
                                         isEditButtonVisible={true}
                                         isEditPromptHidden={true}
                                         onCloseButtonClick={() => this.closeRoutePrompt(route)}
