@@ -244,9 +244,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         }
 
         let promptMessage;
-        if (isEditingRoutePaths) {
-            promptMessage = `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`;
-        } else if (route.id === routeListStore.routeIdToEdit) {
+        if (isEditingRoutePaths || route.id === routeListStore.routeIdToEdit) {
             promptMessage = `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat lopettaa muokkaamisen? Tallentamattomat muutokset kumotaan.`;
         } else {
             promptMessage = `Sinulla on reitin ${routeStore.route.routeName} muokkaus kesken. Oletko varma, että haluat muokata toista reittiä? Tallentamattomat muutokset kumotaan.`;
