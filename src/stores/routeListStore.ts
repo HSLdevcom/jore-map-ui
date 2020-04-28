@@ -48,7 +48,7 @@ class RouteListStore {
     }
 
     public getLine(lineId: string): ILine | undefined {
-        return this._lines.find(line => line.id === lineId);
+        return this._lines.find((line) => line.id === lineId);
     }
 
     @action
@@ -58,7 +58,7 @@ class RouteListStore {
                 return {
                     route,
                     selectedTabIndex: 0,
-                    areAllRoutePathsVisible: false
+                    areAllRoutePathsVisible: false,
                 };
             }
         );
@@ -74,7 +74,7 @@ class RouteListStore {
     public removeFromRouteItems = (routeId: string) => {
         for (let i = 0; i < this._routeItems.length; i += 1) {
             if (this._routeItems[i].route.id === routeId) {
-                this._routeItems[i].route.routePaths.forEach(routePath =>
+                this._routeItems[i].route.routePaths.forEach((routePath) =>
                     this.colorScale.releaseColor(routePath.color!)
                 );
                 this._routeItems.splice(i, 1);
@@ -131,19 +131,19 @@ class RouteListStore {
 
     @action
     public setSelectedTabIndex = (routeId: string, index: number) => {
-        const routeItem = this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
         routeItem!.selectedTabIndex = index;
     };
 
     @action
     public toggleAllRoutePathsVisible = (routeId: string) => {
-        const routeItem = this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
         routeItem!.areAllRoutePathsVisible = !routeItem!.areAllRoutePathsVisible;
     };
 
     @action
     public setAllRoutePathsVisible = (routeId: string) => {
-        const routeItem = this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
         routeItem!.areAllRoutePathsVisible = true;
     };
 
@@ -156,14 +156,14 @@ class RouteListStore {
     };
 
     public getRouteItem = (routeId: string): IRouteItem | undefined => {
-        return this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        return this._routeItems.find((routeItem) => routeItem.route.id === routeId);
     };
 
     private getRoutePath = (internalId: string): IRoutePath | null => {
         let foundRoutePath: IRoutePath | null = null;
-        this._routeItems.find(routeItem => {
+        this._routeItems.find((routeItem) => {
             const found = routeItem.route.routePaths.find(
-                _routePath => _routePath.internalId === internalId
+                (_routePath) => _routePath.internalId === internalId
             );
             if (found) {
                 foundRoutePath = found;
