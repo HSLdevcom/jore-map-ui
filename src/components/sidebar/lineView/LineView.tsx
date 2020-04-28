@@ -51,7 +51,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         super(props);
         this.state = {
             isLoading: true,
-            selectedTabIndex: 0
+            selectedTabIndex: 0,
         };
     }
 
@@ -75,7 +75,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
 
     private setSelectedTabIndex = (index: number) => {
         this._setState({
-            selectedTabIndex: index
+            selectedTabIndex: index,
         });
     };
 
@@ -125,7 +125,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                     .toLink();
                 navigator.goTo({
                     link: lineViewLink,
-                    shouldSkipUnsavedChangesPrompt: true
+                    shouldSkipUnsavedChangesPrompt: true,
                 });
             } else {
                 await LineService.updateLine(line!);
@@ -146,14 +146,14 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             type: 'saveModel',
             newData: currentLine ? currentLine : {},
             oldData: oldLine,
-            model: 'line'
+            model: 'line',
         };
 
         confirmStore!.openConfirm({
             content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.saveLine();
-            }
+            },
         });
     };
 
@@ -176,6 +176,8 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                     <SidebarHeader
                         onEditButtonClick={lineStore!.toggleIsEditingDisabled}
                         isEditing={!lineStore!.isEditingDisabled}
+                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                     >
                         {this.props.isNewLine ? 'Luo uusi linja' : `Linja ja sen otsikot`}
                     </SidebarHeader>

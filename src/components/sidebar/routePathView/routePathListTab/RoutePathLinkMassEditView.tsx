@@ -44,7 +44,7 @@ class RoutePathLinkMassEditView extends React.Component<
         destinationSw2: '',
         destinationShieldFi: '',
         destinationShieldSw: '',
-        invalidPropertiesMap: {}
+        invalidPropertiesMap: {},
     };
     state = this.initialState;
 
@@ -63,7 +63,7 @@ class RoutePathLinkMassEditView extends React.Component<
                 destinationShieldSw: firstRpLink.destinationShieldSw
                     ? firstRpLink.destinationShieldSw
                     : '',
-                invalidPropertiesMap: {}
+                invalidPropertiesMap: {},
             });
         }
     }
@@ -89,14 +89,14 @@ class RoutePathLinkMassEditView extends React.Component<
     private editRoutePathLinks = () => {
         const routePathLinks = this.props.routePathLinks;
         if (this.state.editMode === 'via') {
-            routePathLinks.forEach(rpLink => {
+            routePathLinks.forEach((rpLink) => {
                 this.updateRoutePathLinkProperty(rpLink, 'destinationFi1');
                 this.updateRoutePathLinkProperty(rpLink, 'destinationFi2');
                 this.updateRoutePathLinkProperty(rpLink, 'destinationSw1');
                 this.updateRoutePathLinkProperty(rpLink, 'destinationSw2');
             });
         } else if (this.state.editMode === 'kilpiVia') {
-            routePathLinks.forEach(rpLink => {
+            routePathLinks.forEach((rpLink) => {
                 this.updateRoutePathLinkProperty(rpLink, 'destinationShieldFi');
                 this.updateRoutePathLinkProperty(rpLink, 'destinationShieldSw');
             });
@@ -118,7 +118,7 @@ class RoutePathLinkMassEditView extends React.Component<
 
     private setEditMode = (mode: EditMode | null) => {
         this.setState({
-            editMode: mode
+            editMode: mode,
         });
     };
 
@@ -161,7 +161,7 @@ class RoutePathLinkMassEditView extends React.Component<
             destinationSw2,
             destinationShieldFi,
             destinationShieldSw,
-            invalidPropertiesMap
+            invalidPropertiesMap,
         } = this.state;
 
         const routePathLinks = this.props.routePathLinks;
@@ -173,8 +173,8 @@ class RoutePathLinkMassEditView extends React.Component<
                     <SidebarHeader
                         onCloseButtonClick={this.closeEditing}
                         onBackButtonClick={() => this.setEditMode(null)}
-                        isBackButtonVisible={editMode === null}
-                        isCloseButtonVisible={false}
+                        isCloseButtonVisible={editMode === null}
+                        isBackButtonVisible={false}
                     >
                         {`Muokkaa valittuja pysäkkejä (${routePathLinks.length})`}
                     </SidebarHeader>

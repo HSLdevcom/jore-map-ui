@@ -76,7 +76,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoading: true,
         };
     }
 
@@ -105,11 +105,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private undo = () => {
         this.undoIfAllowed(this.props.routePathStore!.undo);
-    }
+    };
 
     private redo = () => {
         this.undoIfAllowed(this.props.routePathStore!.redo);
-    }
+    };
 
     private undoIfAllowed = (undo: () => void) => {
         if (this.props.toolbarStore!.areUndoButtonsDisabled) {
@@ -155,14 +155,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 );
                 this.props.routePathStore!.init({
                     routePath,
-                    isNewRoutePath: this.props.isNewRoutePath
+                    isNewRoutePath: this.props.isNewRoutePath,
                 });
             } else {
                 this.props.routePathStore!.init({
                     routePath: RoutePathFactory.createNewRoutePathFromOld(
                         this.props.routePathStore!.routePath!
                     ),
-                    isNewRoutePath: this.props.isNewRoutePath
+                    isNewRoutePath: this.props.isNewRoutePath,
                 });
             }
             this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
@@ -234,19 +234,17 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             const viaNames: IViaName[] = await ViaNameService.fetchViaName({
                 routeId: routePath.routeId,
                 startTime: routePath.startTime,
-                direction: routePath.direction
+                direction: routePath.direction,
             });
 
-            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldName(
-                {
-                    routeId: routePath.routeId,
-                    startTime: routePath.startTime,
-                    direction: routePath.direction
-                }
-            );
+            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldName({
+                routeId: routePath.routeId,
+                startTime: routePath.startTime,
+                direction: routePath.direction,
+            });
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-                const viaName = viaNames.find(viaName => viaName.viaNameId === routePathLink.id);
+                const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
                 if (viaName) {
                     routePathLink.viaNameId = viaName.viaNameId;
                     routePathLink.destinationFi1 = viaName?.destinationFi1;
@@ -254,14 +252,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     routePathLink.destinationSw1 = viaName?.destinationSw1;
                     routePathLink.destinationSw2 = viaName?.destinationSw2;
                 }
-                const viaShieldName = viaShieldNames.find(viaShieldName => viaShieldName.viaShieldNameId === routePathLink.id);
+                const viaShieldName = viaShieldNames.find(
+                    (viaShieldName) => viaShieldName.viaShieldNameId === routePathLink.id
+                );
                 if (viaShieldName) {
                     routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
                     routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
                     routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
                 }
             });
-
         } catch (err) {
             this.props.errorStore!.addError(
                 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.',
@@ -274,8 +273,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private centerMapToRoutePath = (routePath: IRoutePath) => {
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
 
-        routePath!.routePathLinks.forEach(link => {
-            link.geometry.forEach(pos => bounds.extend(pos));
+        routePath!.routePathLinks.forEach((link) => {
+            link.geometry.forEach((pos) => bounds.extend(pos));
         });
 
         this.props.mapStore!.setMapBounds(bounds);
@@ -295,7 +294,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         [
                             routePathPrimaryKey.routeId,
                             Moment(routePathPrimaryKey.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                            routePathPrimaryKey.direction
+                            routePathPrimaryKey.direction,
                         ].join(',')
                     )
                     .toLink();
@@ -321,13 +320,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             type: 'saveModel',
             newData: currentRoutePath ? currentRoutePath : {},
             oldData: oldRoutePath,
-            model: 'routePath'
+            model: 'routePath',
         };
         confirmStore!.openConfirm({
             content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -348,12 +347,16 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const isCopyRoutePathSegmentViewVisible =
             routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
         const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed ? routePathStore!.getSavePreventedText() : 'Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
+        const savePreventedNotification = isSaveAllowed
+            ? routePathStore!.getSavePreventedText()
+            : 'Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewRoutePath}
+                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                         onEditButtonClick={routePathStore!.toggleIsEditingDisabled}
                         isEditing={!routePathStore!.isEditingDisabled}
                     >
@@ -377,7 +380,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                     text={routePath.routeId}
                                     onClick={() =>
                                         NavigationUtils.openRouteView({
-                                            routeId: routePath.routeId
+                                            routeId: routePath.routeId,
                                         })
                                     }
                                     hoverText={`Avaa reitti ${routePath.routeId}`}
@@ -397,48 +400,48 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 {isCopyRoutePathSegmentViewVisible ? (
                     <RoutePathCopySegmentView />
                 ) : (
-                        <>
-                            <Tabs>
-                                <TabList
-                                    selectedTabIndex={routePathStore!.selectedTabIndex}
-                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
-                                >
-                                    <Tab>
-                                        <div>Reitinsuunnan tiedot</div>
-                                    </Tab>
-                                    <Tab>
-                                        <div>Solmut ja linkit</div>
-                                    </Tab>
-                                </TabList>
-                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
-                                    <ContentItem>
-                                        <RoutePathInfoTab
-                                            isEditingDisabled={isEditingDisabled}
-                                            routePath={this.props.routePathStore!.routePath!}
-                                            invalidPropertiesMap={
-                                                this.props.routePathStore!.invalidPropertiesMap
-                                            }
-                                        />
-                                    </ContentItem>
-                                    <ContentItem>
-                                        <RoutePathLinksTab
-                                            routePath={this.props.routePathStore!.routePath!}
-                                            isEditingDisabled={isEditingDisabled}
-                                        />
-                                    </ContentItem>
-                                </ContentList>
-                            </Tabs>
-                            <SaveButton
-                                onClick={this.showSavePrompt}
-                                disabled={isSaveAllowed && savePreventedNotification.length > 0}
-                                savePreventedNotification={savePreventedNotification}
-                                isWarningButton={!isSaveAllowed}
+                    <>
+                        <Tabs>
+                            <TabList
+                                selectedTabIndex={routePathStore!.selectedTabIndex}
+                                setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
                             >
-                                {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                            </SaveButton>
-                        </>
-                    )}
-                </div>
+                                <Tab>
+                                    <div>Reitinsuunnan tiedot</div>
+                                </Tab>
+                                <Tab>
+                                    <div>Solmut ja linkit</div>
+                                </Tab>
+                            </TabList>
+                            <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                                <ContentItem>
+                                    <RoutePathInfoTab
+                                        isEditingDisabled={isEditingDisabled}
+                                        routePath={this.props.routePathStore!.routePath!}
+                                        invalidPropertiesMap={
+                                            this.props.routePathStore!.invalidPropertiesMap
+                                        }
+                                    />
+                                </ContentItem>
+                                <ContentItem>
+                                    <RoutePathLinksTab
+                                        routePath={this.props.routePathStore!.routePath!}
+                                        isEditingDisabled={isEditingDisabled}
+                                    />
+                                </ContentItem>
+                            </ContentList>
+                        </Tabs>
+                        <SaveButton
+                            onClick={this.showSavePrompt}
+                            disabled={isSaveAllowed && savePreventedNotification.length > 0}
+                            savePreventedNotification={savePreventedNotification}
+                            isWarningButton={!isSaveAllowed}
+                        >
+                            {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
+                        </SaveButton>
+                    </>
+                )}
+            </div>
         );
     }
 }

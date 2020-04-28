@@ -27,8 +27,7 @@ class NodePopup extends Component<INodePopupProps> {
             <div className={s.nodePopup} data-cy='nodePopup'>
                 <div className={s.sidebarHeaderWrapper}>
                     <SidebarHeader
-                        isEditButtonVisible={false}
-                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                         onCloseButtonClick={() => {
                             this.props.popupStore!.closePopup(popupId);
                         }}
