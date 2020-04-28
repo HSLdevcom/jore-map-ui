@@ -212,11 +212,21 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const confirmStore = this.props.confirmStore;
         const saveModels: ISaveModel[] = [];
         this.props.routePathMassEditStore!.massEditRoutePaths!.forEach((massEditRp) => {
+            const newRoutePath = _.cloneDeep(massEditRp.routePath);
+            delete newRoutePath.internalId;
+            const oldRoutePath = _.cloneDeep(massEditRp.oldRoutePath);
+            if (oldRoutePath) {
+                delete oldRoutePath['internalId'];
+                if (massEditRp.isNew) {
+                    delete oldRoutePath['startTime'];
+                    delete oldRoutePath['endTime'];
+                }
+            }
             saveModels.push({
                 type: 'saveModel',
-                newData: massEditRp.routePath,
-                oldData: massEditRp.oldRoutePath ? massEditRp.oldRoutePath : {},
-                subTopic: `${massEditRp.routePath.originFi} - ${massEditRp.routePath.destinationFi}`,
+                newData: newRoutePath,
+                oldData: oldRoutePath ? oldRoutePath : {},
+                subTopic: `${newRoutePath.originFi} - ${newRoutePath.destinationFi}`,
                 model: 'routePath',
             });
         });
