@@ -2,13 +2,21 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
+import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
+import ButtonType from '~/enums/buttonType';
+import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
+import { CopyRoutePathStore } from '~/stores/copyRoutePathStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
@@ -26,6 +34,9 @@ interface IRoutePathStopNames {
 interface IRoutePathListTabProps {
     routePaths: IRoutePath[];
     isEditing: boolean;
+    lineId: string;
+    routeId: string;
+    transitType: TransitType;
     areAllRoutePathsVisible: boolean;
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
@@ -34,6 +45,7 @@ interface IRoutePathListTabProps {
     loginStore?: LoginStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
+    copyRoutePathStore?: CopyRoutePathStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
@@ -53,6 +65,7 @@ const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
     'loginStore',
     'alertStore',
     'errorStore',
+    'copyRoutePathStore',
     'routePathMassEditStore'
 )
 @observer
@@ -263,6 +276,22 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.updateGroupedRoutePathsToDisplay(routePaths);
     };
 
+    private redirectToNewRoutePathView = () => () => {
+        const { lineId, routeId } = this.props;
+        const newRoutePathLink = routeBuilder
+            .to(SubSites.newRoutePath)
+            .set(QueryParams.routeId, routeId)
+            .set(QueryParams.lineId, lineId)
+            .toLink();
+
+        navigator.goTo({ link: newRoutePathLink });
+    };
+
+    private openCopyRoutePathView = () => () => {
+        const { lineId, routeId, transitType } = this.props;
+        this.props.copyRoutePathStore!.init({ lineId, routeId, transitType });
+    };
+
     render() {
         const { routePaths, isEditing } = this.props;
         if (routePaths.length === 0) {
@@ -337,6 +366,28 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                                 ? `Piilota reitinsuunnat`
                                 : `Näytä kaikki reitinsuunnat (${this.props.routePaths.length})`}
                         </div>
+                    </div>
+                )}
+                {this.props.loginStore!.hasWriteAccess && (
+                    <div className={s.buttonContainer}>
+                        <Button
+                            onClick={this.redirectToNewRoutePathView()}
+                            type={ButtonType.SQUARE}
+                            disabled={Boolean(this.props.routeListStore!.routeIdToEdit)}
+                            isWide={true}
+                        >
+                            {`Luo reitinsuunta`}
+                        </Button>
+                        <Button
+                            onClick={this.openCopyRoutePathView()}
+                            type={ButtonType.SQUARE}
+                            disabled={
+                                this.props.routeId !== this.props.routeListStore!.routeIdToEdit
+                            }
+                            isWide={true}
+                        >
+                            {`Kopioi reitinsuunta`}
+                        </Button>
                     </div>
                 )}
                 {this.props.loginStore!.hasWriteAccess && isEditing && (

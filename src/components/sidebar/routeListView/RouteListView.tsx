@@ -4,9 +4,7 @@ import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
-import { Button } from '~/components/controls';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
-import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { ILine, IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -290,24 +288,6 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         this.props.searchStore!.toggleTransitType(type);
     };
 
-    private redirectToNewRoutePathView = (route: IRoute) => () => {
-        const newRoutePathLink = routeBuilder
-            .to(SubSites.newRoutePath)
-            .set(QueryParams.routeId, route.id)
-            .set(QueryParams.lineId, route.lineId)
-            .toLink();
-
-        navigator.goTo({ link: newRoutePathLink });
-    };
-
-    private openCopyRoutePathView = (
-        lineId: string,
-        routeId: string,
-        transitType: TransitType
-    ) => () => {
-        this.props.copyRoutePathStore!.init({ lineId, routeId, transitType });
-    };
-
     private _render = () => {
         const routeListStore = this.props.routeListStore!;
         const routeItems = routeListStore.routeItems;
@@ -364,6 +344,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                     <div className={s.routeItemWrapper}>
                                         <RouteItem
                                             route={route}
+                                            transitType={transitType}
                                             routeIdToEdit={routeIdToEdit}
                                             selectedTabIndex={routeItem.selectedTabIndex}
                                             areAllRoutePathsVisible={
@@ -371,32 +352,6 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                             }
                                         />
                                     </div>
-                                    {this.props.loginStore!.hasWriteAccess && (
-                                        <div className={s.buttonContainer}>
-                                            {route.id === routeListStore.routeIdToEdit && (
-                                                <Button
-                                                    onClick={this.openCopyRoutePathView(
-                                                        route!.lineId,
-                                                        route.id,
-                                                        transitType
-                                                    )}
-                                                    type={ButtonType.SQUARE}
-                                                >
-                                                    {`Kopioi reitinsuunta pari reitille ${route.id}`}
-                                                </Button>
-                                            )}
-                                            <Button
-                                                onClick={this.redirectToNewRoutePathView(route)}
-                                                type={ButtonType.SQUARE}
-                                                disabled={Boolean(routeListStore.routeIdToEdit)}
-                                            >
-                                                {`Luo reitinsuunta reitille ${route.id}`}
-                                            </Button>
-                                        </div>
-                                    )}
-                                    {!this.props.loginStore!.hasWriteAccess && (
-                                        <div className={s.sectionDivider} />
-                                    )}
                                 </div>
                             );
                         })}
