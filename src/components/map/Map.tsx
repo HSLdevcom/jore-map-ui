@@ -15,7 +15,7 @@ import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
-import RouteLayer from './layers/RouteLayer';
+import RoutePathLayer from './layers/RoutePathLayer';
 import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
@@ -117,7 +117,7 @@ class LeafletMap extends React.Component<IMapProps> {
                 maxZoom: 20,
                 animate: true,
                 padding: [100, 100],
-                duration: 0.5
+                duration: 0.5,
             });
     };
 
@@ -134,7 +134,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     componentWillUnmount() {
-        this.reactionDisposers.forEach(r => r());
+        this.reactionDisposers.forEach((r) => r());
     }
 
     render() {
@@ -167,7 +167,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
-                    <RouteLayer />
+                    <RoutePathLayer />
                     <EditRoutePathLayer />
                     <PopupLayer />
                     <StopAreaLayer />

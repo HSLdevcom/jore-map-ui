@@ -21,6 +21,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
@@ -40,6 +41,7 @@ interface IRoutePathListTabProps {
     areAllRoutePathsVisible: boolean;
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
+    routePathLayerStore?: RoutePathLayerStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
     loginStore?: LoginStore;
@@ -60,6 +62,7 @@ const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
 @inject(
     'routeListStore',
+    'routePathLayerStore',
     'mapStore',
     'confirmStore',
     'loginStore',
@@ -204,10 +207,10 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
                     if (this.isCurrentTimeWithinRoutePathTimeSpan(routePath)) {
-                        this.props.routeListStore!.setRoutePathVisibility(
-                            true,
-                            routePath.internalId
-                        );
+                        this.props.routePathLayerStore!.setRoutePathVisibility({
+                            id: routePath.internalId,
+                            isVisible: true,
+                        });
                     }
                 });
             });

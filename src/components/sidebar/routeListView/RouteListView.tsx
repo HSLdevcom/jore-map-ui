@@ -114,7 +114,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
     componentWillUnmount() {
         this.props.routeStore!.clear();
         this._isMounted = false;
-        this.props.routeListStore!.clearRouteItems();
+        this.props.routeListStore!.clear();
     }
 
     private fetchRoutes = async (routeIds: string[]) => {

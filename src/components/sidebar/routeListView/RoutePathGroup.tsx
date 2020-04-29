@@ -15,7 +15,7 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
@@ -35,11 +35,11 @@ interface IRoutePathGroupProps {
     stopNameMap: Map<string, IRoutePathStopNames>;
     removeNewRoutePath: (id: string) => () => void;
     userStore?: UserStore;
-    routeListStore?: RouteListStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-@inject('userStore', 'routeListStore', 'routePathMassEditStore')
+@inject('userStore', 'routePathLayerStore', 'routePathMassEditStore')
 @observer
 class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     private updateStartDates = (routePaths: IRoutePath[]) => (value: Date) => {
@@ -52,10 +52,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         routePaths.forEach((rp) => {
             this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
         });
-    };
-
-    private toggleRoutePathVisibility = (id: string) => () => {
-        this.props.routeListStore!.toggleRoutePathVisibility(id);
     };
 
     private openRoutePathView = (routePath: IRoutePath) => () => {
@@ -208,6 +204,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         )!;
                         const isNew = massEditRp && massEditRp.isNew;
                         const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
+                        const routePathFromRoutePathLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                            routePath.internalId
+                        )!;
                         return (
                             <div
                                 className={classnames(
@@ -294,11 +293,17 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                         </Button>
                                     )}
                                     <ToggleSwitch
-                                        onClick={this.toggleRoutePathVisibility(
-                                            routePath.internalId
-                                        )}
-                                        value={routePath.visible}
-                                        color={routePath.visible ? routePath.color! : '#898989'}
+                                        onClick={() =>
+                                            this.props.routePathLayerStore!.toggleRoutePathVisibility(
+                                                routePath.internalId
+                                            )
+                                        }
+                                        value={Boolean(routePathFromRoutePathLayerStore.visible)}
+                                        color={
+                                            routePathFromRoutePathLayerStore.visible
+                                                ? routePathFromRoutePathLayerStore.color!
+                                                : '#898989'
+                                        }
                                     />
                                 </div>
                             </div>

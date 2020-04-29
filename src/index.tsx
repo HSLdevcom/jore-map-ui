@@ -23,6 +23,7 @@ import NodeStore from './stores/nodeStore';
 import PopupStore from './stores/popupStore';
 import RouteListStore from './stores/routeListStore';
 import RoutePathCopySegmentStore from './stores/routePathCopySegmentStore';
+import RoutePathLayerStore from './stores/routePathLayerStore';
 import RoutePathLinkMassEditStore from './stores/routePathLinkMassEditStore';
 import RoutePathMassEditStore from './stores/routePathMassEditStore';
 import RoutePathStore from './stores/routePathStore';
@@ -45,6 +46,7 @@ const stores = {
     lineHeaderMassEditStore: LineHeaderMassEditStore,
     routeStore: RouteStore,
     routeListStore: RouteListStore,
+    routePathLayerStore: RoutePathLayerStore,
     routePathMassEditStore: RoutePathMassEditStore,
     routePathLinkMassEditStore: RoutePathLinkMassEditStore,
     routePathStore: RoutePathStore,
