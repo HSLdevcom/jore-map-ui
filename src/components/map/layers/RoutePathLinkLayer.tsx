@@ -186,9 +186,10 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     render() {
         const routePath = this.props.routePath;
         if (!routePath.visible || routePath.routePathLinks.length === 0) return null;
-        const isHighlighted =
-            this.props.routePathLayerStore!.highlightedRoutePathId === routePath.internalId ||
+        const isSelected =
             this.props.routePathLayerStore!.selectedRoutePathId === routePath.internalId;
+        const isHighlighted =
+            this.props.routePathLayerStore!.highlightedRoutePathId === routePath.internalId;
         return (
             <>
                 <FeatureGroup
@@ -196,8 +197,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                     onMouseOver={this.props.onMouseOver(this.layerRef, routePath.internalId)}
                     onMouseOut={this.props.onMouseOut(this.layerRef, routePath.internalId)}
                 >
-                    {this.renderRoutePathLinks(isHighlighted)}
-                    {this.renderNodes()}
+                    {this.renderRoutePathLinks(isSelected || isHighlighted)}
+                    {isSelected && this.renderNodes()}
                     {this.renderStartMarker()}
                 </FeatureGroup>
                 <FeatureGroup>{this.renderDirectionDecoration()}</FeatureGroup>
