@@ -1,8 +1,10 @@
+import L from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, autorun, computed, observable } from 'mobx';
 import ColorScale from '~/helpers/ColorScale';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import RoutePathService from '~/services/routePathService';
+import MapStore from './mapStore';
 
 class RoutePathLayerStore {
     @observable private _routePaths: IRoutePath[];
@@ -15,6 +17,7 @@ class RoutePathLayerStore {
         this._highlightedRoutePathId = null;
         this._selectedRoutePathId = null;
         this.colorScale = new ColorScale();
+        autorun(() => this.centerMapToRoutePaths());
     }
 
     @computed
@@ -120,6 +123,23 @@ class RoutePathLayerStore {
 
     public getRoutePath = (id: string): IRoutePath | undefined => {
         return this._routePaths.find((rp) => rp.internalId === id);
+    };
+
+    private centerMapToRoutePaths = () => {
+        if (this._routePaths.length === 0) return;
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        this._routePaths.forEach((routePath) => {
+            if (routePath.visible) {
+                routePath.routePathLinks.forEach((routePathLink) => {
+                    routePathLink.geometry.forEach((pos) => {
+                        bounds.extend(pos);
+                    });
+                });
+            }
+        });
+        if (bounds.isValid()) {
+            MapStore!.setMapBounds(bounds);
+        }
     };
 }
 
