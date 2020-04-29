@@ -43,7 +43,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             content: this.renderPopup(node),
             coordinates: node.coordinates,
             isCloseButtonVisible: false,
-            isAutoCloseOn: true
+            isAutoCloseOn: true,
         };
 
         this.props.popupStore!.showPopup(popup);
@@ -64,7 +64,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     private renderRoutePathLinks = () => {
         const routePathLinks = this.props.routePathLinks;
-        return routePathLinks.map(routePathLink => {
+        return routePathLinks.map((routePathLink) => {
             return (
                 <Polyline
                     positions={routePathLink.geometry}
@@ -92,7 +92,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled: routePathLink.startNodeType === StartNodeType.DISABLED,
                 isTimeAlignmentStop: routePathLink.startNodeTimeAlignmentStop !== '0',
                 openPopup: this.openPopup(routePathLink.startNode),
-                triggerNodeClick: triggerNodeClick(node)
+                triggerNodeClick: triggerNodeClick(node),
             });
         });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
@@ -104,7 +104,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled: false, // Last node can't be disabled
                 isTimeAlignmentStop: false, // Last node can't be a time alignment stop
                 openPopup: this.openPopup(lastRoutePathLink.endNode),
-                triggerNodeClick: triggerNodeClick(node)
+                triggerNodeClick: triggerNodeClick(node),
             })
         );
         return nodes;
@@ -116,7 +116,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         isDisabled,
         isTimeAlignmentStop,
         openPopup,
-        triggerNodeClick
+        triggerNodeClick,
     }: {
         key: string;
         node: INode;
@@ -163,7 +163,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
         const routePathLinks = this.props.routePathLinks;
 
-        const geoms = routePathLinks.map(routePathLink => routePathLink.geometry);
+        const geoms = routePathLinks.map((routePathLink) => routePathLink.geometry);
 
         return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
             <ArrowDecorator

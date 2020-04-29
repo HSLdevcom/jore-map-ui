@@ -5,10 +5,10 @@ import { IRoutePath, IRoutePathLink } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import routePathLinkValidationModel, {
-    IRoutePathLinkValidationModel
+    IRoutePathLinkValidationModel,
 } from '~/models/validationModels/routePathLinkValidationModel';
 import routePathValidationModel, {
-    IRoutePathValidationModel
+    IRoutePathValidationModel,
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import RoutePathValidator from '~/utils/RoutePathValidator';
@@ -22,7 +22,7 @@ import ValidationStore, { ICustomValidatorMap } from './validationStore';
 // Is the neighbor to add either startNode or endNode
 enum NeighborToAddType {
     AfterNode,
-    BeforeNode
+    BeforeNode,
 }
 
 interface UndoState {
@@ -34,7 +34,7 @@ interface UndoState {
 enum ListFilter {
     stop,
     otherNodes,
-    link
+    link,
 }
 
 class RoutePathStore {
@@ -145,11 +145,11 @@ class RoutePathStore {
     @computed
     get isFormValid() {
         let areRoutePathLinksValid = true;
-        this._routePathLinkValidationStoreMap.forEach(rpLinkValidationStore => {
+        this._routePathLinkValidationStoreMap.forEach((rpLinkValidationStore) => {
             if (!rpLinkValidationStore.isValid()) {
                 areRoutePathLinksValid = false;
             }
-        })
+        });
         return this._validationStore.isValid() && areRoutePathLinksValid;
     }
 
@@ -159,7 +159,13 @@ class RoutePathStore {
     }
 
     @action
-    public init = ({ routePath, isNewRoutePath }: { routePath: IRoutePath; isNewRoutePath: boolean; }) => {
+    public init = ({
+        routePath,
+        isNewRoutePath,
+    }: {
+        routePath: IRoutePath;
+        isNewRoutePath: boolean;
+    }) => {
         this.clear();
         this._routePath = routePath;
         this._isNewRoutePath = isNewRoutePath;
@@ -168,7 +174,7 @@ class RoutePathStore {
         const currentUndoState: UndoState = {
             routePathLinks,
             isStartNodeUsingBookSchedule: Boolean(this.routePath!.isStartNodeUsingBookSchedule),
-            startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber
+            startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
@@ -177,7 +183,7 @@ class RoutePathStore {
         const validatePrimaryKey = (routePath: IRoutePath) => {
             if (!this.isNewRoutePath) return;
             const isPrimaryKeyDuplicated = this._existingRoutePathPrimaryKeys.some(
-                rp =>
+                (rp) =>
                     routePath.routeId === rp.routeId &&
                     routePath.direction === rp.direction &&
                     routePath.startTime.getTime() === rp.startTime.getTime()
@@ -187,7 +193,7 @@ class RoutePathStore {
                 const validationResult: IValidationResult = {
                     isValid: false,
                     errorMessage:
-                        'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.'
+                        'Reitinsuunta samalla reitillä, suunnalla ja alkupäivämäärällä on jo olemassa.',
                 };
                 return validationResult;
             }
@@ -198,26 +204,26 @@ class RoutePathStore {
                 const validationResult: IValidationResult = {
                     isValid: false,
                     errorMessage:
-                        'Reitinsuunnan loppupäivämäärän täytyy olla alkupäivämäärän jälkeen.'
+                        'Reitinsuunnan loppupäivämäärän täytyy olla alkupäivämäärän jälkeen.',
                 };
                 return validationResult;
             }
             return;
-        }
+        };
 
         const customValidatorMap: ICustomValidatorMap = {
             direction: {
                 validators: [validatePrimaryKey],
-                dependentProperties: ['startTime']
+                dependentProperties: ['startTime'],
             },
             startTime: {
                 validators: [validatePrimaryKey, validateStartTimeBeforeEndTime],
-                dependentProperties: ['direction', 'endTime']
+                dependentProperties: ['direction', 'endTime'],
             },
             endTime: {
                 validators: [validateStartTimeBeforeEndTime],
-                dependentProperties: ['startTime']
-            }
+                dependentProperties: ['startTime'],
+            },
         };
 
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
@@ -233,13 +239,15 @@ class RoutePathStore {
 
         // Need to reinitialize routePathLinkValidationStore
         this._routePathLinkValidationStoreMap.clear();
-        this._routePath!.routePathLinks.forEach(rpLink => this.initRoutePathLinkValidationStore(rpLink));
+        this._routePath!.routePathLinks.forEach((rpLink) =>
+            this.initRoutePathLinkValidationStore(rpLink)
+        );
     };
 
     @action
     public setIsNewRoutePath = (isNewRoutePath: boolean) => {
         this._isNewRoutePath = isNewRoutePath;
-    }
+    };
 
     @action
     public setExistingRoutePathPrimaryKeys = (routePathPrimaryKeys: IRoutePathPrimaryKey[]) => {
@@ -249,19 +257,19 @@ class RoutePathStore {
     @action
     public setSelectedTabIndex = (index: number) => {
         this._selectedTabIndex = index;
-    }
+    };
 
     @action
     public removeListFilter = (listFilter: ListFilter) => {
         if (this._listFilters.includes(listFilter)) {
-            this._listFilters = this._listFilters.filter(lF => lF !== listFilter);
+            this._listFilters = this._listFilters.filter((lF) => lF !== listFilter);
         }
     };
 
     @action
     public toggleListFilter = (listFilter: ListFilter) => {
         if (this._listFilters.includes(listFilter)) {
-            this._listFilters = this._listFilters.filter(lF => lF !== listFilter);
+            this._listFilters = this._listFilters.filter((lF) => lF !== listFilter);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
             this._listFilters = this._listFilters.concat([listFilter]);
@@ -276,8 +284,8 @@ class RoutePathStore {
             const undoRoutePathLinks = nextUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
             // Prevent undo if oldLink is found
-            const newRoutePathLinks = undoRoutePathLinks.map(undoRpLink => {
-                const oldRpLink = oldRoutePathLinks.find(rpLink => {
+            const newRoutePathLinks = undoRoutePathLinks.map((undoRpLink) => {
+                const oldRpLink = oldRoutePathLinks.find((rpLink) => {
                     return rpLink.id === undoRpLink.id;
                 });
                 if (oldRpLink) {
@@ -299,8 +307,8 @@ class RoutePathStore {
             const redoRoutePathLinks = previousUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
             // Prevent redo if oldLink is found
-            const newRoutePathLinks = redoRoutePathLinks.map(redoRpLink => {
-                const oldRpLink = oldRoutePathLinks.find(rpLink => {
+            const newRoutePathLinks = redoRoutePathLinks.map((redoRpLink) => {
+                const oldRpLink = oldRoutePathLinks.find((rpLink) => {
                     return rpLink.id === redoRpLink.id;
                 });
                 if (oldRpLink) {
@@ -315,7 +323,7 @@ class RoutePathStore {
     };
 
     @action
-    public setExtendedListItemId = (id: string | null) => {
+    public setExtendedListItemId = (id: string | null) => {
         this._extendedListItemId = id;
     };
 
@@ -338,7 +346,7 @@ class RoutePathStore {
         const currentUndoState: UndoState = {
             routePathLinks,
             isStartNodeUsingBookSchedule: Boolean(this.routePath!.isStartNodeUsingBookSchedule),
-            startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber
+            startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
@@ -366,11 +374,13 @@ class RoutePathStore {
         value: string | number | boolean
     ) => {
         const rpLinkToUpdate: IRoutePathLink | undefined = this._routePath!.routePathLinks.find(
-            rpLink => rpLink.orderNumber === orderNumber
+            (rpLink) => rpLink.orderNumber === orderNumber
         );
         // As any to fix typing error: Type 'string' is not assignable to type 'never'
         (rpLinkToUpdate as any)[property] = value;
-        this._routePathLinkValidationStoreMap.get(rpLinkToUpdate!.id)?.updateProperty(property, value);
+        this._routePathLinkValidationStoreMap
+            .get(rpLinkToUpdate!.id)
+            ?.updateProperty(property, value);
     };
 
     @action
@@ -423,7 +433,7 @@ class RoutePathStore {
     public removeLink = (id: string) => {
         const rpLinks = this._routePath!.routePathLinks;
 
-        const linkToRemoveIndex = rpLinks.findIndex(link => link.id === id);
+        const linkToRemoveIndex = rpLinks.findIndex((link) => link.id === id);
         const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
 
         // Need to do splice to trigger ReactionDisposer watcher
@@ -456,7 +466,7 @@ class RoutePathStore {
         const currentUndoState: UndoState = {
             routePathLinks: _.cloneDeep(routePathLinks),
             isStartNodeUsingBookSchedule: Boolean(this._routePath!.isStartNodeUsingBookSchedule),
-            startNodeBookScheduleColumnNumber: this._routePath!.startNodeBookScheduleColumnNumber
+            startNodeBookScheduleColumnNumber: this._routePath!.startNodeBookScheduleColumnNumber,
         };
         this._geometryUndoStore.addItem(currentUndoState);
     }
@@ -516,41 +526,43 @@ class RoutePathStore {
             return getText('routePath_savePrevented_isEditingDisabled');
         }
         if (routePathLinks.length === 0) {
-            return getText('routePath_savePrevented_routePathLinksMissing')
+            return getText('routePath_savePrevented_routePathLinksMissing');
         }
         if (!RoutePathValidator.validateRoutePathLinkCoherency(routePathLinks)) {
-            return getText('routePath_savePrevented_geometryInvalid')
+            return getText('routePath_savePrevented_geometryInvalid');
         }
-        const stopIdAppearingTwice = RoutePathValidator.getStopIdThatAppearsTwice(routePathLinks)
+        const stopIdAppearingTwice = RoutePathValidator.getStopIdThatAppearsTwice(routePathLinks);
         if (stopIdAppearingTwice) {
-            return getText('routePath_savePrevented_stopAppearingTwice', { stopId: stopIdAppearingTwice })
+            return getText('routePath_savePrevented_stopAppearingTwice', {
+                stopId: stopIdAppearingTwice,
+            });
         }
         if (RoutePathValidator.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
-            return getText('routePath_savePrevented_startNodeTheSameAsEndNode')
+            return getText('routePath_savePrevented_startNodeTheSameAsEndNode');
         }
         if (!this.isFormValid) {
-            return getText('routePath_savePrevented_checkRoutePathInfoTab')
+            return getText('routePath_savePrevented_checkRoutePathInfoTab');
         }
         if (!this.isDirty) {
-            return getText('savePrevented_isNotDirty')
+            return getText('savePrevented_isNotDirty');
         }
         return '';
-    }
+    };
 
     public getRoutePathLinkInvalidPropertiesMap = (id: string) => {
         return this._routePathLinkValidationStoreMap.get(id)!.getInvalidPropertiesMap();
-    }
+    };
 
     public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
         const routePathLinks = this._routePath!.routePathLinks;
-        const index = routePathLinks.findIndex(rpLink => {
+        const index = routePathLinks.findIndex((rpLink) => {
             return rpLink.id === routePathLink.id;
         });
         return index === routePathLinks.length - 1;
     };
 
     public getLinkGeom = (linkId: string): L.LatLng[] => {
-        const link = this._routePath!.routePathLinks.find(l => l.id === linkId);
+        const link = this._routePath!.routePathLinks.find((l) => l.id === linkId);
         if (link) {
             return link.geometry;
         }
@@ -558,9 +570,9 @@ class RoutePathStore {
     };
 
     public getNodeGeom = (nodeId: string): L.LatLng[] => {
-        let node = this._routePath!.routePathLinks.find(l => l.startNode.id === nodeId);
+        let node = this._routePath!.routePathLinks.find((l) => l.startNode.id === nodeId);
         if (!node) {
-            node = this._routePath!.routePathLinks.find(l => l.endNode.id === nodeId);
+            node = this._routePath!.routePathLinks.find((l) => l.endNode.id === nodeId);
         }
         if (node) {
             return node.geometry;
@@ -571,8 +583,8 @@ class RoutePathStore {
     public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
         const routePath = this.routePath;
         return (
-            routePath!.routePathLinks.filter(x => x.startNode.id === nodeId).length !==
-            routePath!.routePathLinks.filter(x => x.endNode.id === nodeId).length
+            routePath!.routePathLinks.filter((x) => x.startNode.id === nodeId).length !==
+            routePath!.routePathLinks.filter((x) => x.endNode.id === nodeId).length
         );
     };
 
@@ -581,7 +593,7 @@ class RoutePathStore {
         this._routePathLinkValidationStoreMap
             .get(routePathLink.id)!
             .init(routePathLink, routePathLinkValidationModel);
-    }
+    };
 
     private recalculateOrderNumbers = () => {
         this._routePath!.routePathLinks.forEach((rpLink, index) => {
@@ -614,10 +626,12 @@ class RoutePathStore {
         if (this._isEditingDisabled) {
             this.resetChanges();
             const selectedTool = ToolbarStore.selectedTool;
-            if (selectedTool &&
-                (selectedTool.toolType === ToolbarToolType.AddNewRoutePathLink
-                    || selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink
-                    || selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)) {
+            if (
+                selectedTool &&
+                (selectedTool.toolType === ToolbarToolType.AddNewRoutePathLink ||
+                    selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink ||
+                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)
+            ) {
                 ToolbarStore.selectDefaultTool();
             }
         } else {

@@ -25,7 +25,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         super(props);
         this.state = {
             selectedPolylines: [],
-            hoveredPolylines: []
+            hoveredPolylines: [],
         };
     }
 
@@ -33,13 +33,13 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
         let selectedPolylines = this.state.selectedPolylines;
 
         if (selectedPolylines.includes(internalId)) {
-            selectedPolylines = selectedPolylines.filter(id => id !== internalId);
+            selectedPolylines = selectedPolylines.filter((id) => id !== internalId);
         } else {
             selectedPolylines.push(internalId);
         }
 
         this.setState({
-            selectedPolylines
+            selectedPolylines,
         });
         target.current.leafletElement.bringToFront();
 
@@ -58,7 +58,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
     private hoverHighlight = (internalId: string) => (target: any) => () => {
         if (!this.state.hoveredPolylines.includes(internalId)) {
             this.setState({
-                hoveredPolylines: this.state.hoveredPolylines.concat(internalId)
+                hoveredPolylines: this.state.hoveredPolylines.concat(internalId),
             });
             target.current.leafletElement.bringToFront();
 
@@ -70,7 +70,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
 
     private hoverHighlightOff = (internalId: string) => (target: any) => () => {
         this.setState({
-            hoveredPolylines: []
+            hoveredPolylines: [],
         });
         if (!this.state.selectedPolylines.includes(internalId)) {
             target.current.leafletElement.bringToBack();
@@ -83,7 +83,7 @@ class RouteLayer extends Component<RouteLayerProps, IRouteLayerState> {
 
     render() {
         const routes = toJS(this.props.routeListStore!.routes);
-        return routes.map(route => {
+        return routes.map((route) => {
             return (
                 <RoutePathLayer
                     key={route.id}
