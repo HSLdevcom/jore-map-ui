@@ -332,6 +332,15 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                         routePath.internalId
                                                                 )
                                                             );
+                                                            let color;
+                                                            if (isSelected) {
+                                                                color = this.props.routePathLayerStore!.getRoutePath(
+                                                                    routePath.internalId
+                                                                )!.color!;
+                                                            }
+                                                            const selectedBackgroundColorStyle = {
+                                                                backgroundColor: color,
+                                                            };
                                                             return (
                                                                 <tr
                                                                     key={`rpQueryResult-${index}`}
@@ -341,6 +350,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                     className={
                                                                         isSelected
                                                                             ? s.selectedRow
+                                                                            : undefined
+                                                                    }
+                                                                    style={
+                                                                        isSelected
+                                                                            ? selectedBackgroundColorStyle
                                                                             : undefined
                                                                     }
                                                                 >
