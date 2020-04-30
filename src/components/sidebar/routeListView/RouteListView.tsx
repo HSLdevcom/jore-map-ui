@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
@@ -354,8 +355,15 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
     };
 
     render() {
+        const isCopyRouteListViewVisible = this.props.copyRoutePathStore!.isVisible;
         return (
-            <div className={s.routeListView} data-cy='routeListView'>
+            <div
+                className={classnames(
+                    s.routeListView,
+                    isCopyRouteListViewVisible ? s.routeListWide : undefined
+                )}
+                data-cy='routeListView'
+            >
                 {this._render()}
             </div>
         );

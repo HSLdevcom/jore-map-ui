@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-import { Button } from '~/components/controls';
+import { Button, ToggleSwitch } from '~/components/controls';
 import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePath } from '~/models';
@@ -203,9 +203,20 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                     <th align='left'>Alkupvm</th>
                                     <th align='left'>Loppupvm</th>
                                     <th align='left'></th>
+                                    <th align='left'></th>
                                 </tr>
                                 {routePathsToCopy.map(
                                     (rpToCopy: IRoutePathToCopy, index: number) => {
+                                        const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                                            rpToCopy.id
+                                        );
+                                        const isVisible = rpFromRpLayerStore
+                                            ? Boolean(rpFromRpLayerStore.visible)
+                                            : false;
+                                        const color =
+                                            rpFromRpLayerStore && rpFromRpLayerStore.color
+                                                ? rpFromRpLayerStore.color
+                                                : '#898989';
                                         return (
                                             <tr key={`rpToCopyRow-${index}`}>
                                                 <td>
@@ -246,6 +257,17 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                     >
                                                         <FaTrashAlt />
                                                     </Button>
+                                                </td>
+                                                <td>
+                                                    <ToggleSwitch
+                                                        onClick={() =>
+                                                            this.props.routePathLayerStore!.toggleRoutePathVisibility(
+                                                                rpToCopy.id
+                                                            )
+                                                        }
+                                                        value={isVisible}
+                                                        color={color}
+                                                    />
                                                 </td>
                                             </tr>
                                         );
