@@ -271,59 +271,64 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                     </div>
                                 ) : (
                                     <>
-                                        <table
-                                            className={classnames(
-                                                s.routePathTable,
-                                                s.findRoutePathTable
-                                            )}
-                                        >
-                                            <tbody className={s.routePathTableHeader}>
-                                                <tr>
-                                                    <th align='left'>Suunta</th>
-                                                    <th align='left'>Lähtöpaikka</th>
-                                                    <th align='left'>Päätepaikka</th>
-                                                    <th align='left'>Alkupvm</th>
-                                                    <th align='left'>Loppupvm</th>
-                                                </tr>
-                                                {this.state.routePathQueryResult.map(
-                                                    (routePath: IRoutePath, index: number) => {
-                                                        return (
-                                                            <tr
-                                                                key={`rpQueryResult-${index}`}
-                                                                onClick={this.toggleRoutePath(
-                                                                    routePath
-                                                                )}
-                                                                className={
-                                                                    this.state.selectedRoutePathIds.includes(
-                                                                        routePath.internalId
-                                                                    )
-                                                                        ? s.selectedRow
-                                                                        : undefined
-                                                                }
-                                                            >
-                                                                <td>{routePath.direction}</td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {routePath.originFi}
-                                                                </td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {routePath.destinationFi}
-                                                                </td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {Moment(
-                                                                        routePath.startTime
-                                                                    ).format('DD.MM.YYYY')}
-                                                                </td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {Moment(
-                                                                        routePath.endTime
-                                                                    ).format('DD.MM.YYYY')}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    }
-                                                )}
-                                            </tbody>
-                                        </table>
+                                        <div className={s.findRoutePathTableWrapper}>
+                                            <table className={s.routePathTable}>
+                                                <tbody className={s.routePathTableHeader}>
+                                                    <tr>
+                                                        <th align='left'>Suunta</th>
+                                                        <th align='left'>Lähtöpaikka</th>
+                                                        <th align='left'>Päätepaikka</th>
+                                                        <th align='left'>Alkupvm</th>
+                                                        <th align='left'>Loppupvm</th>
+                                                    </tr>
+                                                    {this.state.routePathQueryResult.map(
+                                                        (routePath: IRoutePath, index: number) => {
+                                                            return (
+                                                                <tr
+                                                                    key={`rpQueryResult-${index}`}
+                                                                    onClick={this.toggleRoutePath(
+                                                                        routePath
+                                                                    )}
+                                                                    className={
+                                                                        this.state.selectedRoutePathIds.includes(
+                                                                            routePath.internalId
+                                                                        )
+                                                                            ? s.selectedRow
+                                                                            : undefined
+                                                                    }
+                                                                >
+                                                                    <td>{routePath.direction}</td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {routePath.originFi}
+                                                                    </td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {routePath.destinationFi}
+                                                                    </td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {Moment(
+                                                                            routePath.startTime
+                                                                        ).format('DD.MM.YYYY')}
+                                                                    </td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {Moment(
+                                                                            routePath.endTime
+                                                                        ).format('DD.MM.YYYY')}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        }
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                         <Button
                                             className={s.addRoutePathToCopyButton}
                                             disabled={this.state.selectedRoutePathIds.length === 0}
