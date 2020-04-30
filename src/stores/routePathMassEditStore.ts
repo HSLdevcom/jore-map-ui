@@ -111,6 +111,8 @@ class RoutePathMassEditStore {
 
             const routePathWithNewId: IRoutePath = _.cloneDeep(rpToCopy.routePath);
             routePathWithNewId.internalId = newRoutePathId;
+            routePathWithNewId.visible = false;
+            routePathWithNewId.color = undefined;
             routePathsWithNewId.push(routePathWithNewId);
 
             const newRoutePath = _.cloneDeep(rpToCopy.routePath);
@@ -133,7 +135,7 @@ class RoutePathMassEditStore {
             });
             idCounter += 1;
         });
-        RoutePathLayerStore.addRoutePaths(routePathsWithNewId);
+        RoutePathLayerStore.addRoutePaths({ routePaths: routePathsWithNewId });
 
         this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
         this._newRoutePathIdCounter = idCounter;

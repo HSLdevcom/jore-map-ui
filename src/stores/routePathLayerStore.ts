@@ -37,14 +37,20 @@ class RoutePathLayerStore {
 
     @action
     public init = ({ routePaths }: { routePaths: IRoutePath[] }) => {
-        // TODO: init colorScale from routePath.color?
-        this._routePaths = _.cloneDeep(routePaths);
+        this.addRoutePaths({ routePaths });
     };
 
     @action
-    public addRoutePaths = (routePaths: IRoutePath[]) => {
-        // TODO: init colorScale from routePath.color?
-        this._routePaths = this._routePaths.concat(_.cloneDeep(routePaths));
+    public addRoutePaths = ({ routePaths }: { routePaths: IRoutePath[] }) => {
+        const routePathsWithColor = _.cloneDeep(routePaths).map((rp) => {
+            if (rp.visible && !rp.color) {
+                rp.color = this.colorScale.reserveColor();
+            } else if (rp.visible && rp.color) {
+                this.colorScale.reserveColor(rp.color);
+            }
+            return rp;
+        });
+        this._routePaths = this._routePaths.concat(routePathsWithColor);
     };
 
     @action
@@ -115,6 +121,9 @@ class RoutePathLayerStore {
 
     @action
     public clear = () => {
+        this._routePaths.forEach((rp) => {
+            this.colorScale.releaseColor(rp.color!);
+        });
         this._routePaths = [];
         this._highlightedRoutePathId = null;
         this._selectedRoutePathId = null;

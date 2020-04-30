@@ -61,7 +61,7 @@ class RouteListStore {
         );
         this._routeItems = this._routeItems.concat(routeItems);
         routes.forEach((route) => {
-            RoutePathLayerStore.addRoutePaths(route.routePaths);
+            RoutePathLayerStore.addRoutePaths({ routePaths: route.routePaths });
         });
     };
 
