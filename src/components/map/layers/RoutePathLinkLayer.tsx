@@ -4,9 +4,10 @@ import React, { Component } from 'react';
 import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
 import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
-import { INode, IRoutePathLink } from '~/models';
+import { INode, IRoutePath } from '~/models';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
@@ -16,19 +17,22 @@ import * as s from './routePathLinkLayer.scss';
 import ArrowDecorator from './utils/ArrowDecorator';
 
 interface RoutePathLinkLayerProps {
+    internalId: string;
+    routePath: IRoutePath;
+    onClick: (target: any, id: string) => void;
+    onMouseOver: (target: any, id: string) => void;
+    onMouseOut: (target: any, id: string) => void;
     popupStore?: PopupStore;
     mapStore?: MapStore;
-    internalId: string;
-    routePathLinks: IRoutePathLink[];
-    onClick: (target: any) => () => void;
-    onMouseOver: (target: any) => () => void;
-    onMouseOut: (target: any) => () => void;
-    color: string;
-    opacity: number;
-    weight: number;
+    routePathLayerStore?: RoutePathLayerStore;
 }
 
-@inject('popupStore', 'mapStore')
+const OPACITY_HIGHLIGHTED = 1;
+const OPACITY_UNHIGHLIGHTED = 0.6;
+const WEIGHT_HIGHLIGHTED = 8;
+const WEIGHT_UNHIGHLIGHTED = 6;
+
+@inject('popupStore', 'mapStore', 'routePathLayerStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private layerRef: React.Ref<any>;
@@ -43,7 +47,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             content: this.renderPopup(node),
             coordinates: node.coordinates,
             isCloseButtonVisible: false,
-            isAutoCloseOn: true
+            isAutoCloseOn: true,
         };
 
         this.props.popupStore!.showPopup(popup);
@@ -62,23 +66,24 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         NavigationUtils.openNodeView({ nodeId: node.id });
     };
 
-    private renderRoutePathLinks = () => {
-        const routePathLinks = this.props.routePathLinks;
-        return routePathLinks.map(routePathLink => {
+    private renderRoutePathLinks = (isHighlighted: boolean) => {
+        const routePath = this.props.routePath;
+        const routePathLinks = routePath.routePathLinks;
+        return routePathLinks.map((routePathLink) => {
             return (
                 <Polyline
                     positions={routePathLink.geometry}
                     key={routePathLink.id}
-                    color={this.props.color}
-                    weight={this.props.weight}
-                    opacity={this.props.opacity}
-                    onClick={this.props.onClick(this.layerRef)}
+                    color={routePath.color}
+                    weight={isHighlighted ? WEIGHT_HIGHLIGHTED : WEIGHT_UNHIGHLIGHTED}
+                    opacity={isHighlighted ? OPACITY_HIGHLIGHTED : OPACITY_UNHIGHLIGHTED}
+                    onClick={this.props.onClick(this.layerRef, routePath.internalId)}
                 />
             );
         });
     };
     private renderNodes = () => {
-        const routePathLinks = this.props.routePathLinks;
+        const routePathLinks = this.props.routePath.routePathLinks;
         const triggerNodeClick = (node: INode) => () => {
             const clickParams: INodeClickParams = { node };
             EventHelper.trigger('nodeClick', clickParams);
@@ -92,7 +97,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled: routePathLink.startNodeType === StartNodeType.DISABLED,
                 isTimeAlignmentStop: routePathLink.startNodeTimeAlignmentStop !== '0',
                 openPopup: this.openPopup(routePathLink.startNode),
-                triggerNodeClick: triggerNodeClick(node)
+                triggerNodeClick: triggerNodeClick(node),
             });
         });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
@@ -104,7 +109,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled: false, // Last node can't be disabled
                 isTimeAlignmentStop: false, // Last node can't be a time alignment stop
                 openPopup: this.openPopup(lastRoutePathLink.endNode),
-                triggerNodeClick: triggerNodeClick(node)
+                triggerNodeClick: triggerNodeClick(node),
             })
         );
         return nodes;
@@ -116,7 +121,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         isDisabled,
         isTimeAlignmentStop,
         openPopup,
-        triggerNodeClick
+        triggerNodeClick,
     }: {
         key: string;
         node: INode;
@@ -144,8 +149,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     };
 
     private renderStartMarker = () => {
-        const color = this.props.color;
-        const routePathLinks = this.props.routePathLinks;
+        const routePath = this.props.routePath;
+        const color = routePath.color!;
+        const routePathLinks = routePath.routePathLinks;
         if (routePathLinks.length === 0) return;
         return (
             <Marker
@@ -161,35 +167,38 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
             return null;
         }
 
-        const routePathLinks = this.props.routePathLinks;
-
-        const geoms = routePathLinks.map(routePathLink => routePathLink.geometry);
-
+        const routePath = this.props.routePath;
+        const routePathLinks = routePath.routePathLinks;
+        const geoms = routePathLinks.map((routePathLink) => routePathLink.geometry);
         return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
             <ArrowDecorator
                 key={index}
-                color={this.props.color}
+                color={routePath.color}
                 geometry={geom}
-                onClick={this.props.onClick(this.layerRef)}
-                onMouseOver={this.props.onMouseOver(this.layerRef)}
-                onMouseOut={this.props.onMouseOut(this.layerRef)}
+                onClick={this.props.onClick(this.layerRef, routePath.internalId)}
+                onMouseOver={this.props.onMouseOver(this.layerRef, routePath.internalId)}
+                onMouseOut={this.props.onMouseOut(this.layerRef, routePath.internalId)}
                 isUpdatePrevented={true}
             />
         ));
     };
 
     render() {
-        if (this.props.routePathLinks.length === 0) return null;
-
+        const routePath = this.props.routePath;
+        if (!routePath.visible || routePath.routePathLinks.length === 0) return null;
+        const isSelected =
+            this.props.routePathLayerStore!.selectedRoutePathId === routePath.internalId;
+        const isHighlighted =
+            this.props.routePathLayerStore!.highlightedRoutePathId === routePath.internalId;
         return (
             <>
                 <FeatureGroup
                     ref={this.layerRef}
-                    onMouseOver={this.props.onMouseOver(this.layerRef)}
-                    onMouseOut={this.props.onMouseOut(this.layerRef)}
+                    onMouseOver={this.props.onMouseOver(this.layerRef, routePath.internalId)}
+                    onMouseOut={this.props.onMouseOut(this.layerRef, routePath.internalId)}
                 >
-                    {this.renderRoutePathLinks()}
-                    {this.renderNodes()}
+                    {this.renderRoutePathLinks(isSelected || isHighlighted)}
+                    {isSelected && this.renderNodes()}
                     {this.renderStartMarker()}
                 </FeatureGroup>
                 <FeatureGroup>{this.renderDirectionDecoration()}</FeatureGroup>

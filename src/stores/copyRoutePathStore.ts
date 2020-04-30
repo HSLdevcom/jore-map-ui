@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
+import RoutePathLayerStore from './routePathLayerStore';
 import RoutePathMassEditStore from './routePathMassEditStore';
 
 interface IRoutePathToCopy {
@@ -15,7 +16,7 @@ class CopyRoutePathStore {
     @observable private _routeId: string | null;
     @observable private _transitType: TransitType;
     @observable private _routePathsToCopy: IRoutePathToCopy[];
-    @observable private _routePathToCopyIdCounter: number;
+    @observable private _storedRouteListRoutePaths: IRoutePath[] | null;
 
     constructor() {
         this.clear();
@@ -59,6 +60,9 @@ class CopyRoutePathStore {
         this._lineId = lineId;
         this._routeId = routeId;
         this._transitType = transitType;
+
+        this._storedRouteListRoutePaths = _.cloneDeep(RoutePathLayerStore.routePaths);
+        RoutePathLayerStore.clear();
     };
 
     @action
@@ -68,9 +72,8 @@ class CopyRoutePathStore {
             newRoutePaths.push({
                 routePath: rp,
                 direction: rp.direction,
-                id: `new-${this._routePathToCopyIdCounter}`,
+                id: rp.internalId,
             });
-            this._routePathToCopyIdCounter += 1;
         });
 
         this._routePathsToCopy = this._routePathsToCopy.concat(newRoutePaths);
@@ -85,12 +88,21 @@ class CopyRoutePathStore {
     public removeRoutePathToCopy = (id: string) => {
         const removeIndex = this._routePathsToCopy.findIndex((rpToCopy) => rpToCopy.id === id);
         this._routePathsToCopy.splice(removeIndex, 1);
+
+        RoutePathLayerStore.removeRoutePath(id);
     };
 
     @action
     public copyRoutePathPair = () => {
+        this.restoreRouteListRoutePaths();
         RoutePathMassEditStore.addCopiedRoutePaths(this._routePathsToCopy);
         this.clear();
+    };
+
+    @action
+    public restoreRouteListRoutePaths = () => {
+        RoutePathLayerStore.clear();
+        RoutePathLayerStore.addRoutePaths({ routePaths: this._storedRouteListRoutePaths! });
     };
 
     @action
@@ -98,7 +110,7 @@ class CopyRoutePathStore {
         this._lineId = null;
         this._routeId = null;
         this._routePathsToCopy = [];
-        this._routePathToCopyIdCounter = 1;
+        this._storedRouteListRoutePaths = null;
     };
 }
 

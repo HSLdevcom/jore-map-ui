@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
+import TransitType from '~/enums/transitType';
 import { IRoute } from '~/models';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
@@ -10,6 +11,7 @@ import RouteTab from './RouteTab';
 
 interface IRouteItemProps {
     route: IRoute;
+    transitType: TransitType;
     routeIdToEdit: string | null;
     selectedTabIndex: number;
     areAllRoutePathsVisible: boolean;
@@ -29,7 +31,13 @@ class RouteItem extends React.Component<IRouteItemProps> {
     };
 
     render() {
-        const { route, routeIdToEdit, selectedTabIndex, areAllRoutePathsVisible } = this.props;
+        const {
+            route,
+            transitType,
+            routeIdToEdit,
+            selectedTabIndex,
+            areAllRoutePathsVisible,
+        } = this.props;
         const isEditingRoutePaths = selectedTabIndex === 0 && route.id === routeIdToEdit;
         const isEditingRoute = selectedTabIndex === 1 && route.id === routeIdToEdit;
 
@@ -53,8 +61,11 @@ class RouteItem extends React.Component<IRouteItemProps> {
                     <ContentItem>
                         <RoutePathListTab
                             key={route.id}
+                            transitType={transitType}
                             routePaths={routePaths}
                             isEditing={isEditingRoutePaths}
+                            lineId={route.lineId}
+                            routeId={route.id}
                             areAllRoutePathsVisible={areAllRoutePathsVisible}
                             toggleAllRoutePathsVisible={this.toggleAllRoutePathsVisible}
                         />

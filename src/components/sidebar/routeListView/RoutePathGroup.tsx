@@ -15,7 +15,7 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
@@ -35,11 +35,11 @@ interface IRoutePathGroupProps {
     stopNameMap: Map<string, IRoutePathStopNames>;
     removeNewRoutePath: (id: string) => () => void;
     userStore?: UserStore;
-    routeListStore?: RouteListStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-@inject('userStore', 'routeListStore', 'routePathMassEditStore')
+@inject('userStore', 'routePathLayerStore', 'routePathMassEditStore')
 @observer
 class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     private updateStartDates = (routePaths: IRoutePath[]) => (value: Date) => {
@@ -52,10 +52,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         routePaths.forEach((rp) => {
             this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
         });
-    };
-
-    private toggleRoutePathVisibility = (id: string) => () => {
-        this.props.routeListStore!.toggleRoutePathVisibility(id);
     };
 
     private openRoutePathView = (routePath: IRoutePath) => () => {
@@ -154,7 +150,12 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 key={`${header}-${index}`}
                 className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
             >
-                <div className={s.groupedRoutesDates}>
+                <div
+                    className={classnames(
+                        s.groupedRoutesDates,
+                        !isEditing ? s.editingDisabledGroupedRoutesDates : undefined
+                    )}
+                >
                     {isEditing ? (
                         <>
                             <InputContainer
@@ -183,7 +184,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         <div>{header}</div>
                     )}
                 </div>
-                <div className={s.groupedRoutesContent}>
+                <div>
                     {routePaths.map((routePath: IRoutePath) => {
                         const shouldHighlightRoutePath = _isCurrentTimeWithinRoutePathTimeSpan(
                             routePath
@@ -203,6 +204,16 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         )!;
                         const isNew = massEditRp && massEditRp.isNew;
                         const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
+                        const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                            routePath.internalId
+                        );
+                        const isVisible = rpFromRpLayerStore
+                            ? Boolean(rpFromRpLayerStore.visible)
+                            : false;
+                        const color =
+                            rpFromRpLayerStore && rpFromRpLayerStore.color
+                                ? rpFromRpLayerStore.color
+                                : '#898989';
                         return (
                             <div
                                 className={classnames(
@@ -289,11 +300,13 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                         </Button>
                                     )}
                                     <ToggleSwitch
-                                        onClick={this.toggleRoutePathVisibility(
-                                            routePath.internalId
-                                        )}
-                                        value={routePath.visible}
-                                        color={routePath.visible ? routePath.color! : '#898989'}
+                                        onClick={() =>
+                                            this.props.routePathLayerStore!.toggleRoutePathVisibility(
+                                                routePath.internalId
+                                            )
+                                        }
+                                        value={isVisible}
+                                        color={color}
                                     />
                                 </div>
                             </div>

@@ -35,15 +35,13 @@
         .routeItemWrapper {
             border-top: 1px solid #bebebe;
         }
-
-        .buttonContainer {
-            div {
-                margin: 0px 0px 1px 0px;
-            }
-        }
     }
 
     .routesText {
         font-weight: bold;
     }
+}
+
+.routeListWide {
+    width: $sidebarExtraWide;
 }

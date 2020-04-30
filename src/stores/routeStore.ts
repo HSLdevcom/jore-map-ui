@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { IRoute } from '~/models';
 import routeValidationModel, {
-    IRouteValidationModel
+    IRouteValidationModel,
 } from '~/models/validationModels/routeValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
@@ -85,14 +85,14 @@ class RouteStore {
                         if (Boolean(this._existingRouteIds.includes(routeId))) {
                             const validationResult: IValidationResult = {
                                 isValid: false,
-                                errorMessage: `Reitti ${routeId} on jo olemassa.`
+                                errorMessage: `Reitti ${routeId} on jo olemassa.`,
                             };
                             return validationResult;
                         }
                         return;
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         };
         this._validationStore.init(this._route, routeValidationModel, customValidatorMap);
     };

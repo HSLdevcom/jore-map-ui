@@ -1,7 +1,6 @@
 import { action, computed, observable, reaction } from 'mobx';
-import ColorScale from '~/helpers/ColorScale';
-import { ILine, IRoute, IRoutePath } from '~/models';
-import RoutePathService from '~/services/routePathService';
+import { ILine, IRoute } from '~/models';
+import RoutePathLayerStore from './routePathLayerStore';
 import SearchStore from './searchStore';
 
 interface IRouteItem {
@@ -14,13 +13,11 @@ class RouteListStore {
     @observable private _routeItems: IRouteItem[];
     @observable private _lines: ILine[];
     @observable private _routeIdToEdit: string | null;
-    private colorScale: ColorScale;
 
     constructor() {
         this._routeItems = [];
         this._lines = [];
         this._routeIdToEdit = null;
-        this.colorScale = new ColorScale();
 
         reaction(
             () => this.routeIdToEdit != null,
@@ -63,6 +60,9 @@ class RouteListStore {
             }
         );
         this._routeItems = this._routeItems.concat(routeItems);
+        routes.forEach((route) => {
+            RoutePathLayerStore.addRoutePaths({ routePaths: route.routePaths });
+        });
     };
 
     @action
@@ -75,7 +75,7 @@ class RouteListStore {
         for (let i = 0; i < this._routeItems.length; i += 1) {
             if (this._routeItems[i].route.id === routeId) {
                 this._routeItems[i].route.routePaths.forEach((routePath) =>
-                    this.colorScale.releaseColor(routePath.color!)
+                    RoutePathLayerStore.removeRoutePath(routePath.internalId)
                 );
                 this._routeItems.splice(i, 1);
             }
@@ -96,37 +96,10 @@ class RouteListStore {
     };
 
     @action
-    public clearRouteItems = () => {
+    public clear = () => {
         this._routeItems = [];
         this._routeIdToEdit = null;
-        this.colorScale = new ColorScale();
-    };
-
-    @action
-    public setRoutePathVisibility = async (isVisible: boolean, internalId: string) => {
-        const currentRoutePath = this.getRoutePath(internalId);
-        if (!currentRoutePath) return;
-        if (isVisible === currentRoutePath.visible) return;
-
-        currentRoutePath.visible = isVisible;
-        currentRoutePath.color = currentRoutePath.visible
-            ? this.colorScale.reserveColor()
-            : this.colorScale.releaseColor(currentRoutePath.color!);
-        if (currentRoutePath.visible && currentRoutePath.routePathLinks.length === 0) {
-            const newRoutePath = await RoutePathService.fetchRoutePath(
-                currentRoutePath.routeId,
-                currentRoutePath.startTime,
-                currentRoutePath.direction
-            );
-            this.updateRoutePathLinks(newRoutePath!, internalId);
-        }
-    };
-
-    @action
-    public toggleRoutePathVisibility = async (internalId: string) => {
-        const currentRoutePath = this.getRoutePath(internalId);
-        if (!currentRoutePath) return;
-        this.setRoutePathVisibility(!currentRoutePath.visible, internalId);
+        RoutePathLayerStore.clear();
     };
 
     @action
@@ -147,31 +120,8 @@ class RouteListStore {
         routeItem!.areAllRoutePathsVisible = true;
     };
 
-    @action
-    private updateRoutePathLinks = (newRoutePath: IRoutePath, internalId: string) => {
-        const oldRoutePath = this.getRoutePath(internalId);
-        if (oldRoutePath) {
-            oldRoutePath.routePathLinks = newRoutePath.routePathLinks;
-        }
-    };
-
     public getRouteItem = (routeId: string): IRouteItem | undefined => {
         return this._routeItems.find((routeItem) => routeItem.route.id === routeId);
-    };
-
-    private getRoutePath = (internalId: string): IRoutePath | null => {
-        let foundRoutePath: IRoutePath | null = null;
-        this._routeItems.find((routeItem) => {
-            const found = routeItem.route.routePaths.find(
-                (_routePath) => _routePath.internalId === internalId
-            );
-            if (found) {
-                foundRoutePath = found;
-                return true;
-            }
-            return false;
-        });
-        return foundRoutePath;
     };
 }
 

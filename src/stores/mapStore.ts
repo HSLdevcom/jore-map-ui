@@ -15,12 +15,12 @@ const INITIAL_ZOOM = 15;
 enum NodeLabel {
     hastusId,
     longNodeId,
-    shortNodeId
+    shortNodeId,
 }
 
 enum MapFilter {
     arrowDecorator,
-    linkPoint
+    linkPoint,
 }
 
 type MapCursor = '' | 'crosshair';
@@ -140,7 +140,7 @@ class MapStore {
     @action
     public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
         if (this._visibleNodeLabels.includes(nodeLabel)) {
-            this._visibleNodeLabels = this._visibleNodeLabels.filter(t => t !== nodeLabel);
+            this._visibleNodeLabels = this._visibleNodeLabels.filter((t) => t !== nodeLabel);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
             this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
@@ -150,7 +150,7 @@ class MapStore {
     @action
     public toggleMapFilter = (mapFilter: MapFilter) => {
         if (this._mapFilters.includes(mapFilter)) {
-            this._mapFilters = this._mapFilters.filter(mF => mF !== mapFilter);
+            this._mapFilters = this._mapFilters.filter((mF) => mF !== mapFilter);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
             this._mapFilters = this._mapFilters.concat([mapFilter]);

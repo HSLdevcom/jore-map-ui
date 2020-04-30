@@ -2,17 +2,26 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
+import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
+import ButtonType from '~/enums/buttonType';
+import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
+import { CopyRoutePathStore } from '~/stores/copyRoutePathStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
@@ -26,14 +35,19 @@ interface IRoutePathStopNames {
 interface IRoutePathListTabProps {
     routePaths: IRoutePath[];
     isEditing: boolean;
+    lineId: string;
+    routeId: string;
+    transitType: TransitType;
     areAllRoutePathsVisible: boolean;
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
+    routePathLayerStore?: RoutePathLayerStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
     loginStore?: LoginStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
+    copyRoutePathStore?: CopyRoutePathStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
@@ -48,11 +62,13 @@ const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 
 @inject(
     'routeListStore',
+    'routePathLayerStore',
     'mapStore',
     'confirmStore',
     'loginStore',
     'alertStore',
     'errorStore',
+    'copyRoutePathStore',
     'routePathMassEditStore'
 )
 @observer
@@ -191,10 +207,10 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
                     if (this.isCurrentTimeWithinRoutePathTimeSpan(routePath)) {
-                        this.props.routeListStore!.setRoutePathVisibility(
-                            true,
-                            routePath.internalId
-                        );
+                        this.props.routePathLayerStore!.setRoutePathVisibility({
+                            id: routePath.internalId,
+                            isVisible: true,
+                        });
                     }
                 });
             });
@@ -261,6 +277,22 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const removeIndex = routePaths.findIndex((rp) => rp.internalId === id);
         routePaths.splice(removeIndex, 1);
         this.updateGroupedRoutePathsToDisplay(routePaths);
+    };
+
+    private redirectToNewRoutePathView = () => () => {
+        const { lineId, routeId } = this.props;
+        const newRoutePathLink = routeBuilder
+            .to(SubSites.newRoutePath)
+            .set(QueryParams.routeId, routeId)
+            .set(QueryParams.lineId, lineId)
+            .toLink();
+
+        navigator.goTo({ link: newRoutePathLink });
+    };
+
+    private openCopyRoutePathView = () => () => {
+        const { lineId, routeId, transitType } = this.props;
+        this.props.copyRoutePathStore!.init({ lineId, routeId, transitType });
     };
 
     render() {
@@ -337,6 +369,28 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                                 ? `Piilota reitinsuunnat`
                                 : `Näytä kaikki reitinsuunnat (${this.props.routePaths.length})`}
                         </div>
+                    </div>
+                )}
+                {this.props.loginStore!.hasWriteAccess && (
+                    <div className={s.buttonContainer}>
+                        <Button
+                            onClick={this.redirectToNewRoutePathView()}
+                            type={ButtonType.SQUARE}
+                            disabled={Boolean(this.props.routeListStore!.routeIdToEdit)}
+                            isWide={true}
+                        >
+                            {`Luo reitinsuunta`}
+                        </Button>
+                        <Button
+                            onClick={this.openCopyRoutePathView()}
+                            type={ButtonType.SQUARE}
+                            disabled={
+                                this.props.routeId !== this.props.routeListStore!.routeIdToEdit
+                            }
+                            isWide={true}
+                        >
+                            {`Kopioi reitinsuunta`}
+                        </Button>
                     </div>
                 )}
                 {this.props.loginStore!.hasWriteAccess && isEditing && (

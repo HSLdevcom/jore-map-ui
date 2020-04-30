@@ -1,14 +1,12 @@
-import L from 'leaflet';
+import classnames from 'classnames';
 import _ from 'lodash';
-import { autorun } from 'mobx';
 import { inject, observer } from 'mobx-react';
+import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
-import { Button } from '~/components/controls';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
-import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
-import { ILine, IRoute } from '~/models';
+import { ILine, IRoute, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -109,14 +107,12 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
-
-        autorun(() => this.centerMapToRoutes());
     }
 
     componentWillUnmount() {
         this.props.routeStore!.clear();
         this._isMounted = false;
-        this.props.routeListStore!.clearRouteItems();
+        this.props.routeListStore!.clear();
     }
 
     private fetchRoutes = async (routeIds: string[]) => {
@@ -154,6 +150,18 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             this.props.routeListStore!.addToLines(missingLines);
             this.props.routeListStore!.addToRouteItems(missingRoutes);
 
+            let hasActiveRoutePath: boolean = false;
+            missingRoutes.forEach((route: IRoute) => {
+                route.routePaths.forEach((rp: IRoutePath, index: number) => {
+                    if (_isCurrentTimeWithinRoutePathTimeSpan(rp)) {
+                        hasActiveRoutePath = true;
+                    }
+                });
+            });
+            if (!hasActiveRoutePath) {
+                this.props.mapStore!.initCoordinates();
+            }
+
             if (routeIdsNotFound.length > 0) {
                 this.props.errorStore!.addError(
                     `Reittien (${routeIdsNotFound.join(', ')}) haku epäonnistui.`
@@ -161,28 +169,6 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             }
             this._setState({ routeIds, isLoading: false });
         }
-    };
-
-    private centerMapToRoutes = () => {
-        const routes: IRoute[] = this.props.routeListStore!.routes;
-        const isLoading = this.state.isLoading;
-        if (!routes || isLoading) return;
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-        routes.forEach((route) => {
-            route.routePaths.forEach((routePath) => {
-                routePath.routePathLinks.forEach((routePathLink) => {
-                    routePathLink.geometry.forEach((pos) => {
-                        bounds.extend(pos);
-                    });
-                });
-            });
-        });
-        if (!bounds.isValid()) {
-            this.props.mapStore!.initCoordinates();
-            return;
-        }
-
-        this.props.mapStore!.setMapBounds(bounds);
     };
 
     private closeRoutePrompt = (route: IRoute) => {
@@ -227,7 +213,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private startEditPrompt = (route: IRoute) => {
+    private toggleEditPrompt = (route: IRoute) => {
         const confirmStore = this.props.confirmStore!;
         const routeListStore = this.props.routeListStore!;
         const routeStore = this.props.routeStore!;
@@ -239,7 +225,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
         const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
         if (!isDirty) {
-            this.startEdit({ route, newRouteId, isEditingRoutePaths });
+            this.toggleEdit({ route, newRouteId, isEditingRoutePaths });
             return;
         }
 
@@ -253,13 +239,13 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         confirmStore.openConfirm({
             content: promptMessage,
             onConfirm: () => {
-                this.startEdit({ route, newRouteId, isEditingRoutePaths });
+                this.toggleEdit({ route, newRouteId, isEditingRoutePaths });
             },
             confirmButtonText: 'Kyllä',
         });
     };
 
-    private startEdit = ({
+    private toggleEdit = ({
         route,
         newRouteId,
         isEditingRoutePaths,
@@ -281,6 +267,11 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                 routeStore.init({ route, isNewRoute: false });
             }
         } else {
+            if (isEditingRoutePaths) {
+                routePathMassEditStore.stopEditing();
+            } else {
+                routeStore.clear();
+            }
             routePathMassEditStore.clear();
             routeStore.clear();
         }
@@ -288,24 +279,6 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
     private toggleTransitType = (type: TransitType) => {
         this.props.searchStore!.toggleTransitType(type);
-    };
-
-    private redirectToNewRoutePathView = (route: IRoute) => () => {
-        const newRoutePathLink = routeBuilder
-            .to(SubSites.newRoutePath)
-            .set(QueryParams.routeId, route.id)
-            .set(QueryParams.lineId, route.lineId)
-            .toLink();
-
-        navigator.goTo({ link: newRoutePathLink });
-    };
-
-    private openCopyRoutePathView = (
-        lineId: string,
-        routeId: string,
-        transitType: TransitType
-    ) => () => {
-        this.props.copyRoutePathStore!.init({ lineId, routeId, transitType });
     };
 
     private _render = () => {
@@ -346,7 +319,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                         isEditButtonVisible={true}
                                         isEditPromptHidden={true}
                                         onCloseButtonClick={() => this.closeRoutePrompt(route)}
-                                        onEditButtonClick={() => this.startEditPrompt(route)}
+                                        onEditButtonClick={() => this.toggleEditPrompt(route)}
                                     >
                                         <TransitTypeLink
                                             transitType={transitType}
@@ -364,6 +337,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                     <div className={s.routeItemWrapper}>
                                         <RouteItem
                                             route={route}
+                                            transitType={transitType}
                                             routeIdToEdit={routeIdToEdit}
                                             selectedTabIndex={routeItem.selectedTabIndex}
                                             areAllRoutePathsVisible={
@@ -371,32 +345,6 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                             }
                                         />
                                     </div>
-                                    {this.props.loginStore!.hasWriteAccess && (
-                                        <div className={s.buttonContainer}>
-                                            {route.id === routeListStore.routeIdToEdit && (
-                                                <Button
-                                                    onClick={this.openCopyRoutePathView(
-                                                        route!.lineId,
-                                                        route.id,
-                                                        transitType
-                                                    )}
-                                                    type={ButtonType.SQUARE}
-                                                >
-                                                    {`Kopioi reitinsuunta pari reitille ${route.id}`}
-                                                </Button>
-                                            )}
-                                            <Button
-                                                onClick={this.redirectToNewRoutePathView(route)}
-                                                type={ButtonType.SQUARE}
-                                                disabled={Boolean(routeListStore.routeIdToEdit)}
-                                            >
-                                                {`Luo reitinsuunta reitille ${route.id}`}
-                                            </Button>
-                                        </div>
-                                    )}
-                                    {!this.props.loginStore!.hasWriteAccess && (
-                                        <div className={s.sectionDivider} />
-                                    )}
                                 </div>
                             );
                         })}
@@ -407,12 +355,26 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
     };
 
     render() {
+        const isCopyRouteListViewVisible = this.props.copyRoutePathStore!.isVisible;
         return (
-            <div className={s.routeListView} data-cy='routeListView'>
+            <div
+                className={classnames(
+                    s.routeListView,
+                    isCopyRouteListViewVisible ? s.routeListWide : undefined
+                )}
+                data-cy='routeListView'
+            >
                 {this._render()}
             </div>
         );
     }
 }
+
+const _isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
+    return (
+        Moment(routePath.startTime).isBefore(Moment()) &&
+        Moment(routePath.endTime).isAfter(Moment())
+    );
+};
 
 export default RouteListView;

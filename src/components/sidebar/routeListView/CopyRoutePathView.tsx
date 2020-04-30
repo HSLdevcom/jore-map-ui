@@ -1,9 +1,10 @@
 import classnames from 'classnames';
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-import { Button } from '~/components/controls';
+import { Button, ToggleSwitch } from '~/components/controls';
 import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePath } from '~/models';
@@ -12,6 +13,7 @@ import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import { CopyRoutePathStore, IRoutePathToCopy } from '~/stores/copyRoutePathStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
@@ -19,20 +21,22 @@ import * as s from './copyRoutePathView.scss';
 
 interface ICopyRoutePathViewProps {
     copyRoutePathStore?: CopyRoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
 }
 
 interface ICopyRoutePathState {
     isLoading: boolean;
     selectedLineId: string | null;
     selectedRouteId: string | null;
-    selectedRoutePathIds: string[];
+    selectedRoutePaths: IRoutePath[];
     lineQueryResult: ISearchLine[];
     routePathQueryResult: IRoutePath[];
     lineDropdownItems: IDropdownItem[];
     routeDropdownItems: IDropdownItem[];
+    newRoutePathCounter: number;
 }
 
-@inject('copyRoutePathStore')
+@inject('copyRoutePathStore', 'routePathLayerStore')
 @observer
 class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRoutePathState> {
     private _isMounted: boolean;
@@ -40,11 +44,12 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         isLoading: true,
         selectedLineId: null,
         selectedRouteId: null,
-        selectedRoutePathIds: [],
+        selectedRoutePaths: [],
         lineQueryResult: [],
         routePathQueryResult: [],
         lineDropdownItems: [],
         routeDropdownItems: [],
+        newRoutePathCounter: 0,
     };
 
     private _setState = (newState: object) => {
@@ -65,6 +70,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.props.copyRoutePathStore!.clear();
     }
 
     private copyRoutePathPair = () => {
@@ -79,7 +85,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             routeDropdownItems,
             selectedLineId: value,
             selectedRouteId: null,
-            selectedRoutePathIds: [],
+            selectedRoutePaths: [],
             routePathQueryResult: [],
         });
     };
@@ -88,50 +94,59 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         const route = await RouteService.fetchRoute(value, {
             areRoutePathLinksExcluded: true,
         });
-        const routePathQueryResult = route?.routePaths!;
+        let newRoutePathCounter = this.state.newRoutePathCounter;
+        const routePathQueryResult = route?.routePaths!.map((rp) => {
+            const newId = `${newRoutePathCounter}-copy-${rp.internalId}`;
+            newRoutePathCounter += 1;
+            rp.internalId = newId;
+            return rp;
+        });
         this.setState({
             routePathQueryResult,
+            newRoutePathCounter,
             selectedRouteId: value,
-            selectedRoutePathIds: [],
+            selectedRoutePaths: [],
         });
     };
 
-    private toggleRoutePath = (routePath: IRoutePath) => () => {
-        const index = this.state.selectedRoutePathIds.findIndex(
-            (id) => id === routePath.internalId
-        );
-        let selectedRoutePathIds;
-        if (index >= 0) {
-            selectedRoutePathIds = this.state.selectedRoutePathIds;
-            selectedRoutePathIds.splice(index, 1);
-        } else {
-            selectedRoutePathIds = this.state.selectedRoutePathIds.concat([routePath.internalId]);
-        }
-        this._setState({
-            selectedRoutePathIds,
-        });
-    };
-
-    private addRoutePathsToCopy = async () => {
-        const routePaths: IRoutePath[] = [];
-        const selectedRoutePathIds = this.state.selectedRoutePathIds;
-        // Empty selected routePathIds to disable copy button right away (prevent clicking it twice)
-        this._setState({
-            selectedRoutePathIds: [],
-        });
-        for (const index in selectedRoutePathIds) {
-            const rpId = selectedRoutePathIds[index];
-            const routePathWithoutLinks = this.state.routePathQueryResult.find(
-                (rp) => rp.internalId === rpId
-            )!;
-            const routePathWithLinks = await RoutePathService.fetchRoutePath(
-                routePathWithoutLinks.routeId,
-                routePathWithoutLinks.startTime,
-                routePathWithoutLinks.direction
+    private toggleRoutePath = (routePath: IRoutePath) => async () => {
+        const shouldRemove =
+            this.state.selectedRoutePaths.findIndex(
+                (rp) => rp.internalId === routePath.internalId
+            ) >= 0;
+        let selectedRoutePaths = this.state.selectedRoutePaths;
+        if (shouldRemove) {
+            const removeIndex = selectedRoutePaths.findIndex(
+                (rp) => rp.internalId === routePath.internalId
             );
-            routePaths.push(routePathWithLinks!);
+            selectedRoutePaths.splice(removeIndex, 1);
+            this.props.routePathLayerStore!.removeRoutePath(routePath.internalId);
+            this._setState({
+                selectedRoutePaths,
+            });
+        } else {
+            const routePathWithLinks = await RoutePathService.fetchRoutePath(
+                routePath.routeId,
+                routePath.startTime,
+                routePath.direction
+            );
+            routePathWithLinks!.visible = true;
+            routePathWithLinks!.internalId = _.cloneDeep(routePath).internalId;
+            selectedRoutePaths = selectedRoutePaths.concat(routePathWithLinks!);
+            this.props.routePathLayerStore!.addRoutePaths({ routePaths: [routePathWithLinks!] });
+            this._setState({
+                selectedRoutePaths,
+            });
         }
-        this.props.copyRoutePathStore!.addRoutePathsToCopy(routePaths);
+    };
+
+    private addRoutePathsToCopy = () => {
+        this.props.copyRoutePathStore!.addRoutePathsToCopy(this.state.selectedRoutePaths);
+        this._setState({
+            selectedRoutePaths: [],
+        });
+        // To refresh routePathQueryResult, get new ids to replace existing ones (to prevent id overlap)
+        this.onRouteChange(this.state.selectedRouteId!);
     };
 
     private onDirectionChange = (id: string) => (value: string) => {
@@ -140,6 +155,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
 
     private removeRoutePathToCopy = (id: string) => () => {
         this.props.copyRoutePathStore!.removeRoutePathToCopy(id);
+    };
+
+    private onBackButtonClick = () => {
+        this.props.copyRoutePathStore!.restoreRouteListRoutePaths();
+        this.props.copyRoutePathStore!.clear();
     };
 
     render() {
@@ -156,7 +176,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                     className={s.sidebarHeader}
                     isBackButtonVisible={true}
                     isEditPromptHidden={true}
-                    onBackButtonClick={() => copyRoutePathStore.clear()}
+                    onBackButtonClick={() => this.onBackButtonClick()}
                 >
                     <div>
                         Kopioi reitinsuuntia linjan{' '}
@@ -183,9 +203,20 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                     <th align='left'>Alkupvm</th>
                                     <th align='left'>Loppupvm</th>
                                     <th align='left'></th>
+                                    <th align='left'></th>
                                 </tr>
                                 {routePathsToCopy.map(
                                     (rpToCopy: IRoutePathToCopy, index: number) => {
+                                        const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                                            rpToCopy.id
+                                        );
+                                        const isVisible = rpFromRpLayerStore
+                                            ? Boolean(rpFromRpLayerStore.visible)
+                                            : false;
+                                        const color =
+                                            rpFromRpLayerStore && rpFromRpLayerStore.color
+                                                ? rpFromRpLayerStore.color
+                                                : '#898989';
                                         return (
                                             <tr key={`rpToCopyRow-${index}`}>
                                                 <td>
@@ -226,6 +257,17 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                     >
                                                         <FaTrashAlt />
                                                     </Button>
+                                                </td>
+                                                <td>
+                                                    <ToggleSwitch
+                                                        onClick={() =>
+                                                            this.props.routePathLayerStore!.toggleRoutePathVisibility(
+                                                                rpToCopy.id
+                                                            )
+                                                        }
+                                                        value={isVisible}
+                                                        color={color}
+                                                    />
                                                 </td>
                                             </tr>
                                         );
@@ -271,62 +313,72 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                     </div>
                                 ) : (
                                     <>
-                                        <table
-                                            className={classnames(
-                                                s.routePathTable,
-                                                s.findRoutePathTable
-                                            )}
-                                        >
-                                            <tbody className={s.routePathTableHeader}>
-                                                <tr>
-                                                    <th align='left'>Suunta</th>
-                                                    <th align='left'>Lähtöpaikka</th>
-                                                    <th align='left'>Päätepaikka</th>
-                                                    <th align='left'>Alkupvm</th>
-                                                    <th align='left'>Loppupvm</th>
-                                                </tr>
-                                                {this.state.routePathQueryResult.map(
-                                                    (routePath: IRoutePath, index: number) => {
-                                                        return (
-                                                            <tr
-                                                                key={`rpQueryResult-${index}`}
-                                                                onClick={this.toggleRoutePath(
-                                                                    routePath
-                                                                )}
-                                                                className={
-                                                                    this.state.selectedRoutePathIds.includes(
+                                        <div className={s.findRoutePathTableWrapper}>
+                                            <table className={s.routePathTable}>
+                                                <tbody className={s.routePathTableHeader}>
+                                                    <tr>
+                                                        <th align='left'>Suunta</th>
+                                                        <th align='left'>Lähtöpaikka</th>
+                                                        <th align='left'>Päätepaikka</th>
+                                                        <th align='left'>Alkupvm</th>
+                                                        <th align='left'>Loppupvm</th>
+                                                    </tr>
+                                                    {this.state.routePathQueryResult.map(
+                                                        (routePath: IRoutePath, index: number) => {
+                                                            const isSelected = Boolean(
+                                                                this.state.selectedRoutePaths.find(
+                                                                    (rp) =>
+                                                                        rp.internalId ===
                                                                         routePath.internalId
-                                                                    )
-                                                                        ? s.selectedRow
-                                                                        : undefined
-                                                                }
-                                                            >
-                                                                <td>{routePath.direction}</td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {routePath.originFi}
-                                                                </td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {routePath.destinationFi}
-                                                                </td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {Moment(
-                                                                        routePath.startTime
-                                                                    ).format('DD.MM.YYYY')}
-                                                                </td>
-                                                                <td className={s.maxWidthColumn}>
-                                                                    {Moment(
-                                                                        routePath.endTime
-                                                                    ).format('DD.MM.YYYY')}
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    }
-                                                )}
-                                            </tbody>
-                                        </table>
+                                                                )
+                                                            );
+                                                            return (
+                                                                <tr
+                                                                    key={`rpQueryResult-${index}`}
+                                                                    onClick={this.toggleRoutePath(
+                                                                        routePath
+                                                                    )}
+                                                                    className={
+                                                                        isSelected
+                                                                            ? s.selectedRow
+                                                                            : undefined
+                                                                    }
+                                                                >
+                                                                    <td>{routePath.direction}</td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {routePath.originFi}
+                                                                    </td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {routePath.destinationFi}
+                                                                    </td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {Moment(
+                                                                            routePath.startTime
+                                                                        ).format('DD.MM.YYYY')}
+                                                                    </td>
+                                                                    <td
+                                                                        className={s.maxWidthColumn}
+                                                                    >
+                                                                        {Moment(
+                                                                            routePath.endTime
+                                                                        ).format('DD.MM.YYYY')}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        }
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                         <Button
                                             className={s.addRoutePathToCopyButton}
-                                            disabled={this.state.selectedRoutePathIds.length === 0}
+                                            disabled={this.state.selectedRoutePaths.length === 0}
                                             onClick={this.addRoutePathsToCopy}
                                         >
                                             Lisää valitut reitinsuunnat kopioitavaksi

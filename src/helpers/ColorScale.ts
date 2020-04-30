@@ -14,7 +14,7 @@ class ColorScale {
         // '#fffac8',
         '#800000',
         '#aaffc3',
-        '#000075'
+        '#000075',
         // '#a9a9a9',
     ];
 
@@ -24,7 +24,12 @@ class ColorScale {
         this.colorStack = ColorScale.allColors.slice();
     }
 
-    public reserveColor = () => {
+    public reserveColor = (color?: string) => {
+        if (color) {
+            const removeIndex = this.colorStack.findIndex((c) => c === color);
+            this.colorStack.splice(removeIndex, 1);
+            return;
+        }
         if (this.colorStack.length < 1) {
             return '#007ac9';
         }
