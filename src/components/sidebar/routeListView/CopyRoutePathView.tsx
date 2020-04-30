@@ -130,6 +130,16 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                 routePath.startTime,
                 routePath.direction
             );
+            // State might already have this routePath (async query, selecting item twice quickly)
+            if (
+                Boolean(
+                    this.state.selectedRoutePaths.find(
+                        (rp) => rp.internalId === routePath.internalId
+                    )
+                )
+            ) {
+                return;
+            }
             routePathWithLinks!.visible = true;
             routePathWithLinks!.internalId = _.cloneDeep(routePath).internalId;
             selectedRoutePaths = selectedRoutePaths.concat(routePathWithLinks!);
@@ -332,6 +342,15 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                         routePath.internalId
                                                                 )
                                                             );
+                                                            let color;
+                                                            if (isSelected) {
+                                                                color = this.props.routePathLayerStore!.getRoutePath(
+                                                                    routePath.internalId
+                                                                )!.color!;
+                                                            }
+                                                            const selectedBackgroundColorStyle = {
+                                                                backgroundColor: color,
+                                                            };
                                                             return (
                                                                 <tr
                                                                     key={`rpQueryResult-${index}`}
@@ -341,6 +360,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                     className={
                                                                         isSelected
                                                                             ? s.selectedRow
+                                                                            : undefined
+                                                                    }
+                                                                    style={
+                                                                        isSelected
+                                                                            ? selectedBackgroundColorStyle
                                                                             : undefined
                                                                     }
                                                                 >
