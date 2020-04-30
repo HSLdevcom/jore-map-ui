@@ -212,7 +212,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
     };
 
-    private startEditPrompt = (route: IRoute) => {
+    private toggleEditPrompt = (route: IRoute) => {
         const confirmStore = this.props.confirmStore!;
         const routeListStore = this.props.routeListStore!;
         const routeStore = this.props.routeStore!;
@@ -224,7 +224,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
         const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
         if (!isDirty) {
-            this.startEdit({ route, newRouteId, isEditingRoutePaths });
+            this.toggleEdit({ route, newRouteId, isEditingRoutePaths });
             return;
         }
 
@@ -238,13 +238,13 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         confirmStore.openConfirm({
             content: promptMessage,
             onConfirm: () => {
-                this.startEdit({ route, newRouteId, isEditingRoutePaths });
+                this.toggleEdit({ route, newRouteId, isEditingRoutePaths });
             },
             confirmButtonText: 'Kyllä',
         });
     };
 
-    private startEdit = ({
+    private toggleEdit = ({
         route,
         newRouteId,
         isEditingRoutePaths,
@@ -266,6 +266,11 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                 routeStore.init({ route, isNewRoute: false });
             }
         } else {
+            if (isEditingRoutePaths) {
+                routePathMassEditStore.stopEditing();
+            } else {
+                routeStore.clear();
+            }
             routePathMassEditStore.clear();
             routeStore.clear();
         }
@@ -313,7 +318,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                         isEditButtonVisible={true}
                                         isEditPromptHidden={true}
                                         onCloseButtonClick={() => this.closeRoutePrompt(route)}
-                                        onEditButtonClick={() => this.startEditPrompt(route)}
+                                        onEditButtonClick={() => this.toggleEditPrompt(route)}
                                     >
                                         <TransitTypeLink
                                             transitType={transitType}

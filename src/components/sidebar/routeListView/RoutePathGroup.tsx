@@ -204,9 +204,16 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         )!;
                         const isNew = massEditRp && massEditRp.isNew;
                         const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
-                        const routePathFromRoutePathLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                        const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
                             routePath.internalId
-                        )!;
+                        );
+                        const isVisible = rpFromRpLayerStore
+                            ? Boolean(rpFromRpLayerStore.visible)
+                            : false;
+                        const color =
+                            rpFromRpLayerStore && rpFromRpLayerStore.color
+                                ? rpFromRpLayerStore.color
+                                : '#898989';
                         return (
                             <div
                                 className={classnames(
@@ -298,12 +305,8 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                                 routePath.internalId
                                             )
                                         }
-                                        value={Boolean(routePathFromRoutePathLayerStore.visible)}
-                                        color={
-                                            routePathFromRoutePathLayerStore.visible
-                                                ? routePathFromRoutePathLayerStore.color!
-                                                : '#898989'
-                                        }
+                                        value={isVisible}
+                                        color={color}
                                     />
                                 </div>
                             </div>

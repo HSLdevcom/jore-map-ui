@@ -3,6 +3,7 @@ import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
+import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
 import { IRoutePathToCopy } from './copyRoutePathStore';
 import NavigationStore from './navigationStore';
@@ -97,14 +98,21 @@ class RoutePathMassEditStore {
         const removeIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
         this._massEditRoutePaths!.splice(removeIndex, 1);
         this.validateMassEditRoutePaths();
+        RoutePathLayerStore.removeRoutePath(id);
     };
 
     @action
     public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
-        const newMassEditRoutePaths: IMassEditRoutePath[] = [];
         let idCounter = this._newRoutePathIdCounter;
+        const routePathsWithNewId: IRoutePath[] = [];
+        const newMassEditRoutePaths: IMassEditRoutePath[] = [];
         routePathsToCopy.forEach((rpToCopy) => {
             const newRoutePathId = `new-${idCounter}`;
+
+            const routePathWithNewId: IRoutePath = _.cloneDeep(rpToCopy.routePath);
+            routePathWithNewId.internalId = newRoutePathId;
+            routePathsWithNewId.push(routePathWithNewId);
+
             const newRoutePath = _.cloneDeep(rpToCopy.routePath);
             const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
             newRoutePath.direction = rpToCopy.direction;
@@ -125,6 +133,8 @@ class RoutePathMassEditStore {
             });
             idCounter += 1;
         });
+        RoutePathLayerStore.addRoutePaths(routePathsWithNewId);
+
         this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
         this._newRoutePathIdCounter = idCounter;
         this.validateMassEditRoutePaths();
@@ -197,6 +207,16 @@ class RoutePathMassEditStore {
             }
             return currMassEditRp;
         });
+    };
+
+    @action
+    public stopEditing = () => {
+        // To clear unsaved routePaths, need to remove them from RoutePathLayerStore
+        const routePathsToRemove = this._massEditRoutePaths!.filter((mEditRp) => mEditRp.isNew).map(
+            (mEditRp) => mEditRp.routePath
+        );
+        routePathsToRemove.forEach((rp) => RoutePathLayerStore.removeRoutePath(rp.internalId));
+        this.clear();
     };
 
     @action
