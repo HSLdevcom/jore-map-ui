@@ -4,8 +4,6 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-import { FiInfo } from 'react-icons/fi';
-import { IoMdHelpCircleOutline } from 'react-icons/io';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import Loader from '~/components/shared/loader/Loader';
@@ -21,7 +19,7 @@ import { UserStore } from '~/stores/userStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
-import * as s from './routePathListTab.scss';
+import * as s from './routePathGroup.scss';
 
 interface IRoutePathGroupProps {
     routePaths: IRoutePath[];
@@ -148,12 +146,12 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         return (
             <div
                 key={`${header}-${index}`}
-                className={classnames(s.groupedRoutes, index % 2 ? s.shadow : undefined)}
+                className={classnames(s.routePathGroup, index % 2 ? s.shadow : undefined)}
             >
                 <div
                     className={classnames(
-                        s.groupedRoutesDates,
-                        !isEditing ? s.editingDisabledGroupedRoutesDates : undefined
+                        s.dateContainer,
+                        !isEditing ? s.editingDisabledDateContainer : undefined
                     )}
                 >
                     {isEditing ? (
@@ -217,7 +215,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         return (
                             <div
                                 className={classnames(
-                                    s.routePathContainer,
+                                    s.routePath,
                                     isEditing && isNew ? s.highlighAsNew : undefined
                                 )}
                                 key={routePath.internalId}
@@ -228,6 +226,21 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                             ? classnames(s.routePathInfo, s.highlight)
                                             : s.routePathInfo
                                     }
+                                    onClick={this.openRoutePathView(routePath)}
+                                    title={
+                                        isNew && oldRoutePath
+                                            ? `Kopioitu reitinsuunta: ${
+                                                  oldRoutePath.direction
+                                              } | ${toDateString(
+                                                  oldRoutePath.startTime
+                                              )} - ${toDateString(oldRoutePath.endTime)} | ${
+                                                  oldRoutePath.originFi
+                                              } - ${oldRoutePath.destinationFi} | ${
+                                                  oldRoutePath.lineId
+                                              } | ${oldRoutePath.routeId}`
+                                            : ``
+                                    }
+                                    data-cy='openRoutePathViewButton'
                                 >
                                     <div className={s.routePathDirection}>
                                         {routePath.direction}
@@ -267,36 +280,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                             )}
                                         >
                                             <FaTrashAlt />
-                                        </Button>
-                                    )}
-                                    <Button
-                                        className={s.openRoutePathViewButton}
-                                        hasReverseColor={true}
-                                        onClick={this.openRoutePathView(routePath)}
-                                        data-cy='openRoutePathViewButton'
-                                    >
-                                        <FiInfo />
-                                    </Button>
-                                    {isNew && (
-                                        <Button
-                                            className={s.openRoutePathViewButton}
-                                            onClick={() => void 0}
-                                            hasReverseColor={true}
-                                            title={
-                                                oldRoutePath
-                                                    ? `Kopioitu reitinsuunta: ${toDateString(
-                                                          oldRoutePath.startTime
-                                                      )} - ${toDateString(
-                                                          oldRoutePath.endTime
-                                                      )} | ${oldRoutePath.originFi} - ${
-                                                          oldRoutePath.destinationFi
-                                                      } | ${oldRoutePath.lineId} | ${
-                                                          oldRoutePath.routeId
-                                                      }`
-                                                    : ``
-                                            }
-                                        >
-                                            <IoMdHelpCircleOutline />
                                         </Button>
                                     )}
                                     <ToggleSwitch
