@@ -130,6 +130,16 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                 routePath.startTime,
                 routePath.direction
             );
+            // State might already have this routePath (async query, selecting item twice quickly)
+            if (
+                Boolean(
+                    this.state.selectedRoutePaths.find(
+                        (rp) => rp.internalId === routePath.internalId
+                    )
+                )
+            ) {
+                return;
+            }
             routePathWithLinks!.visible = true;
             routePathWithLinks!.internalId = _.cloneDeep(routePath).internalId;
             selectedRoutePaths = selectedRoutePaths.concat(routePathWithLinks!);
