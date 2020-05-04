@@ -17,7 +17,7 @@ import GraphqlQueries from './graphqlQueries';
 class RoutePathService {
     public static fetchRoutePath = async (
         routeId: string,
-        startTime: Date,
+        startDate: Date,
         direction: string
     ): Promise<IRoutePath | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
@@ -25,7 +25,7 @@ class RoutePathService {
             variables: {
                 routeId,
                 direction,
-                startDate: Moment(startTime).format(),
+                startDate: Moment(startDate).format(),
             },
             fetchPolicy: 'no-cache',
         });
@@ -44,7 +44,7 @@ class RoutePathService {
             variables: {
                 routeId: routePathPrimaryKey.routeId,
                 direction: routePathPrimaryKey.direction,
-                startDate: Moment(routePathPrimaryKey.startTime).format(),
+                startDate: Moment(routePathPrimaryKey.startDate).format(),
             },
             fetchPolicy: 'no-cache',
         });

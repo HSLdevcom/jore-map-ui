@@ -207,15 +207,15 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     };
 
     private fetchRoutePath = async () => {
-        const [routeId, startTimeString, direction] = this.props.match!.params.id.split(',');
+        const [routeId, startDateString, direction] = this.props.match!.params.id.split(',');
         const routePath = await RoutePathService.fetchRoutePath(
             routeId,
-            startTimeString,
+            startDateString,
             direction
         );
         if (!routePath) {
             this.props.errorStore!.addError(
-                `Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startTimeString}, suunta ${direction}) haku ei onnistunut.`
+                `Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startDateString}, suunta ${direction}) haku ei onnistunut.`
             );
             const homeViewLink = routeBuilder.to(SubSites.home).toLink();
             navigator.goTo({ link: homeViewLink });
@@ -233,13 +233,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
             const viaNames: IViaName[] = await ViaNameService.fetchViaName({
                 routeId: routePath.routeId,
-                startTime: routePath.startTime,
+                startDate: routePath.startDate,
                 direction: routePath.direction,
             });
 
             const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldName({
                 routeId: routePath.routeId,
-                startTime: routePath.startTime,
+                startDate: routePath.startDate,
                 direction: routePath.direction,
             });
 
@@ -293,7 +293,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         ':id',
                         [
                             routePathPrimaryKey.routeId,
-                            Moment(routePathPrimaryKey.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                            Moment(routePathPrimaryKey.startDate).format('YYYY-MM-DDTHH:mm:ss'),
                             routePathPrimaryKey.direction,
                         ].join(',')
                     )
@@ -389,8 +389,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         )}
                     </SidebarHeader>
                     <div className={s.subTopic}>
-                        <ReactMoment date={routePath.startTime} format='DD.MM.YYYY' /> -{' '}
-                        <ReactMoment date={routePath.endTime} format='DD.MM.YYYY' />
+                        <ReactMoment date={routePath.startDate} format='DD.MM.YYYY' /> -{' '}
+                        <ReactMoment date={routePath.endDate} format='DD.MM.YYYY' />
                         <br />
                         Suunta {routePath.direction}: {routePath.originFi} -{' '}
                         {routePath.destinationFi}

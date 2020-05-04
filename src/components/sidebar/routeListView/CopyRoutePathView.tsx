@@ -127,7 +127,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         } else {
             const routePathWithLinks = await RoutePathService.fetchRoutePath(
                 routePath.routeId,
-                routePath.startTime,
+                routePath.startDate,
                 routePath.direction
             );
             // State might already have this routePath (async query, selecting item twice quickly)
@@ -248,12 +248,12 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                     {rpToCopy.routePath.destinationFi}
                                                 </td>
                                                 <td className={s.maxWidthColumn}>
-                                                    {Moment(rpToCopy.routePath.startTime).format(
+                                                    {Moment(rpToCopy.routePath.startDate).format(
                                                         'DD.MM.YYYY'
                                                     )}
                                                 </td>
                                                 <td className={s.maxWidthColumn}>
-                                                    {Moment(rpToCopy.routePath.endTime).format(
+                                                    {Moment(rpToCopy.routePath.endDate).format(
                                                         'DD.MM.YYYY'
                                                     )}
                                                 </td>
@@ -383,14 +383,14 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                         className={s.maxWidthColumn}
                                                                     >
                                                                         {Moment(
-                                                                            routePath.startTime
+                                                                            routePath.startDate
                                                                         ).format('DD.MM.YYYY')}
                                                                     </td>
                                                                     <td
                                                                         className={s.maxWidthColumn}
                                                                     >
                                                                         {Moment(
-                                                                            routePath.endTime
+                                                                            routePath.endDate
                                                                         ).format('DD.MM.YYYY')}
                                                                     </td>
                                                                 </tr>

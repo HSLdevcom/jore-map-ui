@@ -32,7 +32,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     constructor(props: IRoutePathInfoTabProps) {
         super(props);
         this.state = {
-            calculatedValue: null
+            calculatedValue: null,
         };
     }
 
@@ -63,7 +63,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         const calculatedValue = await this.getCalculatedLength();
         if (this.mounted) {
             this.setState({
-                calculatedValue
+                calculatedValue,
             });
         }
     };
@@ -78,7 +78,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         const routePathStore = this.props.routePathStore;
         const routePath = routePathStore!.routePath;
         const promises: Promise<ILink | null>[] = [];
-        routePath!.routePathLinks.forEach(routePathLink => {
+        routePath!.routePathLinks.forEach((routePathLink) => {
             promises.push(
                 LinkService.fetchLink(
                     routePathLink.startNode.id,
@@ -91,7 +91,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         // RoutePath length is calculated by summing up length & measuredLength values of each link.
         // If measured length is missing for a link, use length instead.
         let length = 0;
-        links.forEach(link => {
+        links.forEach((link) => {
             length += link!.measuredLength ? link!.measuredLength : link!.length;
         });
         return length;
@@ -182,17 +182,17 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 label='VOIM. AST'
                                 disabled={isUpdating}
                                 type='date'
-                                value={routePath.startTime}
-                                onChange={onChange('startTime')}
-                                validationResult={invalidPropertiesMap['startTime']}
+                                value={routePath.startDate}
+                                onChange={onChange('startDate')}
+                                validationResult={invalidPropertiesMap['startDate']}
                             />
                             <InputContainer
                                 label='VIIM.VOIM.OLO'
                                 disabled={this.props.isEditingDisabled}
                                 type='date'
-                                value={routePath.endTime}
-                                onChange={onChange('endTime')}
-                                validationResult={invalidPropertiesMap['endTime']}
+                                value={routePath.endDate}
+                                onChange={onChange('endDate')}
+                                validationResult={invalidPropertiesMap['endDate']}
                             />
                             <CalculatedInputField
                                 label='PITUUS (m)'

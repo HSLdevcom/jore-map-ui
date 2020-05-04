@@ -6,12 +6,12 @@ enum QueryParams {
     nodeId = 'nodeId',
     latLng = 'latLng',
     stopAreaId = 'stopAreaId',
-    startTime = 'startTime',
+    startDate = 'startDate',
     showItem = 'showItem',
     direction = 'direction',
     node = 'node',
     code = 'code',
-    testing = 'testing'
+    testing = 'testing',
 }
 
 export default QueryParams;

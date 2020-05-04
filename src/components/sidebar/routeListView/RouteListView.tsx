@@ -372,8 +372,8 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
 const _isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
     return (
-        Moment(routePath.startTime).isBefore(Moment()) &&
-        Moment(routePath.endTime).isAfter(Moment())
+        Moment(routePath.startDate).isBefore(Moment()) &&
+        Moment(routePath.endDate).isAfter(Moment())
     );
 };
 

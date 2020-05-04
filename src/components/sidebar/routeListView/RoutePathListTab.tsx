@@ -126,20 +126,20 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
         const res = {};
         routePaths.forEach((rp) => {
-            const identifier = rp.startTime.toLocaleDateString() + rp.endTime.toLocaleDateString();
+            const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
 
         const list: IRoutePath[][] = Object.values(res);
         list.sort(
             (a: IRoutePath[], b: IRoutePath[]) =>
-                b[0].startTime.getTime() - a[0].startTime.getTime()
+                b[0].startDate.getTime() - a[0].startDate.getTime()
         );
         list.forEach((routePaths: IRoutePath[]) => {
             routePaths.sort((a: IRoutePath, b: IRoutePath) => (a.direction === '1' ? -1 : 1));
         });
 
-        if (list[0][0].startTime.getTime() > getMaxDate().getTime()) {
+        if (list[0][0].startDate.getTime() > getMaxDate().getTime()) {
             const newRoutePaths = _.cloneDeep(list[0]);
             list.shift();
             newRoutePaths.forEach((newRp) => {
@@ -163,19 +163,19 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 if (!oldStopNames) {
                     const createPromise = async () => {
                         let direction = routePath.direction;
-                        let startTime = routePath.startTime;
+                        let startDate = routePath.startDate;
                         if (this.props.isEditing) {
                             // Have to use old routePath's data for querying, current routePath's data might have changed
                             const oldRoutePath = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
                                 (rp) => rp.id === routePath.internalId
                             )!.oldRoutePath!;
                             direction = oldRoutePath.direction;
-                            startTime = oldRoutePath.startTime;
+                            startDate = oldRoutePath.startDate;
                         }
                         const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath(
                             {
                                 direction,
-                                startTime,
+                                startDate,
                                 routeId: routePath.routeId,
                             }
                         );
@@ -219,8 +219,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     private isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
         return (
-            Moment(routePath.startTime).isBefore(Moment()) &&
-            Moment(routePath.endTime).isAfter(Moment())
+            Moment(routePath.startDate).isBefore(Moment()) &&
+            Moment(routePath.endDate).isAfter(Moment())
         );
     };
 
@@ -234,8 +234,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             if (oldRoutePath) {
                 delete oldRoutePath['internalId'];
                 if (massEditRp.isNew) {
-                    delete oldRoutePath['startTime'];
-                    delete oldRoutePath['endTime'];
+                    delete oldRoutePath['startDate'];
+                    delete oldRoutePath['endDate'];
                 }
             }
             saveModels.push({
@@ -313,7 +313,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         let startAndEndDatesDirection2: Date[] = [];
         groupedRoutePathsToDisplay.forEach((routePaths: IRoutePath[]) => {
             routePaths.forEach((routePath: IRoutePath) => {
-                const excludedDates = [routePath.startTime, routePath.endTime];
+                const excludedDates = [routePath.startDate, routePath.endDate];
                 if (routePath.direction === '1') {
                     startAndEndDatesDirection1 = startAndEndDatesDirection1.concat(excludedDates);
                 } else {

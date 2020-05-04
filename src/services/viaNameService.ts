@@ -14,9 +14,9 @@ class ViaNameService {
             query: GraphqlQueries.getViaNameQuery(),
             variables: {
                 routeId: key.routeId,
-                startTime: Moment(key.startTime).format(),
-                direction: key.direction
-            }
+                startDate: Moment(key.startDate).format(),
+                direction: key.direction,
+            },
         });
 
         const externalViaNames: IExternalViaName[] = queryResult.data.get_via_names.nodes;
@@ -27,7 +27,7 @@ class ViaNameService {
                     destinationFi1: externalViaName.maaranpaa1,
                     destinationFi2: externalViaName.maaranpaa2,
                     destinationSw1: externalViaName.maaranpaa1R,
-                    destinationSw2: externalViaName.maaranpaa2R
+                    destinationSw2: externalViaName.maaranpaa2R,
                 };
             }
         );
@@ -40,9 +40,9 @@ class ViaNameService {
             query: GraphqlQueries.getViaShieldNameQuery(),
             variables: {
                 routeId: key.routeId,
-                startTime: Moment(key.startTime).format(),
-                direction: key.direction
-            }
+                startDate: Moment(key.startDate).format(),
+                direction: key.direction,
+            },
         });
 
         const externalViaShieldNames: IExternalViaShieldName[] =
@@ -52,7 +52,7 @@ class ViaNameService {
                 return {
                     viaShieldNameId: `${externalViaShieldName.relid}`,
                     destinationShieldFi: externalViaShieldName.viasuomi,
-                    destinationShieldSw: externalViaShieldName.viaruotsi
+                    destinationShieldSw: externalViaShieldName.viaruotsi,
                 };
             }
         );

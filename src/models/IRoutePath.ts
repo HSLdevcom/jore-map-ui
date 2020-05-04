@@ -5,7 +5,7 @@ import IRoutePathLink, { IRoutePathLinkSaveModel, IRoutePathSegmentLink } from '
 interface IRoutePathPrimaryKey {
     routeId: string;
     direction: string;
-    startTime: Date;
+    startDate: Date;
 }
 
 interface IViewOnlyRoutePathProperties {
@@ -20,7 +20,7 @@ interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties 
     routePathLinks: IRoutePathLink[];
     nameFi: string;
     nameSw: string;
-    endTime: Date;
+    endDate: Date;
     originFi: string;
     originSw: string;
     destinationFi: string;
@@ -44,7 +44,7 @@ interface IMassEditRoutePath {
 }
 
 interface IRoutePathSegment extends IRoutePathPrimaryKey {
-    endTime: Date;
+    endDate: Date;
     originFi: string;
     destinationFi: string;
     links: IRoutePathSegmentLink[];
