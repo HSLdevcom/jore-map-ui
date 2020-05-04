@@ -186,7 +186,7 @@ class RoutePathStore {
                 (rp) =>
                     routePath.routeId === rp.routeId &&
                     routePath.direction === rp.direction &&
-                    routePath.startTime.getTime() === rp.startTime.getTime()
+                    routePath.startDate.getTime() === rp.startDate.getTime()
             );
 
             if (isPrimaryKeyDuplicated) {
@@ -200,7 +200,7 @@ class RoutePathStore {
             return;
         };
         const validateStartTimeBeforeEndTime = (routePath: IRoutePath) => {
-            if (routePath.startTime.getTime() > routePath.endTime.getTime()) {
+            if (routePath.startDate.getTime() > routePath.endDate.getTime()) {
                 const validationResult: IValidationResult = {
                     isValid: false,
                     errorMessage:
@@ -214,15 +214,15 @@ class RoutePathStore {
         const customValidatorMap: ICustomValidatorMap = {
             direction: {
                 validators: [validatePrimaryKey],
-                dependentProperties: ['startTime'],
+                dependentProperties: ['startDate'],
             },
-            startTime: {
+            startDate: {
                 validators: [validatePrimaryKey, validateStartTimeBeforeEndTime],
-                dependentProperties: ['direction', 'endTime'],
+                dependentProperties: ['direction', 'endDate'],
             },
-            endTime: {
+            endDate: {
                 validators: [validateStartTimeBeforeEndTime],
-                dependentProperties: ['startTime'],
+                dependentProperties: ['startDate'],
             },
         };
 

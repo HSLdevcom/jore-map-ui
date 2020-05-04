@@ -35,8 +35,8 @@ class NodeUsagePopup extends Component<INodeUsagePopupProps> {
                                 ':id',
                                 [
                                     routePath.routeId,
-                                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                                    routePath.direction
+                                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                                    routePath.direction,
                                 ].join(',')
                             )
                             .toLink();
@@ -53,9 +53,7 @@ class NodeUsagePopup extends Component<INodeUsagePopupProps> {
                                         text={routePath.routeId}
                                         size='small'
                                         onClick={openRoutePathInNewWindow}
-                                        hoverText={`Avaa reitinsuunta ${
-                                            routePath.routeId
-                                        } uuteen ikkunaan`}
+                                        hoverText={`Avaa reitinsuunta ${routePath.routeId} uuteen ikkunaan`}
                                     />
                                 </div>
                                 <div className={s.direction}>{routePath.direction}</div>
@@ -65,9 +63,9 @@ class NodeUsagePopup extends Component<INodeUsagePopupProps> {
                                     <div className={s.place}>{routePath.destinationFi}</div>
                                 </div>
                                 <div>
-                                    <div>{toDateString(routePath.startTime)}</div>
+                                    <div>{toDateString(routePath.startDate)}</div>
                                     <div>-</div>
-                                    <div>{toDateString(routePath.endTime)}</div>
+                                    <div>{toDateString(routePath.endDate)}</div>
                                 </div>
                             </div>
                         );

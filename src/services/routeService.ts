@@ -34,7 +34,7 @@ class RouteService {
             const transitType = routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
             return RoutePathFactory.mapExternalRoutePath(routePath, lineId, transitType);
         });
-        routePaths.sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
+        routePaths.sort((a, b) => b.endDate.getTime() - a.endDate.getTime());
         return RouteFactory.mapExternalRoute(queryResult.data.route, routePaths);
     };
 

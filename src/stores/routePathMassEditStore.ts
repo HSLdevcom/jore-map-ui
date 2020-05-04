@@ -39,10 +39,10 @@ class RoutePathMassEditStore {
             this._massEditRoutePaths?.find(
                 (massEditRp) =>
                     !massEditRp.oldRoutePath ||
-                    massEditRp.routePath.startTime.getTime() !==
-                        massEditRp.oldRoutePath.startTime.getTime() ||
-                    massEditRp.routePath.endTime.getTime() !==
-                        massEditRp.oldRoutePath.endTime.getTime()
+                    massEditRp.routePath.startDate.getTime() !==
+                        massEditRp.oldRoutePath.startDate.getTime() ||
+                    massEditRp.routePath.endDate.getTime() !==
+                        massEditRp.oldRoutePath.endDate.getTime()
             )
         );
     }
@@ -81,14 +81,14 @@ class RoutePathMassEditStore {
 
     @action
     public updateRoutePathStartDate = (id: string, newStartDate: Date) => {
-        this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.startTime = newStartDate;
+        this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.startDate = newStartDate;
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
     };
 
     @action
     public updateRoutePathEndDate = (id: string, newEndDate: Date) => {
-        this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.endTime = newEndDate;
+        this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.endDate = newEndDate;
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
     };
@@ -122,8 +122,8 @@ class RoutePathMassEditStore {
 
             const maxDatePlusOne = getMaxDate();
             maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
-            newRoutePath.startTime = _.cloneDeep(maxDatePlusOne);
-            newRoutePath.endTime = _.cloneDeep(maxDatePlusOne);
+            newRoutePath.startDate = _.cloneDeep(maxDatePlusOne);
+            newRoutePath.endDate = _.cloneDeep(maxDatePlusOne);
             newMassEditRoutePaths.push({
                 oldRoutePath,
                 id: newRoutePathId,
@@ -146,14 +146,14 @@ class RoutePathMassEditStore {
     @action
     public validateMassEditRoutePaths = () => {
         this._massEditRoutePaths!.map((currMassEditRp: IMassEditRoutePath, index: number) => {
-            if (currMassEditRp.routePath.startTime.getTime() > getMaxDate().getTime()) {
+            if (currMassEditRp.routePath.startDate.getTime() > getMaxDate().getTime()) {
                 currMassEditRp.validationResult = {
                     isValid: false,
                     errorMessage: 'Aseta alkupäivämäärä',
                 };
                 return currMassEditRp;
             }
-            if (currMassEditRp.routePath.endTime.getTime() > getMaxDate().getTime()) {
+            if (currMassEditRp.routePath.endDate.getTime() > getMaxDate().getTime()) {
                 currMassEditRp.validationResult = {
                     isValid: false,
                     errorMessage: 'Aseta loppupäivämäärä',
@@ -168,8 +168,8 @@ class RoutePathMassEditStore {
             );
             if (
                 nextMassEditRp &&
-                nextMassEditRp.routePath.startTime.getTime() <
-                    currMassEditRp.routePath.endTime.getTime()
+                nextMassEditRp.routePath.startDate.getTime() <
+                    currMassEditRp.routePath.endDate.getTime()
             ) {
                 currMassEditRp.validationResult = {
                     isValid: false,
@@ -187,8 +187,8 @@ class RoutePathMassEditStore {
                 currMassEditRp.routePath.direction
             );
             if (
-                currMassEditRp.routePath.startTime.getTime() >
-                currMassEditRp.routePath.endTime.getTime()
+                currMassEditRp.routePath.startDate.getTime() >
+                currMassEditRp.routePath.endDate.getTime()
             ) {
                 currMassEditRp.validationResult = {
                     isValid: false,
@@ -229,8 +229,8 @@ class RoutePathMassEditStore {
 
 const _getRoutePathDescription = (routePath: IRoutePath) => {
     return `${routePath.originFi} - ${routePath.destinationFi}, ${toDateString(
-        routePath.startTime
-    )} - ${toDateString(routePath.endTime)}`;
+        routePath.startDate
+    )} - ${toDateString(routePath.endDate)}`;
 };
 
 // Group above the current group
@@ -268,15 +268,15 @@ const _getPreviousRoutePathWithGap = (
         }
     }
     if (!prevMassEditRoutePath) return null;
-    const a = Moment(currentMassEditRp.routePath.startTime);
-    const b = Moment(prevMassEditRoutePath.routePath.endTime);
+    const a = Moment(currentMassEditRp.routePath.startDate);
+    const b = Moment(prevMassEditRoutePath.routePath.endDate);
     const diffInDays = a.diff(b, 'days');
     return diffInDays > 1 ? prevMassEditRoutePath.routePath : null;
 };
 
 const _sortMassEditRoutePaths = (a: IMassEditRoutePath, b: IMassEditRoutePath) => {
-    if (a.routePath.startTime < b.routePath.startTime) return 1;
-    if (a.routePath.startTime > b.routePath.startTime) return -1;
+    if (a.routePath.startDate < b.routePath.startDate) return 1;
+    if (a.routePath.startDate > b.routePath.startDate) return -1;
     return 0;
 };
 

@@ -19,7 +19,6 @@ interface IRoutePathListState {
     areAllRoutePathsVisible: boolean;
 }
 
-
 const ROUTE_PATH_SHOW_LIMIT = 10;
 
 class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListState> {
@@ -28,8 +27,8 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
 
         this.state = {
             searchInputValue: '',
-            areAllRoutePathsVisible: false
-        }
+            areAllRoutePathsVisible: false,
+        };
     }
 
     private renderRoutePathRow = (routePath: IRoutePath, key: string) => {
@@ -60,8 +59,8 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
                     {routePath.routeId} {routePath.originFi} - {routePath.destinationFi}
                 </div>
                 <div className={s.timestampRow}>
-                    {Moment(routePath.startTime).format('DD.MM.YYYY')} -{' '}
-                    {Moment(routePath.endTime).format('DD.MM.YYYY')}
+                    {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
+                    {Moment(routePath.endDate).format('DD.MM.YYYY')}
                 </div>
             </div>
         );
@@ -74,8 +73,8 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
                 ':id',
                 [
                     routePath.routeId,
-                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
-                    routePath.direction
+                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                    routePath.direction,
                 ].join(',')
             )
             .toLink();
@@ -85,13 +84,13 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
     private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
         const newValue = event.currentTarget.value;
         this.setState({
-            searchInputValue: newValue
+            searchInputValue: newValue,
         });
     };
 
     private toggleAllRoutePathsVisibility = () => {
-        this.setState({ areAllRoutePathsVisible: !this.state.areAllRoutePathsVisible})
-    }
+        this.setState({ areAllRoutePathsVisible: !this.state.areAllRoutePathsVisible });
+    };
 
     render() {
         const { topic, routePaths, className } = this.props;
@@ -104,12 +103,19 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
                 return matchWildcard(text, searchInput);
             }
             return text.includes(searchInput);
-        }
+        };
 
         const searchInputValue = this.state.searchInputValue.toLowerCase();
-        const filteredRoutePaths = routePaths.filter(routePath => {
+        const filteredRoutePaths = routePaths.filter((routePath) => {
             if (matchText(routePath.routeId.toLowerCase(), searchInputValue)) return true;
-            if (matchText(`${routePath.originFi.toLowerCase()} - ${routePath.destinationFi.toLowerCase()}`, searchInputValue)) return true;
+            if (
+                matchText(
+                    `${routePath.originFi.toLowerCase()} - ${routePath.destinationFi.toLowerCase()}`,
+                    searchInputValue
+                )
+            ) {
+                return true;
+            }
 
             return false;
         });
@@ -119,47 +125,47 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         return (
             <div className={classnames(s.routePathList, className ? className : undefined)}>
                 <div className={s.topic}>{topic}</div>
-                { routePaths.length > 0 && (
-                <input
-                    placeholder='Suodata reitinsuuntia (reitin tunnus, lähtö- / päätepaikka)'
-                    type='text'
-                    value={this.state.searchInputValue}
-                    onChange={this.onSearchInputChange}
-                />
+                {routePaths.length > 0 && (
+                    <input
+                        placeholder='Suodata reitinsuuntia (reitin tunnus, lähtö- / päätepaikka)'
+                        type='text'
+                        value={this.state.searchInputValue}
+                        onChange={this.onSearchInputChange}
+                    />
                 )}
-                { hasNoSearchResults ? (
+                {hasNoSearchResults ? (
                     <div className={s.noSearchResultsText}>Reitinsuuntia ei löytynyt.</div>
                 ) : (
                     <>
-                    { filteredRoutePaths.map((rpSegment, index) => {
-                        if (!this.state.areAllRoutePathsVisible && index >= ROUTE_PATH_SHOW_LIMIT) {
-                            return null;
-                        }
-                        return this.renderRoutePathRow(rpSegment, `row-${index}`);
-                    })}
-                    { filteredRoutePaths.length > ROUTE_PATH_SHOW_LIMIT && (
-                        <div
-                            className={s.toggleAllRoutePathsVisibleButton}
-                            onClick={this.toggleAllRoutePathsVisibility}
-                        >
-                            {!this.state.areAllRoutePathsVisible && (
-                                <div className={s.threeDots}>...</div>
-                            )}
-                            <div className={s.toggleAllRoutePathsVisibleText}>
-                                {this.state.areAllRoutePathsVisible
-                                    ? `Piilota reitinsuunnat`
-                                    : `Näytä kaikki reitinsuunnat (${
-                                        filteredRoutePaths.length
-                                    })`}
+                        {filteredRoutePaths.map((rpSegment, index) => {
+                            if (
+                                !this.state.areAllRoutePathsVisible &&
+                                index >= ROUTE_PATH_SHOW_LIMIT
+                            ) {
+                                return null;
+                            }
+                            return this.renderRoutePathRow(rpSegment, `row-${index}`);
+                        })}
+                        {filteredRoutePaths.length > ROUTE_PATH_SHOW_LIMIT && (
+                            <div
+                                className={s.toggleAllRoutePathsVisibleButton}
+                                onClick={this.toggleAllRoutePathsVisibility}
+                            >
+                                {!this.state.areAllRoutePathsVisible && (
+                                    <div className={s.threeDots}>...</div>
+                                )}
+                                <div className={s.toggleAllRoutePathsVisibleText}>
+                                    {this.state.areAllRoutePathsVisible
+                                        ? `Piilota reitinsuunnat`
+                                        : `Näytä kaikki reitinsuunnat (${filteredRoutePaths.length})`}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
                     </>
                 )}
             </div>
-        )
-
-}
+        );
+    }
 }
 
 export default RoutePathList;

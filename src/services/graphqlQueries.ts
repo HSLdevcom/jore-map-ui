@@ -433,10 +433,10 @@ const getAllLineHeadersQuery = () => {
 
 const getViaNameQuery = () => {
     return gql`
-        query getViaNames($routeId: String, $startTime: Datetime, $direction: String) {
+        query getViaNames($routeId: String, $startDate: Datetime, $direction: String) {
             get_via_names: getViaNames(
                 routeid: $routeId
-                starttime: $startTime
+                startdate: $startDate
                 direction: $direction
             ) {
                 nodes {
@@ -453,10 +453,10 @@ const getViaNameQuery = () => {
 
 const getViaShieldNameQuery = () => {
     return gql`
-        query getViaShieldNames($routeId: String, $startTime: Datetime, $direction: String) {
+        query getViaShieldNames($routeId: String, $startDate: Datetime, $direction: String) {
             get_via_shield_names: getViaShieldNames(
                 routeid: $routeId
-                starttime: $startTime
+                startdate: $startDate
                 direction: $direction
             ) {
                 nodes {
@@ -791,5 +791,5 @@ export default {
     getAllHastusAreas,
     getReservedShortIds,
     getViaNameQuery,
-    getViaShieldNameQuery
+    getViaShieldNameQuery,
 };

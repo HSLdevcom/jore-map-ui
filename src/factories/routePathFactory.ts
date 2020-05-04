@@ -13,7 +13,7 @@ class RoutePathFactory {
         return {
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
-            startTime: new Date(externalRoutePath.suuvoimast),
+            startDate: new Date(externalRoutePath.suuvoimast),
         };
     };
 
@@ -49,12 +49,12 @@ class RoutePathFactory {
             transitType,
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
-            startTime: new Date(externalRoutePath.suuvoimast),
+            startDate: new Date(externalRoutePath.suuvoimast),
             routePathLinks: routePathLinks ? routePathLinks : [],
             internalId: internalRoutePathId,
             nameFi: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,
-            endTime: new Date(externalRoutePath.suuvoimviimpvm),
+            endDate: new Date(externalRoutePath.suuvoimviimpvm),
             modifiedOn: externalRoutePath.suuviimpvm
                 ? new Date(externalRoutePath.suuviimpvm)
                 : undefined,
@@ -89,8 +89,8 @@ class RoutePathFactory {
             nameSw: '',
             direction: '',
             visible: true,
-            startTime: new Date(defaultDate.getTime()),
-            endTime: new Date(defaultDate.getTime()),
+            startDate: new Date(defaultDate.getTime()),
+            endDate: new Date(defaultDate.getTime()),
             modifiedOn: new Date(),
             routePathLinks: [],
             originFi: '',
@@ -109,12 +109,12 @@ class RoutePathFactory {
 
     // TODO: remove (this is deprecated)
     public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
-        const startTime = routePath.startTime;
-        startTime.setDate(startTime.getDate() + 1);
+        const startDate = routePath.startDate;
+        startDate.setDate(startDate.getDate() + 1);
         return {
             ...routePath,
-            // TODO: this is only temporary, but required since starttime is part of ID
-            startTime,
+            // TODO: this is only temporary, but required since startDate is part of ID
+            startDate,
         };
     }
 }

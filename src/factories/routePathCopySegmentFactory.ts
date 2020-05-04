@@ -16,24 +16,24 @@ class RoutePathCopySegmentFactory {
                 startNodeId: externalLink.lnkalkusolmu,
                 endNodeId: externalLink.lnkloppusolmu,
                 orderNumber: externalLink.reljarjnro,
-                routePathLinkId: externalLink.relid
+                routePathLinkId: externalLink.relid,
             };
 
             const oldRoutePath = routePaths.find(
-                routePath =>
+                (routePath) =>
                     routePath.routeId === externalLink.reitunnus &&
                     routePath.direction === externalLink.suusuunta &&
-                    routePath.startTime === externalLink.suuvoimast
+                    routePath.startDate === externalLink.suuvoimast
             );
             if (!oldRoutePath) {
                 const newRoutePath: IRoutePathSegment = {
                     routeId: externalLink.reitunnus,
                     direction: externalLink.suusuunta,
-                    startTime: externalLink.suuvoimast,
-                    endTime: externalLink.suuvoimviimpvm,
+                    startDate: externalLink.suuvoimast,
+                    endDate: externalLink.suuvoimviimpvm,
                     originFi: externalLink.suulahpaik,
                     destinationFi: externalLink.suupaapaik,
-                    links: [link]
+                    links: [link],
                 };
                 routePaths.push(newRoutePath);
             } else {

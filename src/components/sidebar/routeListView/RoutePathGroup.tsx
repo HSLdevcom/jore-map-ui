@@ -59,7 +59,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 ':id',
                 [
                     routePath.routeId,
-                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
                     routePath.direction,
                 ].join(',')
             )
@@ -78,7 +78,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
             excludedDatesDirection2,
         } = this.props;
         const first = routePaths[0];
-        const header = `${toDateString(first.startTime)} - ${toDateString(first.endTime)}`;
+        const header = `${toDateString(first.startDate)} - ${toDateString(first.endDate)}`;
         let validationResult;
         let excludedDates: Date[] = [];
         let minStartDate = undefined;
@@ -131,18 +131,18 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
 
             if (isOldRoutePathIncluded) {
                 if (prevGroup) {
-                    minStartDate = _.cloneDeep(prevGroup[0].endTime);
+                    minStartDate = _.cloneDeep(prevGroup[0].endDate);
                     minStartDate.setDate(minStartDate.getDate() + 1);
                 }
                 if (nextGroup) {
-                    maxEndDate = _.cloneDeep(nextGroup[0].startTime);
+                    maxEndDate = _.cloneDeep(nextGroup[0].startDate);
                     maxEndDate.setDate(maxEndDate.getDate() - 1);
                 }
             }
         }
-        const startTime =
-            first.startTime.getTime() < getMaxDate().getTime() ? first.startTime : null;
-        const endTime = first.endTime.getTime() < getMaxDate().getTime() ? first.endTime : null;
+        const startDate =
+            first.startDate.getTime() < getMaxDate().getTime() ? first.startDate : null;
+        const endDate = first.endDate.getTime() < getMaxDate().getTime() ? first.endDate : null;
         return (
             <div
                 key={`${header}-${index}`}
@@ -160,7 +160,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 label=''
                                 disabled={!this.props.isEditing}
                                 type='date'
-                                value={startTime}
+                                value={startDate}
                                 onChange={this.updateStartDates(routePaths)}
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
@@ -171,7 +171,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 label=''
                                 disabled={!this.props.isEditing}
                                 type='date'
-                                value={endTime}
+                                value={endDate}
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
@@ -232,8 +232,8 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                             ? `Kopioitu reitinsuunta: ${
                                                   oldRoutePath.direction
                                               } | ${toDateString(
-                                                  oldRoutePath.startTime
-                                              )} - ${toDateString(oldRoutePath.endTime)} | ${
+                                                  oldRoutePath.startDate
+                                              )} - ${toDateString(oldRoutePath.endDate)} | ${
                                                   oldRoutePath.originFi
                                               } - ${oldRoutePath.destinationFi} | ${
                                                   oldRoutePath.lineId
@@ -303,8 +303,8 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
 
 const _isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
     return (
-        Moment(routePath.startTime).isBefore(Moment()) &&
-        Moment(routePath.endTime).isAfter(Moment())
+        Moment(routePath.startDate).isBefore(Moment()) &&
+        Moment(routePath.endDate).isAfter(Moment())
     );
 };
 

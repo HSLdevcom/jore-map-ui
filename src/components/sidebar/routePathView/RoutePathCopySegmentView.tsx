@@ -65,8 +65,8 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                     {routePath.routeId} {routePath.originFi} - {routePath.destinationFi}
                 </div>
                 <div className={s.timestampRow}>
-                    {Moment(routePath.startTime).format('DD.MM.YYYY')} -{' '}
-                    {Moment(routePath.endTime).format('DD.MM.YYYY')}
+                    {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
+                    {Moment(routePath.endDate).format('DD.MM.YYYY')}
                 </div>
             </div>
         );
@@ -141,7 +141,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                 ':id',
                 [
                     routePath.routeId,
-                    Moment(routePath.startTime).format('YYYY-MM-DDTHH:mm:ss'),
+                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
                     routePath.direction,
                 ].join(',')
             )

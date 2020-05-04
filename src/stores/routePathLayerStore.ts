@@ -71,7 +71,7 @@ class RoutePathLayerStore {
         if (routePath.visible && routePath.routePathLinks.length === 0) {
             const routePathWithGeometry = await RoutePathService.fetchRoutePath(
                 routePath.routeId,
-                routePath.startTime,
+                routePath.startDate,
                 routePath.direction
             );
             this.setRoutePathLinksToRoutePath(routePathWithGeometry!.routePathLinks, id);
