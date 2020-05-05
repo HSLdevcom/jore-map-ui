@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
+import { Dropdown, RadioButton, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
@@ -99,23 +99,22 @@ class NodeForm extends Component<INodeFormProps, INodeFormState> {
         });
         this.props.onChangeNodeProperty!('transitType')(transitType);
         this.props.onChangeNodeProperty!('idSuffix')(null);
-
+        this.props.onChangeNodeProperty!('isInternal')(false);
         await this.queryAvailableNodeIdSuffixes();
     };
 
     private queryAvailableNodeIdSuffixes = async () => {
         const nodeStore = this.props.nodeStore!;
         const beginningOfNodeId = nodeStore.node.beginningOfNodeId;
-        const transitType = nodeStore.node.transitType;
         if (!beginningOfNodeId || beginningOfNodeId.length !== 4) return;
 
         this._setState({
             isNodeIdSuffixQueryLoading: true,
         });
 
-        const transitTypeString = transitType ? transitType : '3';
+        const nodeIdUsageCode = this.getNodeIdUsageCode();
         const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
-            `${beginningOfNodeId}${transitTypeString}`
+            `${beginningOfNodeId}${nodeIdUsageCode}`
         );
 
         // slide(-2): get last two letters of a nodeId
@@ -127,12 +126,45 @@ class NodeForm extends Component<INodeFormProps, INodeFormState> {
         });
     };
 
+    private getNodeIdUsageCode = () => {
+        const nodeStore = this.props.nodeStore!;
+        const transitType = nodeStore.node.transitType;
+        const isInternal = nodeStore.node.isInternal;
+        switch (transitType) {
+            case TransitType.BUS:
+                if (isInternal) {
+                    // Helsinki
+                    return '1'; // Hki internal network
+                }
+                return '2'; // Regional bus network
+            case TransitType.TRAM:
+                return '4';
+            case TransitType.TRAIN:
+                return '5';
+            case TransitType.SUBWAY:
+                return '6';
+            case TransitType.FERRY:
+                return '7';
+            default:
+                return '3'; // Default number that is not restricted to any usage
+        }
+    };
+
     private onChangeNodeIdSuffix = (idSuffix: string) => {
         const node = this.props.nodeStore!.node;
-        const transitTypeString = node.transitType ? node.transitType : '3';
-        const nodeId = `${node.beginningOfNodeId}${transitTypeString}${idSuffix}`;
+        const nodeIdUsageCode = this.getNodeIdUsageCode();
+        const nodeId = `${node.beginningOfNodeId}${nodeIdUsageCode}${idSuffix}`;
         this.props.onChangeNodeProperty!('id')(nodeId);
         this.props.onChangeNodeProperty!('idSuffix')(idSuffix);
+    };
+
+    private onChangeIsInternal = (isInternal: boolean) => async () => {
+        this._setState({
+            isInternal,
+        });
+        this.props.onChangeNodeProperty!('isInternal')(isInternal);
+        this.props.onChangeNodeProperty!('idSuffix')(null);
+        await this.queryAvailableNodeIdSuffixes();
     };
 
     render() {
@@ -191,6 +223,24 @@ class NodeForm extends Component<INodeFormProps, INodeFormState> {
                                     />
                                 </div>
                             </div>
+                            {node.transitType && node.transitType === '1' && (
+                                <div className={s.flexRow}>
+                                    <div className={s.formItem}>
+                                        <RadioButton
+                                            onClick={this.onChangeIsInternal(true)}
+                                            checked={Boolean(node.isInternal)}
+                                            text={'Helsingin sisäinen'}
+                                        />
+                                    </div>
+                                    <div className={s.formItem}>
+                                        <RadioButton
+                                            onClick={this.onChangeIsInternal(false)}
+                                            checked={Boolean(!node.isInternal)}
+                                            text={'Helsingin ulkopuolinen'}
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </>
                     )}
                     <div className={s.flexRow}>

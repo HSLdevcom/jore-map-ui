@@ -18,6 +18,7 @@ const nodePropertyCodeList: INodePropertyCodeList = {
     beginningOfNodeId: '',
     idSuffix: '',
     transitType: '',
+    isInternal: '',
 };
 
 type StopKeys = keyof IStop;

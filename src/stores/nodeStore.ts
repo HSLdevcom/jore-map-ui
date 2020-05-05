@@ -2,7 +2,6 @@ import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import NodeType from '~/enums/nodeType';
-import TransitType from '~/enums/transitType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
@@ -30,10 +29,6 @@ interface INodeCacheObj {
     node: INode;
     links: ILink[];
     isNodeIdEditable: boolean;
-    // New node properties:
-    beginningOfNodeId?: string;
-    idSuffix?: string | null;
-    transitType?: TransitType | null;
 }
 
 interface INodeCache {
@@ -167,11 +162,11 @@ class NodeStore {
         oldNode?: INode;
         oldLinks?: ILink[];
     }) => {
-        this.clear();
-        this.clearNodeCache({ nodeId: node.id, shouldClearNewNodeCache: isNewNode });
-
         const newNode = _.cloneDeep(node);
         const newLinks = _.cloneDeep(links);
+
+        this.clear();
+        this.clearNodeCache({ nodeId: node.id, shouldClearNewNodeCache: isNewNode });
 
         const currentUndoState: UndoState = {
             links: newLinks,
