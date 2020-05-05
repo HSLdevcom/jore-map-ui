@@ -56,7 +56,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         super(props);
         this.state = {
             isLoading: false,
-            routePathsUsingLink: []
+            routePathsUsingLink: [],
         };
     }
 
@@ -104,7 +104,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             this.props.linkStore!.init({
                 link,
                 nodes: [link.startNode, link.endNode],
-                isNewLink: false
+                isNewLink: false,
             });
             this.props.linkStore!.setIsLinkGeometryEditable(true);
             const bounds = L.latLngBounds(link.geometry);
@@ -139,7 +139,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const link = this.props.linkStore!.link;
         const existingLinks = await LinkService.fetchLinks(link.startNode.id, link.endNode.id);
         if (existingLinks.length > 0) {
-            this.existingTransitTypes = existingLinks.map(link => link.transitType!);
+            this.existingTransitTypes = existingLinks.map((link) => link.transitType!);
         }
 
         this.setState({ isLoading: false });
@@ -182,13 +182,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             type: 'saveModel',
             newData: currentLink,
             oldData: oldLink,
-            model: 'link'
+            model: 'link',
         };
         confirmStore!.openConfirm({
             content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 

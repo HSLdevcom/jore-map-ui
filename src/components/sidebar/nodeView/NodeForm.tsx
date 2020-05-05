@@ -2,50 +2,137 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { Dropdown } from '~/components/controls';
+import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
+import NodeService from '~/services/nodeService';
 import { CodeListStore } from '~/stores/codeListStore';
+import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
+import { IValidationResult } from '~/validation/FormValidator';
 import CoordinateInputRow from './CoordinateInputRow';
 import * as s from './nodeForm.scss';
 
-interface INodeViewProps {
+interface INodeFormProps {
     node: INode;
     isNewNode: boolean;
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     isNodeIdEditable?: boolean;
-    nodeIdSuffixOptions?: IDropdownItem[];
-    isNodeIdSuffixQueryLoading?: boolean;
-    onChangeNodeId?: (value: any) => void;
     onChangeNodeGeometry?: (property: NodeLocationType) => (value: L.LatLng) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
     onChangeNodeType?: (type: NodeType) => void;
+    nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
 }
 
-@inject('codeListStore')
+interface INodeFormState {
+    nodeIdSuffixOptions: IDropdownItem[];
+    isNodeIdSuffixQueryLoading: boolean;
+    beginningOfNodeIdValidationResult: IValidationResult;
+    idSuffixValidationResult: IValidationResult;
+}
+
+@inject('nodeStore', 'codeListStore')
 @observer
-class NodeForm extends Component<INodeViewProps> {
+class NodeForm extends Component<INodeFormProps, INodeFormState> {
+    state = {
+        nodeIdSuffixOptions: [],
+        isNodeIdSuffixQueryLoading: false,
+        beginningOfNodeIdValidationResult: { isValid: false },
+        idSuffixValidationResult: { isValid: false },
+    };
+    private _isMounted: boolean;
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+    componentDidMount() {
+        this._isMounted = true;
+        if (!this.props.isEditingDisabled && this.props.nodeStore!.node.beginningOfNodeId) {
+            this.queryAvailableNodeIdSuffixes();
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
+
     private createMeasuredDropdownItems = (): IDropdownItem[] => {
         const items: IDropdownItem[] = [
             {
                 value: NodeMeasurementType.Calculated,
-                label: 'Laskettu'
+                label: 'Laskettu',
             },
             {
                 value: NodeMeasurementType.Measured,
-                label: 'Mitattu'
-            }
+                label: 'Mitattu',
+            },
         ];
         return items;
+    };
+
+    private onChangeNodeId = async (beginningOfNodeId: string) => {
+        this.props.onChangeNodeProperty!('beginningOfNodeId')(beginningOfNodeId);
+
+        if (beginningOfNodeId.length === 4) {
+            await this.queryAvailableNodeIdSuffixes();
+        } else {
+            this._setState({
+                nodeIdSuffixOptions: [],
+            });
+            this.props.onChangeNodeProperty!('idSuffix')(null);
+        }
+    };
+
+    private selectTransitType = async (transitType: TransitType) => {
+        this._setState({
+            nodeIdSuffixOptions: [],
+        });
+        this.props.onChangeNodeProperty!('transitType')(transitType);
+        this.props.onChangeNodeProperty!('idSuffix')(null);
+
+        await this.queryAvailableNodeIdSuffixes();
+    };
+
+    private queryAvailableNodeIdSuffixes = async () => {
+        const nodeStore = this.props.nodeStore!;
+        const beginningOfNodeId = nodeStore.node.beginningOfNodeId;
+        const transitType = nodeStore.node.transitType;
+        if (!beginningOfNodeId || beginningOfNodeId.length !== 4) return;
+
+        this._setState({
+            isNodeIdSuffixQueryLoading: true,
+        });
+
+        const transitTypeString = transitType ? transitType : '3';
+        const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
+            `${beginningOfNodeId}${transitTypeString}`
+        );
+
+        // slide(-2): get last two letters of a nodeId
+        const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
+
+        this._setState({
+            nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
+            isNodeIdSuffixQueryLoading: false,
+        });
+    };
+
+    private onChangeNodeIdSuffix = (idSuffix: string) => {
+        const node = this.props.nodeStore!.node;
+        const transitTypeString = node.transitType ? node.transitType : '3';
+        const nodeId = `${node.beginningOfNodeId}${transitTypeString}${idSuffix}`;
+        this.props.onChangeNodeProperty!('id')(nodeId);
+        this.props.onChangeNodeProperty!('idSuffix')(idSuffix);
     };
 
     render() {
@@ -53,46 +140,58 @@ class NodeForm extends Component<INodeViewProps> {
             node,
             isNewNode,
             isEditingDisabled,
-            isNodeIdEditable,
-            nodeIdSuffixOptions,
-            isNodeIdSuffixQueryLoading,
-            onChangeNodeId,
             invalidPropertiesMap,
+            isNodeIdEditable,
             onChangeNodeGeometry,
             onChangeNodeProperty,
-            onChangeNodeType
+            onChangeNodeType,
         } = this.props;
         const nodeTypeCodeList = createDropdownItemsFromList(['P', 'X']);
+        const { nodeIdSuffixOptions, isNodeIdSuffixQueryLoading } = this.state;
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
                     {isNewNode && (
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                value={node.id}
-                                onChange={onChangeNodeId ? onChangeNodeId : undefined}
-                                label={isNodeIdEditable ? 'SOLMUN TUNNUS (5 num.' : 'SOLMUN TUNNUS'}
-                                disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
-                                validationResult={invalidPropertiesMap['id']}
-                                data-cy='nodeId'
-                            />
-                            {isNodeIdEditable && (
-                                <Dropdown
-                                    label='+ 2 num.)'
-                                    onChange={
-                                        onChangeNodeProperty
-                                            ? onChangeNodeProperty('idSuffix')
-                                            : undefined
+                        <>
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    value={isNodeIdEditable ? node.beginningOfNodeId : node.id}
+                                    onChange={this.onChangeNodeId}
+                                    label={
+                                        isNodeIdEditable ? 'SOLMUN TUNNUS (4 num.' : 'SOLMUN TUNNUS'
                                     }
-                                    disabled={_.isEmpty(nodeIdSuffixOptions)}
-                                    isLoading={isNodeIdSuffixQueryLoading}
-                                    selected={node.idSuffix}
-                                    items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
-                                    validationResult={invalidPropertiesMap['idSuffix']}
-                                    data-cy='idSuffix'
+                                    disabled={
+                                        !isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)
+                                    }
+                                    validationResult={invalidPropertiesMap['beginningOfNodeId']}
+                                    data-cy='nodeId'
                                 />
-                            )}
-                        </div>
+                                {isNodeIdEditable && (
+                                    <Dropdown
+                                        label='+ 2 num.)'
+                                        onChange={this.onChangeNodeIdSuffix}
+                                        disabled={_.isEmpty(nodeIdSuffixOptions)}
+                                        isLoading={isNodeIdSuffixQueryLoading}
+                                        selected={node.idSuffix}
+                                        items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
+                                        validationResult={invalidPropertiesMap['idSuffix']}
+                                        data-cy='idSuffix'
+                                    />
+                                )}
+                            </div>
+                            <div className={s.flexRow}>
+                                <div className={s.formItem}>
+                                    <div className={s.inputLabel}>VERKKO</div>
+                                    <TransitToggleButtonBar
+                                        selectedTransitTypes={
+                                            node.transitType ? [node.transitType!] : []
+                                        }
+                                        toggleSelectedTransitType={this.selectTransitType}
+                                        errorMessage={''}
+                                    />
+                                </div>
+                            </div>
+                        </>
                     )}
                     <div className={s.flexRow}>
                         <Dropdown
