@@ -28,7 +28,11 @@ class ValidationStore<ValidationObject, ValidationModel> {
     private _customValidatorMap: ICustomValidatorMap | null;
     private _hasValidatedAllProperties: boolean;
 
-    public init = (validationObject: ValidationObject, validationModel: ValidationModel, customValidatorsMap?: ICustomValidatorMap) => {
+    public init = (
+        validationObject: ValidationObject,
+        validationModel: ValidationModel,
+        customValidatorsMap?: ICustomValidatorMap
+    ) => {
         this.clear();
         this._validationObject = validationObject;
         this._validationModel = validationModel;
@@ -44,11 +48,17 @@ class ValidationStore<ValidationObject, ValidationModel> {
 
     /**
      * @param {boolean} isDependentPropertiesValidationPrevented - if true, prevents validating dependent properties of a dependent property (to prevent infinite validation loop)
-    */
-    public validateProperty = (property: string, isDependentPropertiesValidationPrevented?: boolean) => {
+     */
+    public validateProperty = (
+        property: string,
+        isDependentPropertiesValidationPrevented?: boolean
+    ) => {
         const validatorRule = this._validationModel![property];
         const value = this._validationObject![property];
-        let validatorResult: IValidationResult | undefined = this.validateWithCustomValidator(property, value);
+        let validatorResult: IValidationResult | undefined = this.validateWithCustomValidator(
+            property,
+            value
+        );
         if (!validatorResult || (validatorResult && validatorResult.isValid)) {
             if (!_.isEmpty(validatorRule)) {
                 validatorResult = FormValidator.validateProperty(validatorRule, value);
@@ -75,7 +85,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
 
     public isValid = () => {
         return !Object.values(this._invalidPropertiesMap).some(
-            validatorResult => !validatorResult.isValid
+            (validatorResult) => !validatorResult.isValid
         );
     };
 
@@ -96,7 +106,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
         const validators = customValidatorObject?.validators;
 
         if (this._customValidatorMap && validators && validators.length > 0) {
-            validators.some(validator => {
+            validators.some((validator) => {
                 const tempValidatiorResult = validator(this._validationObject!, property, value);
                 if (tempValidatiorResult) {
                     validatorResult = tempValidatiorResult;
@@ -106,16 +116,18 @@ class ValidationStore<ValidationObject, ValidationModel> {
             });
         }
         return validatorResult;
-    }
+    };
 
     private validateDependentProperties = (property: string) => {
         const customValidatorObject = this._customValidatorMap?.[property];
         if (customValidatorObject && customValidatorObject.dependentProperties) {
-            customValidatorObject.dependentProperties.forEach(prop => this.validateProperty(prop, true));
+            customValidatorObject.dependentProperties.forEach((prop) =>
+                this.validateProperty(prop, true)
+            );
         }
-    }
+    };
 }
 
 export default ValidationStore;
 
-export { ICustomValidatorMap }
+export { ICustomValidatorMap };

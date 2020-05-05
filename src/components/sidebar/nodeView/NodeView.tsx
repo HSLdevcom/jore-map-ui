@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
-import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
@@ -26,7 +25,6 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -44,8 +42,6 @@ interface INodeViewProps {
 
 interface INodeViewState {
     isLoading: boolean;
-    nodeIdSuffixOptions: IDropdownItem[];
-    isNodeIdSuffixQueryLoading: boolean;
     isRoutePathsUsingNodeQueryLoading: boolean;
     routePathsUsingNode: IRoutePath[];
 }
@@ -58,8 +54,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         super(props);
         this.state = {
             isLoading: true,
-            nodeIdSuffixOptions: [],
-            isNodeIdSuffixQueryLoading: false,
             isRoutePathsUsingNodeQueryLoading: false,
             routePathsUsingNode: [],
         };
@@ -132,7 +126,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         if (!nodeId) {
             this.props.alertStore!.setNotificationMessage({
                 message:
-                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.',
+                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen 2 juoksevaa numeroa.',
             });
             this.props.nodeStore!.setIsNodeIdEditable(true);
             return '';
@@ -204,7 +198,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             onConfirm: async () => {
                 this.initNode(nodeCacheObj.node, nodeCacheObj.links, oldNode, oldLinks);
                 this.updateSelectedStopAreaId();
-                await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
                 nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
@@ -262,16 +255,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const nodeStore = this.props.nodeStore!;
         try {
             if (this.props.isNewNode) {
-                let nodeToUpdate;
-                if (nodeStore.isNodeIdEditable) {
-                    // Merge nodeId parts (5 num + 2 num) as a nodeId
-                    nodeToUpdate = _.cloneDeep(nodeStore.node);
-                    const nodeId = nodeToUpdate.id + nodeToUpdate.idSuffix;
-                    nodeToUpdate.id = nodeId;
-                } else {
-                    nodeToUpdate = nodeStore.node;
-                }
-                const nodeId = await NodeService.createNode(nodeToUpdate);
+                const nodeId = await NodeService.createNode(nodeStore.node);
                 const nodeViewLink = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
@@ -368,43 +352,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.updateNodeProperty(property, value);
     };
 
-    private onChangeNodeId = async (value: string) => {
-        this.onChangeNodeProperty('id')(value);
-        await this.queryAvailableNodeIdSuffixes(value);
-        if (value.length === 5) {
-            this.onChangeNodeProperty('idSuffix')('');
-        }
-    };
-
     private onChangeNodeType = async (type: NodeType) => {
         this._setState({ isLoading: true });
         this.props.nodeStore!.updateNodeType(type);
         const nodeId = await this.fetchNodeId(this.props.nodeStore!.node);
         this.props.nodeStore!.updateNodeProperty('id', nodeId);
         this._setState({ isLoading: false });
-    };
-
-    private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
-        if (beginningOfNodeId.length === 5) {
-            this._setState({
-                isNodeIdSuffixQueryLoading: true,
-            });
-            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
-                beginningOfNodeId
-            );
-            // slide(-2): get last two letters of a nodeId
-            const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
-            this._setState({
-                nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
-                isNodeIdSuffixQueryLoading: false,
-            });
-        } else {
-            if (this.state.nodeIdSuffixOptions.length > 0) {
-                this._setState({
-                    nodeIdSuffixOptions: [],
-                });
-            }
-        }
     };
 
     private toggleTransitType = async (type: TransitType) => {
@@ -462,9 +415,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         isEditingDisabled={isEditingDisabled}
                         isNodeIdEditable={isNodeIdEditable}
                         invalidPropertiesMap={invalidPropertiesMap}
-                        nodeIdSuffixOptions={this.state.nodeIdSuffixOptions}
-                        isNodeIdSuffixQueryLoading={this.state.isNodeIdSuffixQueryLoading}
-                        onChangeNodeId={this.onChangeNodeId}
                         onChangeNodeGeometry={this.onChangeNodeGeometry}
                         onChangeNodeProperty={this.onChangeNodeProperty}
                         onChangeNodeType={this.onChangeNodeType}
