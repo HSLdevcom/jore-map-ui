@@ -3,11 +3,11 @@ import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
+import RouteListStore from '~/stores/routeListStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
 import { IRoutePathToCopy } from './copyRoutePathStore';
 import NavigationStore from './navigationStore';
-import RouteListStore from './routeListStore';
 
 class RoutePathMassEditStore {
     @observable private _massEditRoutePaths: IMassEditRoutePath[] | null;
@@ -20,6 +20,10 @@ class RoutePathMassEditStore {
         reaction(
             () => this.shouldShowUnsavedChangesPrompt,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
+        );
+        reaction(
+            () => this.shouldShowUnsavedChangesPrompt,
+            (value: boolean) => this.setNavigationAction(value)
         );
     }
 
@@ -212,18 +216,23 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public stopEditing = () => {
+    public clear = () => {
+        this.setNavigationAction(false);
+
         // To clear unsaved routePaths, need to remove them from RoutePathLayerStore
         const routePathsToRemove = this._massEditRoutePaths!.filter((mEditRp) => mEditRp.isNew).map(
             (mEditRp) => mEditRp.routePath
         );
         routePathsToRemove.forEach((rp) => RoutePathLayerStore.removeRoutePath(rp.internalId));
-        this.clear();
+
+        this._massEditRoutePaths = null;
+
+        RouteListStore.setRouteIdToEdit(null);
     };
 
-    @action
-    public clear = () => {
-        this._massEditRoutePaths = null;
+    private setNavigationAction = (value: boolean) => {
+        const action = value ? this.clear : null;
+        NavigationStore.setNavigationAction(action);
     };
 }
 

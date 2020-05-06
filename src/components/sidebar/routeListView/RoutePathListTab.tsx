@@ -111,7 +111,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     private updateGroupedRoutePathsToDisplay = (routePaths: IRoutePath[]) => {
         if (routePaths.length === 0) return;
 
-        const allGroupedRoutePaths: IRoutePath[][] = this.groupRoutePathsOnDates(routePaths);
+        const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
         const groupedRoutePathsToDisplay = this.props.areAllRoutePathsVisible
             ? allGroupedRoutePaths
             : allGroupedRoutePaths.slice(0, ROUTE_PATH_GROUP_SHOW_LIMIT);
@@ -123,7 +123,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.setRoutePathsVisible(groupedRoutePathsToDisplay);
     };
 
-    private groupRoutePathsOnDates = (routePaths: IRoutePath[]): IRoutePath[][] => {
+    private getGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
         const res = {};
         routePaths.forEach((rp) => {
             const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();

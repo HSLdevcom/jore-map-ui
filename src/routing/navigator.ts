@@ -20,7 +20,7 @@ class Navigator {
     public goTo = ({
         link,
         unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt
+        shouldSkipUnsavedChangesPrompt,
     }: {
         link: string;
         unsavedChangesPromptMessage?: string;
@@ -29,11 +29,11 @@ class Navigator {
         // prevent new pushing url if the current url is already the right one
         if (this.store.location.pathname === link) return;
 
-        const redirect = () => this.store.history.push(link);
-        this.showUnsavedChangesPrompt({
+        const redirectFunction = () => this.store.history.push(link);
+        this.callRedirectFunction({
+            redirectFunction,
             unsavedChangesPromptMessage,
             shouldSkipUnsavedChangesPrompt,
-            callback: redirect
         });
     };
 
@@ -74,21 +74,21 @@ class Navigator {
     // TODO, rename
     public getQueryParamValues = () => {
         return qs.parse(this.store.location.search, {
-            ignoreQueryPrefix: true
+            ignoreQueryPrefix: true,
         });
     };
 
     public goBack = ({
         unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt
+        shouldSkipUnsavedChangesPrompt,
     }: {
         unsavedChangesPromptMessage?: string;
         shouldSkipUnsavedChangesPrompt?: boolean;
     }) => {
-        this.showUnsavedChangesPrompt({
+        this.callRedirectFunction({
             unsavedChangesPromptMessage,
             shouldSkipUnsavedChangesPrompt,
-            callback: this.store.goBack
+            redirectFunction: this.store.goBack,
         });
     };
 
@@ -98,12 +98,12 @@ class Navigator {
         this._store.goForward();
     } */
 
-    private showUnsavedChangesPrompt = ({
-        callback,
+    private callRedirectFunction = ({
+        redirectFunction: callback,
         unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt
+        shouldSkipUnsavedChangesPrompt,
     }: {
-        callback: Function;
+        redirectFunction: Function;
         unsavedChangesPromptMessage?: string;
         shouldSkipUnsavedChangesPrompt?: boolean;
     }) => {
@@ -116,15 +116,24 @@ class Navigator {
                     ? unsavedChangesPromptMessage
                     : DEFAULT_PROMPT_MESSAGE,
                 onConfirm: () => {
-                    NavigationStore.setShouldShowUnsavedChangesPrompt(false);
+                    _callNavigationAction();
                     callback();
                 },
-                confirmButtonText: 'Kyllä'
+                confirmButtonText: 'Kyllä',
             });
         } else {
+            _callNavigationAction();
             callback();
         }
     };
 }
+
+const _callNavigationAction = () => {
+    NavigationStore.setShouldShowUnsavedChangesPrompt(false);
+    const navigationAction = NavigationStore.navigationAction;
+    if (navigationAction) {
+        navigationAction();
+    }
+};
 
 export default new Navigator();
