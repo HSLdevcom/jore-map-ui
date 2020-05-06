@@ -278,6 +278,30 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         routePaths.splice(removeIndex, 1);
         this.updateGroupedRoutePathsToDisplay(routePaths);
     };
+    private renderBottomBarButtons = () => {
+        if (!this.props.loginStore!.hasWriteAccess) return null;
+
+        return (
+            <div className={s.buttonContainer}>
+                <Button
+                    onClick={this.redirectToNewRoutePathView()}
+                    type={ButtonType.SQUARE}
+                    disabled={Boolean(this.props.routeListStore!.routeIdToEdit)}
+                    isWide={true}
+                >
+                    {`Luo reitinsuunta`}
+                </Button>
+                <Button
+                    onClick={this.openCopyRoutePathView()}
+                    type={ButtonType.SQUARE}
+                    disabled={this.props.routeId !== this.props.routeListStore!.routeIdToEdit}
+                    isWide={true}
+                >
+                    {`Kopioi reitinsuunta`}
+                </Button>
+            </div>
+        );
+    };
 
     private redirectToNewRoutePathView = () => () => {
         const { lineId, routeId } = this.props;
@@ -301,6 +325,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             return (
                 <div className={s.routePathListTab}>
                     <div className={s.noRoutePathsMessage}>Reitillä ei ole reitinsuuntia.</div>
+                    {this.renderBottomBarButtons()}
                 </div>
             );
         }
@@ -371,28 +396,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         </div>
                     </div>
                 )}
-                {this.props.loginStore!.hasWriteAccess && (
-                    <div className={s.buttonContainer}>
-                        <Button
-                            onClick={this.redirectToNewRoutePathView()}
-                            type={ButtonType.SQUARE}
-                            disabled={Boolean(this.props.routeListStore!.routeIdToEdit)}
-                            isWide={true}
-                        >
-                            {`Luo reitinsuunta`}
-                        </Button>
-                        <Button
-                            onClick={this.openCopyRoutePathView()}
-                            type={ButtonType.SQUARE}
-                            disabled={
-                                this.props.routeId !== this.props.routeListStore!.routeIdToEdit
-                            }
-                            isWide={true}
-                        >
-                            {`Kopioi reitinsuunta`}
-                        </Button>
-                    </div>
-                )}
+                {this.renderBottomBarButtons()}
                 {this.props.loginStore!.hasWriteAccess && isEditing && (
                     <SaveButton
                         onClick={() => this.showSavePrompt()}
