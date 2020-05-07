@@ -200,7 +200,7 @@ class RoutePathMassEditStore {
             );
             if (
                 nextMassEditRp &&
-                nextMassEditRp.routePath.startDate.getTime() <
+                nextMassEditRp.routePath.startDate.getTime() <=
                     currMassEditRp.routePath.endDate.getTime()
             ) {
                 currMassEditRp.validationResult = {

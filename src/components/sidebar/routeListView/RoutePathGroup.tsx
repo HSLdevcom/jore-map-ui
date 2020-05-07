@@ -28,8 +28,6 @@ interface IRoutePathGroupProps {
     isEditing: boolean;
     areStopNamesLoading: boolean;
     index: number;
-    excludedDatesDirection1: Date[];
-    excludedDatesDirection2: Date[];
     stopNameMap: Map<string, IRoutePathStopNames>;
     userStore?: UserStore;
     routePathLayerStore?: RoutePathLayerStore;
@@ -89,19 +87,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     };
 
     render() {
-        const {
-            routePaths,
-            nextGroup,
-            prevGroup,
-            isEditing,
-            index,
-            excludedDatesDirection1,
-            excludedDatesDirection2,
-        } = this.props;
+        const { routePaths, nextGroup, prevGroup, isEditing, index } = this.props;
         const first = routePaths[0];
         const header = `${toDateString(first.startDate)} - ${toDateString(first.endDate)}`;
         let validationResult;
-        let excludedDates: Date[] = [];
         let minStartDate = undefined;
         let maxEndDate = undefined;
         if (isEditing) {
@@ -126,29 +115,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 ? validationResultInvalid
                 : validationResultWithErrorMessage;
 
-            const isNewRoutePathIncluded = Boolean(
-                currentMassEditRoutePaths!.find((massEditRp) => massEditRp.isNew)
-            );
             const isOldRoutePathIncluded = Boolean(
                 currentMassEditRoutePaths!.find((massEditRp) => !massEditRp.isNew)
             );
-            const hasDirection1 = Boolean(
-                currentMassEditRoutePaths!.find(
-                    (massEditRp) => massEditRp.routePath.direction === '1'
-                )
-            );
-            const hasDirection2 = Boolean(
-                currentMassEditRoutePaths!.find(
-                    (massEditRp) => massEditRp.routePath.direction === '2'
-                )
-            );
-
-            if (isNewRoutePathIncluded && hasDirection1) {
-                excludedDates = excludedDatesDirection1;
-            }
-            if (isNewRoutePathIncluded && hasDirection2) {
-                excludedDates = excludedDates.concat(excludedDatesDirection2);
-            }
 
             if (isOldRoutePathIncluded) {
                 if (prevGroup) {
@@ -186,7 +155,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
-                                excludeDates={excludedDates}
                             />
                             <InputContainer
                                 label=''
@@ -196,7 +164,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
-                                excludeDates={excludedDates}
                             />
                         </>
                     ) : (
