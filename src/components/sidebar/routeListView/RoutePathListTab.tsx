@@ -179,7 +179,10 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 visitedRoutePaths[rp2!.internalId] = true;
 
                 if (rp1.startDate.getTime() > getMaxDate().getTime()) {
-                    selectedRoutePathGroups.push([rp1, rp2]);
+                    const sortedRpGroup = [rp1, rp2].sort((a: IRoutePath, b: IRoutePath) =>
+                        a.direction === '1' ? -1 : 1
+                    );
+                    selectedRoutePathGroups.push(sortedRpGroup);
                 } else {
                     selectedRoutePathsWithStartDate.push(rp1);
                     selectedRoutePathsWithStartDate.push(rp2);
