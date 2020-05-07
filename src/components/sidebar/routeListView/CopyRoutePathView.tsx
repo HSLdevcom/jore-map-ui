@@ -114,8 +114,8 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             this.state.selectedRoutePaths.findIndex(
                 (rp) => rp.internalId === routePath.internalId
             ) >= 0;
-        let selectedRoutePaths = this.state.selectedRoutePaths;
         if (shouldRemove) {
+            const selectedRoutePaths = this.state.selectedRoutePaths;
             const removeIndex = selectedRoutePaths.findIndex(
                 (rp) => rp.internalId === routePath.internalId
             );
@@ -130,14 +130,9 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                 routePath.startDate,
                 routePath.direction
             );
-            // State might already have this routePath (async query, selecting item twice quickly)
-            if (
-                Boolean(
-                    this.state.selectedRoutePaths.find(
-                        (rp) => rp.internalId === routePath.internalId
-                    )
-                )
-            ) {
+            // State might already have this routePath (async query, selecting item twice quickly. Read fresh selectedRoutePaths variable from state)
+            let selectedRoutePaths = this.state.selectedRoutePaths;
+            if (Boolean(selectedRoutePaths.find((rp) => rp.internalId === routePath.internalId))) {
                 return;
             }
             routePathWithLinks!.visible = true;
