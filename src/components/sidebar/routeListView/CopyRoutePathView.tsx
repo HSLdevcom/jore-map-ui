@@ -327,6 +327,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                         <th align='left'>Päätepaikka</th>
                                                         <th align='left'>Alkupvm</th>
                                                         <th align='left'>Loppupvm</th>
+                                                        <th align='left'></th>
                                                     </tr>
                                                     {this.state.routePathQueryResult.map(
                                                         (routePath: IRoutePath, index: number) => {
@@ -357,11 +358,6 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                             ? s.selectedRow
                                                                             : undefined
                                                                     }
-                                                                    style={
-                                                                        isSelected
-                                                                            ? selectedBackgroundColorStyle
-                                                                            : undefined
-                                                                    }
                                                                 >
                                                                     <td>{routePath.direction}</td>
                                                                     <td
@@ -387,6 +383,16 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                         {Moment(
                                                                             routePath.endDate
                                                                         ).format('DD.MM.YYYY')}
+                                                                    </td>
+                                                                    <td>
+                                                                        <div
+                                                                            className={s.circle}
+                                                                            style={
+                                                                                isSelected
+                                                                                    ? selectedBackgroundColorStyle
+                                                                                    : undefined
+                                                                            }
+                                                                        ></div>
                                                                     </td>
                                                                 </tr>
                                                             );

@@ -81,6 +81,13 @@ $routePathTablePadding: 15px;
             .selectedRow {
                 background-color: #adf;
             }
+
+            .circle {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                display: inline-block;
+            }
         }
 
         .findRoutePathTableWrapper {
