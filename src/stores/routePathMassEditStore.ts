@@ -105,7 +105,12 @@ class RoutePathMassEditStore {
 
     @action
     public updateRoutePathStartDate = (id: string, newStartDate: Date) => {
-        this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.startDate = newStartDate;
+        const routePathToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!.routePath;
+        routePathToUpdate.startDate = newStartDate;
+        // Update routePath's endDate as the same as startDate if endDate is not set
+        if (routePathToUpdate.endDate.getTime() > getMaxDate().getTime()) {
+            routePathToUpdate.endDate = _.cloneDeep(newStartDate);
+        }
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
     };
