@@ -210,7 +210,11 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)
             .toLink();
-        navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
+        navigator.goTo({
+            link: closeRouteLink,
+            shouldSkipUnsavedChangesPrompt: true,
+            shouldSkipNavigationAction: true,
+        });
     };
 
     private toggleEditPrompt = (route: IRoute) => {
@@ -259,6 +263,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         const routePathMassEditStore = this.props.routePathMassEditStore!;
         const isEditing = Boolean(newRouteId);
         routeListStore.setRouteIdToEdit(newRouteId);
+        // Start editing
         if (isEditing) {
             if (isEditingRoutePaths) {
                 routeListStore.setAllRoutePathsVisible(route.id);
@@ -266,14 +271,13 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             } else {
                 routeStore.init({ route, isNewRoute: false });
             }
+            // Stop editing
         } else {
             if (isEditingRoutePaths) {
-                routePathMassEditStore.stopEditing();
+                routePathMassEditStore.clear();
             } else {
                 routeStore.clear();
             }
-            routePathMassEditStore.clear();
-            routeStore.clear();
         }
     };
 

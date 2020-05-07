@@ -43,9 +43,9 @@ class RoutePathLayerStore {
     @action
     public addRoutePaths = ({ routePaths }: { routePaths: IRoutePath[] }) => {
         const routePathsWithColor = _.cloneDeep(routePaths).map((rp) => {
-            if (rp.visible && !rp.color) {
+            if (rp.isVisible && !rp.color) {
                 rp.color = this.colorScale.reserveColor();
-            } else if (rp.visible && rp.color) {
+            } else if (rp.isVisible && rp.color) {
                 this.colorScale.reserveColor(rp.color);
             }
             return rp;
@@ -62,13 +62,13 @@ class RoutePathLayerStore {
         id: string;
     }) => {
         const routePath = this._routePaths.find((rp) => rp.internalId === id)!;
-        if (isVisible === routePath.visible) return;
+        if (isVisible === routePath.isVisible) return;
 
-        routePath.visible = isVisible;
-        routePath.color = routePath.visible
+        routePath.isVisible = isVisible;
+        routePath.color = routePath.isVisible
             ? this.colorScale.reserveColor()
             : this.colorScale.releaseColor(routePath.color!);
-        if (routePath.visible && routePath.routePathLinks.length === 0) {
+        if (routePath.isVisible && routePath.routePathLinks.length === 0) {
             const routePathWithGeometry = await RoutePathService.fetchRoutePath(
                 routePath.routeId,
                 routePath.startDate,
@@ -86,7 +86,7 @@ class RoutePathLayerStore {
     @action
     public toggleRoutePathVisibility = async (id: string) => {
         const routePath = this._routePaths.find((rp) => rp.internalId === id);
-        this.setRoutePathVisibility({ id, isVisible: !routePath!.visible });
+        this.setRoutePathVisibility({ id, isVisible: !routePath!.isVisible });
     };
 
     @action
@@ -138,7 +138,7 @@ class RoutePathLayerStore {
         if (this._routePaths.length === 0) return;
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
         this._routePaths.forEach((routePath) => {
-            if (routePath.visible) {
+            if (routePath.isVisible) {
                 routePath.routePathLinks.forEach((routePathLink) => {
                     routePathLink.geometry.forEach((pos) => {
                         bounds.extend(pos);

@@ -5,7 +5,6 @@ import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/share
 import TransitType from '~/enums/transitType';
 import { IRoute } from '~/models';
 import { RouteListStore } from '~/stores/routeListStore';
-import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import RoutePathListTab from './RoutePathListTab';
 import RouteTab from './RouteTab';
 
@@ -16,10 +15,9 @@ interface IRouteItemProps {
     selectedTabIndex: number;
     areAllRoutePathsVisible: boolean;
     routeListStore?: RouteListStore;
-    routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-@inject('routeListStore', 'mapStore', 'routePathMassEditStore')
+@inject('routeListStore', 'mapStore')
 @observer
 class RouteItem extends React.Component<IRouteItemProps> {
     private setSelectedTabIndex = (index: number) => {
@@ -40,10 +38,6 @@ class RouteItem extends React.Component<IRouteItemProps> {
         } = this.props;
         const isEditingRoutePaths = selectedTabIndex === 0 && route.id === routeIdToEdit;
         const isEditingRoute = selectedTabIndex === 1 && route.id === routeIdToEdit;
-
-        const routePaths = isEditingRoutePaths
-            ? _.cloneDeep(this.props.routePathMassEditStore!.routePaths)
-            : this.props.route.routePaths;
         return (
             <Tabs>
                 <TabList
@@ -62,7 +56,7 @@ class RouteItem extends React.Component<IRouteItemProps> {
                         <RoutePathListTab
                             key={route.id}
                             transitType={transitType}
-                            routePaths={routePaths}
+                            originalRoutePaths={route.routePaths}
                             isEditing={isEditingRoutePaths}
                             lineId={route.lineId}
                             routeId={route.id}

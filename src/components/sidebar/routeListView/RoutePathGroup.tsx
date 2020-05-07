@@ -28,10 +28,7 @@ interface IRoutePathGroupProps {
     isEditing: boolean;
     areStopNamesLoading: boolean;
     index: number;
-    excludedDatesDirection1: Date[];
-    excludedDatesDirection2: Date[];
     stopNameMap: Map<string, IRoutePathStopNames>;
-    removeNewRoutePath: (id: string) => () => void;
     userStore?: UserStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathMassEditStore?: RoutePathMassEditStore;
@@ -67,20 +64,33 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         navigator.goTo({ link: routePathViewLink });
     };
 
+    private selectRoutePath = (routePathToSelect: IRoutePath) => (
+        event: React.MouseEvent<HTMLElement>
+    ) => {
+        const routePathMassEditStore = this.props.routePathMassEditStore!;
+        const selectedRoutePath = routePathMassEditStore!.selectedRoutePath;
+        if (event.ctrlKey || event.shiftKey) {
+            if (selectedRoutePath?.internalId === routePathToSelect.internalId) {
+                routePathMassEditStore.setSelectedRoutePath(null);
+                return;
+            }
+            if (selectedRoutePath && selectedRoutePath.direction !== routePathToSelect.direction) {
+                routePathMassEditStore.addSelectedRoutePathPair([
+                    selectedRoutePath,
+                    routePathToSelect,
+                ]);
+                routePathMassEditStore.setSelectedRoutePath(null);
+                return;
+            }
+            routePathMassEditStore.setSelectedRoutePath(routePathToSelect);
+        }
+    };
+
     render() {
-        const {
-            routePaths,
-            nextGroup,
-            prevGroup,
-            isEditing,
-            index,
-            excludedDatesDirection1,
-            excludedDatesDirection2,
-        } = this.props;
+        const { routePaths, nextGroup, prevGroup, isEditing, index } = this.props;
         const first = routePaths[0];
         const header = `${toDateString(first.startDate)} - ${toDateString(first.endDate)}`;
         let validationResult;
-        let excludedDates: Date[] = [];
         let minStartDate = undefined;
         let maxEndDate = undefined;
         if (isEditing) {
@@ -105,29 +115,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 ? validationResultInvalid
                 : validationResultWithErrorMessage;
 
-            const isNewRoutePathIncluded = Boolean(
-                currentMassEditRoutePaths!.find((massEditRp) => massEditRp.isNew)
-            );
             const isOldRoutePathIncluded = Boolean(
                 currentMassEditRoutePaths!.find((massEditRp) => !massEditRp.isNew)
             );
-            const hasDirection1 = Boolean(
-                currentMassEditRoutePaths!.find(
-                    (massEditRp) => massEditRp.routePath.direction === '1'
-                )
-            );
-            const hasDirection2 = Boolean(
-                currentMassEditRoutePaths!.find(
-                    (massEditRp) => massEditRp.routePath.direction === '2'
-                )
-            );
-
-            if (isNewRoutePathIncluded && hasDirection1) {
-                excludedDates = excludedDatesDirection1;
-            }
-            if (isNewRoutePathIncluded && hasDirection2) {
-                excludedDates = excludedDates.concat(excludedDatesDirection2);
-            }
 
             if (isOldRoutePathIncluded) {
                 if (prevGroup) {
@@ -165,7 +155,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
-                                excludeDates={excludedDates}
                             />
                             <InputContainer
                                 label=''
@@ -175,7 +164,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
-                                excludeDates={excludedDates}
                             />
                         </>
                     ) : (
@@ -201,12 +189,15 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             (m) => m.routePath.internalId === routePath.internalId
                         )!;
                         const isNew = massEditRp && massEditRp.isNew;
+                        const isSelected =
+                            this.props.routePathMassEditStore!.selectedRoutePath?.internalId ===
+                            routePath.internalId;
                         const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
                         const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
                             routePath.internalId
                         );
                         const isVisible = rpFromRpLayerStore
-                            ? Boolean(rpFromRpLayerStore.visible)
+                            ? Boolean(rpFromRpLayerStore.isVisible)
                             : false;
                         const color =
                             rpFromRpLayerStore && rpFromRpLayerStore.color
@@ -216,17 +207,20 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditing && isNew ? s.highlighAsNew : undefined
+                                    isEditing && isNew ? s.highlighAsNew : undefined,
+                                    isSelected ? s.highlightAsSelected : undefined
                                 )}
+                                onClick={isNew ? this.selectRoutePath(routePath) : void 0}
                                 key={routePath.internalId}
                             >
                                 <div
-                                    className={
-                                        shouldHighlightRoutePath
-                                            ? classnames(s.routePathInfo, s.highlight)
-                                            : s.routePathInfo
-                                    }
-                                    onClick={this.openRoutePathView(routePath)}
+                                    className={classnames(
+                                        isEditing
+                                            ? s.routePathInfoEditing
+                                            : s.routePathInfoNotEditing,
+                                        shouldHighlightRoutePath ? s.highlight : undefined
+                                    )}
+                                    onClick={isEditing ? void 0 : this.openRoutePathView(routePath)}
                                     title={
                                         isNew && oldRoutePath
                                             ? `Kopioitu reitinsuunta: ${
@@ -275,9 +269,11 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                         <Button
                                             className={s.removeNewRoutePathButton}
                                             hasReverseColor={true}
-                                            onClick={this.props.removeNewRoutePath(
-                                                routePath.internalId
-                                            )}
+                                            onClick={() =>
+                                                this.props.routePathMassEditStore!.removeRoutePath(
+                                                    routePath.internalId
+                                                )
+                                            }
                                         >
                                             <FaTrashAlt />
                                         </Button>
