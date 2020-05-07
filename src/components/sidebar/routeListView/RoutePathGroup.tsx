@@ -197,7 +197,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             routePath.internalId
                         );
                         const isVisible = rpFromRpLayerStore
-                            ? Boolean(rpFromRpLayerStore.visible)
+                            ? Boolean(rpFromRpLayerStore.isVisible)
                             : false;
                         const color =
                             rpFromRpLayerStore && rpFromRpLayerStore.color

@@ -59,7 +59,7 @@ class RoutePathFactory {
                 ? new Date(externalRoutePath.suuviimpvm)
                 : undefined,
             modifiedBy: externalRoutePath.suukuka,
-            visible: false,
+            isVisible: false,
             originFi: externalRoutePath.suulahpaik,
             originSw: externalRoutePath.suulahpaikr,
             destinationFi: externalRoutePath.suupaapaik,
@@ -88,7 +88,7 @@ class RoutePathFactory {
             nameFi: '',
             nameSw: '',
             direction: '',
-            visible: true,
+            isVisible: true,
             startDate: new Date(defaultDate.getTime()),
             endDate: new Date(defaultDate.getTime()),
             modifiedOn: new Date(),

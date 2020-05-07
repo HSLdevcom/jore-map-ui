@@ -135,7 +135,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             if (Boolean(selectedRoutePaths.find((rp) => rp.internalId === routePath.internalId))) {
                 return;
             }
-            routePathWithLinks!.visible = true;
+            routePathWithLinks!.isVisible = true;
             routePathWithLinks!.internalId = _.cloneDeep(routePath).internalId;
             selectedRoutePaths = selectedRoutePaths.concat(routePathWithLinks!);
             this.props.routePathLayerStore!.addRoutePaths({ routePaths: [routePathWithLinks!] });
@@ -216,7 +216,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                             rpToCopy.id
                                         );
                                         const isVisible = rpFromRpLayerStore
-                                            ? Boolean(rpFromRpLayerStore.visible)
+                                            ? Boolean(rpFromRpLayerStore.isVisible)
                                             : false;
                                         const color =
                                             rpFromRpLayerStore && rpFromRpLayerStore.color

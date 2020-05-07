@@ -276,7 +276,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         let isAnyRoutePathVisible = false;
         groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
             groupedRoutePaths.forEach((routePath: IRoutePath) => {
-                if (routePath.visible) {
+                if (routePath.isVisible) {
                     isAnyRoutePathVisible = true;
                 }
             });

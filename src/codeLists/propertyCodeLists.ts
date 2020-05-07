@@ -109,7 +109,7 @@ const routePathPropertyCodeList: IRoutePathPropertyCodeList = {
     startDate: 'VOIM. AST',
     internalId: '',
     color: '',
-    visible: '',
+    isVisible: '',
     transitType: '',
     lineId: '',
     routePathLinks: 'SOLMUT JA LINKIT',

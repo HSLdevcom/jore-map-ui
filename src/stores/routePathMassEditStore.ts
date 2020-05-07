@@ -148,7 +148,7 @@ class RoutePathMassEditStore {
 
             const routePathWithNewId: IRoutePath = _.cloneDeep(rpToCopy.routePath);
             routePathWithNewId.internalId = newRoutePathId;
-            routePathWithNewId.visible = false;
+            routePathWithNewId.isVisible = false;
             routePathWithNewId.color = undefined;
             routePathsWithNewId.push(routePathWithNewId);
 

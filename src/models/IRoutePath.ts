@@ -11,7 +11,7 @@ interface IRoutePathPrimaryKey {
 interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
-    visible?: boolean; // TODO: rename as isVisible
+    isVisible?: boolean;
     transitType?: TransitType;
     lineId?: string;
 }

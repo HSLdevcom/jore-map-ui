@@ -185,7 +185,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
 
     render() {
         const routePath = this.props.routePath;
-        if (!routePath.visible || routePath.routePathLinks.length === 0) return null;
+        if (!routePath.isVisible || routePath.routePathLinks.length === 0) return null;
         const isSelected =
             this.props.routePathLayerStore!.selectedRoutePathId === routePath.internalId;
         const isHighlighted =
