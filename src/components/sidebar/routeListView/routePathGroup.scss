@@ -20,39 +20,43 @@
         align-items: center;
         padding-top: 5px;
 
-        .routePathInfo {
+        .routePathInfoNotEditing {
             display: flex;
             cursor: pointer;
-
-            &.highlight {
-                font-weight: bold;
-            }
-
-            .routePathDirection {
-                font-size: $largeFontSize;
-                display: flex;
-                width: 25px;
-                align-items: center;
-            }
-
-            .stopNameLoader {
-                display: flex;
-                justify-content: center;
-                width: 150px;
-            }
-
-            .destinations1 {
-                font-size: $mediumFontSize;
-            }
-
-            .destinations2 {
-                color: $mediumLightGrey;
-                font-size: $smallFontSize;
-            }
         }
 
-        .routePathInfo:hover {
+        .routePathInfoNotEditing:hover {
             background-color: $backgroundHoverColor;
+        }
+
+        .routePathInfoEditing {
+            display: flex;
+        }
+
+        &.highlight {
+            font-weight: bold;
+        }
+
+        .routePathDirection {
+            font-size: $largeFontSize;
+            display: flex;
+            width: 25px;
+            align-items: center;
+        }
+
+        .stopNameLoader {
+            display: flex;
+            justify-content: center;
+            width: 150px;
+        }
+
+        .destinations1 {
+            font-size: $mediumFontSize;
+        }
+
+        .destinations2 {
+            color: $mediumLightGrey;
+            font-size: $smallFontSize;
         }
 
         .routePathControls {
@@ -85,4 +89,8 @@
     .highlightAsSelected {
         background-color: #adf;
     }
+}
+
+.routePathGroup:nth-child(even) {
+    background-color: #fff;
 }

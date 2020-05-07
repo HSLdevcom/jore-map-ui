@@ -214,12 +214,13 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 key={routePath.internalId}
                             >
                                 <div
-                                    className={
-                                        shouldHighlightRoutePath
-                                            ? classnames(s.routePathInfo, s.highlight)
-                                            : s.routePathInfo
-                                    }
-                                    onClick={this.openRoutePathView(routePath)}
+                                    className={classnames(
+                                        isEditing
+                                            ? s.routePathInfoEditing
+                                            : s.routePathInfoNotEditing,
+                                        shouldHighlightRoutePath ? s.highlight : undefined
+                                    )}
+                                    onClick={isEditing ? void 0 : this.openRoutePathView(routePath)}
                                     title={
                                         isNew && oldRoutePath
                                             ? `Kopioitu reitinsuunta: ${
