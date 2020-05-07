@@ -75,8 +75,8 @@ const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 @observer
 class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
     private _isMounted: boolean;
-    private selectedGroupsListener: IReactionDisposer;
-    private routePathsListener: IReactionDisposer;
+    private selectedGroupsListener: IReactionDisposer | null = null;
+    private routePathsListener: IReactionDisposer | null = null;
     constructor(props: IRoutePathListTabProps) {
         super(props);
         this.state = {
@@ -95,11 +95,13 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentDidMount() {
         this.selectedGroupsListener = reaction(
-            () => this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
+            () =>
+                this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
             () => this.updateGroupedRoutePathsToDisplay()
         );
         this.routePathsListener = reaction(
             () =>
+                this.props.isEditing &&
                 this.props.routePathMassEditStore!.massEditRoutePaths !== null &&
                 this.props.routePathMassEditStore!.routePaths,
             () => this.updateGroupedRoutePathsToDisplay()
@@ -119,8 +121,12 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentWillUnmount() {
         this._isMounted = false;
-        this.selectedGroupsListener();
-        this.routePathsListener();
+        if (this.selectedGroupsListener) {
+            this.selectedGroupsListener();
+        }
+        if (this.routePathsListener) {
+            this.routePathsListener();
+        }
     }
 
     private getRoutePaths = (): IRoutePath[] => {
