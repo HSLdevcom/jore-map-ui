@@ -67,6 +67,28 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         navigator.goTo({ link: routePathViewLink });
     };
 
+    private selectRoutePath = (routePathToSelect: IRoutePath) => (
+        event: React.MouseEvent<HTMLElement>
+    ) => {
+        const routePathMassEditStore = this.props.routePathMassEditStore!;
+        const selectedRoutePath = routePathMassEditStore!.selectedRoutePath;
+        if (event.ctrlKey || event.shiftKey) {
+            if (selectedRoutePath?.internalId === routePathToSelect.internalId) {
+                routePathMassEditStore.setSelectedRoutePath(null);
+                return;
+            }
+            if (selectedRoutePath && selectedRoutePath.direction !== routePathToSelect.direction) {
+                routePathMassEditStore.addSelectedRoutePathPair([
+                    selectedRoutePath,
+                    routePathToSelect,
+                ]);
+                routePathMassEditStore.setSelectedRoutePath(null);
+                return;
+            }
+            routePathMassEditStore.setSelectedRoutePath(routePathToSelect);
+        }
+    };
+
     render() {
         const {
             routePaths,
@@ -201,6 +223,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             (m) => m.routePath.internalId === routePath.internalId
                         )!;
                         const isNew = massEditRp && massEditRp.isNew;
+                        const isSelected =
+                            this.props.routePathMassEditStore!.selectedRoutePath?.internalId ===
+                            routePath.internalId;
                         const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
                         const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
                             routePath.internalId
@@ -216,8 +241,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditing && isNew ? s.highlighAsNew : undefined
+                                    isEditing && isNew ? s.highlighAsNew : undefined,
+                                    isSelected ? s.highlightAsSelected : undefined
                                 )}
+                                onClick={isNew ? this.selectRoutePath(routePath) : void 0}
                                 key={routePath.internalId}
                             >
                                 <div

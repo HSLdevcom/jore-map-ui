@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
@@ -74,6 +75,7 @@ const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 @observer
 class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
     private _isMounted: boolean;
+    private selectedGroupsListener: IReactionDisposer;
     constructor(props: IRoutePathListTabProps) {
         super(props);
         this.state = {
@@ -89,6 +91,13 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             this.setState(newState);
         }
     };
+
+    componentDidMount() {
+        this.selectedGroupsListener = reaction(
+            () => this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
+            () => this.updateGroupedRoutePathsToDisplay(this.props.routePaths)
+        );
+    }
 
     componentWillMount() {
         this._isMounted = true;
@@ -106,6 +115,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.selectedGroupsListener();
     }
 
     private updateGroupedRoutePathsToDisplay = (routePaths: IRoutePath[]) => {
@@ -123,9 +133,58 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.setRoutePathsVisible(groupedRoutePathsToDisplay);
     };
 
+    /**
+     * Creates routePath groups (1-2 routePaths in a group) with the following order:
+     * - routePaths paired according to routePathMassEditStore.selectedRoutePathIdPairs
+     * - remaining routePaths with date > getMaxDate in single groups
+     * - remaining routePaths will be grouped by date
+     */
     private getGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
+        let routePathsToGroup = _.cloneDeep(routePaths);
+        const selectedRoutePathIdPairs = this.props.routePathMassEditStore!
+            .selectedRoutePathIdPairs;
         const res = {};
-        routePaths.forEach((rp) => {
+
+        // Take out selectedRoutePaths from routePathsToGroup that have no start date
+        const selectedRoutePathGroups: IRoutePath[][] = [];
+        const selectedRoutePathsWithStartDate: IRoutePath[] = [];
+        const visitedRoutePaths = {};
+        routePathsToGroup = routePathsToGroup.filter((rp: IRoutePath) => {
+            const idPair = selectedRoutePathIdPairs.find((idPair: string[]) => {
+                return idPair.includes(rp.internalId);
+            })!;
+            const isSelected = Boolean(idPair);
+            if (isSelected && !visitedRoutePaths[idPair[0]]) {
+                const rp1 = routePathsToGroup.find((rp) => rp.internalId === idPair[0])!;
+                const rp2 = routePathsToGroup.find((rp) => rp.internalId === idPair[1])!;
+                visitedRoutePaths[rp1!.internalId] = true;
+                visitedRoutePaths[rp2!.internalId] = true;
+
+                if (rp1.startDate.getTime() > getMaxDate().getTime()) {
+                    selectedRoutePathGroups.push([rp1, rp2]);
+                } else {
+                    selectedRoutePathsWithStartDate.push(rp1);
+                    selectedRoutePathsWithStartDate.push(rp2);
+                }
+            }
+            return !isSelected;
+        });
+
+        // Take out new routePaths with unselected date from routePathsToGroup
+        const newRoutePathGroups: IRoutePath[][] = [];
+        routePathsToGroup = routePathsToGroup.filter((rp: IRoutePath) => {
+            const isNewRoutePath = rp.startDate.getTime() > getMaxDate().getTime();
+            if (isNewRoutePath) {
+                newRoutePathGroups.push([rp]);
+            }
+            return !isNewRoutePath;
+        });
+
+        // Add selected routePaths with startDate back to routePaths to group (so that they will be sorted)
+        routePathsToGroup = routePathsToGroup.concat(selectedRoutePathsWithStartDate);
+
+        // Create routePath pairs from remaining (existing) routePaths, sort them by date
+        routePathsToGroup.forEach((rp) => {
             const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
@@ -139,13 +198,11 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             routePaths.sort((a: IRoutePath, b: IRoutePath) => (a.direction === '1' ? -1 : 1));
         });
 
-        if (list[0][0].startDate.getTime() > getMaxDate().getTime()) {
-            const newRoutePaths = _.cloneDeep(list[0]);
-            list.shift();
-            newRoutePaths.forEach((newRp) => {
-                list.unshift([newRp]);
-            });
-        }
+        // Add selected routePaths to the beginning of the list
+        selectedRoutePathGroups.forEach((rpGroup) => list.unshift(rpGroup));
+
+        // Add new routePaths them to the beginning of the list
+        newRoutePathGroups.forEach((rpGroup) => list.unshift(rpGroup));
 
         return list;
     };

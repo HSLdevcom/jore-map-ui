@@ -12,10 +12,13 @@ import NavigationStore from './navigationStore';
 class RoutePathMassEditStore {
     @observable private _massEditRoutePaths: IMassEditRoutePath[] | null;
     @observable private _newRoutePathIdCounter: number;
+    @observable private _selectedRoutePath: IRoutePath | null;
+    @observable private _selectedRoutePathIdPairs: string[][]; // RoutePath pairs that user has manually selected (shift+click)
 
     constructor() {
         this._massEditRoutePaths = null;
         this._newRoutePathIdCounter = 1;
+        this._selectedRoutePathIdPairs = [];
 
         reaction(
             () => this.shouldShowUnsavedChangesPrompt,
@@ -30,6 +33,16 @@ class RoutePathMassEditStore {
     @computed
     get massEditRoutePaths(): IMassEditRoutePath[] | null {
         return this._massEditRoutePaths;
+    }
+
+    @computed
+    get selectedRoutePath(): IRoutePath | null {
+        return this._selectedRoutePath;
+    }
+
+    @computed
+    get selectedRoutePathIdPairs(): string[][] {
+        return this._selectedRoutePathIdPairs;
     }
 
     @computed
@@ -68,6 +81,11 @@ class RoutePathMassEditStore {
     }
 
     @action
+    public setSelectedRoutePath = (selectedRoutePath: IRoutePath | null) => {
+        this._selectedRoutePath = selectedRoutePath;
+    };
+
+    @action
     public init = ({ routePaths }: { routePaths: IRoutePath[] }) => {
         const massEditRoutePaths: IMassEditRoutePath[] = [];
         _.cloneDeep(routePaths).forEach((rp: IRoutePath) => {
@@ -99,8 +117,16 @@ class RoutePathMassEditStore {
 
     @action
     public removeRoutePath = (id: string) => {
-        const removeIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
-        this._massEditRoutePaths!.splice(removeIndex, 1);
+        const selectedRpPairRemoveIndex = this._selectedRoutePathIdPairs.findIndex(
+            (idPair: string[]) => {
+                return Boolean(idPair.find((_id: string) => _id === id));
+            }
+        );
+        if (selectedRpPairRemoveIndex) {
+            this._selectedRoutePathIdPairs.splice(selectedRpPairRemoveIndex, 1);
+        }
+        const massEditRpRemoveIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
+        this._massEditRoutePaths!.splice(massEditRpRemoveIndex, 1);
         this.validateMassEditRoutePaths();
         RoutePathLayerStore.removeRoutePath(id);
     };
@@ -213,6 +239,44 @@ class RoutePathMassEditStore {
             }
             return currMassEditRp;
         });
+    };
+
+    @action
+    public addSelectedRoutePathPair = (routePathPair: IRoutePath[]) => {
+        // Remove routePath pair from this._selectedRoutePathIdPairs, if found
+        const routePathId1 = routePathPair[0].internalId;
+        const routePathId2 = routePathPair[1].internalId;
+        const removeIndex1 = this._selectedRoutePathIdPairs.findIndex((idPair: string[]) => {
+            return Boolean(idPair.find((id: string) => id === routePathId1));
+        });
+        if (removeIndex1 >= 0) {
+            this._selectedRoutePathIdPairs.splice(removeIndex1, 1);
+        }
+        const removeIndex2 = this._selectedRoutePathIdPairs.findIndex((idPair: string[]) => {
+            return Boolean(idPair.find((id: string) => id === routePathId2));
+        });
+        if (removeIndex2 >= 0) {
+            this._selectedRoutePathIdPairs.splice(removeIndex2, 1);
+        }
+
+        // Set new routePath pair's startDate and endDate as max dates
+        const massEditRp1 = this._massEditRoutePaths!.find(
+            (massEditRp) => massEditRp.id === routePathId1
+        );
+        const massEditRp2 = this._massEditRoutePaths!.find(
+            (massEditRp) => massEditRp.id === routePathId2
+        );
+        const maxDatePlusOne = getMaxDate();
+        maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
+        massEditRp1!.routePath.startDate = _.cloneDeep(maxDatePlusOne);
+        massEditRp1!.routePath.endDate = _.cloneDeep(maxDatePlusOne);
+        massEditRp2!.routePath.startDate = _.cloneDeep(maxDatePlusOne);
+        massEditRp2!.routePath.endDate = _.cloneDeep(maxDatePlusOne);
+
+        // Add a new selectedRoutePathPair
+        this._selectedRoutePathIdPairs = this._selectedRoutePathIdPairs.concat([
+            [routePathId1, routePathId2],
+        ]);
     };
 
     @action
