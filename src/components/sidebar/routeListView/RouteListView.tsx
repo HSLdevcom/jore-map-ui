@@ -210,7 +210,11 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             .to(SubSites.current, navigator.getQueryParamValues())
             .remove(QueryParams.routes, route.id)
             .toLink();
-        navigator.goTo({ link: closeRouteLink, shouldSkipUnsavedChangesPrompt: true });
+        navigator.goTo({
+            link: closeRouteLink,
+            shouldSkipUnsavedChangesPrompt: true,
+            shouldSkipNavigationAction: true,
+        });
     };
 
     private toggleEditPrompt = (route: IRoute) => {

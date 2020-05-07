@@ -77,6 +77,8 @@ class RoutePathMassEditStore {
 
     @computed
     get routePaths(): IRoutePath[] {
+        if (!this._massEditRoutePaths) return [];
+
         return this._massEditRoutePaths!.map((massEditRp) => massEditRp.routePath);
     }
 

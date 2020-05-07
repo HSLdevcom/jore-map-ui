@@ -21,10 +21,12 @@ class Navigator {
         link,
         unsavedChangesPromptMessage,
         shouldSkipUnsavedChangesPrompt,
+        shouldSkipNavigationAction,
     }: {
         link: string;
         unsavedChangesPromptMessage?: string;
         shouldSkipUnsavedChangesPrompt?: boolean;
+        shouldSkipNavigationAction?: boolean;
     }) => {
         // prevent new pushing url if the current url is already the right one
         if (this.store.location.pathname === link) return;
@@ -34,6 +36,7 @@ class Navigator {
             redirectFunction,
             unsavedChangesPromptMessage,
             shouldSkipUnsavedChangesPrompt,
+            shouldSkipNavigationAction,
         });
     };
 
@@ -81,13 +84,16 @@ class Navigator {
     public goBack = ({
         unsavedChangesPromptMessage,
         shouldSkipUnsavedChangesPrompt,
+        shouldSkipNavigationAction,
     }: {
         unsavedChangesPromptMessage?: string;
         shouldSkipUnsavedChangesPrompt?: boolean;
+        shouldSkipNavigationAction?: boolean;
     }) => {
         this.callRedirectFunction({
             unsavedChangesPromptMessage,
             shouldSkipUnsavedChangesPrompt,
+            shouldSkipNavigationAction,
             redirectFunction: this.store.goBack,
         });
     };
@@ -102,10 +108,12 @@ class Navigator {
         redirectFunction: callback,
         unsavedChangesPromptMessage,
         shouldSkipUnsavedChangesPrompt,
+        shouldSkipNavigationAction,
     }: {
         redirectFunction: Function;
         unsavedChangesPromptMessage?: string;
         shouldSkipUnsavedChangesPrompt?: boolean;
+        shouldSkipNavigationAction?: boolean;
     }) => {
         if (
             !Boolean(shouldSkipUnsavedChangesPrompt) &&
@@ -116,19 +124,21 @@ class Navigator {
                     ? unsavedChangesPromptMessage
                     : DEFAULT_PROMPT_MESSAGE,
                 onConfirm: () => {
-                    _callNavigationAction();
+                    _callNavigationAction(shouldSkipNavigationAction);
                     callback();
                 },
                 confirmButtonText: 'Kyllä',
             });
         } else {
-            _callNavigationAction();
+            _callNavigationAction(shouldSkipNavigationAction);
             callback();
         }
     };
 }
 
-const _callNavigationAction = () => {
+const _callNavigationAction = (shouldSkipNavigationAction?: boolean) => {
+    if (shouldSkipNavigationAction) return;
+
     NavigationStore.setShouldShowUnsavedChangesPrompt(false);
     const navigationAction = NavigationStore.navigationAction;
     if (navigationAction) {
