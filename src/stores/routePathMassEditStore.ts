@@ -117,16 +117,16 @@ class RoutePathMassEditStore {
 
     @action
     public removeRoutePath = (id: string) => {
+        const massEditRpRemoveIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
+        this._massEditRoutePaths!.splice(massEditRpRemoveIndex, 1);
         const selectedRpPairRemoveIndex = this._selectedRoutePathIdPairs.findIndex(
             (idPair: string[]) => {
                 return Boolean(idPair.find((_id: string) => _id === id));
             }
         );
-        if (selectedRpPairRemoveIndex) {
+        if (selectedRpPairRemoveIndex >= 0) {
             this._selectedRoutePathIdPairs.splice(selectedRpPairRemoveIndex, 1);
         }
-        const massEditRpRemoveIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
-        this._massEditRoutePaths!.splice(massEditRpRemoveIndex, 1);
         this.validateMassEditRoutePaths();
         RoutePathLayerStore.removeRoutePath(id);
     };
@@ -277,6 +277,9 @@ class RoutePathMassEditStore {
         this._selectedRoutePathIdPairs = this._selectedRoutePathIdPairs.concat([
             [routePathId1, routePathId2],
         ]);
+
+        // Have to re validate massEditRoutePaths since startDate and endDates were changed to maxDatePlusOne
+        this.validateMassEditRoutePaths();
     };
 
     @action

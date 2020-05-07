@@ -31,7 +31,6 @@ interface IRoutePathGroupProps {
     excludedDatesDirection1: Date[];
     excludedDatesDirection2: Date[];
     stopNameMap: Map<string, IRoutePathStopNames>;
-    removeNewRoutePath: (id: string) => () => void;
     userStore?: UserStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathMassEditStore?: RoutePathMassEditStore;
@@ -302,9 +301,11 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                         <Button
                                             className={s.removeNewRoutePathButton}
                                             hasReverseColor={true}
-                                            onClick={this.props.removeNewRoutePath(
-                                                routePath.internalId
-                                            )}
+                                            onClick={() =>
+                                                this.props.routePathMassEditStore!.removeRoutePath(
+                                                    routePath.internalId
+                                                )
+                                            }
                                         >
                                             <FaTrashAlt />
                                         </Button>

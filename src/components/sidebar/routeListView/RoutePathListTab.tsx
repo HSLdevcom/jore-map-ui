@@ -34,7 +34,7 @@ interface IRoutePathStopNames {
 }
 
 interface IRoutePathListTabProps {
-    routePaths: IRoutePath[];
+    originalRoutePaths: IRoutePath[];
     isEditing: boolean;
     lineId: string;
     routeId: string;
@@ -76,6 +76,7 @@ const ROUTE_PATH_GROUP_SHOW_LIMIT = 3;
 class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePathListTabState> {
     private _isMounted: boolean;
     private selectedGroupsListener: IReactionDisposer;
+    private routePathsListener: IReactionDisposer;
     constructor(props: IRoutePathListTabProps) {
         super(props);
         this.state = {
@@ -95,30 +96,41 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     componentDidMount() {
         this.selectedGroupsListener = reaction(
             () => this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
-            () => this.updateGroupedRoutePathsToDisplay(this.props.routePaths)
+            () => this.updateGroupedRoutePathsToDisplay()
+        );
+        this.routePathsListener = reaction(
+            () =>
+                this.props.routePathMassEditStore!.massEditRoutePaths !== null &&
+                this.props.routePathMassEditStore!.routePaths,
+            () => this.updateGroupedRoutePathsToDisplay()
         );
     }
 
     componentWillMount() {
         this._isMounted = true;
-        this.updateGroupedRoutePathsToDisplay(this.props.routePaths);
+        this.updateGroupedRoutePathsToDisplay();
     }
 
     componentDidUpdate(prevProps: IRoutePathListTabProps) {
-        if (
-            prevProps.areAllRoutePathsVisible !== this.props.areAllRoutePathsVisible ||
-            !_.isEqual(prevProps.routePaths, this.props.routePaths)
-        ) {
-            this.updateGroupedRoutePathsToDisplay(this.props.routePaths);
+        if (prevProps.areAllRoutePathsVisible !== this.props.areAllRoutePathsVisible) {
+            this.updateGroupedRoutePathsToDisplay();
         }
     }
 
     componentWillUnmount() {
         this._isMounted = false;
         this.selectedGroupsListener();
+        this.routePathsListener();
     }
 
-    private updateGroupedRoutePathsToDisplay = (routePaths: IRoutePath[]) => {
+    private getRoutePaths = (): IRoutePath[] => {
+        return this.props.isEditing
+            ? _.cloneDeep(this.props.routePathMassEditStore!.routePaths)
+            : this.props.originalRoutePaths;
+    };
+
+    private updateGroupedRoutePathsToDisplay = () => {
+        const routePaths = this.getRoutePaths();
         if (routePaths.length === 0) return;
 
         const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
@@ -327,14 +339,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.props.routeListStore!.setRouteIdToEdit(null);
     };
 
-    private removeNewRoutePath = (id: string) => () => {
-        this.props.routePathMassEditStore!.removeRoutePath(id);
-        // Remove routePath also from current props because routePaths in state doesn't get updated otherwise
-        const routePaths = _.cloneDeep(this.props.routePaths);
-        const removeIndex = routePaths.findIndex((rp) => rp.internalId === id);
-        routePaths.splice(removeIndex, 1);
-        this.updateGroupedRoutePathsToDisplay(routePaths);
-    };
     private renderBottomBarButtons = () => {
         if (!this.props.loginStore!.hasWriteAccess) return null;
 
@@ -377,7 +381,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     };
 
     render() {
-        const { routePaths, isEditing } = this.props;
+        const isEditing = this.props.isEditing;
+        const routePaths = this.getRoutePaths();
         if (routePaths.length === 0) {
             return (
                 <div className={s.routePathListTab}>
@@ -434,7 +439,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             index={index}
                             excludedDatesDirection1={startAndEndDatesDirection1}
                             excludedDatesDirection2={startAndEndDatesDirection2}
-                            removeNewRoutePath={this.removeNewRoutePath}
                         />
                     );
                 })}
@@ -449,7 +453,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         <div className={s.toggleAllRoutePathsVisibleText}>
                             {this.props.areAllRoutePathsVisible
                                 ? `Piilota reitinsuunnat`
-                                : `Näytä kaikki reitinsuunnat (${this.props.routePaths.length})`}
+                                : `Näytä kaikki reitinsuunnat (${routePaths.length})`}
                         </div>
                     </div>
                 )}
