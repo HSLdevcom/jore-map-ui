@@ -134,6 +134,9 @@ class RoutePathMassEditStore {
         if (selectedRpPairRemoveIndex >= 0) {
             this._selectedRoutePathIdPairs.splice(selectedRpPairRemoveIndex, 1);
         }
+        if (this._selectedRoutePath?.internalId === id) {
+            this._selectedRoutePath = null;
+        }
         this.validateMassEditRoutePaths();
         RoutePathLayerStore.removeRoutePath(id);
     };
