@@ -22,6 +22,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
+import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -123,8 +124,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     };
 
     private initialize = async () => {
-        await this.fetchExistingPrimaryKeys();
         if (this.props.isNewRoutePath) {
+            await this.fetchExistingRoutePaths();
             await this.createNewRoutePath();
         } else {
             await this.initExistingRoutePath();
@@ -132,11 +133,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         await this.initializeMap();
     };
 
-    private fetchExistingPrimaryKeys = async () => {
+    private fetchExistingRoutePaths = async () => {
         const queryParams = navigator.getQueryParamValues();
         const routeId = queryParams[QueryParams.routeId];
-        const routePathPrimaryKeys = await RoutePathService.fetchAllRoutePathPrimaryKeys(routeId);
-        this.props.routePathStore!.setExistingRoutePathPrimaryKeys(routePathPrimaryKeys);
+        const route = await RouteService.fetchRoute({
+            routeId,
+            areRoutePathLinksExcluded: true,
+        });
+        this.props.routePathStore!.setExistingRoutePaths(route!.routePaths);
     };
 
     private createNewRoutePath = async () => {

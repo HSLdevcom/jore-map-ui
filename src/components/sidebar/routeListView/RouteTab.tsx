@@ -39,7 +39,7 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
     constructor(props: IRouteTabProps) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoading: true,
         };
     }
 
@@ -89,13 +89,13 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
             type: 'saveModel',
             newData: currentRoute,
             oldData: oldRoute,
-            model: 'route'
+            model: 'route',
         };
         confirmStore!.openConfirm({
             content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -117,7 +117,7 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
 
     private fetchRoute = async (routeId: string) => {
         this._setState({ isLoading: true });
-        const route = await RouteService.fetchRoute(routeId);
+        const route = await RouteService.fetchRoute({ routeId });
         this.props.routeListStore!.updateRoute(route!);
         this._setState({ isLoading: false });
     };

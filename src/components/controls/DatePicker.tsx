@@ -127,7 +127,6 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                     })}
                     open={this.state.isOpen}
                     onClickOutside={this.closeCalendar}
-                    onSelect={this.onChange}
                     onFocus={this.props.onFocus}
                     autoFocus={true}
                     adjustDateOnChange={false}
