@@ -18,6 +18,10 @@ const areDatesEqual = (a: Date, b: Date) => {
     );
 };
 
+const isCurrentTimeWithinTimeSpan = (a: Date, b: Date) => {
+    return Moment(a).isBefore(Moment()) && Moment(b).isAfter(Moment());
+};
+
 const getMaxDate = () => {
     const maxDate = new Date();
     maxDate.setFullYear(constants.MAX_YEAR);
@@ -36,4 +40,11 @@ const getMinDate = () => {
     return minDate;
 };
 
-export { toDateString, toMidnightDate, areDatesEqual, getMaxDate, getMinDate };
+export {
+    toDateString,
+    toMidnightDate,
+    areDatesEqual,
+    isCurrentTimeWithinTimeSpan,
+    getMaxDate,
+    getMinDate,
+};

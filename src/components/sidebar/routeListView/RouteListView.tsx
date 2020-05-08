@@ -1,7 +1,6 @@
 import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
@@ -26,6 +25,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
+import { isCurrentTimeWithinTimeSpan } from '~/utils/dateUtils';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import Loader from '../../shared/loader/Loader';
 import SearchInput from '../../shared/searchView/SearchInput';
@@ -153,7 +153,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             let hasActiveRoutePath: boolean = false;
             missingRoutes.forEach((route: IRoute) => {
                 route.routePaths.forEach((rp: IRoutePath, index: number) => {
-                    if (_isCurrentTimeWithinRoutePathTimeSpan(rp)) {
+                    if (isCurrentTimeWithinTimeSpan(rp.startDate, rp.endDate)) {
                         hasActiveRoutePath = true;
                     }
                 });
@@ -373,12 +373,5 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         );
     }
 }
-
-const _isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
-    return (
-        Moment(routePath.startDate).isBefore(Moment()) &&
-        Moment(routePath.endDate).isAfter(Moment())
-    );
-};
 
 export default RouteListView;
