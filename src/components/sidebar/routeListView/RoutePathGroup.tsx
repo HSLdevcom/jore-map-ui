@@ -16,7 +16,7 @@ import subSites from '~/routing/subSites';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
-import { getMaxDate, toDateString } from '~/utils/dateUtils';
+import { getMaxDate, isCurrentTimeWithinTimeSpan, toDateString } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
@@ -172,8 +172,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 </div>
                 <div>
                     {routePaths.map((routePath: IRoutePath) => {
-                        const shouldHighlightRoutePath = _isCurrentTimeWithinRoutePathTimeSpan(
-                            routePath
+                        const shouldHighlightRoutePath = isCurrentTimeWithinTimeSpan(
+                            routePath.startDate,
+                            routePath.endDate
                         );
                         const stopNames = this.props.stopNameMap.get(routePath.internalId);
                         const isLoading = !stopNames && this.props.areStopNamesLoading;
@@ -218,7 +219,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                         isEditing
                                             ? s.routePathInfoEditing
                                             : s.routePathInfoNotEditing,
-                                        shouldHighlightRoutePath ? s.highlight : undefined
+                                        shouldHighlightRoutePath
+                                            ? s.routePathHighlighted
+                                            : undefined
                                     )}
                                     onClick={isEditing ? void 0 : this.openRoutePathView(routePath)}
                                     title={
@@ -296,12 +299,5 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         );
     }
 }
-
-const _isCurrentTimeWithinRoutePathTimeSpan = (routePath: IRoutePath) => {
-    return (
-        Moment(routePath.startDate).isBefore(Moment()) &&
-        Moment(routePath.endDate).isAfter(Moment())
-    );
-};
 
 export default RoutePathGroup;
