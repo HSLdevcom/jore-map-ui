@@ -18,19 +18,22 @@
         flex-direction: row;
         -ms-flex-align: center;
         align-items: center;
-        padding-top: 5px;
 
         .routePathInfoNotEditing {
             display: flex;
             cursor: pointer;
+            padding: 5px;
         }
 
         .routePathInfoNotEditing:hover {
+            padding: 5px;
+            transition: 0.5s;
             background-color: $backgroundHoverColor;
         }
 
         .routePathInfoEditing {
             display: flex;
+            padding: 5px;
         }
 
         .routePathHighlighted {
@@ -62,6 +65,7 @@
         .routePathControls {
             display: flex;
             align-items: center;
+            padding: 5px;
 
             > * {
                 margin: 0 5px;

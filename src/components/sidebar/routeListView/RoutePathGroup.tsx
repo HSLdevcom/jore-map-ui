@@ -204,6 +204,14 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             rpFromRpLayerStore && rpFromRpLayerStore.color
                                 ? rpFromRpLayerStore.color
                                 : '#898989';
+                        const destinations1 =
+                            this.props.userStore!.userTransitType === TransitType.BUS
+                                ? routePathDestinations
+                                : stopDestinations;
+                        const destinations2 =
+                            this.props.userStore!.userTransitType === TransitType.BUS
+                                ? stopDestinations
+                                : routePathDestinations;
                         return (
                             <div
                                 className={classnames(
@@ -235,7 +243,9 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                               } - ${oldRoutePath.destinationFi} | ${
                                                   oldRoutePath.lineId
                                               } | ${oldRoutePath.routeId}`
-                                            : ``
+                                            : isEditing
+                                            ? ``
+                                            : `Avaa reitinsuunta ${destinations1} - ${destinations2}`
                                     }
                                     data-cy='openRoutePathViewButton'
                                 >
@@ -252,16 +262,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                         ) : (
                                             <>
                                                 <div className={s.destinations1}>
-                                                    {this.props.userStore!.userTransitType ===
-                                                    TransitType.BUS
-                                                        ? routePathDestinations
-                                                        : stopDestinations}
+                                                    {destinations1}
                                                 </div>
                                                 <div className={s.destinations2}>
-                                                    {this.props.userStore!.userTransitType ===
-                                                    TransitType.BUS
-                                                        ? stopDestinations
-                                                        : routePathDestinations}
+                                                    {destinations2}
                                                 </div>
                                             </>
                                         )}
