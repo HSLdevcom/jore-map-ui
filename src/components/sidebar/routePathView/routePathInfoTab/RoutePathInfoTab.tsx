@@ -178,21 +178,13 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <InputContainer
-                                label='VOIM. AST'
-                                disabled={isUpdating}
-                                type='date'
-                                value={routePath.startDate}
-                                onChange={onChange('startDate')}
-                                validationResult={invalidPropertiesMap['startDate']}
-                            />
-                            <InputContainer
-                                label='VIIM.VOIM.OLO'
-                                disabled={this.props.isEditingDisabled}
-                                type='date'
-                                value={routePath.endDate}
-                                onChange={onChange('endDate')}
-                                validationResult={invalidPropertiesMap['endDate']}
+                            <Dropdown
+                                label='POIKKEUSREITTI'
+                                disabled={isEditingDisabled}
+                                selected={this.props.routePath.exceptionPath}
+                                items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
+                                onChange={onChange('exceptionPath')}
+                                validationResult={invalidPropertiesMap['exceptionPath']}
                             />
                             <CalculatedInputField
                                 label='PITUUS (m)'
@@ -213,13 +205,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 onChange={onChange('direction')}
                                 validationResult={invalidPropertiesMap['direction']}
                             />
-                            <Dropdown
-                                label='POIKKEUSREITTI'
-                                disabled={isEditingDisabled}
-                                selected={this.props.routePath.exceptionPath}
-                                items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
-                                onChange={onChange('exceptionPath')}
-                                validationResult={invalidPropertiesMap['exceptionPath']}
+                            <InputContainer
+                                label='VOIM. AST'
+                                disabled={isUpdating}
+                                type='date'
+                                value={routePath.startDate}
+                                onChange={onChange('startDate')}
+                                validationResult={invalidPropertiesMap['startDate']}
+                            />
+                            <InputContainer
+                                label='VIIM.VOIM.OLO'
+                                disabled={isUpdating}
+                                type='date'
+                                value={routePath.endDate}
+                                onChange={onChange('endDate')}
+                                validationResult={invalidPropertiesMap['endDate']}
                             />
                         </div>
                         <div className={s.flexRow}>
