@@ -11,6 +11,7 @@ import routePathValidationModel, {
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import RoutePathValidator from '~/utils/RoutePathValidator';
+import { toDateString } from '~/utils/dateUtils';
 import { getText } from '~/utils/textUtils';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
@@ -205,6 +206,30 @@ class RoutePathStore {
                 };
                 return validationResult;
             }
+
+            let validationResult: IValidationResult | null = null;
+            this._existingRoutePaths.forEach((existingRp) => {
+                if (routePath.direction !== existingRp.direction) return;
+                if (
+                    _areDateRangesOverlapping({
+                        startDate1: routePath.startDate,
+                        endDate1: routePath.endDate,
+                        startDate2: existingRp.startDate,
+                        endDate2: existingRp.endDate,
+                    })
+                ) {
+                    validationResult = {
+                        isValid: false,
+                        errorMessage: `Reitinsuunta menee päällekkäin olemassa olevan reitinsuunnan kanssa: ${
+                            existingRp.direction
+                        } | ${toDateString(existingRp.startDate)} | ${toDateString(
+                            existingRp.endDate
+                        )}.`,
+                    };
+                }
+            });
+            if (validationResult) return validationResult;
+
             return {
                 isValid: true,
             };
@@ -641,6 +666,34 @@ class RoutePathStore {
         }
     };
 }
+
+const _areDateRangesOverlapping = ({
+    startDate1,
+    endDate1,
+    startDate2,
+    endDate2,
+}: {
+    startDate1: Date;
+    endDate1: Date;
+    startDate2: Date;
+    endDate2: Date;
+}) => {
+    // Date1 range is before date2 range
+    if (startDate1.getTime() < startDate2.getTime()) {
+        if (endDate1.getTime() < startDate2.getTime()) {
+            return false;
+        }
+        return true;
+    }
+    // Date1 range is after date2 range
+    if (startDate1.getTime() > startDate2.getTime()) {
+        if (endDate2.getTime() < startDate1.getTime()) {
+            return false;
+        }
+        return true;
+    }
+    return true;
+};
 
 export default new RoutePathStore();
 
