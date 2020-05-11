@@ -3,7 +3,6 @@ import { action, computed, observable, reaction } from 'mobx';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import routePathLinkValidationModel, {
     IRoutePathLinkValidationModel,
 } from '~/models/validationModels/routePathLinkValidationModel';
@@ -12,6 +11,7 @@ import routePathValidationModel, {
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import RoutePathValidator from '~/utils/RoutePathValidator';
+import { toDateString } from '~/utils/dateUtils';
 import { getText } from '~/utils/textUtils';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
@@ -41,7 +41,7 @@ class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _isNewRoutePath: boolean;
-    @observable private _existingRoutePathPrimaryKeys: IRoutePathPrimaryKey[];
+    @observable private _existingRoutePaths: IRoutePath[];
     @observable private _neighborRoutePathLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _listFilters: ListFilter[];
@@ -180,9 +180,18 @@ class RoutePathStore {
 
         this.setOldRoutePath(this._routePath);
 
-        const validatePrimaryKey = (routePath: IRoutePath) => {
+        const validateRoutePathPrimaryKey = (routePath: IRoutePath) => {
             if (!this.isNewRoutePath) return;
-            const isPrimaryKeyDuplicated = this._existingRoutePathPrimaryKeys.some(
+            if (routePath.startDate.getTime() > routePath.endDate.getTime()) {
+                const validationResult: IValidationResult = {
+                    isValid: false,
+                    errorMessage:
+                        'Reitinsuunnan loppupäivämäärän täytyy olla alkupäivämäärän jälkeen.',
+                };
+                return validationResult;
+            }
+
+            const isPrimaryKeyDuplicated = this._existingRoutePaths.some(
                 (rp) =>
                     routePath.routeId === rp.routeId &&
                     routePath.direction === rp.direction &&
@@ -197,35 +206,53 @@ class RoutePathStore {
                 };
                 return validationResult;
             }
-            return;
-        };
-        const validateStartTimeBeforeEndTime = (routePath: IRoutePath) => {
-            if (routePath.startDate.getTime() > routePath.endDate.getTime()) {
-                const validationResult: IValidationResult = {
-                    isValid: false,
-                    errorMessage:
-                        'Reitinsuunnan loppupäivämäärän täytyy olla alkupäivämäärän jälkeen.',
-                };
-                return validationResult;
-            }
-            return;
+
+            let validationResult: IValidationResult | null = null;
+            this._existingRoutePaths.forEach((existingRp) => {
+                if (routePath.direction !== existingRp.direction) return;
+                if (
+                    _areDateRangesOverlapping({
+                        startDate1: routePath.startDate,
+                        endDate1: routePath.endDate,
+                        startDate2: existingRp.startDate,
+                        endDate2: existingRp.endDate,
+                    })
+                ) {
+                    validationResult = {
+                        isValid: false,
+                        errorMessage: `Reitinsuunta menee päällekkäin olemassa olevan reitinsuunnan kanssa: ${
+                            existingRp.direction
+                        } | ${toDateString(existingRp.startDate)} | ${toDateString(
+                            existingRp.endDate
+                        )}.`,
+                    };
+                }
+            });
+            if (validationResult) return validationResult;
+
+            return {
+                isValid: true,
+            };
         };
 
         const customValidatorMap: ICustomValidatorMap = {
+            // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
+            routePathPrimaryKey: {
+                validators: [validateRoutePathPrimaryKey],
+            },
             direction: {
-                validators: [validatePrimaryKey],
-                dependentProperties: ['startDate'],
+                validators: [],
+                dependentProperties: ['routePathPrimaryKey'],
             },
             startDate: {
-                validators: [validatePrimaryKey, validateStartTimeBeforeEndTime],
-                dependentProperties: ['direction', 'endDate'],
+                validators: [],
+                dependentProperties: ['routePathPrimaryKey'],
             },
             endDate: {
-                validators: [validateStartTimeBeforeEndTime],
-                dependentProperties: ['startDate'],
+                validators: [],
+                dependentProperties: ['routePathPrimaryKey'],
             },
         };
-
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
     };
 
@@ -250,8 +277,8 @@ class RoutePathStore {
     };
 
     @action
-    public setExistingRoutePathPrimaryKeys = (routePathPrimaryKeys: IRoutePathPrimaryKey[]) => {
-        this._existingRoutePathPrimaryKeys = routePathPrimaryKeys;
+    public setExistingRoutePaths = (existingRoutePaths: IRoutePath[]) => {
+        this._existingRoutePaths = existingRoutePaths;
     };
 
     @action
@@ -639,6 +666,34 @@ class RoutePathStore {
         }
     };
 }
+
+const _areDateRangesOverlapping = ({
+    startDate1,
+    endDate1,
+    startDate2,
+    endDate2,
+}: {
+    startDate1: Date;
+    endDate1: Date;
+    startDate2: Date;
+    endDate2: Date;
+}) => {
+    // Date1 range is before date2 range
+    if (startDate1.getTime() < startDate2.getTime()) {
+        if (endDate1.getTime() < startDate2.getTime()) {
+            return false;
+        }
+        return true;
+    }
+    // Date1 range is after date2 range
+    if (startDate1.getTime() > startDate2.getTime()) {
+        if (endDate2.getTime() < startDate1.getTime()) {
+            return false;
+        }
+        return true;
+    }
+    return true;
+};
 
 export default new RoutePathStore();
 

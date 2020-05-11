@@ -132,7 +132,8 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             const missingLines: ILine[] = [];
             missingRouteIds.map((routeId: string) => {
                 const createPromise = async () => {
-                    const route = await RouteService.fetchRoute(routeId, {
+                    const route = await RouteService.fetchRoute({
+                        routeId,
                         areRoutePathLinksExcluded: true,
                     });
                     if (!route) {

@@ -16,10 +16,13 @@ interface IAllRoutesQueryResult {
 }
 
 class RouteService {
-    public static fetchRoute = async (
-        routeId: string,
-        { areRoutePathLinksExcluded }: { areRoutePathLinksExcluded?: boolean } = {}
-    ): Promise<IRoute | null> => {
+    public static fetchRoute = async ({
+        routeId,
+        areRoutePathLinksExcluded,
+    }: {
+        routeId: string;
+        areRoutePathLinksExcluded?: boolean;
+    }): Promise<IRoute | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
             variables: { routeId },

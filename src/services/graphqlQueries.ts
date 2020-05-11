@@ -309,20 +309,6 @@ const getRoutePathsUsingLinkFromDate = () => {
         }`;
 };
 
-const getAllRoutePathPrimaryKeysQuery = () => {
-    return gql`
-        query routePathPrimaryKeys($routeId: String) {
-            routePathPrimaryKeys: allReitinsuuntas(condition: { reitunnus: $routeId }) {
-                nodes {
-                    reitunnus
-                    suusuunta
-                    suuvoimast
-                }
-            }
-        }
-    `;
-};
-
 const getStopAreaQuery = () => {
     return gql`
         query getStopArea($stopAreaId: String!) {
@@ -780,7 +766,6 @@ export default {
     getLinksByEndNodeQuery,
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
-    getAllRoutePathPrimaryKeysQuery,
     getStopAreaQuery,
     getAllStopAreas,
     getAllStopItems,

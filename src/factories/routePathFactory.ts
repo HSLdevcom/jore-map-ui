@@ -1,22 +1,11 @@
 import TransitType from '~/enums/transitType';
 import { IRoutePath, IRoutePathLink } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
 import HashUtils from '~/utils/HashUtils';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
-    public static mapExternalRoutePathToRoutePathPrimaryKey = (
-        externalRoutePath: IExternalRoutePath
-    ): IRoutePathPrimaryKey => {
-        return {
-            routeId: externalRoutePath.reitunnus,
-            direction: externalRoutePath.suusuunta,
-            startDate: new Date(externalRoutePath.suuvoimast),
-        };
-    };
-
     public static mapExternalRoutePath = (
         externalRoutePath: IExternalRoutePath,
         lineId?: string,
