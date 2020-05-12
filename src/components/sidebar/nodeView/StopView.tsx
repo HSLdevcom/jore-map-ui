@@ -43,7 +43,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this.state = {
             isLoading: true,
             stopSections: [],
-            hastusAreas: []
+            hastusAreas: [],
         };
     }
 
@@ -59,7 +59,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         if (this._isMounted) {
             this.setState({
                 hastusAreas,
-                stopSections
+                stopSections,
             });
             this.props.nodeStore!.setStopAreas(stopAreas);
             this.setState({ isLoading: false });
@@ -77,19 +77,19 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
             if (isNewHastusArea) {
                 await StopService.createHastusArea({
                     oldHastusArea: nodeStore.oldHastusArea!,
-                    newHastusArea: nodeStore.hastusArea
+                    newHastusArea: nodeStore.hastusArea,
                 });
             } else {
                 await StopService.updateHastusArea({
                     oldHastusArea: nodeStore.oldHastusArea!,
-                    newHastusArea: nodeStore.hastusArea
+                    newHastusArea: nodeStore.hastusArea,
                 });
             }
             nodeStore.updateStopProperty('hastusId', nodeStore.hastusArea.id);
             nodeStore.setOldHastusArea(nodeStore.hastusArea);
             const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
             this.setState({
-                hastusAreas
+                hastusAreas,
             });
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {

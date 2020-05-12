@@ -6,6 +6,7 @@ import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import nodeValidationModel, {
+    nodeIdEditingValidationModel,
     INodeValidationModel,
 } from '~/models/validationModels/nodeValidationModel';
 import stopValidationModel, {
@@ -233,7 +234,10 @@ class NodeStore {
             },
         };
 
-        this._nodeValidationStore.init(node, nodeValidationModel, customValidatorMap);
+        const _nodeValidationModel = this.isNodeIdEditable
+            ? nodeIdEditingValidationModel
+            : nodeValidationModel;
+        this._nodeValidationStore.init(node, _nodeValidationModel, customValidatorMap);
         if (node.stop) {
             this._stopValidationStore.init(node.stop, stopValidationModel);
         }
