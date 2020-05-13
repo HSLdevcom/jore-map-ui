@@ -125,7 +125,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         if (!nodeId) {
             this.props.alertStore!.setNotificationMessage({
                 message:
-                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen 2 juoksevaa numeroa.',
+                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen viimeiset 2 juoksevaa numeroa.',
             });
             this.props.nodeStore!.setIsNodeIdEditable(true);
             return '';

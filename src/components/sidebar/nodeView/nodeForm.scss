@@ -22,4 +22,11 @@
     .projected {
         background-color: $nodeProjectionColor;
     }
+
+    .transitTypeUsageCode {
+        display: flex;
+        align-items: center;
+        height: 73px;
+        margin-right: $marginRight;
+    }
 }

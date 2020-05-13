@@ -8,7 +8,9 @@ import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
+import NodeService from '~/services/nodeService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -31,9 +33,28 @@ interface INodeFormProps {
     codeListStore?: CodeListStore;
 }
 
+interface INodeFormState {
+    isNodeIdQueryLoading: boolean;
+}
+
 @inject('nodeStore', 'codeListStore')
 @observer
-class NodeForm extends Component<INodeFormProps> {
+class NodeForm extends Component<INodeFormProps, INodeFormState> {
+    state = {
+        isNodeIdQueryLoading: false,
+    };
+    private _isMounted: boolean;
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+    componentDidMount() {
+        this._isMounted = true;
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
     private createMeasuredDropdownItems = (): IDropdownItem[] => {
         const items: IDropdownItem[] = [
             {
@@ -46,6 +67,31 @@ class NodeForm extends Component<INodeFormProps> {
             },
         ];
         return items;
+    };
+
+    private changeNodeType = (nodeType: NodeType) => {
+        this.props.onChangeNodeType!(nodeType);
+        const node = this.props.node;
+        this.updateNodeId({ node, isInternal: node.isInternal, transitType: node.transitType });
+    };
+
+    private updateNodeId = async ({
+        node,
+        isInternal,
+        transitType,
+    }: {
+        node: INode;
+        isInternal?: boolean;
+        transitType?: TransitType | null;
+    }) => {
+        this._setState({ isNodeIdQueryLoading: true });
+        const nodeId = await NodeService.fetchAvailableNodeId({
+            node,
+            isInternal,
+            transitType,
+        });
+        this.props.nodeStore!.updateNodeProperty('id', nodeId);
+        this._setState({ isNodeIdQueryLoading: false });
     };
 
     render() {
@@ -69,13 +115,15 @@ class NodeForm extends Component<INodeFormProps> {
                             isEditingDisabled={isEditingDisabled}
                             invalidPropertiesMap={invalidPropertiesMap}
                             isNodeIdEditable={isNodeIdEditable}
+                            isNodeIdQueryLoading={this.state.isNodeIdQueryLoading}
                             onChangeNodeProperty={onChangeNodeProperty}
+                            updateNodeId={this.updateNodeId}
                         />
                     )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='TYYPPI'
-                            onChange={onChangeNodeType ? onChangeNodeType : undefined}
+                            onChange={onChangeNodeType ? this.changeNodeType : undefined}
                             disabled={isEditingDisabled || !isNewNode}
                             selected={node.type}
                             items={nodeTypeCodeList}

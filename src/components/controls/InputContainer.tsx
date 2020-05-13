@@ -85,12 +85,9 @@ const InputContainer = observer((props: IInputProps) => {
 
     return (
         <div className={classnames(s.formItem, className)}>
-            {label && (
-                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                    {label}
-                </div>
-            )}
-
+            <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                {label ? label : ''}
+            </div>
             {isLoading ? (
                 <div className={s.loaderContainer}>
                     <Loader size='tiny' hasNoMargin={true} />

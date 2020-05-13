@@ -40,11 +40,9 @@ const TextContainer = observer((props: ITextContainerProps) => {
     } = props;
     return (
         <div className={s.formItem}>
-            {label && (
-                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                    {label}
-                </div>
-            )}
+            <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                {label ? label : ''}
+            </div>
             <div
                 className={classnames(
                     s.textField,

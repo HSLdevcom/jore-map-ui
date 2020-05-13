@@ -4,6 +4,7 @@ import React from 'react';
 import { Dropdown, RadioButton, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
+import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
@@ -18,13 +19,22 @@ interface INodeIdInputProps {
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     isNodeIdEditable?: boolean;
+    isNodeIdQueryLoading: boolean;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
+    updateNodeId: ({
+        node,
+        isInternal,
+        transitType,
+    }: {
+        node: INode;
+        isInternal?: boolean;
+        transitType?: TransitType | null;
+    }) => void;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
 }
 
 interface INodeIdInputState {
-    isNodeIdQueryLoading: boolean;
     nodeIdSuffixOptions: IDropdownItem[];
     isNodeIdSuffixQueryLoading: boolean;
     beginningOfNodeIdValidationResult: IValidationResult;
@@ -35,7 +45,6 @@ interface INodeIdInputState {
 @observer
 class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> {
     state = {
-        isNodeIdQueryLoading: false,
         nodeIdSuffixOptions: [],
         isNodeIdSuffixQueryLoading: false,
         beginningOfNodeIdValidationResult: { isValid: false },
@@ -81,28 +90,9 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
             await this.queryAvailableNodeIdSuffixes();
         } else {
             const node = this.props.nodeStore!.node;
-            this.updateNodeId({ node, transitType, isInternal: node.isInternal });
+            this.props.updateNodeId({ node, transitType, isInternal: node.isInternal });
         }
         this.props.onChangeNodeProperty!('transitType')(transitType);
-    };
-
-    private updateNodeId = async ({
-        node,
-        isInternal,
-        transitType,
-    }: {
-        node: INode;
-        isInternal?: boolean;
-        transitType?: TransitType | null;
-    }) => {
-        this._setState({ isNodeIdQueryLoading: true });
-        const nodeId = await NodeService.fetchAvailableNodeId({
-            node,
-            isInternal,
-            transitType,
-        });
-        this.props.nodeStore!.updateNodeProperty('id', nodeId);
-        this._setState({ isNodeIdQueryLoading: false });
     };
 
     private queryAvailableNodeIdSuffixes = async () => {
@@ -171,69 +161,78 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
             await this.queryAvailableNodeIdSuffixes();
         } else {
             const node = this.props.nodeStore!.node;
-            this.updateNodeId({ node, isInternal, transitType: node.transitType });
+            this.props.updateNodeId({ node, isInternal, transitType: node.transitType });
         }
     };
 
     render() {
-        const { node, invalidPropertiesMap, isNodeIdEditable } = this.props;
-        const {
-            isNodeIdQueryLoading,
-            nodeIdSuffixOptions,
-            isNodeIdSuffixQueryLoading,
-        } = this.state;
+        const { node, invalidPropertiesMap, isNodeIdEditable, isNodeIdQueryLoading } = this.props;
+        const { nodeIdSuffixOptions, isNodeIdSuffixQueryLoading } = this.state;
         return (
             <>
                 <div className={s.flexRow}>
                     <InputContainer
                         value={isNodeIdEditable ? node.beginningOfNodeId : node.id}
                         onChange={this.onChangeNodeId}
-                        label={isNodeIdEditable ? 'SOLMUN TUNNUS (4 num.' : 'SOLMUN TUNNUS'}
+                        label={
+                            isNodeIdEditable ? 'SOLMUN TUNNUKSEN ALKU (4 num.)' : 'SOLMUN TUNNUS'
+                        }
                         disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
                         validationResult={invalidPropertiesMap['beginningOfNodeId']}
                         data-cy='nodeId'
                         isLoading={isNodeIdQueryLoading}
                     />
                     {isNodeIdEditable && (
-                        <Dropdown
-                            label='+ 2 num.)'
-                            onChange={this.onChangeNodeIdSuffix}
-                            disabled={_.isEmpty(nodeIdSuffixOptions)}
-                            isLoading={isNodeIdSuffixQueryLoading}
-                            selected={node.idSuffix}
-                            items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
-                            validationResult={invalidPropertiesMap['idSuffix']}
-                            data-cy='idSuffix'
-                        />
+                        <>
+                            <div className={s.transitTypeUsageCode}>
+                                {this.getNodeIdUsageCode()}
+                            </div>
+                            <Dropdown
+                                label='LOPPUOSA (2 num.)'
+                                onChange={this.onChangeNodeIdSuffix}
+                                disabled={_.isEmpty(nodeIdSuffixOptions)}
+                                isLoading={isNodeIdSuffixQueryLoading}
+                                selected={node.idSuffix}
+                                items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
+                                validationResult={invalidPropertiesMap['idSuffix']}
+                                data-cy='idSuffix'
+                            />
+                        </>
                     )}
                 </div>
-                <div className={s.flexRow}>
-                    <div className={s.formItem}>
-                        <div className={s.inputLabel}>VERKKO</div>
-                        <TransitToggleButtonBar
-                            selectedTransitTypes={node.transitType ? [node.transitType!] : []}
-                            toggleSelectedTransitType={this.selectTransitType}
-                            errorMessage={''}
-                        />
-                    </div>
-                </div>
-                {node.transitType && node.transitType === '1' && (
-                    <div className={s.flexRow}>
-                        <div className={s.formItem}>
-                            <RadioButton
-                                onClick={this.onChangeIsInternal(true)}
-                                checked={Boolean(node.isInternal)}
-                                text={'Helsingin sisäinen'}
-                            />
+                {node.type === NodeType.STOP && (
+                    <>
+                        <div className={s.flexRow}>
+                            <div className={s.formItem}>
+                                <div className={s.inputLabel}>VERKKO</div>
+                                <TransitToggleButtonBar
+                                    selectedTransitTypes={
+                                        node.transitType ? [node.transitType!] : []
+                                    }
+                                    toggleSelectedTransitType={this.selectTransitType}
+                                    errorMessage={''}
+                                />
+                            </div>
                         </div>
-                        <div className={s.formItem}>
-                            <RadioButton
-                                onClick={this.onChangeIsInternal(false)}
-                                checked={Boolean(!node.isInternal)}
-                                text={'Helsingin ulkopuolinen'}
-                            />
-                        </div>
-                    </div>
+                        {node.transitType && node.transitType === '1' && (
+                            <div className={s.flexRow}>
+                                <div className={s.formItem}>
+                                    <RadioButton
+                                        onClick={this.onChangeIsInternal(true)}
+                                        checked={Boolean(node.isInternal)}
+                                        text={'Helsingin sisäinen'}
+                                    />
+                                </div>
+                                <div className={s.formItem}>
+                                    <RadioButton
+                                        onClick={this.onChangeIsInternal(false)}
+                                        checked={Boolean(!node.isInternal)}
+                                        text={'Helsingin ulkopuolinen'}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </>
         );
