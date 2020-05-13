@@ -24,6 +24,7 @@ interface INodeIdInputProps {
 }
 
 interface INodeIdInputState {
+    isNodeIdQueryLoading: boolean;
     nodeIdSuffixOptions: IDropdownItem[];
     isNodeIdSuffixQueryLoading: boolean;
     beginningOfNodeIdValidationResult: IValidationResult;
@@ -34,6 +35,7 @@ interface INodeIdInputState {
 @observer
 class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> {
     state = {
+        isNodeIdQueryLoading: false,
         nodeIdSuffixOptions: [],
         isNodeIdSuffixQueryLoading: false,
         beginningOfNodeIdValidationResult: { isValid: false },
@@ -70,13 +72,37 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
     };
 
     private selectTransitType = async (transitType: TransitType) => {
-        this._setState({
-            nodeIdSuffixOptions: [],
-        });
+        if (this.props.isNodeIdEditable) {
+            this._setState({
+                nodeIdSuffixOptions: [],
+            });
+            this.props.onChangeNodeProperty!('idSuffix')(null);
+            this.props.onChangeNodeProperty!('isInternal')(false);
+            await this.queryAvailableNodeIdSuffixes();
+        } else {
+            const node = this.props.nodeStore!.node;
+            this.updateNodeId({ node, transitType, isInternal: node.isInternal });
+        }
         this.props.onChangeNodeProperty!('transitType')(transitType);
-        this.props.onChangeNodeProperty!('idSuffix')(null);
-        this.props.onChangeNodeProperty!('isInternal')(false);
-        await this.queryAvailableNodeIdSuffixes();
+    };
+
+    private updateNodeId = async ({
+        node,
+        isInternal,
+        transitType,
+    }: {
+        node: INode;
+        isInternal?: boolean;
+        transitType?: TransitType | null;
+    }) => {
+        this._setState({ isNodeIdQueryLoading: true });
+        const nodeId = await NodeService.fetchAvailableNodeId({
+            node,
+            isInternal,
+            transitType,
+        });
+        this.props.nodeStore!.updateNodeProperty('id', nodeId);
+        this._setState({ isNodeIdQueryLoading: false });
     };
 
     private queryAvailableNodeIdSuffixes = async () => {
@@ -139,12 +165,23 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
             isInternal,
         });
         this.props.onChangeNodeProperty!('isInternal')(isInternal);
-        this.props.onChangeNodeProperty!('idSuffix')(null);
-        await this.queryAvailableNodeIdSuffixes();
+
+        if (this.props.isNodeIdEditable) {
+            this.props.onChangeNodeProperty!('idSuffix')(null);
+            await this.queryAvailableNodeIdSuffixes();
+        } else {
+            const node = this.props.nodeStore!.node;
+            this.updateNodeId({ node, isInternal, transitType: node.transitType });
+        }
     };
+
     render() {
         const { node, invalidPropertiesMap, isNodeIdEditable } = this.props;
-        const { nodeIdSuffixOptions, isNodeIdSuffixQueryLoading } = this.state;
+        const {
+            isNodeIdQueryLoading,
+            nodeIdSuffixOptions,
+            isNodeIdSuffixQueryLoading,
+        } = this.state;
         return (
             <>
                 <div className={s.flexRow}>
@@ -155,6 +192,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                         disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
                         validationResult={invalidPropertiesMap['beginningOfNodeId']}
                         data-cy='nodeId'
+                        isLoading={isNodeIdQueryLoading}
                     />
                     {isNodeIdEditable && (
                         <Dropdown

@@ -4,11 +4,10 @@ import React, { Component } from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { match } from 'react-router';
-import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
+import { Button, Dropdown } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import ButtonType from '~/enums/buttonType';
-import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import IStopArea from '~/models/IStopArea';
@@ -37,8 +36,6 @@ interface IStopFormProps {
     saveHastusArea?: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
     match?: match<any>;
     isReadOnly?: boolean;
-    isTransitToggleButtonBarVisible?: boolean;
-    toggleTransitType?: (type: TransitType) => void;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     setCurrentStateIntoNodeCache?: () => void;
@@ -206,14 +203,12 @@ class StopForm extends Component<IStopFormProps> {
     render() {
         const {
             node,
-            isTransitToggleButtonBarVisible,
             isEditingDisabled,
             stopAreas,
             stopSections,
             hastusAreas,
             stopInvalidPropertiesMap,
             nodeInvalidPropertiesMap,
-            toggleTransitType,
             onNodePropertyChange,
             updateStopProperty,
             isReadOnly,
@@ -226,19 +221,6 @@ class StopForm extends Component<IStopFormProps> {
             <div className={classnames(s.stopView, s.form)}>
                 <SidebarHeader>Pysäkin tiedot</SidebarHeader>
                 <div className={s.formSection}>
-                    {isTransitToggleButtonBarVisible && (
-                        <div className={s.flexRow}>
-                            <div className={s.formItem}>
-                                <div className={s.inputLabel}>VERKKO</div>
-                                <TransitToggleButtonBar
-                                    selectedTransitTypes={
-                                        stop.transitType ? [stop.transitType] : []
-                                    }
-                                    toggleSelectedTransitType={toggleTransitType}
-                                />
-                            </div>
-                        </div>
-                    )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='LYHYTTUNNUS (2 kirj.'

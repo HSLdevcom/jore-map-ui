@@ -30,7 +30,6 @@ const stopValidationModel: IStopValidationModel = {
     nameLongSw: longNameRule,
     section: 'required|min:1|max:6|string',
     postalNumber: `min:5|max:5|string|${regexRules.numbers}`,
-    transitType: 'min:0|max:1|string'
 };
 
 export default stopValidationModel;

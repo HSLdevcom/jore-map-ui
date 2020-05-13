@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../shared/loader/Loader';
 import * as s from './inputContainer.scss';
 
 interface ITextContainerProps {
@@ -12,6 +13,7 @@ interface ITextContainerProps {
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
     isInputColorRed?: boolean;
+    isLoading?: boolean;
 }
 
 const renderValidatorResult = (validationResult?: IValidationResult) => {
@@ -33,6 +35,7 @@ const TextContainer = observer((props: ITextContainerProps) => {
         isTimeIncluded,
         isInputLabelDarker,
         isInputColorRed,
+        isLoading,
         ...attrs
     } = props;
     return (
@@ -50,11 +53,17 @@ const TextContainer = observer((props: ITextContainerProps) => {
                 )}
                 {...attrs}
             >
-                {value instanceof Date
-                    ? Moment(value!).format(isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
-                    : value
-                    ? value
-                    : '-'}
+                {isLoading ? (
+                    <div className={s.loaderContainer}>
+                        <Loader size='tiny' hasNoMargin={true} />
+                    </div>
+                ) : value instanceof Date ? (
+                    Moment(value!).format(isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
+                ) : value ? (
+                    value
+                ) : (
+                    '-'
+                )}
             </div>
             {renderValidatorResult(validationResult)}
         </div>
