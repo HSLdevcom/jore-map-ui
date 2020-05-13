@@ -123,6 +123,8 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
         });
     };
 
+    // Note: same mapping found from jore-map-backend. If changed, change backend mapping also.
+    // Better would be to create an API method to getUsageCode
     private getNodeIdUsageCode = () => {
         const nodeStore = this.props.nodeStore!;
         const transitType = nodeStore.node.transitType;
