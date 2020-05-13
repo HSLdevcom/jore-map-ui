@@ -16,7 +16,10 @@ const nodeValidationModel: INodeValidationModel = {
     measurementDate: 'date',
     stop: '',
     transitTypes: '',
-    // New node properties:
+};
+
+const nodeIdEditingValidationModel = {
+    ...nodeValidationModel,
     beginningOfNodeId: `required|min:4|max:4|string|${regexRules.numbers}`,
     idSuffix: `required|min:2|max:2|string|${regexRules.numbers}`,
     transitType: '',
@@ -25,4 +28,4 @@ const nodeValidationModel: INodeValidationModel = {
 
 export default nodeValidationModel;
 
-export { INodeValidationModel, nodeValidationModel };
+export { INodeValidationModel, nodeValidationModel, nodeIdEditingValidationModel };

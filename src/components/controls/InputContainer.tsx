@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../shared/loader/Loader';
 import DatePicker from './DatePicker';
 import TextContainer from './TextContainer';
 import * as s from './inputContainer.scss';
@@ -24,6 +25,7 @@ interface IInputProps {
     isClearButtonVisibleOnDates?: boolean;
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
+    isLoading?: boolean;
     onFocus?: () => void;
     minStartDate?: Date;
     maxEndDate?: Date;
@@ -46,6 +48,7 @@ const InputContainer = observer((props: IInputProps) => {
         isClearButtonVisibleOnDates,
         isTimeIncluded,
         isInputLabelDarker,
+        isLoading,
         onFocus,
         minStartDate,
         maxEndDate,
@@ -61,6 +64,7 @@ const InputContainer = observer((props: IInputProps) => {
                 isTimeIncluded={isTimeIncluded}
                 isInputLabelDarker={isInputLabelDarker}
                 isInputColorRed={isInputColorRed}
+                isLoading={isLoading}
                 {...attrs}
             />
         );
@@ -81,13 +85,14 @@ const InputContainer = observer((props: IInputProps) => {
 
     return (
         <div className={classnames(s.formItem, className)}>
-            {label && (
-                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                    {label}
+            <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                {label ? label : ''}
+            </div>
+            {isLoading ? (
+                <div className={s.loaderContainer}>
+                    <Loader size='tiny' hasNoMargin={true} />
                 </div>
-            )}
-
-            {type === 'date' ? (
+            ) : type === 'date' ? (
                 <DatePicker
                     value={props.value! as Date}
                     onChange={props.onChange!}
