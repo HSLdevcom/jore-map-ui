@@ -87,8 +87,8 @@ class NodeForm extends Component<INodeFormProps, INodeFormState> {
         this._setState({ isNodeIdQueryLoading: true });
         const nodeId = await NodeService.fetchAvailableNodeId({
             node,
-            isInternal,
             transitType,
+            isInternal: this.props.isNodeIdEditable ? isInternal : undefined,
         });
         this.props.nodeStore!.updateNodeProperty('id', nodeId);
         this._setState({ isNodeIdQueryLoading: false });

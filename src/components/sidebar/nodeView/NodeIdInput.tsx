@@ -80,7 +80,9 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
         }
     };
 
-    private selectTransitType = async (transitType: TransitType) => {
+    private toggleSelectedTransitType = async (transitTypeNew: TransitType) => {
+        const node = this.props.nodeStore!.node;
+        const transitTypeToSelect = node.transitType === transitTypeNew ? null : transitTypeNew;
         if (this.props.isNodeIdEditable) {
             this._setState({
                 nodeIdSuffixOptions: [],
@@ -89,10 +91,13 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
             this.props.onChangeNodeProperty!('isInternal')(false);
             await this.queryAvailableNodeIdSuffixes();
         } else {
-            const node = this.props.nodeStore!.node;
-            this.props.updateNodeId({ node, transitType, isInternal: node.isInternal });
+            this.props.updateNodeId({
+                node,
+                transitType: transitTypeToSelect,
+                isInternal: node.isInternal,
+            });
         }
-        this.props.onChangeNodeProperty!('transitType')(transitType);
+        this.props.onChangeNodeProperty!('transitType')(transitTypeToSelect);
     };
 
     private queryAvailableNodeIdSuffixes = async () => {
@@ -209,12 +214,12 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                                     selectedTransitTypes={
                                         node.transitType ? [node.transitType!] : []
                                     }
-                                    toggleSelectedTransitType={this.selectTransitType}
+                                    toggleSelectedTransitType={this.toggleSelectedTransitType}
                                     errorMessage={''}
                                 />
                             </div>
                         </div>
-                        {node.transitType && node.transitType === '1' && (
+                        {isNodeIdEditable && node.transitType && node.transitType === '1' && (
                             <div className={s.flexRow}>
                                 <div className={s.formItem}>
                                     <RadioButton
