@@ -127,6 +127,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
         const nodeStore = this.props.nodeStore!;
         const transitType = nodeStore.node.transitType;
         const isInternal = nodeStore.node.isInternal;
+        if (nodeStore.node.type !== NodeType.STOP) return '0';
         switch (transitType) {
             case TransitType.BUS:
                 if (isInternal) {
@@ -182,10 +183,10 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                         label={
                             isNodeIdEditable ? 'SOLMUN TUNNUKSEN ALKU (4 num.)' : 'SOLMUN TUNNUS'
                         }
-                        disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
+                        disabled={!isNodeIdEditable}
                         validationResult={invalidPropertiesMap['beginningOfNodeId']}
                         data-cy='nodeId'
-                        isLoading={isNodeIdQueryLoading}
+                        isLoading={isNodeIdQueryLoading || isNodeIdSuffixQueryLoading}
                     />
                     {isNodeIdEditable && (
                         <>
@@ -193,7 +194,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                                 {this.getNodeIdUsageCode()}
                             </div>
                             <Dropdown
-                                label='LOPPUOSA (2 num.)'
+                                label='LOPPU (2 num.)'
                                 onChange={this.onChangeNodeIdSuffix}
                                 disabled={_.isEmpty(nodeIdSuffixOptions)}
                                 isLoading={isNodeIdSuffixQueryLoading}

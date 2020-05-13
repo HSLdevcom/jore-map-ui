@@ -46,7 +46,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
 
         this.state = {
             searchString,
-            displayedItems: this.filterItems(searchString)
+            displayedItems: this.filterItems(searchString),
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     }
@@ -129,21 +129,14 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         // Push selectedItem into dropdownItemList if it doesn't exist in dropdownItemList
         let selectedItem: IDropdownItem | undefined;
         if (selected) {
-            selectedItem = items.find(item => item.value === selected!.trim());
+            selectedItem = items.find((item) => item.value === selected!.trim());
             if (!selectedItem) {
                 selectedItem = {
                     label: selected,
-                    value: selected
+                    value: selected,
                 };
                 displayedItems.push(selectedItem);
             }
-        }
-        if (isLoading) {
-            return (
-                <div className={s.formItem}>
-                    <Loader size='small' />
-                </div>
-            );
         }
 
         if (disabled) {
@@ -152,6 +145,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                     label={label}
                     value={Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
                     isInputLabelDarker={isInputLabelDarker}
+                    isLoading={isLoading}
                     {...attr}
                 />
             );
@@ -162,36 +156,41 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
         return (
             <div className={s.formItem}>
                 <div className={s.dropdownView}>
-                    {label && (
-                        <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                            {label}
-                        </div>
+                    <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                        {label ? label : ''}
+                    </div>
+                    {isLoading ? (
+                        <Loader size='tiny' hasNoMargin={true} />
+                    ) : (
+                        <>
+                            <div {...attr}>
+                                <Select
+                                    value={selectValue}
+                                    onChange={_onChange}
+                                    onInputChange={this.handleInputChange}
+                                    options={displayedItems}
+                                    isDisabled={disabled}
+                                    isSearchable={true}
+                                    filterOption={null}
+                                    placeholder={'Valitse...'}
+                                    styles={_getCustomStyles(this.props)}
+                                    noOptionsMessage={() =>
+                                        isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
+                                    }
+                                    hideSelectedOptions={Boolean(isSelectedOptionHidden)}
+                                    className={isBackgroundGrey ? s.greyBackground : ''}
+                                    components={{ Option: CustomOption }}
+                                />
+                            </div>
+                            <div>
+                                {validationResult && validationResult.errorMessage && !disabled && (
+                                    <div className={s.errorMessage}>
+                                        {validationResult.errorMessage}
+                                    </div>
+                                )}
+                            </div>
+                        </>
                     )}
-
-                    <div {...attr}>
-                        <Select
-                            value={selectValue}
-                            onChange={_onChange}
-                            onInputChange={this.handleInputChange}
-                            options={displayedItems}
-                            isDisabled={disabled}
-                            isSearchable={true}
-                            filterOption={null}
-                            placeholder={'Valitse...'}
-                            styles={_getCustomStyles(this.props)}
-                            noOptionsMessage={() =>
-                                isNoOptionsMessageHidden ? null : 'Ei hakutuloksia'
-                            }
-                            hideSelectedOptions={Boolean(isSelectedOptionHidden)}
-                            className={isBackgroundGrey ? s.greyBackground : ''}
-                            components={{ Option: CustomOption }}
-                        />
-                    </div>
-                    <div>
-                        {validationResult && validationResult.errorMessage && !disabled && (
-                            <div className={s.errorMessage}>{validationResult.errorMessage}</div>
-                        )}
-                    </div>
                 </div>
             </div>
         );
@@ -212,12 +211,12 @@ const _getCustomStyles = (props: IDropdownProps) => {
         // Make input value as light grey to indicate that cursor is not in the end of text
         singleValue: (styles: any, state: any) => ({
             ...styles,
-            color: state.selectProps.menuIsOpen ? '#bebebe' : '#000'
+            color: state.selectProps.menuIsOpen ? '#bebebe' : '#000',
         }),
         container: (styles: any) => ({
             ...styles,
             height: s.inputFieldHeight,
-            fontSize: s.smallFontSize
+            fontSize: s.smallFontSize,
         }),
         control: (styles: any, state: any) => ({
             ...styles,
@@ -227,8 +226,8 @@ const _getCustomStyles = (props: IDropdownProps) => {
             transition: 'none',
             height: s.inputFieldHeight,
             '&:hover': {
-                cursor: 'pointer'
-            }
+                cursor: 'pointer',
+            },
         }),
         option: (styles: any, state: any) => ({
             ...styles,
@@ -239,12 +238,12 @@ const _getCustomStyles = (props: IDropdownProps) => {
             transition: 'none',
             padding: '0px 10px',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
         }),
         menu: (styles: any, state: any) => ({
             ...styles,
-            margin: '2px 0px 0px 0px'
-        })
+            margin: '2px 0px 0px 0px',
+        }),
     };
 };
 
