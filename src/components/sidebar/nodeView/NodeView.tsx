@@ -8,7 +8,6 @@ import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import NodeType from '~/enums/nodeType';
-import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode, IRoutePath } from '~/models';
@@ -122,11 +121,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private fetchNodeId = async (node: INode) => {
-        const nodeId = await NodeService.fetchAvailableNodeId(node);
+        const nodeId = await NodeService.fetchAvailableNodeId({ node });
         if (!nodeId) {
             this.props.alertStore!.setNotificationMessage({
                 message:
-                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen 2 juoksevaa numeroa.',
+                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen viimeiset 2 juoksevaa numeroa.',
             });
             this.props.nodeStore!.setIsNodeIdEditable(true);
             return '';
@@ -353,29 +352,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     };
 
     private onChangeNodeType = async (type: NodeType) => {
-        this._setState({ isLoading: true });
         this.props.nodeStore!.updateNodeType(type);
-        const nodeId = await this.fetchNodeId(this.props.nodeStore!.node);
-        this.props.nodeStore!.updateNodeProperty('id', nodeId);
-        this._setState({ isLoading: false });
-    };
-
-    private toggleTransitType = async (type: TransitType) => {
-        const nodeStore = this.props.nodeStore!;
-        const transitType = nodeStore.node.stop?.transitType;
-        if (transitType === type) {
-            this.props.nodeStore!.updateStopProperty('transitType', undefined);
-        } else {
-            this.props.nodeStore!.updateStopProperty('transitType', type);
-        }
-        if (nodeStore!.isNodeIdEditable) return;
-
-        this._setState({ isLoading: true });
-        const nodeId = await NodeService.fetchAvailableNodeId(nodeStore.node);
-        nodeStore.updateNodeProperty('id', nodeId);
-        nodeStore.updateNodeProperty('shortIdLetter', '');
-        nodeStore.updateNodeProperty('shortIdString', '');
-        this._setState({ isLoading: false });
     };
 
     render() {
@@ -396,7 +373,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const isStopFormInvalid = node.type === NodeType.STOP && !nodeStore.isStopFormValid;
         const isSaveButtonDisabled =
             isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
-
         return (
             <div className={s.nodeView} data-cy='nodeView'>
                 <div className={s.content}>
@@ -422,8 +398,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView
                             node={node}
-                            isTransitToggleButtonBarVisible={isNewNode && !isNodeIdEditable}
-                            toggleTransitType={this.toggleTransitType}
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={isNewNode}
                             nodeInvalidPropertiesMap={invalidPropertiesMap}

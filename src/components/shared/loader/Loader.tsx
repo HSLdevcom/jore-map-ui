@@ -6,7 +6,7 @@ import * as s from './loader.scss';
 type loaderSize = 'tiny' | 'small' | 'medium';
 
 interface ILoaderProps {
-    size?: loaderSize;
+    size?: loaderSize; // defaults to medium
     hasNoMargin?: boolean;
     containerClassName?: string;
 }

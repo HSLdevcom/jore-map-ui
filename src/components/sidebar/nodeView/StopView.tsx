@@ -2,7 +2,6 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import Loader from '~/components/shared/loader/Loader';
-import TransitType from '~/enums/transitType';
 import { INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import StopAreaService from '~/services/stopAreaService';
@@ -17,9 +16,7 @@ interface IStopViewProps {
     node: INode;
     isNewStop: boolean;
     nodeInvalidPropertiesMap: object;
-    isTransitToggleButtonBarVisible?: boolean;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
-    toggleTransitType?: (type: TransitType) => void;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     alertStore?: AlertStore;
@@ -43,7 +40,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this.state = {
             isLoading: true,
             stopSections: [],
-            hastusAreas: []
+            hastusAreas: [],
         };
     }
 
@@ -59,7 +56,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         if (this._isMounted) {
             this.setState({
                 hastusAreas,
-                stopSections
+                stopSections,
             });
             this.props.nodeStore!.setStopAreas(stopAreas);
             this.setState({ isLoading: false });
@@ -77,19 +74,19 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
             if (isNewHastusArea) {
                 await StopService.createHastusArea({
                     oldHastusArea: nodeStore.oldHastusArea!,
-                    newHastusArea: nodeStore.hastusArea
+                    newHastusArea: nodeStore.hastusArea,
                 });
             } else {
                 await StopService.updateHastusArea({
                     oldHastusArea: nodeStore.oldHastusArea!,
-                    newHastusArea: nodeStore.hastusArea
+                    newHastusArea: nodeStore.hastusArea,
                 });
             }
             nodeStore.updateStopProperty('hastusId', nodeStore.hastusArea.id);
             nodeStore.setOldHastusArea(nodeStore.hastusArea);
             const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
             this.setState({
-                hastusAreas
+                hastusAreas,
             });
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
@@ -120,7 +117,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const invalidPropertiesMap = this.props.nodeStore!.stopInvalidPropertiesMap;
-        const { node, isNewStop, onNodePropertyChange, toggleTransitType } = this.props;
+        const { node, isNewStop, onNodePropertyChange } = this.props;
 
         if (this.state.isLoading) {
             return <Loader size='small' />;
@@ -137,8 +134,6 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 saveHastusArea={this.saveHastusArea}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
                 nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
-                isTransitToggleButtonBarVisible={this.props.isTransitToggleButtonBarVisible}
-                toggleTransitType={toggleTransitType}
                 updateStopProperty={this.updateStopProperty}
                 onNodePropertyChange={onNodePropertyChange}
                 setCurrentStateIntoNodeCache={this.setCurrentStateIntoNodeCache}

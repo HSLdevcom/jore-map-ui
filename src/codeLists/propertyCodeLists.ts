@@ -44,7 +44,6 @@ const stopPropertyCodeList: IStopPropertyCodeList = {
     nameLongSw: 'PITKÄ NIMI RUOTSIKSI',
     section: 'VYÖHYKE',
     postalNumber: 'POSTINUMERO',
-    transitType: 'VERKKO',
 };
 
 type LinkKeys = keyof ILink;
