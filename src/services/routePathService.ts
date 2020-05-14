@@ -87,16 +87,20 @@ class RoutePathService {
             _.cloneDeep(newRoutePath),
             _.cloneDeep(oldRoutePath)
         );
-        await HttpUtils.updateObject(EndpointPath.ROUTEPATH, routePathSaveModel);
+        await HttpUtils.updateObject(EndpointPath.ROUTE_PATH, routePathSaveModel);
     };
 
     public static createRoutePath = async (newRoutePath: IRoutePath) => {
         const routePathSaveModel = _createRoutePathSaveModel(_.cloneDeep(newRoutePath), null);
         const response = (await HttpUtils.createObject(
-            EndpointPath.ROUTEPATH,
+            EndpointPath.ROUTE_PATH,
             routePathSaveModel
         )) as IRoutePathPrimaryKey;
         return response;
+    };
+
+    public static removeRoutePath = async (routePathPrimaryKey: IRoutePathPrimaryKey) => {
+        await HttpUtils.deleteObject(EndpointPath.ROUTE_PATH_REMOVE, routePathPrimaryKey);
     };
 
     public static fetchRoutePathsUsingLink = async (
