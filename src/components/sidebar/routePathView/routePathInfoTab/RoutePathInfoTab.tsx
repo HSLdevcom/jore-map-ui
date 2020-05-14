@@ -9,6 +9,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
+import RemoveRoutePathButton from './RemoveRoutePathButton';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
@@ -236,6 +237,9 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 isTimeIncluded={true}
                                 value={routePath.modifiedOn}
                             />
+                        </div>
+                        <div className={s.flexRow}>
+                            <RemoveRoutePathButton />
                         </div>
                     </div>
                 </div>

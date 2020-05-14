@@ -66,7 +66,7 @@ const showSavePreventedNotification = (savePreventedNotification?: string) => {
         ? 'Tallentaminen estetty, infopoiminta on käynnissä. Odota kunnes infopoiminta loppuu.'
         : savePreventedNotification!;
     AlertStore.setNotificationMessage({
-        message: alertText
+        message: alertText,
     });
 };
 

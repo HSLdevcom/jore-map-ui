@@ -1,0 +1,11 @@
+@import '../../../shared/styles/common';
+
+.removeButton {
+    font-size: $smallFontSize;
+    margin-top: 15px;
+    background-color: $red;
+}
+
+.removeButton:hover {
+    background-color: darken($red, 5);
+}

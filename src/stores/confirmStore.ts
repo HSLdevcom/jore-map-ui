@@ -64,7 +64,7 @@ class ConfirmStore {
         confirmButtonText,
         cancelButtonText,
         confirmNotification,
-        confirmType = 'default'
+        confirmType = 'default',
     }: {
         content: React.ReactNode | string;
         onConfirm: () => void;
