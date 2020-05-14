@@ -14,25 +14,17 @@ interface ITransitToggleButtonProps {
 }
 
 const TransitToggleButton = observer((props: ITransitToggleButtonProps) => {
-    const toggleActivity = () => {
-        props.toggleActivity(props.type);
-    };
-
-    const getToggledButtonClass = (transitType: TransitType, isToggled: boolean) => {
-        if (isToggled) {
-            return TransitTypeUtils.getBackgroundColorClass(transitType);
-        }
-        return s.toggled;
-    };
+    const { type, toggled, disabled, toggleActivity, ...attrs } = props;
 
     return (
         <div
             className={classNames(
                 s.button,
-                getToggledButtonClass(props.type, props.toggled),
+                toggled ? TransitTypeUtils.getBackgroundColorClass(type) : s.toggled,
                 props.disabled ? s.disabled : undefined
             )}
-            onClick={!props.disabled ? toggleActivity : void 0}
+            onClick={!disabled ? () => toggleActivity(type) : void 0}
+            {...attrs}
         >
             {<TransitIcon transitType={props.type} isWithoutBox={true} />}
         </div>

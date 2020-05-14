@@ -26,20 +26,17 @@
 
 const _ = require('lodash');
 
-Cypress.Commands.add('incrementInputValue', selector => {
+Cypress.Commands.add('incrementInputValue', (selector) => {
     cy.getTestElement(selector)
         .invoke('val')
-        .then(value => {
+        .then((value) => {
             let newInputValue;
             if (isNaN(value) || !value) {
                 newInputValue = 1;
             } else {
                 newInputValue = parseInt(value) + 1;
             }
-            cy.getTestElement(selector)
-                .clear()
-                .type(newInputValue)
-                .invoke('val');
+            cy.getTestElement(selector).clear().type(newInputValue).invoke('val');
         });
 });
 
@@ -59,7 +56,7 @@ Cypress.Commands.add('hslLoginWriteAccess', () => {
     cy.getTestElement('lineSearch').should('exist');
 });
 
-const hslLogin = hasWriteAccess => {
+const hslLogin = (hasWriteAccess) => {
     const AUTH_URI = Cypress.env('AUTH_URI');
     const HSLID_CLIENT_ID = Cypress.env('CYPRESS_HSLID_CLIENT_ID');
     const HSLID_CLIENT_SECRET = Cypress.env('CYPRESS_HSLID_CLIENT_SECRET');
@@ -78,7 +75,7 @@ const hslLogin = hasWriteAccess => {
 
     const writeAccessText = hasWriteAccess ? 'with write access ' : 'without write access';
     Cypress.log({
-        name: `HSL ID login ${writeAccessText}`
+        name: `HSL ID login ${writeAccessText}`,
     });
 
     const options = {
@@ -86,18 +83,18 @@ const hslLogin = hasWriteAccess => {
         url: AUTH_URI,
         headers: {
             Authorization: authHeader,
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Content-Type': 'application/x-www-form-urlencoded',
         },
         form: true, // we are submitting a regular form body
         body: {
             scope: AUTH_SCOPE,
             grant_type: 'password',
             username: HSLID_USERNAME,
-            password: HSLID_PASSWORD
-        }
+            password: HSLID_PASSWORD,
+        },
     };
 
-    cy.request(options).then(response => {
+    cy.request(options).then((response) => {
         const { access_token } = response.body;
 
         expect(response.status).to.eq(200);
@@ -108,39 +105,35 @@ const hslLogin = hasWriteAccess => {
     });
 };
 
-Cypress.Commands.add('saveButtonShouldBeActive', selector => {
+Cypress.Commands.add('saveButtonShouldBeActive', (selector) => {
     if (selector) {
         cy.getTestElement(selector)
             .find('[data-cy=saveButton]')
-            .should($el => {
+            .should(($el) => {
                 expect($el).not.have.css('pointer-events', 'none');
             });
     } else {
-        cy.getTestElement('saveButton').should($el => {
+        cy.getTestElement('saveButton').should(($el) => {
             expect($el).not.have.css('pointer-events', 'none');
         });
     }
 });
 
-Cypress.Commands.add('saveButtonShouldNotBeActive', selector => {
+Cypress.Commands.add('saveButtonShouldNotBeActive', (selector) => {
     if (selector) {
         cy.getTestElement(selector)
             .find('[data-cy=saveButton]')
-            .should($el => {
+            .should(($el) => {
                 expect($el).to.have.css('pointer-events', 'none');
             });
     } else {
-        cy.getTestElement('saveButton').should($el => {
+        cy.getTestElement('saveButton').should(($el) => {
             expect($el).to.have.css('pointer-events', 'none');
         });
     }
 });
 
-Cypress.Commands.add('centerMapToHelsinki', selector => {
-    cy.getTestElement('coordinateControlY')
-        .clear()
-        .type(60.1699);
-    cy.getTestElement('coordinateControlX')
-        .clear()
-        .type(24.938);
+Cypress.Commands.add('centerMapToHelsinki', (selector) => {
+    cy.getTestElement('coordinateControlY').clear().type(60.1699);
+    cy.getTestElement('coordinateControlX').clear().type(24.938).type('{enter}');
 });

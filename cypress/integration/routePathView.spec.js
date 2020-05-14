@@ -7,10 +7,7 @@ describe('RoutePathView tests - read access user', () => {
         cy.getTestElement('routePathView').should('exist');
         cy.getTestElement('editButton').should('not.exist');
 
-        cy.getTestElement('sidebarHeaderView')
-            .find('[data-cy=closeButton]')
-            .first()
-            .click();
+        cy.getTestElement('sidebarHeaderView').find('[data-cy=closeButton]').first().click();
         cy.getTestElement('routePathView').should('not.exist');
     });
 });
@@ -27,16 +24,14 @@ describe('RoutePathView tests - write access user', () => {
         cy.getTestElement('editButton').click();
         cy.getTestElement('nameFi')
             .invoke('val')
-            .then(value => {
+            .then((value) => {
                 let newInputValue;
                 if (isNaN(value)) {
                     newInputValue = 1;
                 } else {
                     newInputValue = parseInt(value) + 1;
                 }
-                cy.getTestElement('nameFi')
-                    .clear()
-                    .type(newInputValue);
+                cy.getTestElement('nameFi').clear().type(newInputValue);
 
                 cy.saveButtonShouldBeActive();
 
@@ -58,25 +53,25 @@ describe('RoutePathView tests - write access user', () => {
 
         cy.getTestElement('editButton').click();
 
-        cy.getTestElement('tab')
-            .contains('Solmut ja linkit')
-            .click();
+        cy.getTestElement('tab').contains('Solmut ja linkit').click();
 
-        cy.getTestElement('itemHeader')
-            .first()
-            .click();
+        cy.getTestElement('itemHeader').first().click();
 
-        cy.incrementInputValue('destinationFi1').then(newInputValueDestinationFi1 => {
-            cy.incrementInputValue('destinationShieldFi').then(newInputValueDestinationShieldFi => {
-                cy.saveButtonShouldBeActive();
+        cy.incrementInputValue('destinationFi1').then((newInputValueDestinationFi1) => {
+            cy.incrementInputValue('destinationShieldFi').then(
+                (newInputValueDestinationShieldFi) => {
+                    cy.saveButtonShouldBeActive();
 
-                cy.getTestElement('saveButton').click();
-                cy.getTestElement('savePromptView').should('exist');
-                cy.getTestElement('confirmButton').click();
+                    cy.getTestElement('saveButton').click();
+                    cy.getTestElement('savePromptView').should('exist');
+                    cy.getTestElement('confirmButton').click();
 
-                cy.getTestElement('destinationFi1').contains(newInputValueDestinationFi1);
-                cy.getTestElement('destinationShieldFi').contains(newInputValueDestinationShieldFi);
-            });
+                    cy.getTestElement('destinationFi1').contains(newInputValueDestinationFi1);
+                    cy.getTestElement('destinationShieldFi').contains(
+                        newInputValueDestinationShieldFi
+                    );
+                }
+            );
         });
     });
 });
@@ -86,12 +81,8 @@ const _openRoutePath = () => {
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').type('550');
     cy.wait(1000);
-    cy.getTestElement('routeItem')
-        .first()
-        .click();
+    cy.getTestElement('routeItem').first().click();
 
     cy.getTestElement('routeListView').should('exist');
-    cy.getTestElement('openRoutePathViewButton')
-        .first()
-        .click();
+    cy.getTestElement('openRoutePathViewButton').first().click();
 };

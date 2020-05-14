@@ -5,10 +5,7 @@ describe('NodeView tests - read access user', () => {
 
         cy.getTestElement('editButton').should('not.exist');
 
-        cy.getTestElement('sidebarHeaderView')
-            .find('[data-cy=closeButton]')
-            .first()
-            .click();
+        cy.getTestElement('sidebarHeaderView').find('[data-cy=closeButton]').first().click();
         cy.getTestElement('nodeView').should('not.exist');
     });
 });
@@ -22,9 +19,7 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('longitudeInput')
-            .clear()
-            .type('24.952279');
+        cy.getTestElement('longitudeInput').clear().type('24.952279');
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
@@ -39,9 +34,7 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('editButton').click();
 
         cy.saveButtonShouldNotBeActive();
-        cy.getTestElement('longitudeInput')
-            .clear()
-            .type('24.952279');
+        cy.getTestElement('longitudeInput').clear().type('24.952279');
 
         cy.saveButtonShouldBeActive();
 
@@ -58,11 +51,9 @@ describe('NodeView tests - write access user', () => {
 
         cy.getTestElement('elyNumber')
             .invoke('val')
-            .then(value => {
+            .then((value) => {
                 const newInputValue = parseInt(value) + 1;
-                cy.getTestElement('elyNumber')
-                    .clear()
-                    .type(newInputValue);
+                cy.getTestElement('elyNumber').clear().type(newInputValue);
 
                 cy.saveButtonShouldBeActive();
 
@@ -98,34 +89,22 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('nodeId').type('12345');
 
         cy.getTestElement('idSuffix').type('01');
-        cy.getTestElement('dropdownOption')
-            .first()
-            .click();
+        cy.getTestElement('dropdownOption').first().click();
 
         cy.getTestElement('measurementType').type('Laskettu');
-        cy.getTestElement('dropdownOption')
-            .first()
-            .click();
+        cy.getTestElement('dropdownOption').first().click();
 
         cy.getTestElement('stopArea').click();
-        cy.getTestElement('dropdownOption')
-            .eq(2)
-            .click();
+        cy.getTestElement('dropdownOption').eq(2).click();
 
         cy.getTestElement('municipality').click();
-        cy.getTestElement('dropdownOption')
-            .first()
-            .click();
+        cy.getTestElement('dropdownOption').first().click();
 
         cy.getTestElement('section').click();
-        cy.getTestElement('dropdownOption')
-            .eq(2)
-            .click();
+        cy.getTestElement('dropdownOption').eq(2).click();
 
         cy.getTestElement('roof').click();
-        cy.getTestElement('dropdownOption')
-            .first()
-            .click();
+        cy.getTestElement('dropdownOption').first().click();
 
         cy.saveButtonShouldBeActive();
     });
@@ -147,25 +126,17 @@ const _openStop = () => {
 const _openCrossroad = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch')
-        .clear()
-        .type('101');
+    cy.getTestElement('lineSearch').clear().type('101');
 
-    cy.getTestElement('nodeItemX')
-        .first()
-        .click();
+    cy.getTestElement('nodeItemX').first().click();
     cy.getTestElement('nodeView').should('exist');
 };
 
 const _openMunicipality = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch')
-        .clear()
-        .type('101');
+    cy.getTestElement('lineSearch').clear().type('101');
 
-    cy.getTestElement('nodeItem-')
-        .first()
-        .click();
+    cy.getTestElement('nodeItem-').first().click();
     cy.getTestElement('nodeView').should('exist');
 };
