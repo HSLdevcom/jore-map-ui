@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import NodeType from '~/enums/nodeType';
-import TransitType from '~/enums/transitType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
@@ -18,6 +17,7 @@ import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
 import NodeService from '~/services/nodeService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
+import NodeUtils from '~/utils/NodeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
 import FormValidator from '~/validation/FormValidator';
@@ -648,7 +648,7 @@ class NodeStore {
         const beginningOfNodeId = node.beginningOfNodeId;
         if (!beginningOfNodeId || beginningOfNodeId.length !== 4) return;
 
-        const nodeIdUsageCode = this.getNodeIdUsageCode();
+        const nodeIdUsageCode = NodeUtils.getNodeIdUsageCode(node.type, node.transitType);
         const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
             `${beginningOfNodeId}${nodeIdUsageCode}`
         );
@@ -665,30 +665,6 @@ class NodeStore {
         } else {
             this._nodeValidationStore.validateAllProperties();
             this._stopValidationStore.validateAllProperties();
-        }
-    };
-
-    // Note: same mapping found from jore-map-backend. If changed, change backend mapping also.
-    // Better would be to create an API method that returns mapping for this
-    private getNodeIdUsageCode = () => {
-        const node = this._node;
-        if (!node) return;
-
-        const transitType = node.transitType;
-        if (node.type !== NodeType.STOP) return '0';
-        switch (transitType) {
-            case TransitType.BUS:
-                return '2';
-            case TransitType.TRAM:
-                return '4';
-            case TransitType.TRAIN:
-                return '5';
-            case TransitType.SUBWAY:
-                return '6';
-            case TransitType.FERRY:
-                return '7';
-            default:
-                return '3'; // Default number that is not restricted to any usage
         }
     };
 }

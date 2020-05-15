@@ -8,6 +8,7 @@ import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
+import NodeUtils from '~/utils/NodeUtils';
 import * as s from './nodeForm.scss';
 
 interface INodeIdInputProps {
@@ -44,31 +45,9 @@ class NodeIdInput extends React.Component<INodeIdInputProps> {
         }
     };
 
-    // Note: same mapping found from jore-map-backend. If changed, change backend mapping also.
-    // Better would be to create an API method that returns mapping for this
-    private getNodeIdUsageCode = () => {
-        const nodeStore = this.props.nodeStore!;
-        const transitType = nodeStore.node.transitType;
-        if (nodeStore.node.type !== NodeType.STOP) return '0';
-        switch (transitType) {
-            case TransitType.BUS:
-                return '2';
-            case TransitType.TRAM:
-                return '4';
-            case TransitType.TRAIN:
-                return '5';
-            case TransitType.SUBWAY:
-                return '6';
-            case TransitType.FERRY:
-                return '7';
-            default:
-                return '3'; // Default number that is not restricted to any usage
-        }
-    };
-
     private onChangeNodeIdSuffix = (idSuffix: string) => {
         const node = this.props.nodeStore!.node;
-        const nodeIdUsageCode = this.getNodeIdUsageCode();
+        const nodeIdUsageCode = NodeUtils.getNodeIdUsageCode(node.type, node.transitType);
         const nodeId = `${node.beginningOfNodeId}${nodeIdUsageCode}${idSuffix}`;
         this.props.onChangeNodeProperty!('id')(nodeId);
         this.props.onChangeNodeProperty!('idSuffix')(idSuffix);
@@ -95,7 +74,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps> {
                     {isNodeIdEditable && (
                         <>
                             <div className={s.transitTypeUsageCode}>
-                                {this.getNodeIdUsageCode()}
+                                {NodeUtils.getNodeIdUsageCode(node.type, node.transitType)}
                             </div>
                             <Dropdown
                                 label='LOPPU (2 num.)'
