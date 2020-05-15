@@ -146,6 +146,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                     value={Boolean(selectedItem) ? selectedItem!.label : EMPTY_VALUE_LABEL}
                     isInputLabelDarker={isInputLabelDarker}
                     isLoading={isLoading}
+                    validationResult={validationResult}
                     {...attr}
                 />
             );
@@ -183,7 +184,7 @@ class Dropdown extends React.Component<IDropdownProps, IDropdownState> {
                                 />
                             </div>
                             <div>
-                                {validationResult && validationResult.errorMessage && !disabled && (
+                                {validationResult && validationResult.errorMessage && (
                                     <div className={s.errorMessage}>
                                         {validationResult.errorMessage}
                                     </div>
