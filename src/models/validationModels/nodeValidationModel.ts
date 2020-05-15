@@ -16,6 +16,9 @@ const nodeValidationModel: INodeValidationModel = {
     measurementDate: 'date',
     stop: '',
     transitTypes: '',
+    beginningOfNodeId: '',
+    idSuffix: '',
+    transitType: '',
 };
 
 const nodeIdEditingValidationModel = {

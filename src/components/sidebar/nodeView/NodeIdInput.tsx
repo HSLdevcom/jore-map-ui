@@ -2,16 +2,12 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
-import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { INode } from '~/models';
-import NodeService from '~/services/nodeService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { NodeStore } from '~/stores/nodeStore';
-import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
-import { IValidationResult } from '~/validation/FormValidator';
 import * as s from './nodeForm.scss';
 
 interface INodeIdInputProps {
@@ -24,48 +20,16 @@ interface INodeIdInputProps {
     codeListStore?: CodeListStore;
 }
 
-interface INodeIdInputState {
-    nodeIdSuffixOptions: IDropdownItem[];
-    isNodeIdSuffixQueryLoading: boolean;
-    beginningOfNodeIdValidationResult: IValidationResult;
-    idSuffixValidationResult: IValidationResult;
-}
-
 @inject('nodeStore', 'codeListStore')
 @observer
-class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> {
-    state = {
-        nodeIdSuffixOptions: [],
-        isNodeIdSuffixQueryLoading: false,
-        beginningOfNodeIdValidationResult: { isValid: false },
-        idSuffixValidationResult: { isValid: false },
-    };
-    private _isMounted: boolean;
-    private _setState = (newState: object) => {
-        if (this._isMounted) {
-            this.setState(newState);
-        }
-    };
-    componentDidMount() {
-        this._isMounted = true;
-        if (!this.props.isEditingDisabled && this.props.nodeStore!.node.beginningOfNodeId) {
-            this.queryAvailableNodeIdSuffixes();
-        }
-    }
-
-    componentWillUnmount() {
-        this._isMounted = false;
-    }
-
+class NodeIdInput extends React.Component<INodeIdInputProps> {
     private onChangeNodeId = async (beginningOfNodeId: string) => {
         this.props.onChangeNodeProperty!('beginningOfNodeId')(beginningOfNodeId);
 
         if (beginningOfNodeId.length === 4) {
-            await this.queryAvailableNodeIdSuffixes();
+            await this.props.nodeStore!.queryNodeIdSuffixes();
         } else {
-            this._setState({
-                nodeIdSuffixOptions: [],
-            });
+            this.props.nodeStore!.setNodeIdSuffixOptions([]);
             this.props.onChangeNodeProperty!('idSuffix')(null);
         }
     };
@@ -73,37 +37,11 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
     private toggleSelectedTransitType = async (transitTypeNew: TransitType) => {
         const node = this.props.nodeStore!.node;
         const transitTypeToSelect = node.transitType === transitTypeNew ? null : transitTypeNew;
-        if (this.props.isNodeIdEditable) {
-            this._setState({
-                nodeIdSuffixOptions: [],
-            });
-            this.props.onChangeNodeProperty!('idSuffix')(null);
-            await this.queryAvailableNodeIdSuffixes();
-        }
         this.props.onChangeNodeProperty!('transitType')(transitTypeToSelect);
-    };
-
-    private queryAvailableNodeIdSuffixes = async () => {
-        const nodeStore = this.props.nodeStore!;
-        const beginningOfNodeId = nodeStore.node.beginningOfNodeId;
-        if (!beginningOfNodeId || beginningOfNodeId.length !== 4) return;
-
-        this._setState({
-            isNodeIdSuffixQueryLoading: true,
-        });
-
-        const nodeIdUsageCode = this.getNodeIdUsageCode();
-        const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
-            `${beginningOfNodeId}${nodeIdUsageCode}`
-        );
-
-        // slide(-2): get last two letters of a nodeId
-        const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
-
-        this._setState({
-            nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
-            isNodeIdSuffixQueryLoading: false,
-        });
+        if (this.props.isNodeIdEditable) {
+            this.props.nodeStore!.setNodeIdSuffixOptions([]);
+            this.props.onChangeNodeProperty!('idSuffix')(null);
+        }
     };
 
     // Note: same mapping found from jore-map-backend. If changed, change backend mapping also.
@@ -138,8 +76,8 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
 
     render() {
         const { node, invalidPropertiesMap, isNodeIdEditable } = this.props;
-        const { nodeIdSuffixOptions, isNodeIdSuffixQueryLoading } = this.state;
         const isNodeIdQueryLoading = this.props.nodeStore!.isNodeIdQueryLoading;
+        const nodeIdSuffixOptions = this.props.nodeStore!.nodeIdSuffixOptions;
         return (
             <>
                 <div className={s.flexRow}>
@@ -152,7 +90,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                         disabled={!isNodeIdEditable}
                         validationResult={invalidPropertiesMap['beginningOfNodeId']}
                         data-cy='nodeId'
-                        isLoading={isNodeIdQueryLoading || isNodeIdSuffixQueryLoading}
+                        isLoading={isNodeIdQueryLoading}
                     />
                     {isNodeIdEditable && (
                         <>
@@ -163,7 +101,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                                 label='LOPPU (2 num.)'
                                 onChange={this.onChangeNodeIdSuffix}
                                 disabled={_.isEmpty(nodeIdSuffixOptions)}
-                                isLoading={isNodeIdSuffixQueryLoading}
+                                isLoading={isNodeIdQueryLoading}
                                 selected={node.idSuffix}
                                 items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
                                 validationResult={invalidPropertiesMap['idSuffix']}
@@ -180,6 +118,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                                 selectedTransitTypes={node.transitType ? [node.transitType!] : []}
                                 toggleSelectedTransitType={this.toggleSelectedTransitType}
                                 errorMessage={''}
+                                disabled={isNodeIdQueryLoading}
                             />
                         </div>
                     </div>

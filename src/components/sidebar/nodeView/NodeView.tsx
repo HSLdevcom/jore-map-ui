@@ -108,7 +108,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.centerMapToNode(node, []);
             this.props.nodeStore!.init({ node, links: [], isNewNode: true });
             this.updateSelectedStopAreaId();
-            await this.props.nodeStore!.updateNodeId();
         };
 
         const nodeCacheObj: INodeCacheObj | null = this.props.nodeStore!.getNewNodeCacheObj();

@@ -50,6 +50,7 @@ class NodeForm extends Component<INodeFormProps> {
 
     private changeNodeType = (nodeType: NodeType) => {
         this.props.onChangeNodeType!(nodeType);
+        this.props.onChangeNodeProperty!('idSuffix')(null);
     };
 
     render() {
@@ -64,6 +65,7 @@ class NodeForm extends Component<INodeFormProps> {
             onChangeNodeType,
         } = this.props;
         const nodeTypeCodeList = createDropdownItemsFromList(['P', 'X']);
+        const isNodeIdQueryLoading = this.props.nodeStore!.isNodeIdQueryLoading;
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
@@ -83,6 +85,7 @@ class NodeForm extends Component<INodeFormProps> {
                             disabled={isEditingDisabled || !isNewNode}
                             selected={node.type}
                             items={nodeTypeCodeList}
+                            isLoading={isNodeIdQueryLoading}
                             data-cy='nodeTypeDropdown'
                         />
                     </div>
