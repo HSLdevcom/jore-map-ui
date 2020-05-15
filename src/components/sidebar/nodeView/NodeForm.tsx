@@ -82,10 +82,9 @@ class NodeForm extends Component<INodeFormProps> {
                         <Dropdown
                             label='TYYPPI'
                             onChange={onChangeNodeType ? this.changeNodeType : undefined}
-                            disabled={isEditingDisabled || !isNewNode}
+                            disabled={isEditingDisabled || !isNewNode || isNodeIdQueryLoading}
                             selected={node.type}
                             items={nodeTypeCodeList}
-                            isLoading={isNodeIdQueryLoading}
                             data-cy='nodeTypeDropdown'
                         />
                     </div>

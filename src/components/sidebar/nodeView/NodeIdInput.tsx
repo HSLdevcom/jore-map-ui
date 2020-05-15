@@ -72,21 +72,16 @@ class NodeIdInput extends React.Component<INodeIdInputProps> {
                         isLoading={isNodeIdQueryLoading}
                     />
                     {isNodeIdEditable && (
-                        <>
-                            <div className={s.transitTypeUsageCode}>
-                                {NodeUtils.getNodeIdUsageCode(node.type, node.transitType)}
-                            </div>
-                            <Dropdown
-                                label='LOPPU (2 num.)'
-                                onChange={this.onChangeNodeIdSuffix}
-                                disabled={_.isEmpty(nodeIdSuffixOptions)}
-                                isLoading={isNodeIdQueryLoading}
-                                selected={node.idSuffix}
-                                items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
-                                validationResult={invalidPropertiesMap['idSuffix']}
-                                data-cy='idSuffix'
-                            />
-                        </>
+                        <Dropdown
+                            label='LOPPU (2 num.)'
+                            onChange={this.onChangeNodeIdSuffix}
+                            disabled={_.isEmpty(nodeIdSuffixOptions) || isNodeIdQueryLoading}
+                            isLoading={isNodeIdQueryLoading}
+                            selected={node.idSuffix}
+                            items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
+                            validationResult={invalidPropertiesMap['idSuffix']}
+                            data-cy='idSuffix'
+                        />
                     )}
                 </div>
                 {node.type === NodeType.STOP && (
