@@ -13,10 +13,12 @@ import stopValidationModel, {
     IStopValidationModel,
 } from '~/models/validationModels/stopValidationModel';
 import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
+import NodeService from '~/services/nodeService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
 import FormValidator from '~/validation/FormValidator';
+import AlertStore from './alertStore';
 import CodeListStore from './codeListStore';
 import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
@@ -48,6 +50,7 @@ class NodeStore {
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreas: IStopArea[];
     @observable private _isNodeIdEditable: boolean;
+    @observable private _isNodeIdQueryLoading: boolean;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
     private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
@@ -61,6 +64,8 @@ class NodeStore {
         this._nodeValidationStore = new ValidationStore();
         this._stopValidationStore = new ValidationStore();
         this._isEditingDisabled = true;
+        this._isNodeIdEditable = false;
+        this._isNodeIdQueryLoading = false;
         this._nodeCache = {
             newNodeCache: null,
         };
@@ -77,6 +82,10 @@ class NodeStore {
             () => this.onStopAreasChange()
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
+        reaction(
+            () => [this._node?.type, this._node?.transitType],
+            () => this.updateNodeId()
+        );
     }
 
     @computed
@@ -127,6 +136,11 @@ class NodeStore {
     @computed
     get isNodeIdEditable() {
         return this._isNodeIdEditable;
+    }
+
+    @computed
+    get isNodeIdQueryLoading() {
+        return this._isNodeIdQueryLoading;
     }
 
     @computed
@@ -379,7 +393,7 @@ class NodeStore {
     };
 
     @action
-    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
+    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng | null) => {
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
     };
@@ -476,6 +490,11 @@ class NodeStore {
     };
 
     @action
+    public setIsNodeIdQueryLoading = (isQueryLoading: boolean) => {
+        this._isNodeIdQueryLoading = isQueryLoading;
+    };
+
+    @action
     public clear = () => {
         this._links = [];
         this._node = null;
@@ -569,6 +588,30 @@ class NodeStore {
 
     public getNewNodeCacheObj = (): INodeCacheObj | null => {
         return _.cloneDeep(this._nodeCache.newNodeCache);
+    };
+
+    public updateNodeId = async () => {
+        if (!this._node) return;
+
+        this.setIsNodeIdQueryLoading(true);
+        const nodeId = await NodeService.fetchAvailableNodeId({
+            node: this._node!,
+            transitType: this._node?.transitType,
+        });
+
+        this.setIsNodeIdQueryLoading(false);
+        if (nodeId) {
+            this.setIsNodeIdEditable(false);
+            this.updateNodeProperty('id', nodeId);
+        } else {
+            if (!this.isNodeIdEditable) {
+                AlertStore.setNotificationMessage({
+                    message:
+                        'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen viimeiset 2 juoksevaa numeroa.',
+                });
+            }
+            this.setIsNodeIdEditable(true);
+        }
     };
 
     private onChangeIsEditingDisabled = () => {

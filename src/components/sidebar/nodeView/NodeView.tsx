@@ -106,9 +106,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             const coordinate = new L.LatLng(lat, lng);
             const node = NodeFactory.createNewNode(coordinate);
             this.centerMapToNode(node, []);
-            node.id = await this.fetchNodeId(node);
             this.props.nodeStore!.init({ node, links: [], isNewNode: true });
             this.updateSelectedStopAreaId();
+            await this.props.nodeStore!.updateNodeId();
         };
 
         const nodeCacheObj: INodeCacheObj | null = this.props.nodeStore!.getNewNodeCacheObj();
@@ -118,19 +118,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             await createNode();
         }
         this._setState({ isLoading: false });
-    };
-
-    private fetchNodeId = async (node: INode) => {
-        const nodeId = await NodeService.fetchAvailableNodeId({ node });
-        if (!nodeId) {
-            this.props.alertStore!.setNotificationMessage({
-                message:
-                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen viimeiset 2 juoksevaa numeroa.',
-            });
-            this.props.nodeStore!.setIsNodeIdEditable(true);
-            return '';
-        }
-        return nodeId;
     };
 
     private initExistingNode = async (nodeId: string) => {

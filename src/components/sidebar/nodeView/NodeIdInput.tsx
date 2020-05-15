@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Dropdown, RadioButton, TransitToggleButtonBar } from '~/components/controls';
+import { Dropdown, TransitToggleButtonBar } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import NodeType from '~/enums/nodeType';
@@ -19,17 +19,7 @@ interface INodeIdInputProps {
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     isNodeIdEditable?: boolean;
-    isNodeIdQueryLoading: boolean;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
-    updateNodeId: ({
-        node,
-        isInternal,
-        transitType,
-    }: {
-        node: INode;
-        isInternal?: boolean;
-        transitType?: TransitType | null;
-    }) => void;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
 }
@@ -88,14 +78,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                 nodeIdSuffixOptions: [],
             });
             this.props.onChangeNodeProperty!('idSuffix')(null);
-            this.props.onChangeNodeProperty!('isInternal')(false);
             await this.queryAvailableNodeIdSuffixes();
-        } else {
-            this.props.updateNodeId({
-                node,
-                transitType: transitTypeToSelect,
-                isInternal: node.isInternal,
-            });
         }
         this.props.onChangeNodeProperty!('transitType')(transitTypeToSelect);
     };
@@ -124,19 +107,14 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
     };
 
     // Note: same mapping found from jore-map-backend. If changed, change backend mapping also.
-    // Better would be to create an API method to getUsageCode
+    // Better would be to create an API method that returns mapping for this
     private getNodeIdUsageCode = () => {
         const nodeStore = this.props.nodeStore!;
         const transitType = nodeStore.node.transitType;
-        const isInternal = nodeStore.node.isInternal;
         if (nodeStore.node.type !== NodeType.STOP) return '0';
         switch (transitType) {
             case TransitType.BUS:
-                if (isInternal) {
-                    // Helsinki
-                    return '1'; // Hki internal network
-                }
-                return '2'; // Regional bus network
+                return '2';
             case TransitType.TRAM:
                 return '4';
             case TransitType.TRAIN:
@@ -158,24 +136,10 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
         this.props.onChangeNodeProperty!('idSuffix')(idSuffix);
     };
 
-    private onChangeIsInternal = (isInternal: boolean) => async () => {
-        this._setState({
-            isInternal,
-        });
-        this.props.onChangeNodeProperty!('isInternal')(isInternal);
-
-        if (this.props.isNodeIdEditable) {
-            this.props.onChangeNodeProperty!('idSuffix')(null);
-            await this.queryAvailableNodeIdSuffixes();
-        } else {
-            const node = this.props.nodeStore!.node;
-            this.props.updateNodeId({ node, isInternal, transitType: node.transitType });
-        }
-    };
-
     render() {
-        const { node, invalidPropertiesMap, isNodeIdEditable, isNodeIdQueryLoading } = this.props;
+        const { node, invalidPropertiesMap, isNodeIdEditable } = this.props;
         const { nodeIdSuffixOptions, isNodeIdSuffixQueryLoading } = this.state;
+        const isNodeIdQueryLoading = this.props.nodeStore!.isNodeIdQueryLoading;
         return (
             <>
                 <div className={s.flexRow}>
@@ -209,38 +173,16 @@ class NodeIdInput extends React.Component<INodeIdInputProps, INodeIdInputState> 
                     )}
                 </div>
                 {node.type === NodeType.STOP && (
-                    <>
-                        <div className={s.flexRow}>
-                            <div className={s.formItem}>
-                                <div className={s.inputLabel}>VERKKO</div>
-                                <TransitToggleButtonBar
-                                    selectedTransitTypes={
-                                        node.transitType ? [node.transitType!] : []
-                                    }
-                                    toggleSelectedTransitType={this.toggleSelectedTransitType}
-                                    errorMessage={''}
-                                />
-                            </div>
+                    <div className={s.flexRow}>
+                        <div className={s.formItem}>
+                            <div className={s.inputLabel}>VERKKO</div>
+                            <TransitToggleButtonBar
+                                selectedTransitTypes={node.transitType ? [node.transitType!] : []}
+                                toggleSelectedTransitType={this.toggleSelectedTransitType}
+                                errorMessage={''}
+                            />
                         </div>
-                        {isNodeIdEditable && node.transitType && node.transitType === '1' && (
-                            <div className={s.flexRow}>
-                                <div className={s.formItem}>
-                                    <RadioButton
-                                        onClick={this.onChangeIsInternal(true)}
-                                        checked={Boolean(node.isInternal)}
-                                        text={'Helsingin sisäinen'}
-                                    />
-                                </div>
-                                <div className={s.formItem}>
-                                    <RadioButton
-                                        onClick={this.onChangeIsInternal(false)}
-                                        checked={Boolean(!node.isInternal)}
-                                        text={'Helsingin ulkopuolinen'}
-                                    />
-                                </div>
-                            </div>
-                        )}
-                    </>
+                    </div>
                 )}
             </>
         );
