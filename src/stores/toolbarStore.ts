@@ -11,7 +11,7 @@ import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityT
 import SplitLinkTool from '~/components/map/tools/SplitLinkTool';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathLinkMassEditStore from '~/stores/routePathLinkMassEditStore';
-import RoutePathStore from '~/stores/routePathStore';
+import { RoutePathStore } from './routePathStore';
 
 const defaultTool = new SelectNetworkEntityTool();
 
@@ -39,6 +39,7 @@ class ToolbarStore {
     @observable private _disabledTools: ToolbarToolType[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
     @observable private _areUndoButtonsDisabled: boolean;
+    private routePathStore: RoutePathStore;
 
     constructor() {
         this._disabledTools = DEFAULT_DISABLED_TOOLS;
@@ -48,17 +49,17 @@ class ToolbarStore {
     }
 
     private initListeners = async () => {
+        // TODO: find a better way to solve this:
+        // RoutePath store doesn't exist when toolbarStore is initialized, have to wait for its initialization
+        this.routePathStore = (await import('~/stores/routePathStore')).default;
         reaction(
-            () =>
-                RoutePathLinkMassEditStore &&
-                RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length,
+            () => RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length,
             _.debounce(() => this.updateDisabledToolStatus(), 25)
         );
         reaction(
             () =>
-                RoutePathStore &&
-                RoutePathStore.routePath &&
-                RoutePathStore.routePath.routePathLinks.length,
+                this.routePathStore?.routePath &&
+                this.routePathStore.routePath.routePathLinks.length,
             _.debounce(() => this.updateDisabledToolStatus(), 25)
         );
     };
@@ -148,15 +149,22 @@ class ToolbarStore {
             disabledTools.splice(toolToRemoveIndex, 1);
         };
 
-        this.isAddNewRoutePathLinkToolDisabled()
+        const isAddNewRoutePathLinkToolDisabled =
+            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
+        const isRemoveRoutePathLinkToolDisabled =
+            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
+        const isCopyRoutePathSegmentToolDisabled =
+            (this.routePathStore.routePath &&
+                this.routePathStore.routePath.routePathLinks.length === 0) ||
+            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
+
+        isAddNewRoutePathLinkToolDisabled
             ? addTool(ToolbarToolType.AddNewRoutePathLink)
             : removeTool(ToolbarToolType.AddNewRoutePathLink);
-
-        this.isRemoveRoutePathLinkToolDisabled()
+        isRemoveRoutePathLinkToolDisabled
             ? addTool(ToolbarToolType.RemoveRoutePathLink)
             : removeTool(ToolbarToolType.RemoveRoutePathLink);
-
-        this.isCopyRoutePathSegmentToolDisabled()
+        isCopyRoutePathSegmentToolDisabled
             ? addTool(ToolbarToolType.CopyRoutePathSegmentTool)
             : removeTool(ToolbarToolType.CopyRoutePathSegmentTool);
 
@@ -171,21 +179,6 @@ class ToolbarStore {
 
     public isDisabled = (tool: ToolbarToolType): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
-    };
-
-    private isAddNewRoutePathLinkToolDisabled = () => {
-        return RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
-    };
-
-    private isRemoveRoutePathLinkToolDisabled = () => {
-        return RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
-    };
-
-    private isCopyRoutePathSegmentToolDisabled = () => {
-        return (
-            (RoutePathStore.routePath && RoutePathStore.routePath.routePathLinks.length === 0) ||
-            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0
-        );
     };
 
     private areUndoToolsDisabled = () => {
