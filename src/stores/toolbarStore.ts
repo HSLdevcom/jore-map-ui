@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import AddNetworkLinkTool from '~/components/map/tools/AddNetworkLinkTool';
 import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
 import BaseTool from '~/components/map/tools/BaseTool';
@@ -11,7 +11,7 @@ import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityT
 import SplitLinkTool from '~/components/map/tools/SplitLinkTool';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathLinkMassEditStore from '~/stores/routePathLinkMassEditStore';
-import { RoutePathStore } from './routePathStore';
+import RoutePathStore from '~/stores/routePathStore';
 
 const defaultTool = new SelectNetworkEntityTool();
 
@@ -39,30 +39,12 @@ class ToolbarStore {
     @observable private _disabledTools: ToolbarToolType[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
     @observable private _areUndoButtonsDisabled: boolean;
-    private routePathStore: RoutePathStore;
 
     constructor() {
         this._disabledTools = DEFAULT_DISABLED_TOOLS;
         this.selectDefaultTool();
         this._shouldShowEntityOpenPrompt = false;
-        this.initListeners();
     }
-
-    private initListeners = async () => {
-        // TODO: find a better way to solve this:
-        // RoutePath store doesn't exist when toolbarStore is initialized, have to wait for its initialization
-        this.routePathStore = (await import('~/stores/routePathStore')).default;
-        reaction(
-            () => RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length,
-            _.debounce(() => this.updateDisabledToolStatus(), 25)
-        );
-        reaction(
-            () =>
-                this.routePathStore?.routePath &&
-                this.routePathStore.routePath.routePathLinks.length,
-            _.debounce(() => this.updateDisabledToolStatus(), 25)
-        );
-    };
 
     @computed
     get selectedTool(): BaseTool | null {
@@ -137,7 +119,7 @@ class ToolbarStore {
     }
 
     @action
-    public updateDisabledToolStatus = () => {
+    public updateDisabledRoutePathToolStatus = () => {
         let disabledTools = _.cloneDeep(this._disabledTools);
         const addTool = (toolType: ToolbarToolType) => {
             if (disabledTools.indexOf(toolType) === -1) {
@@ -154,8 +136,7 @@ class ToolbarStore {
         const isRemoveRoutePathLinkToolDisabled =
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
         const isCopyRoutePathSegmentToolDisabled =
-            (this.routePathStore.routePath &&
-                this.routePathStore.routePath.routePathLinks.length === 0) ||
+            (RoutePathStore.routePath && RoutePathStore.routePath.routePathLinks.length === 0) ||
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
 
         isAddNewRoutePathLinkToolDisabled
