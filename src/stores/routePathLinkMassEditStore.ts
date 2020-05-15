@@ -1,7 +1,8 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, reaction } from 'mobx';
 import EventHelper from '~/helpers/EventHelper';
 import { IRoutePathLink } from '~/models';
+import ToolbarStore from './toolbarStore';
 
 class RoutePathLinkMassEditStore {
     @observable private _isMassEditSelectionAllowed: boolean;
@@ -11,6 +12,10 @@ class RoutePathLinkMassEditStore {
         this._isMassEditSelectionAllowed = false;
         this._selectedMassEditRoutePathLinks = [];
 
+        reaction(
+            () => this._selectedMassEditRoutePathLinks.length,
+            _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+        );
         EventHelper.on('ctrl', () => this.setIsMassEditSelectionAllowed(true));
         EventHelper.on('shift', () => this.setIsMassEditSelectionAllowed(true));
         EventHelper.on('keyUp', () => this.setIsMassEditSelectionAllowed(false));
@@ -37,13 +42,13 @@ class RoutePathLinkMassEditStore {
         currentIndex > -1
             ? this._selectedMassEditRoutePathLinks.splice(currentIndex, 1)
             : (this._selectedMassEditRoutePathLinks = this._selectedMassEditRoutePathLinks.concat([
-                  routePathLink
+                  routePathLink,
               ]));
     };
 
     public getSelectedRoutePathLinkIndex = (routePathLink: IRoutePathLink) => {
         return this._selectedMassEditRoutePathLinks.findIndex(
-            rpLink =>
+            (rpLink) =>
                 rpLink.startNode.id === routePathLink.startNode.id &&
                 rpLink.endNode.id === routePathLink.endNode.id
         );

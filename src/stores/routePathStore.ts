@@ -76,6 +76,10 @@ class RoutePathStore {
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
+        reaction(
+            () => this._routePath && this._routePath.routePathLinks.length,
+            _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+        );
     }
 
     @computed

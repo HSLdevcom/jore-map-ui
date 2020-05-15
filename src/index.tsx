@@ -9,7 +9,6 @@ import './index.scss';
 import AlertStore from './stores/alertStore';
 import CodeListStore from './stores/codeListStore';
 import ConfirmStore from './stores/confirmStore';
-import CopyRoutePathStore from './stores/copyRoutePathStore';
 import ErrorStore from './stores/errorStore';
 import HighlightEntityStore from './stores/highlightEntityStore';
 import LineHeaderMassEditStore from './stores/lineHeaderMassEditStore';
@@ -23,6 +22,7 @@ import NodeStore from './stores/nodeStore';
 import PopupStore from './stores/popupStore';
 import RouteListStore from './stores/routeListStore';
 import RoutePathCopySegmentStore from './stores/routePathCopySegmentStore';
+import RoutePathCopyStore from './stores/routePathCopyStore';
 import RoutePathLayerStore from './stores/routePathLayerStore';
 import RoutePathLinkMassEditStore from './stores/routePathLinkMassEditStore';
 import RoutePathMassEditStore from './stores/routePathMassEditStore';
@@ -50,7 +50,7 @@ const stores = {
     routePathMassEditStore: RoutePathMassEditStore,
     routePathLinkMassEditStore: RoutePathLinkMassEditStore,
     routePathStore: RoutePathStore,
-    copyRoutePathStore: CopyRoutePathStore,
+    routePathCopyStore: RoutePathCopyStore,
     routePathCopySegmentStore: RoutePathCopySegmentStore,
     searchStore: SearchStore,
     popupStore: PopupStore,
