@@ -14,12 +14,12 @@ import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
-import { CopyRoutePathStore } from '~/stores/copyRoutePathStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { IRouteItem, RouteListStore } from '~/stores/routeListStore';
+import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
@@ -46,7 +46,7 @@ interface IRouteListViewProps {
     networkStore?: NetworkStore;
     routePathStore?: RoutePathStore;
     mapStore?: MapStore;
-    copyRoutePathStore?: CopyRoutePathStore;
+    routePathCopyStore?: RoutePathCopyStore;
     alertStore?: AlertStore;
     loginStore?: LoginStore;
     routePathMassEditStore?: RoutePathMassEditStore;
@@ -65,7 +65,7 @@ interface IRouteListViewState {
     'routePathStore',
     'errorStore',
     'confirmStore',
-    'copyRoutePathStore',
+    'routePathCopyStore',
     'mapStore',
     'alertStore',
     'loginStore',
@@ -293,7 +293,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         if (routeItems.length < 1) {
             return <Loader />;
         }
-        if (this.props.copyRoutePathStore!.isVisible) {
+        if (this.props.routePathCopyStore!.isVisible) {
             return <CopyRoutePathView />;
         }
         return (
@@ -360,7 +360,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
     };
 
     render() {
-        const isCopyRouteListViewVisible = this.props.copyRoutePathStore!.isVisible;
+        const isCopyRouteListViewVisible = this.props.routePathCopyStore!.isVisible;
         return (
             <div
                 className={classnames(

@@ -17,11 +17,11 @@ import RoutePathMassEditService from '~/services/routePathMassEditService';
 import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
-import { CopyRoutePathStore } from '~/stores/copyRoutePathStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate, isCurrentTimeWithinTimeSpan } from '~/utils/dateUtils';
@@ -48,7 +48,7 @@ interface IRoutePathListTabProps {
     loginStore?: LoginStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
-    copyRoutePathStore?: CopyRoutePathStore;
+    routePathCopyStore?: RoutePathCopyStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
@@ -69,7 +69,7 @@ const ENVIRONMENT = constants.ENVIRONMENT;
     'loginStore',
     'alertStore',
     'errorStore',
-    'copyRoutePathStore',
+    'routePathCopyStore',
     'routePathMassEditStore'
 )
 @observer
@@ -383,7 +383,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     private openCopyRoutePathView = () => () => {
         const { lineId, routeId, transitType } = this.props;
-        this.props.copyRoutePathStore!.init({ lineId, routeId, transitType });
+        this.props.routePathCopyStore!.init({ lineId, routeId, transitType });
     };
 
     render() {

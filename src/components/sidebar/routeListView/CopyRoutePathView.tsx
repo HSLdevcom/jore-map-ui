@@ -12,7 +12,7 @@ import ISearchLine from '~/models/searchModels/ISearchLine';
 import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
-import { CopyRoutePathStore, IRoutePathToCopy } from '~/stores/copyRoutePathStore';
+import { IRoutePathToCopy, RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
@@ -20,7 +20,7 @@ import SidebarHeader from '../SidebarHeader';
 import * as s from './copyRoutePathView.scss';
 
 interface ICopyRoutePathViewProps {
-    copyRoutePathStore?: CopyRoutePathStore;
+    routePathCopyStore?: RoutePathCopyStore;
     routePathLayerStore?: RoutePathLayerStore;
 }
 
@@ -36,7 +36,7 @@ interface ICopyRoutePathState {
     newRoutePathCounter: number;
 }
 
-@inject('copyRoutePathStore', 'routePathLayerStore')
+@inject('routePathCopyStore', 'routePathLayerStore')
 @observer
 class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRoutePathState> {
     private _isMounted: boolean;
@@ -62,7 +62,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         this._isMounted = true;
         this._setState({ isLoading: true });
         const lineQueryResult: ISearchLine[] = (await LineService.fetchAllSearchLines()).filter(
-            (l) => l.transitType === this.props.copyRoutePathStore!.transitType
+            (l) => l.transitType === this.props.routePathCopyStore!.transitType
         );
         const lineDropdownItems = createDropdownItemsFromList(lineQueryResult.map((s) => s.id));
         this._setState({ lineQueryResult, lineDropdownItems, isLoading: false });
@@ -70,11 +70,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
 
     componentWillUnmount() {
         this._isMounted = false;
-        this.props.copyRoutePathStore!.clear();
+        this.props.routePathCopyStore!.clear();
     }
 
     private copyRoutePathPair = () => {
-        this.props.copyRoutePathStore!.copyRoutePathPair();
+        this.props.routePathCopyStore!.copyRoutePathPair();
     };
 
     private onLineChange = (value: string) => {
@@ -152,7 +152,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
     };
 
     private addRoutePathsToCopy = () => {
-        this.props.copyRoutePathStore!.addRoutePathsToCopy(this.state.selectedRoutePaths);
+        this.props.routePathCopyStore!.addRoutePathsToCopy(this.state.selectedRoutePaths);
         this._setState({
             selectedRoutePaths: [],
         });
@@ -161,23 +161,23 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
     };
 
     private onDirectionChange = (id: string) => (value: string) => {
-        this.props.copyRoutePathStore!.setRoutePathToCopyDirection(id, value);
+        this.props.routePathCopyStore!.setRoutePathToCopyDirection(id, value);
     };
 
     private removeRoutePathToCopy = (id: string) => () => {
-        this.props.copyRoutePathStore!.removeRoutePathToCopy(id);
+        this.props.routePathCopyStore!.removeRoutePathToCopy(id);
     };
 
     private onBackButtonClick = () => {
-        this.props.copyRoutePathStore!.restoreRouteListRoutePaths();
-        this.props.copyRoutePathStore!.clear();
+        this.props.routePathCopyStore!.restoreRouteListRoutePaths();
+        this.props.routePathCopyStore!.clear();
     };
 
     render() {
-        const copyRoutePathStore = this.props.copyRoutePathStore!;
-        const lineId = copyRoutePathStore.lineId;
-        const transitType = copyRoutePathStore.transitType;
-        const routePathsToCopy = copyRoutePathStore!.routePathsToCopy;
+        const routePathCopyStore = this.props.routePathCopyStore!;
+        const lineId = routePathCopyStore.lineId;
+        const transitType = routePathCopyStore.transitType;
+        const routePathsToCopy = routePathCopyStore!.routePathsToCopy;
 
         if (this.state.isLoading) return <Loader />;
 

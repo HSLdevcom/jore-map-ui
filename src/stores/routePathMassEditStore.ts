@@ -6,8 +6,8 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import RouteListStore from '~/stores/routeListStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
-import { IRoutePathToCopy } from './copyRoutePathStore';
 import NavigationStore from './navigationStore';
+import { IRoutePathToCopy } from './routePathCopyStore';
 
 class RoutePathMassEditStore {
     @observable private _massEditRoutePaths: IMassEditRoutePath[] | null;
