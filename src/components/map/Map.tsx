@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
 import EventHelper from '~/helpers/EventHelper';
-import { MapStore } from '~/stores/mapStore';
+import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -149,22 +149,28 @@ class LeafletMap extends React.Component<IMapProps> {
                     editable={true}
                     className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
+                    <NetworkLayers />
                     <TileLayer
-                        url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
-                        attribution={`
-                                Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
+                        url={
+                            this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
+                                ? 'https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
+                                : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
+                        }
+                        attribution={
+                            this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
+                                ? `Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
                                 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
                                 Imagery © <a href="http://mapbox.com">Mapbox</a>
-                                />
-                            `}
+                                />`
+                                : `© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY`
+                        }
                         baseLayer={true}
-                        maxZoom={21}
-                        minZoom={8}
+                        maxZoom={19}
+                        minZoom={9}
                         detectRetina={true}
                         tileSize={512}
                         zoomOffset={-1}
                     />
-                    <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
                     <RoutePathLayer />
