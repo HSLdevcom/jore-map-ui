@@ -4,7 +4,7 @@ import constants from '~/constants/constants';
 enum AlertType {
     Success = 1,
     Info,
-    Loader
+    Loader,
 }
 
 class AlertStore {
@@ -46,7 +46,7 @@ class AlertStore {
     @action
     public setFadeMessage = ({
         message,
-        type = AlertType.Success
+        type = AlertType.Success,
     }: {
         message: string;
         type?: AlertType;
@@ -54,7 +54,7 @@ class AlertStore {
         this._message = message;
         this._type = type;
 
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             setTimeout(() => {
                 this.close();
                 resolve();

@@ -68,15 +68,12 @@ class NodeService {
     public static fetchAvailableNodeId = async ({
         node,
         transitType,
-        isInternal,
     }: {
         node: INode;
         transitType?: TransitType | null;
-        isInternal?: boolean;
-    }) => {
+    }): Promise<string | null> => {
         return await HttpUtils.postRequest(EndpointPath.GET_AVAILABLE_NODE_ID, {
             transitType,
-            isInternal,
             latLng: node.coordinates,
             nodeType: node.type,
         });

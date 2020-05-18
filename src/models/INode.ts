@@ -25,7 +25,6 @@ interface INode extends INodeBase {
     beginningOfNodeId?: string; // new node property
     idSuffix?: string | null; // new node property
     transitType?: TransitType | null; // new node property
-    isInternal?: boolean; // new node property
     stop: IStop | null;
     coordinates: L.LatLng;
     coordinatesProjection: L.LatLng;

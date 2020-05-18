@@ -1,6 +1,7 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop, IStopArea } from '~/models';
@@ -13,10 +14,14 @@ import stopValidationModel, {
     IStopValidationModel,
 } from '~/models/validationModels/stopValidationModel';
 import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
+import NodeService from '~/services/nodeService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
+import NodeUtils from '~/utils/NodeUtils';
+import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
 import FormValidator from '~/validation/FormValidator';
+import AlertStore from './alertStore';
 import CodeListStore from './codeListStore';
 import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
@@ -42,12 +47,15 @@ class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
+    @observable private _isNewNode: boolean;
     @observable private _hastusArea: IHastusArea | null;
     @observable private _oldHastusArea: IHastusArea | null;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreas: IStopArea[];
     @observable private _isNodeIdEditable: boolean;
+    @observable private _isNodeIdQueryLoading: boolean;
+    @observable private _nodeIdSuffixOptions: IDropdownItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
     private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
@@ -57,10 +65,14 @@ class NodeStore {
         this._node = null;
         this._oldNode = null;
         this._oldLinks = [];
+        this._isNewNode = false;
         this._geometryUndoStore = new GeometryUndoStore();
         this._nodeValidationStore = new ValidationStore();
         this._stopValidationStore = new ValidationStore();
         this._isEditingDisabled = true;
+        this._isNodeIdEditable = false;
+        this._isNodeIdQueryLoading = false;
+        this._nodeIdSuffixOptions = [];
         this._nodeCache = {
             newNodeCache: null,
         };
@@ -77,6 +89,10 @@ class NodeStore {
             () => this.onStopAreasChange()
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
+        reaction(
+            () => [this._node?.type, this._node?.transitType],
+            _.debounce(() => this.updateNodeId(), 25)
+        );
     }
 
     @computed
@@ -130,6 +146,16 @@ class NodeStore {
     }
 
     @computed
+    get isNodeIdQueryLoading() {
+        return this._isNodeIdQueryLoading;
+    }
+
+    @computed
+    get nodeIdSuffixOptions() {
+        return this._nodeIdSuffixOptions;
+    }
+
+    @computed
     get isNodeFormValid() {
         return this._nodeValidationStore.isValid();
     }
@@ -180,6 +206,7 @@ class NodeStore {
         this._links = newLinks;
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
+        this._isNewNode = isNewNode;
 
         const customValidatorMap: ICustomValidatorMap = {
             beginningOfNodeId: {
@@ -187,12 +214,14 @@ class NodeStore {
                     (node: INode, property: string, beginningOfNodeId: string) => {
                         if (this.isNodeIdEditable) {
                             const validationResult = FormValidator.validateProperty(
-                                nodeValidationModel['beginningOfNodeId']!,
+                                nodeIdEditingValidationModel['beginningOfNodeId']!,
                                 beginningOfNodeId
                             );
                             return validationResult;
                         }
-                        return;
+                        return {
+                            isValid: true,
+                        };
                     },
                 ],
             },
@@ -201,12 +230,14 @@ class NodeStore {
                     (node: INode, property: string, idSuffix: string) => {
                         if (this.isNodeIdEditable) {
                             const validationResult = FormValidator.validateProperty(
-                                nodeValidationModel['idSuffix']!,
+                                nodeIdEditingValidationModel['idSuffix']!,
                                 idSuffix
                             );
                             return validationResult;
                         }
-                        return;
+                        return {
+                            isValid: true,
+                        };
                     },
                 ],
             },
@@ -234,10 +265,7 @@ class NodeStore {
             },
         };
 
-        const _nodeValidationModel = this.isNodeIdEditable
-            ? nodeIdEditingValidationModel
-            : nodeValidationModel;
-        this._nodeValidationStore.init(node, _nodeValidationModel, customValidatorMap);
+        this._nodeValidationStore.init(node, nodeValidationModel, customValidatorMap);
         if (node.stop) {
             this._stopValidationStore.init(node.stop, stopValidationModel);
         }
@@ -379,7 +407,7 @@ class NodeStore {
     };
 
     @action
-    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
+    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng | null) => {
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
     };
@@ -476,6 +504,16 @@ class NodeStore {
     };
 
     @action
+    public setIsNodeIdQueryLoading = (isQueryLoading: boolean) => {
+        this._isNodeIdQueryLoading = isQueryLoading;
+    };
+
+    @action
+    public setNodeIdSuffixOptions = (isSuffixOptions: IDropdownItem[]) => {
+        this._nodeIdSuffixOptions = isSuffixOptions;
+    };
+
+    @action
     public clear = () => {
         this._links = [];
         this._node = null;
@@ -569,6 +607,56 @@ class NodeStore {
 
     public getNewNodeCacheObj = (): INodeCacheObj | null => {
         return _.cloneDeep(this._nodeCache.newNodeCache);
+    };
+
+    public updateNodeId = async () => {
+        if (!this._node || !this._isNewNode) return;
+
+        this.setIsNodeIdQueryLoading(true);
+        const nodeId = await NodeService.fetchAvailableNodeId({
+            node: this._node!,
+            transitType: this._node?.transitType,
+        });
+
+        if (nodeId) {
+            this.setIsNodeIdEditable(false);
+            this.updateNodeProperty('id', nodeId);
+        } else {
+            if (!this.isNodeIdEditable) {
+                AlertStore.setNotificationMessage({
+                    message:
+                        'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen viimeiset 2 juoksevaa numeroa.',
+                });
+            }
+            this.setIsNodeIdEditable(true);
+            await this.queryNodeIdSuffixes();
+        }
+        // Call updateNodeProperty trigger validation for these properties related to nodeId:
+        this.updateNodeProperty(
+            'beginningOfNodeId',
+            this._node.beginningOfNodeId ? this._node.beginningOfNodeId : null
+        );
+        this.updateNodeProperty('idSuffix', this._node.idSuffix ? this._node.idSuffix : null);
+
+        this.setIsNodeIdQueryLoading(false);
+    };
+
+    public queryNodeIdSuffixes = async () => {
+        const node = this._node;
+        if (!node) return;
+
+        const beginningOfNodeId = node.beginningOfNodeId;
+        if (!beginningOfNodeId || beginningOfNodeId.length !== 4) return;
+
+        const nodeIdUsageCode = NodeUtils.getNodeIdUsageCode(node.type, node.transitType);
+        const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
+            `${beginningOfNodeId}${nodeIdUsageCode}`
+        );
+
+        // slide(-2): get last two letters of a nodeId
+        const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
+
+        this.setNodeIdSuffixOptions(createDropdownItemsFromList(nodeIdSuffixList));
     };
 
     private onChangeIsEditingDisabled = () => {
