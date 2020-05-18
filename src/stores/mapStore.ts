@@ -23,6 +23,11 @@ enum MapFilter {
     linkPoint,
 }
 
+enum MapBaseLayer {
+    DIGITRANSIT = 'Digitransit',
+    AERIAL = 'Ilmakuva',
+}
+
 type MapCursor = '' | 'crosshair';
 
 class MapStore {
@@ -32,6 +37,7 @@ class MapStore {
     @observable private _zoom: number;
     @observable private _selectedNodeId: string | null;
     @observable private _visibleNodeLabels: NodeLabel[];
+    @observable private _visibleMapBaseLayer: MapBaseLayer;
     @observable private _mapFilters: MapFilter[];
     @observable private _mapBounds: L.LatLngBounds;
     @observable private _mapCursor: MapCursor;
@@ -42,6 +48,7 @@ class MapStore {
         this._zoom = INITIAL_ZOOM;
         this._isMapFullscreen = false;
         this._visibleNodeLabels = [NodeLabel.hastusId];
+        this._visibleMapBaseLayer = MapBaseLayer.DIGITRANSIT;
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
     }
@@ -84,6 +91,11 @@ class MapStore {
     @computed
     get visibleNodeLabels() {
         return this._visibleNodeLabels;
+    }
+
+    @computed
+    get visibleMapBaseLayer() {
+        return this._visibleMapBaseLayer;
     }
 
     @computed
@@ -148,6 +160,11 @@ class MapStore {
     };
 
     @action
+    public setVisibleMapBaseLayer = (baseLayer: MapBaseLayer) => {
+        this._visibleMapBaseLayer = baseLayer;
+    };
+
+    @action
     public toggleMapFilter = (mapFilter: MapFilter) => {
         if (this._mapFilters.includes(mapFilter)) {
             this._mapFilters = this._mapFilters.filter((mF) => mF !== mapFilter);
@@ -169,4 +186,4 @@ class MapStore {
 
 export default new MapStore();
 
-export { MapStore, NodeLabel, MapFilter, MapCursor };
+export { MapStore, NodeLabel, MapFilter, MapCursor, MapBaseLayer };
