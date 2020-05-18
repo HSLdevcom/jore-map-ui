@@ -34,6 +34,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
                             isActive={ToolbarStore.isSelected(ToolbarToolType.AddNetworkNode)}
                             isDisabled={false}
                             label='Lisää solmu'
+                            data-cy='newNodeTool'
                         >
                             <FiPlus />
                         </MapControlButton>
