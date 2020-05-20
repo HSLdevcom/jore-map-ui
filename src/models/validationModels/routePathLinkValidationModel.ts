@@ -24,7 +24,7 @@ const routePathLinkValidationModel: IRoutePathLinkValidationModel = {
     destinationSw1: 'max:20|string',
     destinationSw2: 'max:20|string',
     destinationShieldFi: 'max:16|string',
-    destinationShieldSw: 'max:16|string'
+    destinationShieldSw: 'max:16|string',
 };
 
 export default routePathLinkValidationModel;

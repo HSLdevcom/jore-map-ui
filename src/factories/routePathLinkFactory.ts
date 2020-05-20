@@ -6,9 +6,11 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NodeFactory from './nodeFactory';
 
+const numberIterator = new NumberIterator();
+
 class RoutePathLinkFactory {
     private static getTemporaryRoutePathLinkId = () => {
-        return `${constants.NEW_OBJECT_TAG}${NumberIterator.getNumber()}`;
+        return `${constants.NEW_OBJECT_TAG}${numberIterator.getNumber()}`;
     };
 
     public static mapExternalRoutePathLink = (
@@ -19,7 +21,6 @@ class RoutePathLinkFactory {
         const geoJson = JSON.parse(
             externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson
         );
-
         return {
             startNode,
             endNode,
@@ -38,7 +39,7 @@ class RoutePathLinkFactory {
             modifiedBy: externalRoutePathLink.relkuka,
             modifiedOn: externalRoutePathLink.relviimpvm
                 ? new Date(externalRoutePathLink.relviimpvm)
-                : undefined
+                : undefined,
         };
     };
 
@@ -64,7 +65,7 @@ class RoutePathLinkFactory {
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             transitType: link.lnkverkko,
             modifiedBy: '',
-            modifiedOn: new Date()
+            modifiedOn: new Date(),
         };
     };
 }

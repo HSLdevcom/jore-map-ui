@@ -1,11 +1,14 @@
 import * as L from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
+import NumberIterator from '~/helpers/NumberIterator';
 import { INode } from '~/models';
 import { INodeBase, INodeMapHighlight } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/utils/geomUtils';
 import NodeStopFactory from './nodeStopFactory';
+
+const numberIterator = new NumberIterator();
 
 class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
@@ -19,11 +22,12 @@ class NodeFactory {
             ...NodeFactory.createNodeBase(externalNode),
             coordinates,
             coordinatesProjection,
+            internalId: `node-${numberIterator.getNumber()}`,
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
             modifiedOn: externalNode.solviimpvm ? new Date(externalNode.solviimpvm) : undefined,
-            modifiedBy: externalNode.solkuka
+            modifiedBy: externalNode.solkuka,
         };
     };
 
@@ -36,7 +40,7 @@ class NodeFactory {
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])
-                : []
+                : [],
         };
     };
 
@@ -53,7 +57,7 @@ class NodeFactory {
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])
                 : [],
-            dateRanges: externalNode.dateRanges!
+            dateRanges: externalNode.dateRanges!,
         };
     };
 
@@ -62,13 +66,14 @@ class NodeFactory {
         return {
             coordinates,
             id: '',
+            internalId: `node-${numberIterator.getNumber()}`,
             stop: newStop,
             type: NodeType.STOP,
             transitTypes: [],
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',
-            measurementType: ''
+            measurementType: '',
         };
     }
 }

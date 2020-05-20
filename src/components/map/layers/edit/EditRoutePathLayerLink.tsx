@@ -63,7 +63,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                     opacity={0.5}
                     onClick={this.handleLinkClick(routePathLink)}
                 />
-            )
+            ),
         ];
     };
 
@@ -91,7 +91,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 startPoint={routePathLink.geometry[routePathLink.geometry.length - 1]}
                 endPoint={routePathLink.endNode.coordinates}
                 color={'#efc210'}
-            />
+            />,
         ];
     };
 
@@ -102,7 +102,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         const coherentPolylines = createCoherentLinesFromPolylines(
-            routePathLinks.map(rpLink => rpLink.geometry)
+            routePathLinks.map((rpLink) => rpLink.geometry)
         );
         return coherentPolylines.map((polyline, index) => (
             <ArrowDecorator key={index} color={ROUTE_COLOR} geometry={polyline} />
