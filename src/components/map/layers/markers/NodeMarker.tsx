@@ -14,13 +14,13 @@ import * as s from './nodeMarker.scss';
 
 enum NodeHighlightColor {
     BLUE, // default color
-    GREEN
+    GREEN,
 }
 
 interface INodeMarkerProps {
     coordinates: L.LatLng;
     nodeType: NodeType;
-    isHighlighted: boolean;
+    isHighlighted: boolean; // TODO: remove or add highlightColor and remove highlight property
     nodeLocationType: NodeLocationType;
     nodeId?: string;
     shortId?: string;
@@ -53,7 +53,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isDraggable: false,
         highlight: { isHighlighted: false },
         forcedVisibleNodeLabels: [],
-        markerClasses: []
+        markerClasses: [],
     };
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
@@ -95,7 +95,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             nodeLocationType,
             isDisabled,
             isTimeAlignmentStop,
-            isHighlighted
+            isHighlighted,
         } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
@@ -104,7 +104,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 nodeLocationType,
                 isNodeDisabled: isDisabled,
                 isNodeTimeAlignment: isTimeAlignmentStop,
-                isNodeHighlighted: isHighlighted
+                isNodeHighlighted: isHighlighted,
             })
         );
 
@@ -156,7 +156,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderNodeMarkerIcon = ({
-        nodeLocationType
+        nodeLocationType,
     }: {
         nodeLocationType: NodeLocationType;
     }) => {
@@ -169,7 +169,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     nodeLocationType === 'coordinates'
                         ? {
                               borderColor: this.props.color,
-                              backgroundColor: this.props.color
+                              backgroundColor: this.props.color,
                           }
                         : undefined
                 }
@@ -179,7 +179,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             </div>,
             {
                 className: nodeBaseClass,
-                popupOffset: -15
+                popupOffset: -15,
             }
         );
     };
@@ -194,7 +194,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             onContextMenu,
             onMouseOver,
             onMouseOut,
-            onMoveMarker
+            onMoveMarker,
         } = this.props;
         return (
             <LeafletMarker

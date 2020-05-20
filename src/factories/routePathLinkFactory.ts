@@ -19,7 +19,6 @@ class RoutePathLinkFactory {
         const geoJson = JSON.parse(
             externalRoutePathLink.linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu.geojson
         );
-
         return {
             startNode,
             endNode,
@@ -38,7 +37,7 @@ class RoutePathLinkFactory {
             modifiedBy: externalRoutePathLink.relkuka,
             modifiedOn: externalRoutePathLink.relviimpvm
                 ? new Date(externalRoutePathLink.relviimpvm)
-                : undefined
+                : undefined,
         };
     };
 
@@ -64,7 +63,7 @@ class RoutePathLinkFactory {
             id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
             transitType: link.lnkverkko,
             modifiedBy: '',
-            modifiedOn: new Date()
+            modifiedOn: new Date(),
         };
     };
 }

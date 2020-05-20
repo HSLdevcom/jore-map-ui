@@ -22,6 +22,7 @@ interface INodeMapHighlight extends INodePrimaryKey {
 }
 
 interface INode extends INodeBase {
+    internalId: string;
     beginningOfNodeId?: string; // new node property
     idSuffix?: string | null; // new node property
     transitType?: TransitType | null; // new node property

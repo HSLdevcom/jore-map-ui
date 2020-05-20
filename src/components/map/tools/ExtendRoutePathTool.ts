@@ -3,7 +3,7 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
-    INetworkNodeClickParams
+    INetworkNodeClickParams,
 } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';

@@ -5,6 +5,7 @@ type INodeValidationModel = { [key in keyof INode]: string };
 
 const nodeValidationModel: INodeValidationModel = {
     id: '',
+    internalId: '',
     type: 'required|min:1|max:1|string',
     shortIdString: `min:4|max:4|string|${regexRules.numbers}`,
     modifiedBy: '',
