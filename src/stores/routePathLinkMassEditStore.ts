@@ -33,12 +33,11 @@ class RoutePathLinkMassEditStore {
     public getSelectedRoutePathLinkIndex = (routePathLink: IRoutePathLink) => {
         return this._selectedMassEditRoutePathLinks.findIndex(
             (rpLink) =>
-                rpLink.startNode.id === routePathLink.startNode.id &&
-                rpLink.endNode.id === routePathLink.endNode.id
+                rpLink.startNode.internalId === routePathLink.startNode.internalId &&
+                rpLink.endNode.internalId === routePathLink.endNode.internalId
         );
     };
 
-    // TODO: call this when routePathLinks change:
     @action
     public removeSelectedRoutePathLink = (routePathLink: IRoutePathLink) => {
         const currentIndex = this.getSelectedRoutePathLinkIndex(routePathLink);

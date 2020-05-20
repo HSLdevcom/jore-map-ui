@@ -114,7 +114,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private toggleExtendedListItemId = (event: any) => {
+    private toggleExtendedListItemId = (event: React.MouseEvent) => {
         const currentListItemId = this.props.node.internalId;
         const routePathStore = this.props.routePathStore;
         const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
