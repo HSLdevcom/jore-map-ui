@@ -149,7 +149,6 @@ class LeafletMap extends React.Component<IMapProps> {
                     editable={true}
                     className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
-                    <NetworkLayers />
                     <TileLayer
                         url={
                             this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
@@ -171,6 +170,7 @@ class LeafletMap extends React.Component<IMapProps> {
                         tileSize={512}
                         zoomOffset={-1}
                     />
+                    <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
                     <RoutePathLayer />

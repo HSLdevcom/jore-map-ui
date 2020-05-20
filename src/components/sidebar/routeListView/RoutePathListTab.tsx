@@ -142,10 +142,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
         let groupedRoutePathsToDisplay = allGroupedRoutePaths;
         if (!this.props.areAllRoutePathsVisible) {
-            const currIndex = allGroupedRoutePaths.findIndex((groupedRp: IRoutePath[]) => {
-                return isCurrentTimeWithinTimeSpan(groupedRp[0].startDate, groupedRp[0].endDate);
+            let lastGroupInFutureIndex = 0;
+            allGroupedRoutePaths.some((groupedRp: IRoutePath[], index: number) => {
+                lastGroupInFutureIndex = index;
+                return (
+                    groupedRp[0].startDate.getTime() < new Date().getTime() &&
+                    groupedRp[0].endDate.getTime() < new Date().getTime()
+                );
             });
-            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(0, currIndex + 1);
+            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(0, lastGroupInFutureIndex);
         }
         this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
@@ -439,7 +444,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 })}
                 {!this.props.areAllRoutePathsVisible && groupedRoutePathsToDisplay.length === 0 && (
                     <div className={s.noRoutePathsWithCurrentTimespanMessage}>
-                        Reitillä ei ole voimassaolevia reitinsuuntia.
+                        Reitillä ei ole voimassaolevia tai voimaan astuvia reitinsuuntia.
                     </div>
                 )}
                 {!this.props.isEditing &&

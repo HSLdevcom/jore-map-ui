@@ -97,7 +97,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isHighlighted={false}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
                 color={this.getNeighborLinkColor(neighborLink)}
