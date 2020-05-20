@@ -20,8 +20,9 @@ enum NodeHighlightColor {
 interface INodeMarkerProps {
     coordinates: L.LatLng;
     nodeType: NodeType;
-    isHighlighted: boolean; // TODO: remove or add highlightColor and remove highlight property
     nodeLocationType: NodeLocationType;
+    isHighlighted?: boolean;
+    highlightColor?: NodeHighlightColor;
     nodeId?: string;
     shortId?: string;
     hastusId?: string;
@@ -31,7 +32,6 @@ interface INodeMarkerProps {
     isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    highlight?: { isHighlighted: boolean; color?: NodeHighlightColor };
     forcedVisibleNodeLabels?: NodeLabel[];
     hasHighZIndex?: boolean;
     markerClasses?: string[];
@@ -51,9 +51,9 @@ const NODE_LABEL_MIN_ZOOM = 14;
 class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
-        highlight: { isHighlighted: false },
         forcedVisibleNodeLabels: [],
         markerClasses: [],
+        highlightColor: NodeHighlightColor.BLUE,
     };
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
@@ -96,6 +96,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             isDisabled,
             isTimeAlignmentStop,
             isHighlighted,
+            highlightColor,
         } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
@@ -108,9 +109,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
             })
         );
 
-        const highlight = this.props.highlight;
-        if (highlight && highlight.isHighlighted) {
-            switch (highlight.color) {
+        if (isHighlighted) {
+            switch (highlightColor) {
                 case NodeHighlightColor.BLUE: {
                     res.push(s.highlightBlue);
                     break;

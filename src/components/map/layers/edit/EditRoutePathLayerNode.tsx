@@ -95,16 +95,14 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             };
         }
 
-        const highlight = {
-            isHighlighted: false,
-            color: NodeHighlightColor.BLUE,
-        };
+        let isHighlighted = false;
+        let highlightColor;
         if (isNodeHighlightedByTool) {
-            highlight.isHighlighted = true;
-            highlight.color = NodeHighlightColor.GREEN;
+            isHighlighted = true;
+            highlightColor = NodeHighlightColor.GREEN;
         } else if (isNodeHighlighted) {
-            highlight.isHighlighted = true;
-            highlight.color = NodeHighlightColor.BLUE;
+            isHighlighted = true;
+            highlightColor = NodeHighlightColor.BLUE;
         }
 
         return (
@@ -116,10 +114,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isHighlighted={false}
+                isHighlighted={isHighlighted}
+                highlightColor={highlightColor}
                 isDisabled={isDisabled}
                 onClick={onNodeClick}
-                highlight={highlight}
                 isClickDisabled={isClickDisabled}
             />
         );
