@@ -194,8 +194,9 @@ const _findRoutePathLink = (
 ): IRoutePathLink | undefined => {
     return routePath.routePathLinks.find((rpLink) => {
         return (
-            rpLink.startNode.id === routePathLink.startNode.id &&
-            rpLink.endNode.id === routePathLink.endNode.id
+            // Use node.internalId (node.id might be duplicated)
+            rpLink.startNode.internalId === routePathLink.startNode.internalId &&
+            rpLink.endNode.internalId === routePathLink.endNode.internalId
         );
     });
 };
