@@ -6,9 +6,11 @@ import IExternalLink from '~/models/externals/IExternalLink';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import NodeFactory from './nodeFactory';
 
+const numberIterator = new NumberIterator();
+
 class RoutePathLinkFactory {
     private static getTemporaryRoutePathLinkId = () => {
-        return `${constants.NEW_OBJECT_TAG}${NumberIterator.getNumber()}`;
+        return `${constants.NEW_OBJECT_TAG}${numberIterator.getNumber()}`;
     };
 
     public static mapExternalRoutePathLink = (

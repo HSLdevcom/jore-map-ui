@@ -8,6 +8,8 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/utils/geomUtils';
 import NodeStopFactory from './nodeStopFactory';
 
+const numberIterator = new NumberIterator();
+
 class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
         const coordinates = _getLatLng(
@@ -20,7 +22,7 @@ class NodeFactory {
             ...NodeFactory.createNodeBase(externalNode),
             coordinates,
             coordinatesProjection,
-            internalId: `node-${NumberIterator.getNumber()}`,
+            internalId: `node-${numberIterator.getNumber()}`,
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
@@ -64,7 +66,7 @@ class NodeFactory {
         return {
             coordinates,
             id: '',
-            internalId: `node-${NumberIterator.getNumber()}`,
+            internalId: `node-${numberIterator.getNumber()}`,
             stop: newStop,
             type: NodeType.STOP,
             transitTypes: [],
