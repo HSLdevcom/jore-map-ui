@@ -1,40 +1,24 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import EventHelper from '~/helpers/EventHelper';
 import { IRoutePathLink } from '~/models';
 import ToolbarStore from './toolbarStore';
 
 class RoutePathLinkMassEditStore {
-    @observable private _isMassEditSelectionAllowed: boolean;
     @observable private _selectedMassEditRoutePathLinks: IRoutePathLink[];
 
     constructor() {
-        this._isMassEditSelectionAllowed = false;
         this._selectedMassEditRoutePathLinks = [];
 
         reaction(
             () => this._selectedMassEditRoutePathLinks.length,
             _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
         );
-        EventHelper.on('ctrl', () => this.setIsMassEditSelectionAllowed(true));
-        EventHelper.on('shift', () => this.setIsMassEditSelectionAllowed(true));
-        EventHelper.on('keyUp', () => this.setIsMassEditSelectionAllowed(false));
-    }
-
-    @computed
-    get isMassEditSelectionEnabled() {
-        return this._isMassEditSelectionAllowed;
     }
 
     @computed
     get selectedMassEditRoutePathLinks() {
         return this._selectedMassEditRoutePathLinks;
     }
-
-    @action
-    public setIsMassEditSelectionAllowed = (isAllowed: boolean) => {
-        this._isMassEditSelectionAllowed = isAllowed;
-    };
 
     @action
     public toggleSelectedRoutePathLink = (routePathLink: IRoutePathLink) => {

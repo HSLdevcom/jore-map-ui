@@ -114,14 +114,15 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private toggleExtendedListItemId = () => {
+    private toggleExtendedListItemId = (event: any) => {
         const currentListItemId = this.props.node.internalId;
         const routePathStore = this.props.routePathStore;
-
+        const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
+        // Mass edit routePathLinks toggle
         if (
             !this.props.isLastNode &&
             this.props.node.type === NodeType.STOP &&
-            this.props.routePathLinkMassEditStore!.isMassEditSelectionEnabled
+            isCtrlOrShiftPressed
         ) {
             const selectedTool = this.props.toolbarStore!.selectedTool;
             if (selectedTool && selectedTool.toolType !== ToolbarToolType.SelectNetworkEntity) {
@@ -134,6 +135,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
                 this.props.routePathLink
             );
+            // List item toggle
         } else {
             if (currentListItemId === routePathStore!.extendedListItemId) {
                 this.props.routePathStore!.setExtendedListItemId(null);
