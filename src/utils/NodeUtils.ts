@@ -1,4 +1,5 @@
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { INodeBase } from '~/models/INode';
 import NodeLocationType from '~/types/NodeLocationType';
 import * as s from './nodeUtils.scss';
@@ -10,7 +11,7 @@ class NodeUtils {
             nodeLocationType,
             isNodeDisabled,
             isNodeTimeAlignment,
-            isNodeHighlighted
+            isNodeHighlighted,
         }: {
             nodeLocationType?: NodeLocationType;
             isNodeDisabled?: boolean;
@@ -72,6 +73,26 @@ class NodeUtils {
                 : node.shortIdString;
         }
         return '';
+    };
+
+    // Note: same mapping found from jore-map-backend. If changed, change backend mapping also.
+    // Better would be to create an API method that returns mapping for this
+    public static getNodeIdUsageCode = (nodeType: NodeType, transitType?: TransitType | null) => {
+        if (nodeType !== NodeType.STOP) return '0';
+        switch (transitType) {
+            case TransitType.BUS:
+                return '2';
+            case TransitType.TRAM:
+                return '4';
+            case TransitType.TRAIN:
+                return '5';
+            case TransitType.SUBWAY:
+                return '6';
+            case TransitType.FERRY:
+                return '7';
+            default:
+                return '3'; // Default number that is not restricted to any usage
+        }
     };
 }
 

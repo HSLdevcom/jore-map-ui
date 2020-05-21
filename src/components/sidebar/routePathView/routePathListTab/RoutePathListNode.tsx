@@ -54,7 +54,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const isExtended = this.props.routePathStore!.extendedListItemId === node.id;
+        const isExtended = this.props.routePathStore!.extendedListItemId === node.internalId;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
@@ -114,14 +114,15 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private toggleExtendedListItemId = () => {
-        const currentListItemId = this.props.node.id;
+    private toggleExtendedListItemId = (event: React.MouseEvent) => {
+        const currentListItemId = this.props.node.internalId;
         const routePathStore = this.props.routePathStore;
-
+        const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
+        // Mass edit routePathLinks toggle
         if (
             !this.props.isLastNode &&
             this.props.node.type === NodeType.STOP &&
-            this.props.routePathLinkMassEditStore!.isMassEditSelectionEnabled
+            isCtrlOrShiftPressed
         ) {
             const selectedTool = this.props.toolbarStore!.selectedTool;
             if (selectedTool && selectedTool.toolType !== ToolbarToolType.SelectNetworkEntity) {
@@ -134,6 +135,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
                 this.props.routePathLink
             );
+            // List item toggle
         } else {
             if (currentListItemId === routePathStore!.extendedListItemId) {
                 this.props.routePathStore!.setExtendedListItemId(null);
@@ -381,10 +383,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     };
 
     private openNodeInNewTab = (nodeId: string) => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
+        const nodeViewLink = routeBuilder.to(SubSites.node).toTarget(':id', nodeId).toLink();
         window.open(nodeViewLink, '_blank');
     };
 
@@ -402,7 +401,8 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const { node, routePathLink, isFirstNode, isLastNode } = this.props;
         return (
             <RoutePathListItem
-                id={node.id}
+                // Use internalId as key instead of id because there might be duplicate nodes
+                id={node.internalId}
                 reference={this.props.reference}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}

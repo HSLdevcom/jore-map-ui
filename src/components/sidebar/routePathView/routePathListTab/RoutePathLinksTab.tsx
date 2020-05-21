@@ -39,11 +39,14 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         this.extendedItemListener();
     }
 
+    /**
+     * @param {IRoutePathLink[]} routePathLinks - list of routePathLinks sorted by orderNumber
+     */
     private renderList = (routePathLinks: IRoutePathLink[]) => {
         // Split routePathLinks into sub lists with coherent routePathLinks
         const coherentRoutePathLinksList: IRoutePathLink[][] = [];
         let index = 0;
-        routePathLinks.forEach(currentRpLink => {
+        routePathLinks.forEach((currentRpLink) => {
             const currentList = coherentRoutePathLinksList[index];
             if (!currentList && index === 0) {
                 coherentRoutePathLinksList[index] = [currentRpLink];
@@ -59,15 +62,18 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
             }
         });
 
-        return coherentRoutePathLinksList.map(routePathLinks =>
+        return coherentRoutePathLinksList.map((routePathLinks) =>
             routePathLinks.map((routePathLink, index) => {
-                this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
+                // Use node.internalId as key instead of id because there might be nodes with the same id
+                this.listObjectReferences[routePathLink.startNode.internalId] = React.createRef();
                 this.listObjectReferences[routePathLink.id] = React.createRef();
                 const result = [
                     this.isNodeVisible(routePathLink.startNode) ? (
                         <RoutePathListNode
                             key={`${routePathLink.id}-${index}-startNode`}
-                            reference={this.listObjectReferences[routePathLink.startNode.id]}
+                            reference={
+                                this.listObjectReferences[routePathLink.startNode.internalId]
+                            }
                             node={routePathLink.startNode}
                             routePathLink={routePathLink}
                             isEditingDisabled={this.props.isEditingDisabled}
@@ -75,22 +81,27 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                             isLastNode={false}
                         />
                     ) : null,
-                    this.isLinksVisible() ? (
+                    this.areLinksVisible() ? (
                         <RoutePathListLink
                             key={`${routePathLink.id}-${index}-link`}
                             reference={this.listObjectReferences[routePathLink.id]}
                             routePathLink={routePathLink}
                         />
-                    ) : null
+                    ) : null,
                 ];
 
                 if (index === routePathLinks.length - 1) {
                     if (this.isNodeVisible(routePathLink.endNode)) {
-                        this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
+                        // Use node.internalId as key instead of id because there might be nodes with the same id
+                        this.listObjectReferences[
+                            routePathLink.endNode.internalId
+                        ] = React.createRef();
                         result.push(
                             <RoutePathListNode
                                 key={`${routePathLink.id}-${index}-endNode`}
-                                reference={this.listObjectReferences[routePathLink.endNode.id]}
+                                reference={
+                                    this.listObjectReferences[routePathLink.endNode.internalId]
+                                }
                                 node={routePathLink.endNode}
                                 routePathLink={routePathLink}
                                 isLastNode={true}
@@ -128,7 +139,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         return !this.props.routePathStore!.listFilters.includes(ListFilter.otherNodes);
     };
 
-    private isLinksVisible = () => {
+    private areLinksVisible = () => {
         return !this.props.routePathStore!.listFilters.includes(ListFilter.link);
     };
 

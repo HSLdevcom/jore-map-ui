@@ -11,6 +11,74 @@ describe('NodeView tests - read access user', () => {
 });
 
 describe('NodeView tests - write access user', () => {
+    it('Can save new node - id available', () => {
+        cy.hslLoginWriteAccess();
+
+        // Center map to Vantaa
+        cy.getTestElement('coordinateControlY').clear().type(60.306);
+        cy.getTestElement('coordinateControlX').clear().type(25.023).type('{enter}');
+
+        cy.getTestElement('newNodeTool').click();
+
+        cy.getTestElement('mapView').click(300, 300);
+
+        cy.getTestElement('nodeView').find('[data-cy=showBus]').click();
+
+        _fillStopRequiredFields();
+
+        cy.saveButtonShouldBeActive();
+    });
+
+    it('Can save new node - id space ran out', () => {
+        cy.hslLoginWriteAccess();
+
+        // Center map to Kirkkonummi
+        cy.getTestElement('coordinateControlY').clear().type(60.1226);
+        cy.getTestElement('coordinateControlX').clear().type(24.44).type('{enter}');
+
+        cy.getTestElement('newNodeTool').click();
+
+        cy.getTestElement('mapView').click(300, 300);
+
+        cy.getTestElement('nodeView').find('[data-cy=showBus]').click();
+
+        cy.getTestElement('closeAlertButton').click();
+
+        // Type in custom node id. Beginning of 1234, idSuffix option 1
+        cy.getTestElement('nodeId').type('1234');
+        cy.getTestElement('idSuffix').click();
+        cy.getTestElement('dropdownOption').eq(1).click();
+
+        _fillStopRequiredFields();
+
+        cy.saveButtonShouldBeActive();
+    });
+
+    it('Can save new node - area data json not found with given node coordinates', () => {
+        cy.hslLoginWriteAccess();
+
+        // Center map to a lake near Lahti (so that area data json will return empty data)
+        cy.getTestElement('coordinateControlY').clear().type(61.016);
+        cy.getTestElement('coordinateControlX').clear().type(25.609).type('{enter}');
+
+        cy.getTestElement('newNodeTool').click();
+
+        cy.getTestElement('mapView').click(300, 300);
+
+        cy.getTestElement('closeAlertButton').click();
+
+        cy.getTestElement('nodeView').find('[data-cy=showBus]').click();
+
+        // Type in custom node id. Beginning of 1234, idSuffix option 1
+        cy.getTestElement('nodeId').type('1234');
+        cy.getTestElement('idSuffix').click();
+        cy.getTestElement('dropdownOption').eq(1).click();
+
+        _fillStopRequiredFields();
+
+        cy.saveButtonShouldBeActive();
+    });
+
     it('Can edit crossroad', () => {
         cy.hslLoginWriteAccess();
         _openCrossroad();
@@ -91,20 +159,7 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('idSuffix').type('01');
         cy.getTestElement('dropdownOption').first().click();
 
-        cy.getTestElement('measurementType').type('Laskettu');
-        cy.getTestElement('dropdownOption').first().click();
-
-        cy.getTestElement('stopArea').click();
-        cy.getTestElement('dropdownOption').eq(2).click();
-
-        cy.getTestElement('municipality').click();
-        cy.getTestElement('dropdownOption').first().click();
-
-        cy.getTestElement('section').click();
-        cy.getTestElement('dropdownOption').eq(2).click();
-
-        cy.getTestElement('roof').click();
-        cy.getTestElement('dropdownOption').first().click();
+        _fillStopRequiredFields();
 
         cy.saveButtonShouldBeActive();
     });
@@ -139,4 +194,24 @@ const _openMunicipality = () => {
 
     cy.getTestElement('nodeItem-').first().click();
     cy.getTestElement('nodeView').should('exist');
+};
+
+const _fillStopRequiredFields = () => {
+    cy.getTestElement('measurementType').type('Laskettu');
+    cy.getTestElement('dropdownOption').first().click();
+
+    cy.getTestElement('stopArea').click();
+    cy.getTestElement('dropdownOption').eq(2).click();
+
+    cy.getTestElement('addressFi').clear().type('a_fi');
+    cy.getTestElement('addressSw').clear().type('a_sw');
+
+    cy.getTestElement('municipality').click();
+    cy.getTestElement('dropdownOption').first().click();
+
+    cy.getTestElement('section').click();
+    cy.getTestElement('dropdownOption').eq(2).click();
+
+    cy.getTestElement('roof').click();
+    cy.getTestElement('dropdownOption').first().click();
 };

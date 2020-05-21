@@ -346,6 +346,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.addressFi}
                             onChange={updateStopProperty!('addressFi')}
                             validationResult={stopInvalidPropertiesMap['addressFi']}
+                            data-cy='addressFi'
                         />
                         <InputContainer
                             label='OSOITE RUOTSIKSI'
@@ -353,6 +354,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.addressSw}
                             onChange={updateStopProperty!('addressSw')}
                             validationResult={stopInvalidPropertiesMap['addressSw']}
+                            data-cy='addressSw'
                         />
                     </div>
                     <div className={s.flexRow}>

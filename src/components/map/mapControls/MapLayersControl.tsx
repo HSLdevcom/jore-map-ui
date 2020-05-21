@@ -6,22 +6,15 @@ import { IoMdMap } from 'react-icons/io';
 import { Checkbox, TransitToggleButtonBar } from '~/components/controls/';
 import InputContainer from '~/components/controls/InputContainer';
 import TransitType from '~/enums/transitType';
-import MapStore, { MapFilter, NodeLabel } from '~/stores/mapStore';
+import MapStore, { MapBaseLayer, MapFilter, NodeLabel } from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import { RadioButton } from '../../controls';
 import * as s from './mapLayersControl.scss';
 
-interface IMapLayersControlState {
-    selectedMapOption: option;
-    show: boolean;
-}
-
 interface IMapLayersControlProps {}
 
-enum option {
-    MAP = 'Kartta',
-    SATELLITE = 'Satelliitti',
-    TERRAIN = 'Maasto'
+interface IMapLayersControlState {
+    show: boolean;
 }
 
 @observer
@@ -29,8 +22,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
     constructor(props: any) {
         super(props);
         this.state = {
-            selectedMapOption: option.MAP,
-            show: false
+            show: false,
         };
     }
 
@@ -48,12 +40,6 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
 
     private toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => () => {
         MapStore.toggleNodeLabelVisibility(nodeLabel);
-    };
-
-    private toggleMapOption = (option: option) => () => {
-        this.setState({
-            selectedMapOption: option
-        });
     };
 
     private selectDate = (date: Date) => {
@@ -74,6 +60,8 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                 </div>
             );
         }
+
+        const visibleMapBaseLayer = MapStore.visibleMapBaseLayer;
 
         return (
             <div
@@ -179,19 +167,14 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                     <div className={s.sectionDivider} />
                     <div className={s.inputTitle}>KARTTA</div>
                     <RadioButton
-                        onClick={this.toggleMapOption(option.MAP)}
-                        checked={this.state.selectedMapOption === option.MAP}
-                        text={option.MAP}
+                        onClick={() => MapStore.setVisibleMapBaseLayer(MapBaseLayer.DIGITRANSIT)}
+                        checked={visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT}
+                        text={MapBaseLayer.DIGITRANSIT}
                     />
                     <RadioButton
-                        onClick={this.toggleMapOption(option.SATELLITE)}
-                        checked={this.state.selectedMapOption === option.SATELLITE}
-                        text={option.SATELLITE}
-                    />
-                    <RadioButton
-                        onClick={this.toggleMapOption(option.TERRAIN)}
-                        checked={this.state.selectedMapOption === option.TERRAIN}
-                        text={option.TERRAIN}
+                        onClick={() => MapStore.setVisibleMapBaseLayer(MapBaseLayer.AERIAL)}
+                        checked={visibleMapBaseLayer === MapBaseLayer.AERIAL}
+                        text={MapBaseLayer.AERIAL}
                     />
                 </div>
             </div>

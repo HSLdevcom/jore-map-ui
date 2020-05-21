@@ -76,6 +76,10 @@ class RoutePathStore {
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
+        reaction(
+            () => this._routePath && this._routePath.routePathLinks.length,
+            _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+        );
     }
 
     @computed
@@ -220,9 +224,9 @@ class RoutePathStore {
                 ) {
                     validationResult = {
                         isValid: false,
-                        errorMessage: `Reitinsuunta menee päällekkäin olemassa olevan reitinsuunnan kanssa: ${
+                        errorMessage: `Päällekkäisyys olemassa olevan reitinsuunnan kanssa: suunta ${
                             existingRp.direction
-                        } | ${toDateString(existingRp.startDate)} | ${toDateString(
+                        } | ${toDateString(existingRp.startDate)} - ${toDateString(
                             existingRp.endDate
                         )}.`,
                     };
@@ -359,6 +363,7 @@ class RoutePathStore {
         this._highlightedListItemId = id;
     };
 
+    // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
     @action
     public setToolHighlightedNodeIds = (nodeIds: string[]) => {
         return (this._toolHighlightedNodeIds = nodeIds);

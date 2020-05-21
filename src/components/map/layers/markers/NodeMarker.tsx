@@ -14,14 +14,15 @@ import * as s from './nodeMarker.scss';
 
 enum NodeHighlightColor {
     BLUE, // default color
-    GREEN
+    GREEN,
 }
 
 interface INodeMarkerProps {
     coordinates: L.LatLng;
     nodeType: NodeType;
-    isHighlighted: boolean;
     nodeLocationType: NodeLocationType;
+    isHighlighted?: boolean;
+    highlightColor?: NodeHighlightColor;
     nodeId?: string;
     shortId?: string;
     hastusId?: string;
@@ -31,7 +32,6 @@ interface INodeMarkerProps {
     isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
-    highlight?: { isHighlighted: boolean; color?: NodeHighlightColor };
     forcedVisibleNodeLabels?: NodeLabel[];
     hasHighZIndex?: boolean;
     markerClasses?: string[];
@@ -51,9 +51,9 @@ const NODE_LABEL_MIN_ZOOM = 14;
 class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
-        highlight: { isHighlighted: false },
         forcedVisibleNodeLabels: [],
-        markerClasses: []
+        markerClasses: [],
+        highlightColor: NodeHighlightColor.BLUE,
     };
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
@@ -95,7 +95,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
             nodeLocationType,
             isDisabled,
             isTimeAlignmentStop,
-            isHighlighted
+            isHighlighted,
+            highlightColor,
         } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
@@ -104,13 +105,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 nodeLocationType,
                 isNodeDisabled: isDisabled,
                 isNodeTimeAlignment: isTimeAlignmentStop,
-                isNodeHighlighted: isHighlighted
+                isNodeHighlighted: isHighlighted,
             })
         );
 
-        const highlight = this.props.highlight;
-        if (highlight && highlight.isHighlighted) {
-            switch (highlight.color) {
+        if (isHighlighted) {
+            switch (highlightColor) {
                 case NodeHighlightColor.BLUE: {
                     res.push(s.highlightBlue);
                     break;
@@ -156,7 +156,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderNodeMarkerIcon = ({
-        nodeLocationType
+        nodeLocationType,
     }: {
         nodeLocationType: NodeLocationType;
     }) => {
@@ -169,7 +169,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     nodeLocationType === 'coordinates'
                         ? {
                               borderColor: this.props.color,
-                              backgroundColor: this.props.color
+                              backgroundColor: this.props.color,
                           }
                         : undefined
                 }
@@ -179,7 +179,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             </div>,
             {
                 className: nodeBaseClass,
-                popupOffset: -15
+                popupOffset: -15,
             }
         );
     };
@@ -194,7 +194,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             onContextMenu,
             onMouseOver,
             onMouseOut,
-            onMoveMarker
+            onMoveMarker,
         } = this.props;
         return (
             <LeafletMarker

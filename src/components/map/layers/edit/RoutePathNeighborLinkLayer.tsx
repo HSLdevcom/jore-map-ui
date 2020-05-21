@@ -7,7 +7,7 @@ import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/Ev
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
-import { MapStore, NodeLabel } from '~/stores/mapStore';
+import { NodeLabel } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
 import NodeUtils from '~/utils/NodeUtils';
@@ -22,7 +22,6 @@ const UNUSED_NEIGHBOR_COLOR_HIGHLIGHT = '#c40608';
 
 interface IRoutePathLayerProps {
     routePathStore?: RoutePathStore;
-    mapStore?: MapStore;
     popupStore?: PopupStore;
 }
 
@@ -35,7 +34,7 @@ interface PolylineRefs {
     [key: string]: any;
 }
 
-@inject('routePathStore', 'mapStore', 'popupStore')
+@inject('routePathStore', 'popupStore')
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     private linkListener: IReactionDisposer;
@@ -43,7 +42,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         super(props);
         this.state = {
             highlightedRoutePathLinkId: '',
-            polylineRefs: {}
+            polylineRefs: {},
         };
         this.linkListener = reaction(
             () => this.props.routePathStore!.neighborLinks.length,
@@ -57,24 +56,24 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
 
     private initializePolylineRefs = () => {
         const polylineRefs = {};
-        this.props.routePathStore!.neighborLinks.forEach(neighborLink => {
+        this.props.routePathStore!.neighborLinks.forEach((neighborLink) => {
             polylineRefs[neighborLink.routePathLink.id] = React.createRef<any>();
         });
         this.setState({
-            polylineRefs
+            polylineRefs,
         });
     };
 
     private showNodePopup = (node: INode, routePaths: IRoutePath[]) => {
         const popupData: INodeUsagePopupData = {
-            routePaths
+            routePaths,
         };
         const nodePopup: IPopupProps = {
             type: 'nodeUsagePopup',
             data: popupData,
             coordinates: node!.coordinates,
             isCloseButtonVisible: false,
-            isAutoCloseOn: true
+            isAutoCloseOn: true,
         };
         if (routePaths.length > 0) {
             this.props.popupStore!.showPopup(nodePopup);
@@ -84,7 +83,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
     private renderNeighborNode = (node: INode, neighborLink: INeighborLink, key: number) => {
         const onNeighborLinkClick = () => {
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
-                neighborLink
+                neighborLink,
             };
             EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
@@ -98,7 +97,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isHighlighted={this.props.mapStore!.selectedNodeId === node.id}
                 markerClasses={[s.neighborMarker]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
                 color={this.getNeighborLinkColor(neighborLink)}
@@ -107,13 +105,13 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 onMouseOver={() =>
                     this.highlightRoutePathLink({
                         id: neighborLink.routePathLink.id,
-                        isHighlighted: true
+                        isHighlighted: true,
                     })
                 }
                 onMouseOut={() =>
                     this.highlightRoutePathLink({
                         id: neighborLink.routePathLink.id,
-                        isHighlighted: false
+                        isHighlighted: false,
                     })
                 }
                 hasHighZIndex={this.isNeighborLinkHighlighted(neighborLink)}
@@ -148,7 +146,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
     private renderNeighborLink = (neighborLink: INeighborLink) => {
         const onNeighborLinkClick = () => {
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
-                neighborLink
+                neighborLink,
             };
             EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
@@ -158,13 +156,13 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 onMouseOver={() =>
                     this.highlightRoutePathLink({
                         id: neighborLink.routePathLink.id,
-                        isHighlighted: true
+                        isHighlighted: true,
                     })
                 }
                 onMouseOut={() =>
                     this.highlightRoutePathLink({
                         id: neighborLink.routePathLink.id,
-                        isHighlighted: false
+                        isHighlighted: false,
                     })
                 }
                 positions={neighborLink.routePathLink.geometry}
@@ -179,7 +177,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
 
     private highlightRoutePathLink = ({
         id,
-        isHighlighted
+        isHighlighted,
     }: {
         id: string;
         isHighlighted: boolean;
@@ -187,14 +185,14 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         if (isHighlighted) {
             if (this.state.highlightedRoutePathLinkId !== id) {
                 this.setState({
-                    highlightedRoutePathLinkId: id
+                    highlightedRoutePathLinkId: id,
                 });
                 this.state.polylineRefs[id]!.current.leafletElement.bringToFront();
             }
         } else {
             if (this.state.highlightedRoutePathLinkId === id) {
                 this.setState({
-                    highlightedRoutePathLinkId: ''
+                    highlightedRoutePathLinkId: '',
                 });
             }
         }
@@ -210,7 +208,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                     : neighborLink.routePathLink.startNode;
             return [
                 this.renderNeighborNode(nodeToRender, neighborLink, index),
-                this.renderNeighborLink(neighborLink)
+                this.renderNeighborLink(neighborLink),
             ];
         });
     }

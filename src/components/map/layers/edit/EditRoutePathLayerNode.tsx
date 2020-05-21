@@ -4,7 +4,7 @@ import StartNodeType from '~/enums/startNodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
-    INodeClickParams
+    INodeClickParams,
 } from '~/helpers/EventHelper';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
@@ -37,7 +37,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 isDisabled,
                 node: rpLink.startNode,
                 linkOrderNumber: rpLink.orderNumber,
-                key: `node-${index}`
+                key: `node-${index}`,
             });
         });
 
@@ -47,7 +47,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 isDisabled: false, // Last routePath node can't be disabled
                 node: lastRoutePathLink.endNode,
                 linkOrderNumber: lastRoutePathLink.orderNumber,
-                key: 'lastNode'
+                key: 'lastNode',
             })
         );
 
@@ -58,7 +58,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         node,
         linkOrderNumber,
         isDisabled,
-        key
+        key,
     }: {
         node: INode;
         linkOrderNumber: number;
@@ -70,9 +70,9 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
         let isNodeHighlighted;
         if (routePathStore!.highlightedListItemId) {
-            isNodeHighlighted = routePathStore!.highlightedListItemId === node.id;
+            isNodeHighlighted = routePathStore!.highlightedListItemId === node.internalId;
         } else {
-            isNodeHighlighted = routePathStore!.extendedListItemId === node.id;
+            isNodeHighlighted = routePathStore!.extendedListItemId === node.internalId;
         }
 
         // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
@@ -83,28 +83,26 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             onNodeClick = () => {
                 const clickParams: IEditRoutePathLayerNodeClickParams = {
                     node,
-                    linkOrderNumber
+                    linkOrderNumber,
                 };
                 EventHelper.trigger('editRoutePathLayerNodeClick', clickParams);
             };
         } else {
             onNodeClick = () => {
-                this.props.setExtendedListItem(node.id);
+                this.props.setExtendedListItem(node.internalId);
                 const clickParams: INodeClickParams = { node };
                 EventHelper.trigger('nodeClick', clickParams);
             };
         }
 
-        const highlight = {
-            isHighlighted: false,
-            color: NodeHighlightColor.BLUE
-        };
+        let isHighlighted = false;
+        let highlightColor;
         if (isNodeHighlightedByTool) {
-            highlight.isHighlighted = true;
-            highlight.color = NodeHighlightColor.GREEN;
+            isHighlighted = true;
+            highlightColor = NodeHighlightColor.GREEN;
         } else if (isNodeHighlighted) {
-            highlight.isHighlighted = true;
-            highlight.color = NodeHighlightColor.BLUE;
+            isHighlighted = true;
+            highlightColor = NodeHighlightColor.BLUE;
         }
 
         return (
@@ -116,10 +114,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isHighlighted={this.props.mapStore!.selectedNodeId === node.id}
+                isHighlighted={isHighlighted}
+                highlightColor={highlightColor}
                 isDisabled={isDisabled}
                 onClick={onNodeClick}
-                highlight={highlight}
                 isClickDisabled={isClickDisabled}
             />
         );

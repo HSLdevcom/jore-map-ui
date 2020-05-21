@@ -47,7 +47,7 @@ class Toolbar extends React.Component {
                 <div className={s.toolbarRow}>
                     {this.renderViewSpecificTools()}
                     {this.renderToolbarBlock([
-                        <ToolbarCommonButtons hasWriteAccess={LoginStore!.hasWriteAccess} />
+                        <ToolbarCommonButtons hasWriteAccess={LoginStore!.hasWriteAccess} />,
                     ])}
                 </div>
                 <ToolbarHelp />

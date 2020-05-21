@@ -11,7 +11,7 @@ interface IRoutePathToCopy {
     routePath: IRoutePath;
 }
 
-class CopyRoutePathStore {
+class RoutePathCopyStore {
     @observable private _lineId: string | null;
     @observable private _routeId: string | null;
     @observable private _transitType: TransitType;
@@ -114,6 +114,6 @@ class CopyRoutePathStore {
     };
 }
 
-export default new CopyRoutePathStore();
+export default new RoutePathCopyStore();
 
-export { CopyRoutePathStore, IRoutePathToCopy };
+export { RoutePathCopyStore, IRoutePathToCopy };

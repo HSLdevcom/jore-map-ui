@@ -4,6 +4,7 @@ type NodeKeys = keyof INode;
 type INodePropertyCodeList = { [key in NodeKeys]: string };
 const nodePropertyCodeList: INodePropertyCodeList = {
     id: '',
+    internalId: '',
     shortIdLetter: 'LYHYTTUNNUS (2 kirj.)',
     shortIdString: 'LYHYTTUNNUS (4 num)',
     type: 'TYYPPI',
@@ -18,7 +19,6 @@ const nodePropertyCodeList: INodePropertyCodeList = {
     beginningOfNodeId: '',
     idSuffix: '',
     transitType: '',
-    isInternal: '',
 };
 
 type StopKeys = keyof IStop;
