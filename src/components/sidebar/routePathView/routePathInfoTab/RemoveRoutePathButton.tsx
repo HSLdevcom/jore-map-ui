@@ -4,6 +4,7 @@ import { Button } from '~/components/controls';
 import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
+import { ErrorStore } from '~/stores/errorStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import { toDateString, toMidnightDate } from '~/utils/dateUtils';
@@ -13,9 +14,10 @@ interface IRemoveRoutePathButtonProps {
     routePathStore?: RoutePathStore;
     alertStore?: AlertStore;
     confirmStore?: ConfirmStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('routePathStore', 'alertStore', 'confirmStore')
+@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
 @observer
 class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps> {
     private removeRoutePath = () => {
@@ -29,16 +31,19 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             onConfirm: async () => {
                 // TODO: use <SaveButton /> to get saveLock logic
                 // TODO: show saved notification
-                await RoutePathService.removeRoutePath({
-                    routeId: routePath.routeId,
-                    direction: routePath.direction,
-                    startDate: routePath.startDate,
-                });
-                // TODO: if status OK, only then show alert:
-                this.props.alertStore!.setFadeMessage({ message: 'Reitinsuunta poistettu!' });
-                NavigationUtils.openRouteView({
-                    routeId: routePath.routeId,
-                });
+                try {
+                    await RoutePathService.removeRoutePath({
+                        routeId: routePath.routeId,
+                        direction: routePath.direction,
+                        startDate: routePath.startDate,
+                    });
+                    this.props.alertStore!.setFadeMessage({ message: 'Reitinsuunta poistettu!' });
+                    NavigationUtils.openRouteView({
+                        routeId: routePath.routeId,
+                    });
+                } catch (e) {
+                    this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+                }
             },
         });
     };
