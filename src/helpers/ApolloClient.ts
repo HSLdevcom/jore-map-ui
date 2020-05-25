@@ -11,7 +11,7 @@ import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 
 const cache = new InMemoryCache({
-    // Let apollo-client know which object property to use as caching key (always use primarykey, if there is no primarykey available, use 'no-cache' in Apollo's query parameters)
+    // Let apollo-client know which object property to use as caching key (always use primarykey)
     dataIdFromObject: (obj: any) => {
         if (obj.__typename === 'Reitinsuunta') {
             return `${obj.reitunnus}${obj.suusuunta}${obj.suuvoimast}`;
