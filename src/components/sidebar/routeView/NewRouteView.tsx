@@ -144,7 +144,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                     onClick={this.save}
                     disabled={!isRouteFormValid}
                     savePreventedNotification={savePreventedNotification}
-                    isWarningButton={!isSaveAllowed}
+                    type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
                 >
                     Luo uusi reitti
                 </SaveButton>

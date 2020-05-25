@@ -12,7 +12,7 @@ enum RequestMethod {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',
-    DELETE = 'DELETE'
+    DELETE = 'DELETE',
 }
 
 interface IAuthorizationRequest {
@@ -40,12 +40,13 @@ class HttpUtils {
     };
 
     public static deleteObject = async (endpointPath: EndpointPath, object: any) => {
+        ApolloClient.clearStore();
         return await HttpUtils.sendBackendRequest(RequestMethod.DELETE, endpointPath, object);
     };
 
     public static authorizeUsingCode = async ({
         code,
-        isTesting
+        isTesting,
     }: {
         code: string;
         isTesting: boolean;
@@ -93,8 +94,8 @@ class HttpUtils {
                 credentials: credentials ? credentials : undefined,
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                }
+                    'Content-Type': 'application/json',
+                },
             });
 
             if (response.status >= 200 && response.status < 300) {
@@ -113,14 +114,14 @@ class HttpUtils {
                 error = {
                     name: 'Forbidden',
                     errorCode: FetchStatusCode.FORBIDDEN,
-                    message: 'Kielletty toimenpide'
+                    message: 'Kielletty toimenpide',
                 };
             } else if (response.status === 550) {
                 LoginStore!.setIsSaveLockEnabled(true);
                 error = {
                     name: 'Save prevented',
                     errorCode: response.status,
-                    message: httpStatusDescriptionCodeList[550]
+                    message: httpStatusDescriptionCodeList[550],
                 };
             } else {
                 const responseText = await response.text();
@@ -128,14 +129,14 @@ class HttpUtils {
                 error = {
                     name: 'Failed to fetch',
                     errorCode: response.status,
-                    message: errorMessage
+                    message: errorMessage,
                 };
             }
         } catch {
             error = {
                 name: 'Connectivity error',
                 errorCode: FetchStatusCode.CONNECTION_ERROR,
-                message: 'Yhteysongelma'
+                message: 'Yhteysongelma',
             };
         }
 
@@ -154,7 +155,7 @@ const _format = (obj: object) => {
 
     return {
         ...obj,
-        ..._arrayToObject(dates)
+        ..._arrayToObject(dates),
     };
 };
 

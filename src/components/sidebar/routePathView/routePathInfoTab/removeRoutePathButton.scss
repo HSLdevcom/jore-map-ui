@@ -1,0 +1,17 @@
+@import '../../../shared/styles/common';
+
+.removeButton {
+    margin-top: 15px;
+}
+
+// User can hover for title if button is disabled
+.disabledHoverButton {
+    background-color: $disabledGrey;
+    cursor: pointer;
+    color: #fff;
+}
+
+.disabledHoverButton:hover {
+    color: #fff;
+    background-color: darken($disabledGrey, 10);
+}

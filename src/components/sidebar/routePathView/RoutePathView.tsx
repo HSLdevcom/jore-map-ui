@@ -439,7 +439,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             onClick={this.showSavePrompt}
                             disabled={isSaveAllowed && savePreventedNotification.length > 0}
                             savePreventedNotification={savePreventedNotification}
-                            isWarningButton={!isSaveAllowed}
+                            type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
                         >
                             {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
                         </SaveButton>

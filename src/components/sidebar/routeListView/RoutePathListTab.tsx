@@ -471,7 +471,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         onClick={() => this.showSavePrompt()}
                         disabled={isSaveButtonDisabled}
                         savePreventedNotification={savePreventedNotification}
-                        isWarningButton={!isSaveAllowed}
+                        type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
                     >
                         Tallenna muutokset
                     </SaveButton>

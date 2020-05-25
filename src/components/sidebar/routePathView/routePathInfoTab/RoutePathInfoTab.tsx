@@ -9,6 +9,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
+import RemoveRoutePathButton from './RemoveRoutePathButton';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
@@ -102,13 +103,13 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     };
 
     render() {
+        const routePathStore = this.props.routePathStore!;
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating =
-            !this.props.routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
+        const isUpdating = !routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const onChange = this.onChangeRoutePathProperty;
         const routePath = this.props.routePath;
-        const routePathPrimaryKeyValidationResult = this.props.routePathStore!.invalidPropertiesMap[
+        const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
             'routePathPrimaryKey'
         ];
         return (
@@ -237,6 +238,11 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 value={routePath.modifiedOn}
                             />
                         </div>
+                        {!routePathStore.isNewRoutePath && (
+                            <div className={s.flexRow}>
+                                <RemoveRoutePathButton />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
