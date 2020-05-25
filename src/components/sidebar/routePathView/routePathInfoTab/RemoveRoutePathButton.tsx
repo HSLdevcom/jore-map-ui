@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { Button } from '~/components/controls';
+import SaveButton from '~/components/shared/SaveButton';
+import constants from '~/constants/constants';
 import RoutePathService from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -17,6 +18,8 @@ interface IRemoveRoutePathButtonProps {
     errorStore?: ErrorStore;
 }
 
+const ENVIRONMENT = constants.ENVIRONMENT;
+
 @inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
 @observer
 class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps> {
@@ -29,8 +32,6 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                 routePath.endDate
             )})?`,
             onConfirm: async () => {
-                // TODO: use <SaveButton /> to get saveLock logic
-                // TODO: show saved notification
                 try {
                     await RoutePathService.removeRoutePath({
                         routeId: routePath.routeId,
@@ -55,14 +56,21 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         const currentDatePlusOne = toMidnightDate(new Date());
         currentDatePlusOne.setDate(currentDatePlusOne.getDate() + 1);
         const isRoutePathInFuture = routePath.startDate.getTime() >= currentDatePlusOne.getTime();
+        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
+        const savePreventedNotification = isSaveAllowed
+            ? ''
+            : 'Reitinsuunnan poistaminen ei ole vielä valmis. Voit kokeilla poistamista dev-ympäristössä. Jos haluat poistaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
-            <Button
+            <SaveButton
                 className={
                     (s.removeButton, !isRoutePathInFuture ? s.disabledHoverButton : undefined)
                 }
                 disabled={isEditingDisabled}
+                savePreventedNotification={savePreventedNotification}
+                type='deleteButton'
                 onClick={isRoutePathInFuture ? this.removeRoutePath : () => void 0}
                 isWide={false}
+                hasPadding={false}
                 title={
                     !isRoutePathInFuture
                         ? 'Vain tulevaisuudessa olevia reitinsuuntia voi poistaa.'
@@ -70,7 +78,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                 }
             >
                 Poista reitinsuunta
-            </Button>
+            </SaveButton>
         );
     }
 }
