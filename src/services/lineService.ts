@@ -14,7 +14,7 @@ class LineService {
     public static fetchLine = async (lintunnus: string): Promise<ILine> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineQuery(),
-            variables: { lineId: lintunnus }
+            variables: { lineId: lintunnus },
         });
         return LineFactory.mapExternalLine(queryResult.data.linjaByLintunnus);
     };
@@ -41,7 +41,7 @@ class LineService {
     } | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineAndRoutesQuery(),
-            variables: { lineId: lintunnus }
+            variables: { lineId: lintunnus },
         });
         const externalLine = queryResult.data.linjaByLintunnus;
         if (!externalLine) return null;
@@ -50,13 +50,13 @@ class LineService {
             line: LineFactory.mapExternalLine(externalLine),
             routes: externalRoutes.map((externalRoute: IExternalRoute) =>
                 RouteFactory.mapExternalRoute(externalRoute)
-            )
+            ),
         };
     };
 
     public static fetchAllSearchLines = async (): Promise<ISearchLine[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllSearchLinesQuery()
+            query: GraphqlQueries.getAllSearchLinesQuery(),
         });
 
         return queryResult.data.allLinjas.nodes.map((linja: any) => {
@@ -67,7 +67,7 @@ class LineService {
     public static fetchSearchLine = async (lintunnus: string): Promise<ISearchLine> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getSearchLineQuery(),
-            variables: { lineId: lintunnus }
+            variables: { lineId: lintunnus },
         });
 
         return LineFactory.createSearchLine(queryResult.data.linjaByLintunnus);

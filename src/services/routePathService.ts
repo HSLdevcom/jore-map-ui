@@ -27,7 +27,6 @@ class RoutePathService {
                 direction,
                 startDate: Moment(startDate).format(),
             },
-            fetchPolicy: 'no-cache',
         });
         const externalRoutePath: IExternalRoutePath | null = queryResult.data.routePath;
         if (!externalRoutePath) return null;
@@ -46,7 +45,6 @@ class RoutePathService {
                 direction: routePathPrimaryKey.direction,
                 startDate: Moment(routePathPrimaryKey.startDate).format(),
             },
-            fetchPolicy: 'no-cache',
         });
         const nodes: IExternalRoutePathLink[] =
             queryResult.data.routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
