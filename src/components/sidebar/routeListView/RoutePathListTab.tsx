@@ -24,7 +24,7 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
-import { getMaxDate, isCurrentTimeWithinTimeSpan } from '~/utils/dateUtils';
+import { getMaxDate, isCurrentTimeWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
@@ -135,6 +135,12 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             : this.props.originalRoutePaths;
     };
 
+    /**
+     * Updates groupedRoutePathsToDisplay with the following way:
+     * 1) Gets all groupedRoutePaths from this.getGroupedRoutePaths()
+     * 2) fetches stop names for groupedRoutePathsToDisplay
+     * 3) updates allGroupedRoutePaths, groupedRoutePathsToDisplay
+     */
     private updateGroupedRoutePathsToDisplay = () => {
         const routePaths = this.getRoutePaths();
         if (routePaths.length === 0) return;
@@ -142,15 +148,17 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
         let groupedRoutePathsToDisplay = allGroupedRoutePaths;
         if (!this.props.areAllRoutePathsVisible) {
-            let lastGroupInFutureIndex = 0;
+            let notOldRoutePathCount = 0;
             allGroupedRoutePaths.some((groupedRp: IRoutePath[], index: number) => {
-                lastGroupInFutureIndex = index;
-                return (
-                    groupedRp[0].startDate.getTime() < new Date().getTime() &&
-                    groupedRp[0].endDate.getTime() < new Date().getTime()
-                );
+                const isNotOldRoutePath =
+                    groupedRp[0].startDate.getTime() >= toMidnightDate(new Date()).getTime() ||
+                    groupedRp[0].endDate.getTime() >= toMidnightDate(new Date()).getTime();
+                if (isNotOldRoutePath) {
+                    notOldRoutePathCount += 1;
+                }
+                return !isNotOldRoutePath;
             });
-            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(0, lastGroupInFutureIndex);
+            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(0, notOldRoutePathCount);
         }
         this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
@@ -162,9 +170,9 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     /**
      * Creates routePath groups (1-2 routePaths in a group) with the following order:
-     * - routePaths paired according to routePathMassEditStore.selectedRoutePathIdPairs
-     * - remaining routePaths with date > getMaxDate in single groups
-     * - remaining routePaths will be grouped by date
+     * 1) routePaths paired according to routePathMassEditStore.selectedRoutePathIdPairs
+     * 2) remaining routePaths with date > getMaxDate in single groups
+     * 3) remaining routePaths grouped by date
      */
     private getGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
         let routePathsToGroup = _.cloneDeep(routePaths);
