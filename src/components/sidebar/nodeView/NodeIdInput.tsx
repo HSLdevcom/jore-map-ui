@@ -80,7 +80,7 @@ class NodeIdInput extends React.Component<INodeIdInputProps> {
                             selected={node.idSuffix}
                             items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
                             validationResult={invalidPropertiesMap['idSuffix']}
-                            data-cy='idSuffix'
+                            data-cy={nodeIdSuffixOptions.length > 0 ? 'idSuffix' : ''}
                         />
                     )}
                 </div>
