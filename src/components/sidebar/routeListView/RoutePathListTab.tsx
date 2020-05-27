@@ -27,7 +27,7 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
-import { getMaxDate, isCurrentTimeWithinTimeSpan } from '~/utils/dateUtils';
+import { getMaxDate, isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
@@ -296,7 +296,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         if (!isAnyRoutePathVisible) {
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
-                    if (isCurrentTimeWithinTimeSpan(routePath.startDate, routePath.endDate)) {
+                    if (isCurrentDateWithinTimeSpan(routePath.startDate, routePath.endDate)) {
                         this.props.routePathLayerStore!.setRoutePathVisibility({
                             id: routePath.internalId,
                             isVisible: true,

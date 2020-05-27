@@ -32,8 +32,8 @@ const isDateWithinTimeSpan = ({
     );
 };
 
-// TODO: refactor to use isDateWithinTimeSpan, rename as isCurrentDateWithinTimeSpan
-const isCurrentTimeWithinTimeSpan = (a: Date, b: Date) => {
+// TODO: refactor to use isDateWithinTimeSpan
+const isCurrentDateWithinTimeSpan = (a: Date, b: Date) => {
     return Moment(a).isBefore(Moment()) && Moment(b).isAfter(Moment());
 };
 
@@ -60,7 +60,7 @@ export {
     toMidnightDate,
     areDatesEqual,
     isDateWithinTimeSpan,
-    isCurrentTimeWithinTimeSpan,
+    isCurrentDateWithinTimeSpan,
     getMaxDate,
     getMinDate,
 };

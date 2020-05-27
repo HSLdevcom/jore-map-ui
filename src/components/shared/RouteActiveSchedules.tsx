@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import ISchedule from '~/models/ISchedule';
-import { isCurrentTimeWithinTimeSpan, toDateString } from '~/utils/dateUtils';
+import { isCurrentDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
 import * as s from './routeActiveSchedules.scss';
 
 interface IRouteActiveSchedulesProps {
@@ -14,7 +14,7 @@ class RouteActiveSchedules extends React.Component<IRouteActiveSchedulesProps> {
     render() {
         const { header, activeSchedules, confirmMessage } = this.props;
         const currentScheduleIndex = activeSchedules.findIndex((schedule: ISchedule) => {
-            return isCurrentTimeWithinTimeSpan(schedule.startDate, schedule.endDate);
+            return isCurrentDateWithinTimeSpan(schedule.startDate, schedule.endDate);
         });
         let currentSchedule: ISchedule | null = null;
         const futureSchedules: ISchedule[] = _.cloneDeep(activeSchedules);

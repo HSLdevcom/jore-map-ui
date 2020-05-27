@@ -28,7 +28,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import { isCurrentTimeWithinTimeSpan } from '~/utils/dateUtils';
+import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import Loader from '../../shared/loader/Loader';
 import SearchInput from '../../shared/searchView/SearchInput';
@@ -157,7 +157,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             let hasActiveRoutePath: boolean = false;
             missingRoutes.forEach((route: IRoute) => {
                 route.routePaths.forEach((rp: IRoutePath, index: number) => {
-                    if (isCurrentTimeWithinTimeSpan(rp.startDate, rp.endDate)) {
+                    if (isCurrentDateWithinTimeSpan(rp.startDate, rp.endDate)) {
                         hasActiveRoutePath = true;
                     }
                 });

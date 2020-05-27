@@ -16,7 +16,7 @@ import subSites from '~/routing/subSites';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
-import { getMaxDate, isCurrentTimeWithinTimeSpan, toDateString } from '~/utils/dateUtils';
+import { getMaxDate, isCurrentDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
@@ -172,7 +172,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 </div>
                 <div>
                     {routePaths.map((routePath: IRoutePath) => {
-                        const shouldHighlightRoutePath = isCurrentTimeWithinTimeSpan(
+                        const shouldHighlightRoutePath = isCurrentDateWithinTimeSpan(
                             routePath.startDate,
                             routePath.endDate
                         );
