@@ -4,17 +4,20 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
 import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
+import ISchedule from '~/models/ISchedule';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import RoutePathService from '~/services/routePathService';
+import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -24,7 +27,7 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
-import { getMaxDate, isCurrentTimeWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
+import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
@@ -301,7 +304,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         if (!isAnyRoutePathVisible) {
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
-                    if (isCurrentTimeWithinTimeSpan(routePath.startDate, routePath.endDate)) {
+                    if (isCurrentDateWithinTimeSpan(routePath.startDate, routePath.endDate)) {
                         this.props.routePathLayerStore!.setRoutePathVisibility({
                             id: routePath.internalId,
                             isVisible: true,
@@ -312,8 +315,10 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         }
     };
 
-    private showSavePrompt = () => {
+    private showSavePrompt = async () => {
         const confirmStore = this.props.confirmStore;
+        const routeId = this.props.routeId;
+        const activeSchedules: ISchedule[] = await ScheduleService.fetchActiveSchedules(routeId);
         const saveModels: ISaveModel[] = [];
         this.props.routePathMassEditStore!.massEditRoutePaths!.forEach((massEditRp) => {
             const newRoutePath = _.cloneDeep(massEditRp.routePath);
@@ -335,10 +340,22 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             });
         });
         confirmStore!.openConfirm({
-            content: <SavePrompt models={saveModels} />,
+            content: (
+                <div>
+                    <SavePrompt models={saveModels} />
+                    <div className={s.sectionDivider} />
+                    <div className={s.routeActiveSchedulesWrapper}>
+                        <RouteActiveSchedules
+                            activeSchedules={activeSchedules}
+                            confirmMessage={`Haluatko varmasti tallentaa tehdyt reitin ${routeId} reitinsuuntien muutokset?`}
+                        />
+                    </div>
+                </div>
+            ),
             onConfirm: () => {
                 this.save();
             },
+            confirmButtonText: 'Tallenna',
         });
     };
 

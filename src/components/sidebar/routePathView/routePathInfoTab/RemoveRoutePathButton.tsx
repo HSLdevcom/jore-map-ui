@@ -1,8 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
 import constants from '~/constants/constants';
+import { IRoutePath } from '~/models';
+import ISchedule from '~/models/ISchedule';
 import RoutePathService from '~/services/routePathService';
+import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -23,14 +27,13 @@ const ENVIRONMENT = constants.ENVIRONMENT;
 @inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
 @observer
 class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps> {
-    private removeRoutePath = () => {
+    private removeRoutePath = async () => {
+        const activeSchedules: ISchedule[] = await ScheduleService.fetchActiveSchedules(
+            this.props.routePathStore!.routePath?.routeId!
+        );
         const routePath = this.props.routePathStore!.routePath!;
         this.props.confirmStore!.openConfirm({
-            content: `Haluatko varmasti poistaa reitinsuunnan ${routePath.originFi} - ${
-                routePath.destinationFi
-            } (${routePath.direction}, ${toDateString(routePath.startDate)} - ${toDateString(
-                routePath.endDate
-            )})?`,
+            content: this.renderConfirmContent(routePath, activeSchedules),
             onConfirm: async () => {
                 try {
                     await RoutePathService.removeRoutePath({
@@ -46,7 +49,34 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                     this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
                 }
             },
+            confirmButtonText: 'Poista reitinsuunta',
         });
+    };
+    private renderConfirmContent = (routePath: IRoutePath, activeSchedules: ISchedule[]) => {
+        let confirmMessage;
+        if (activeSchedules.length > 0) {
+            confirmMessage = `Oletko täysin varma, että haluat poistaa `;
+        } else {
+            confirmMessage = `Haluatko varmasti poistaa `;
+        }
+        confirmMessage += `reitinsuunnan ${routePath.originFi} - ${
+            routePath.destinationFi
+        }, suunta ${routePath.direction}, ${toDateString(routePath.startDate)} - ${toDateString(
+            routePath.endDate
+        )}?`;
+
+        const routeId = this.props.routePathStore!.routePath?.routeId!;
+        return (
+            <div>
+                <div className={s.routeActiveSchedulesWrapper}>
+                    <RouteActiveSchedules
+                        header={routeId}
+                        activeSchedules={activeSchedules}
+                        confirmMessage={confirmMessage}
+                    />
+                </div>
+            </div>
+        );
     };
     render() {
         const routePathStore = this.props.routePathStore!;

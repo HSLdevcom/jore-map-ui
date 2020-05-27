@@ -18,8 +18,27 @@ const areDatesEqual = (a: Date, b: Date) => {
     );
 };
 
-const isCurrentTimeWithinTimeSpan = (a: Date, b: Date) => {
-    return Moment(a).isBefore(Moment()) && Moment(b).isAfter(Moment());
+const isDateWithinTimeSpan = ({
+    date,
+    timeSpanStart,
+    timeSpanEnd,
+}: {
+    date: Date;
+    timeSpanStart: Date;
+    timeSpanEnd: Date;
+}) => {
+    return (
+        Moment(timeSpanStart).isBefore(Moment(date)) && Moment(timeSpanEnd).isAfter(Moment(date))
+    );
+};
+
+const isCurrentDateWithinTimeSpan = (a: Date, b: Date) => {
+    const currentDate = toMidnightDate(new Date());
+    return isDateWithinTimeSpan({
+        date: currentDate,
+        timeSpanStart: a,
+        timeSpanEnd: b,
+    });
 };
 
 const getMaxDate = () => {
@@ -44,7 +63,8 @@ export {
     toDateString,
     toMidnightDate,
     areDatesEqual,
-    isCurrentTimeWithinTimeSpan,
+    isDateWithinTimeSpan,
+    isCurrentDateWithinTimeSpan,
     getMaxDate,
     getMinDate,
 };

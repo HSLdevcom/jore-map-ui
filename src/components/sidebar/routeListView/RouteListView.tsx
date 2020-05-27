@@ -2,16 +2,19 @@ import classnames from 'classnames';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { IoIosCalendar } from 'react-icons/io';
 import { match } from 'react-router';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import TransitType from '~/enums/transitType';
 import { ILine, IRoute, IRoutePath } from '~/models';
+import ISchedule from '~/models/ISchedule';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
+import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -25,7 +28,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import { isCurrentTimeWithinTimeSpan } from '~/utils/dateUtils';
+import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import Loader from '../../shared/loader/Loader';
 import SearchInput from '../../shared/searchView/SearchInput';
@@ -154,7 +157,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
             let hasActiveRoutePath: boolean = false;
             missingRoutes.forEach((route: IRoute) => {
                 route.routePaths.forEach((rp: IRoutePath, index: number) => {
-                    if (isCurrentTimeWithinTimeSpan(rp.startDate, rp.endDate)) {
+                    if (isCurrentDateWithinTimeSpan(rp.startDate, rp.endDate)) {
                         hasActiveRoutePath = true;
                     }
                 });
@@ -286,6 +289,17 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         this.props.searchStore!.toggleTransitType(type);
     };
 
+    private openSchedules = async (routeItem: IRouteItem) => {
+        if (routeItem.areSchedulesVisible) {
+            this.props.routeListStore!.setActiveSchedules(routeItem.route.id, null);
+        } else {
+            const activeSchedules: ISchedule[] = await ScheduleService.fetchActiveSchedules(
+                routeItem.route.id
+            );
+            this.props.routeListStore!.setActiveSchedules(routeItem.route.id, activeSchedules);
+        }
+    };
+
     private _render = () => {
         const routeListStore = this.props.routeListStore!;
         const routeItems = routeListStore.routeItems;
@@ -338,6 +352,18 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                             hoverText={`Avaa linja ${route!.lineId}`}
                                             data-cy='routeId'
                                         />
+                                        <div
+                                            className={classnames(
+                                                s.schedulesLink,
+                                                routeItem.areSchedulesVisible
+                                                    ? s.activeSchedulesLink
+                                                    : undefined
+                                            )}
+                                            onClick={() => this.openSchedules(routeItem)}
+                                            title={`Näytä reitin ${route.id} aikataulutiedot`}
+                                        >
+                                            <IoIosCalendar />
+                                        </div>
                                     </SidebarHeader>
                                     <div className={s.routeItemWrapper}>
                                         <RouteItem
@@ -348,6 +374,8 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
                                             areAllRoutePathsVisible={
                                                 routeItem.areAllRoutePathsVisible
                                             }
+                                            areSchedulesVisible={routeItem.areSchedulesVisible}
+                                            activeSchedules={routeItem.activeSchedules}
                                         />
                                     </div>
                                 </div>

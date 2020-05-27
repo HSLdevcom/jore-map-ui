@@ -1,5 +1,6 @@
 import { action, computed, observable, reaction } from 'mobx';
 import { ILine, IRoute } from '~/models';
+import ISchedule from '~/models/ISchedule';
 import RoutePathLayerStore from './routePathLayerStore';
 import SearchStore from './searchStore';
 
@@ -7,6 +8,8 @@ interface IRouteItem {
     route: IRoute;
     selectedTabIndex: number; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
     areAllRoutePathsVisible: boolean; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
+    areSchedulesVisible: boolean;
+    activeSchedules: ISchedule[];
 }
 
 class RouteListStore {
@@ -56,6 +59,8 @@ class RouteListStore {
                     route,
                     selectedTabIndex: 0,
                     areAllRoutePathsVisible: false,
+                    areSchedulesVisible: false,
+                    activeSchedules: [],
                 };
             }
         );
@@ -93,6 +98,18 @@ class RouteListStore {
     @action
     public setRouteIdToEdit = (routeId: string | null) => {
         this._routeIdToEdit = routeId;
+    };
+
+    @action
+    public setActiveSchedules = (routeId: string, activeSchedules: ISchedule[] | null) => {
+        const routeItem = this.routeItems.find((item) => item.route.id === routeId)!;
+        if (activeSchedules) {
+            routeItem.areSchedulesVisible = true;
+            routeItem.activeSchedules = activeSchedules;
+        } else {
+            routeItem.areSchedulesVisible = false;
+            routeItem.activeSchedules = [];
+        }
     };
 
     @action

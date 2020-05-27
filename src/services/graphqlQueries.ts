@@ -455,6 +455,22 @@ const getViaShieldNameQuery = () => {
     `;
 };
 
+const getAllSchedulesQuery = () => {
+    return gql`
+        {
+            allAikataulus {
+                nodes {
+                    reitunnus
+                    lavoimast
+                    laviimvoi
+                    lakuka
+                    laviimpvm
+                }
+            }
+        }
+    `;
+};
+
 const lineQueryFields = `
     lintunnus
     linperusreitti
@@ -777,4 +793,5 @@ export default {
     getReservedShortIds,
     getViaNameQuery,
     getViaShieldNameQuery,
+    getAllSchedulesQuery,
 };
