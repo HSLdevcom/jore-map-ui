@@ -90,8 +90,8 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
                 className={classnames(s.sidebarHeaderView, className ? className : undefined)}
                 data-cy='sidebarHeaderView'
             >
-                <div className={s.topic}>{this.props.children}</div>
-                <div className={s.buttonContainer}>
+                <div className={s.containerLeft}>{this.props.children}</div>
+                <div className={s.containerRight}>
                     {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
                         <FiEdit3
                             onClick={this.onEditButtonClick}
