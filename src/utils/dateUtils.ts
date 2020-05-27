@@ -32,9 +32,13 @@ const isDateWithinTimeSpan = ({
     );
 };
 
-// TODO: refactor to use isDateWithinTimeSpan
 const isCurrentDateWithinTimeSpan = (a: Date, b: Date) => {
-    return Moment(a).isBefore(Moment()) && Moment(b).isAfter(Moment());
+    const currentDate = toMidnightDate(new Date());
+    return isDateWithinTimeSpan({
+        date: currentDate,
+        timeSpanStart: a,
+        timeSpanEnd: b,
+    });
 };
 
 const getMaxDate = () => {
