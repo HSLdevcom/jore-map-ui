@@ -33,9 +33,9 @@ describe('RoutePathView tests - write access user', () => {
                 }
                 cy.getTestElement('nameFi').clear().type(newInputValue);
 
-                cy.saveButtonShouldBeActive();
+                cy.saveButtonShouldBeActive('routePathSaveButton');
 
-                cy.getTestElement('saveButton').click();
+                cy.getTestElement('routePathSaveButton').click();
                 cy.getTestElement('savePromptView').should('exist');
                 cy.getTestElement('confirmButton').click();
 
@@ -62,9 +62,11 @@ describe('RoutePathView tests - write access user', () => {
                 (newInputValueDestinationShieldFi) => {
                     cy.saveButtonShouldBeActive();
 
-                    cy.getTestElement('saveButton').click();
+                    cy.getTestElement('routePathSaveButton').click();
                     cy.getTestElement('savePromptView').should('exist');
                     cy.getTestElement('confirmButton').click();
+
+                    cy.getTestElement('itemHeader').first().click();
 
                     cy.getTestElement('destinationFi1').contains(newInputValueDestinationFi1);
                     cy.getTestElement('destinationShieldFi').contains(

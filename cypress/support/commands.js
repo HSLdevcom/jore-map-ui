@@ -106,34 +106,18 @@ const hslLogin = (hasWriteAccess) => {
 };
 
 Cypress.Commands.add('saveButtonShouldBeActive', (selector) => {
-    if (selector) {
-        cy.getTestElement(selector)
-            .find('[data-cy=saveButton]')
-            .should(($el) => {
-                expect($el).not.have.css('pointer-events', 'none');
-            });
-    } else {
-        cy.getTestElement('saveButton').should(($el) => {
-            expect($el).not.have.css('pointer-events', 'none');
-        });
-    }
+    cy.getTestElement(selector ? selector : 'saveButton').should(($el) => {
+        expect($el).not.have.css('pointer-events', 'none');
+    });
 });
 
 Cypress.Commands.add('saveButtonShouldNotBeActive', (selector) => {
-    if (selector) {
-        cy.getTestElement(selector)
-            .find('[data-cy=saveButton]')
-            .should(($el) => {
-                expect($el).to.have.css('pointer-events', 'none');
-            });
-    } else {
-        cy.getTestElement('saveButton').should(($el) => {
-            expect($el).to.have.css('pointer-events', 'none');
-        });
-    }
+    cy.getTestElement(selector ? selector : 'saveButton').should(($el) => {
+        expect($el).to.have.css('pointer-events', 'none');
+    });
 });
 
-Cypress.Commands.add('centerMapToHelsinki', (selector) => {
+Cypress.Commands.add('centerMapToHelsinki', () => {
     cy.getTestElement('coordinateControlY').clear().type(60.1699);
     cy.getTestElement('coordinateControlX').clear().type(24.938).type('{enter}');
 });
