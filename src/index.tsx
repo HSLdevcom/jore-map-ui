@@ -16,6 +16,7 @@ import LineStore from './stores/lineStore';
 import LinkStore from './stores/linkStore';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
+import ModalStore from './stores/modalStore';
 import NavigationStore from './stores/navigationStore';
 import NetworkStore from './stores/networkStore';
 import NodeStore from './stores/nodeStore';
@@ -61,6 +62,7 @@ const stores = {
     linkStore: LinkStore,
     alertStore: AlertStore,
     codeListStore: CodeListStore,
+    modalStore: ModalStore,
     confirmStore: ConfirmStore,
     highlightEntityStore: HighlightEntityStore,
     navigationStore: NavigationStore,

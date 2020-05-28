@@ -15,9 +15,7 @@ class GeocodingService {
         coordinates: L.LatLng,
         lang: langOptions
     ): Promise<string> => {
-        const requestUrl = `${constants.OSM_REVERSE_GEOCODING_URL}?lat=${coordinates.lat}&lon=${
-            coordinates.lng
-        }&format=geojson&accept-language=${lang}`;
+        const requestUrl = `${constants.OSM_REVERSE_GEOCODING_URL}?lat=${coordinates.lat}&lon=${coordinates.lng}&format=geojson&accept-language=${lang}`;
 
         const response = await HttpUtils.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
 
@@ -35,16 +33,12 @@ class GeocodingService {
 
     public static makeDigitransitReverseGeocodingRequest = async ({
         coordinates,
-        searchResultCount
+        searchResultCount,
     }: {
         coordinates: L.LatLng;
         searchResultCount: number;
     }): Promise<IGeoJSONFeature[] | null> => {
-        const requestUrl = `${
-            constants.DIGITRANSIT_REVERSE_GEOCODING_URL
-        }?size=${searchResultCount}&point.lat=${coordinates.lat}&point.lon=${
-            coordinates.lng
-        }&zones=1`;
+        const requestUrl = `${constants.DIGITRANSIT_REVERSE_GEOCODING_URL}?size=${searchResultCount}&point.lat=${coordinates.lat}&point.lon=${coordinates.lng}&zones=1`;
 
         const response = await HttpUtils.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
         return response.features;
