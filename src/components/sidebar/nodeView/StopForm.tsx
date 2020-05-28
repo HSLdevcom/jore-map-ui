@@ -17,11 +17,11 @@ import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
-import { ConfirmStore } from '~/stores/confirmStore';
+import { ModalStore } from '~/stores/modalStore';
 import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
 import ShortIdInput from './ShortIdInput';
-import HastusAreaForm from './hastusAreaForm';
+import HastusAreaModal from './hastusAreaModal';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
@@ -40,8 +40,8 @@ interface IStopFormProps {
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     setCurrentStateIntoNodeCache?: () => void;
     codeListStore?: CodeListStore;
-    confirmStore?: ConfirmStore;
     nodeStore?: NodeStore;
+    modalStore?: ModalStore;
 }
 
 // Key: node id beginning, value: short id options array
@@ -63,7 +63,7 @@ const SHORT_ID_OPTIONS_MAP = {
     98: ['Mä'],
 };
 
-@inject('codeListStore', 'confirmStore', 'nodeStore')
+@inject('codeListStore', 'nodeStore', 'modalStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
     private createStopAreaDropdownItems = (stopAreas: IStopArea[]): IDropdownItem[] => {
@@ -140,18 +140,14 @@ class StopForm extends Component<IStopFormProps> {
             name: '',
         });
         this.props.nodeStore!.setOldHastusArea(null);
-        this.props.confirmStore!.openConfirm({
+        this.props.modalStore!.openModal({
             content: (
-                <HastusAreaForm
+                <HastusAreaModal
                     isNewHastusArea={true}
                     existingHastusAreas={this.props.hastusAreas}
+                    saveHastusArea={this.props.saveHastusArea!}
                 />
             ),
-            onConfirm: () => {
-                this.props.saveHastusArea!({ isNewHastusArea: true });
-            },
-            confirmButtonText: 'Tallenna',
-            confirmType: 'save',
         });
     };
 
@@ -161,20 +157,16 @@ class StopForm extends Component<IStopFormProps> {
         );
         this.props.nodeStore!.setHastusArea(currentHastusArea!);
         this.props.nodeStore!.setOldHastusArea(currentHastusArea!);
-        this.props.confirmStore!.openConfirm({
+        this.props.modalStore!.openModal({
             content: (
-                <HastusAreaForm
+                <HastusAreaModal
                     isNewHastusArea={false}
                     existingHastusAreas={this.props.hastusAreas.filter(
                         (hastusArea) => hastusArea.id !== currentHastusArea!.id
                     )}
+                    saveHastusArea={this.props.saveHastusArea!}
                 />
             ),
-            onConfirm: () => {
-                this.props.saveHastusArea!({ isNewHastusArea: false });
-            },
-            confirmButtonText: 'Tallenna',
-            confirmType: 'save',
         });
     };
 

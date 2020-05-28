@@ -6,7 +6,7 @@ import { IoMdInformationCircle } from 'react-icons/io';
 import { AlertStore, AlertType } from '~/stores/alertStore';
 import { Button } from '../controls';
 import Loader from '../shared/loader/Loader';
-import Modal from './Modal';
+import ModalContainer from './ModalContainer';
 import * as s from './alert.scss';
 
 interface IAlertProps {
@@ -25,7 +25,7 @@ class Alert extends React.Component<IAlertProps> {
         if (!alertStore.isAlertOpen) return null;
 
         return (
-            <Modal>
+            <ModalContainer>
                 <div className={s.alertView}>
                     {alertStore.type === AlertType.Success && (
                         <FaCheckCircle className={classnames(s.icon, s.success)} />
@@ -45,7 +45,7 @@ class Alert extends React.Component<IAlertProps> {
                         </Button>
                     )}
                 </div>
-            </Modal>
+            </ModalContainer>
         );
     }
 }

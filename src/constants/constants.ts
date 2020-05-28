@@ -54,23 +54,23 @@ const commonConstants = {
     OSM_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',
     DIGITRANSIT_REVERSE_GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/reverse',
     ADDRESS_SEARCH_RESULT_COUNT: 10,
-    LOCAL_STORAGE_KEY_PREFIX: `${environment}_jore_map_`
+    LOCAL_STORAGE_KEY_PREFIX: `${environment}_jore_map_`,
 };
 
 const developmentConstants = {
     ...commonConstants,
     API_URL: 'http://localhost:3040',
     GEOSERVER_URL: 'http://localhost:8080/geoserver',
-    FADE_ALERT_TIMEOUT: 500 // milliseconds
+    FADE_ALERT_TIMEOUT: 500, // milliseconds
 };
 
 const productionConstants = {
     ...commonConstants,
     API_URL: `${APP_URL}/api`,
     GEOSERVER_URL: `${APP_URL}/geoserver`,
-    FADE_ALERT_TIMEOUT: 2500 // milliseconds
+    FADE_ALERT_TIMEOUT: 2500, // milliseconds
 };
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 
-export default (isDevelopment ? developmentConstants : productionConstants);
+export default isDevelopment ? developmentConstants : productionConstants;
