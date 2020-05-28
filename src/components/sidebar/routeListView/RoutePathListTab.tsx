@@ -356,6 +356,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 this.save();
             },
             confirmButtonText: 'Tallenna',
+            confirmType: 'save',
         });
     };
 

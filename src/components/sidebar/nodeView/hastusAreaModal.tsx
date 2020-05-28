@@ -110,7 +110,7 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
         const nodeStore = this.props.nodeStore!;
         const hastusArea = nodeStore.hastusArea;
         const invalidPropertiesMap = this.state.invalidPropertiesMap;
-        const confirmNotification =
+        const hastusEditNotification =
             this.state.otherStopsUsingHastus.length > 0
                 ? `Huom. tunnuksen muokkaaminen muuttaa kaikkien saman hastuksen omaavien pysäkkien ( ${this.state.otherStopsUsingHastus
                       .map((stop) => stop.nodeId)
@@ -152,8 +152,8 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
                     {this.state.isLoading ? (
                         <Loader size={'tiny'} />
                     ) : (
-                        confirmNotification && (
-                            <div className={s.flexRow}>{confirmNotification}</div>
+                        hastusEditNotification && (
+                            <div className={s.flexRow}>{hastusEditNotification}</div>
                         )
                     )}
                 </div>

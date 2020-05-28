@@ -50,6 +50,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                 }
             },
             confirmButtonText: 'Poista reitinsuunta',
+            confirmType: 'delete',
         });
     };
     private renderConfirmContent = (routePath: IRoutePath, activeSchedules: ISchedule[]) => {

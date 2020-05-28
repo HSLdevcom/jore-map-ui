@@ -3,7 +3,11 @@ import { action, computed, observable } from 'mobx';
 const DEFAULT_CONFIRM_BUTTON_TEXT = 'Hyväksy';
 const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
 
-type confirmType = 'default' | 'save';
+/**
+ * Only affects the color of the confirm button.
+ * Usage note: if want to save after confirm click, use <SaveButton /> to open confirm modal or if want to use <SaveButton /> as the confirm button, use <Modal /> instead of <Confirm />
+ **/
+type confirmType = 'default' | 'save' | 'delete';
 
 class ConfirmStore {
     private _content: React.ReactNode;
