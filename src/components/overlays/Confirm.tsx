@@ -5,7 +5,7 @@ import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
 import SaveButton from '../shared/SaveButton';
-import Modal from './Modal';
+import ModalContainer from './ModalContainer';
 import * as s from './confirm.scss';
 
 interface IConfirmProps {
@@ -22,7 +22,7 @@ class Confirm extends React.Component<IConfirmProps> {
         const isConfirmButtonDisabled = confirmStore.isConfirmButtonDisabled;
         const confirmType = confirmStore.confirmType;
         return (
-            <Modal>
+            <ModalContainer>
                 <div className={s.confirmView} data-cy='confirmView'>
                     <div
                         className={classnames(
@@ -70,7 +70,7 @@ class Confirm extends React.Component<IConfirmProps> {
                         </div>
                     </div>
                 </div>
-            </Modal>
+            </ModalContainer>
         );
     }
 }
