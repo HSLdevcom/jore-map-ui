@@ -140,10 +140,10 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('createHastusButton').click();
         cy.getTestElement('hastusAreaForm').should('exist');
 
-        cy.saveButtonShouldNotBeActive('confirmView');
+        cy.saveButtonShouldNotBeActive('hastusSaveButton');
         cy.getTestElement('hastusIdInput').type('zxc123');
         cy.getTestElement('hastusNameInput').type('zxc123');
-        cy.saveButtonShouldBeActive('confirmView');
+        cy.saveButtonShouldBeActive('hastusSaveButton');
     });
 
     it('Can create a stop in lahti by using custom generated node id', () => {

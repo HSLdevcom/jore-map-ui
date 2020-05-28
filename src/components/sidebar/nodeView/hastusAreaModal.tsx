@@ -167,6 +167,7 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
                         savePreventedNotification={''}
                         isWide={true}
                         hasPadding={false}
+                        data-cy='hastusSaveButton'
                     >
                         Tallenna
                     </SaveButton>
