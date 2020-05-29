@@ -15,7 +15,7 @@ class ScheduleService {
         });
         const currentDate = toMidnightDate(new Date());
         const activeSchedules: ISchedule[] = queryResult.data.allAikataulus.nodes
-            .filter((extSchedule: IExternalSchedule) => extSchedule.reitunnus === routeId)
+            .filter((extSchedule: IExternalSchedule) => extSchedule.reitunnus.trim() === routeId)
             .map((extSchedule: IExternalSchedule) => {
                 return {
                     routeId: extSchedule.reitunnus,
