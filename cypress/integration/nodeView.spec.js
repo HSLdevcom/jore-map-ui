@@ -154,7 +154,7 @@ describe('NodeView tests - write access user', () => {
 
         cy.saveButtonShouldNotBeActive();
 
-        cy.getTestElement('nodeId').type('12345');
+        cy.getTestElement('nodeId').type('1234');
 
         cy.getTestElement('idSuffix').type('01');
         cy.getTestElement('dropdownOption').first().click();
