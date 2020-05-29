@@ -171,19 +171,17 @@ const renderChangeRow = (oldValue: string, newValue: string, property?: string) 
     return (
         <div className={s.flexInnerRow}>
             <div className={s.attributeWrapper}>
-                {oldValue ||
-                    (typeof oldValue === 'number' && (
-                        <div className={s.oldAttribute}>{oldValue}</div>
-                    ))}
+                {(oldValue || typeof oldValue === 'number') && (
+                    <div className={s.oldAttribute}>{oldValue}</div>
+                )}
             </div>
             <div className={s.arrowRightWrapper}>
                 <FiArrowRight />
             </div>
             <div className={s.attributeWrapper}>
-                {newValue ||
-                    (typeof newValue === 'number' && (
-                        <div className={s.newAttribute}>{newValue}</div>
-                    ))}
+                {(newValue || typeof newValue === 'number') && (
+                    <div className={s.newAttribute}>{newValue}</div>
+                )}
             </div>
         </div>
     );
