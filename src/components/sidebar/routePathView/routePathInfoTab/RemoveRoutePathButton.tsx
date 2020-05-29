@@ -36,6 +36,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             content: this.renderConfirmContent(routePath, activeSchedules),
             onConfirm: async () => {
                 try {
+                    this.props.alertStore!.setLoaderMessage('Reitinsuuntaa poistetaan...');
                     await RoutePathService.removeRoutePath({
                         routeId: routePath.routeId,
                         direction: routePath.direction,
@@ -46,6 +47,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                         routeId: routePath.routeId,
                     });
                 } catch (e) {
+                    this.props.alertStore!.close();
                     this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
                 }
             },
