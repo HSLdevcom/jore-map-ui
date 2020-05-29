@@ -59,7 +59,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
                 isWide={isWide}
                 hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
                 title={title ? title : ''}
-                data-cy={attrs['data-cy'] ? attrs['data-cy'] : undefined}
+                data-cy={attrs['data-cy'] ? attrs['data-cy'] : 'saveButton'}
             >
                 {children}
             </Button>
@@ -86,7 +86,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
             isWide={isWide}
             hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
             title={title ? title : ''}
-            data-cy={attrs['data-cy'] ? attrs['data-cy'] : undefined}
+            data-cy={attrs['data-cy'] ? attrs['data-cy'] : 'saveButton'}
         >
             {children}
         </Button>
