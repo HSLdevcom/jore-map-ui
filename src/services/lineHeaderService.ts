@@ -23,11 +23,11 @@ class LineHeaderService {
     /**
      * Returns filtered list of line topic names
      * @param lineId - lineId to used to filter topic names
-     * @return filtered list of line topic names sorted by startTime
+     * @return filtered list of line topic names sorted by startDate
      */
     public static fetchLineHeaders = async (lineId: string): Promise<ILineHeader[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllLineHeadersQuery()
+            query: GraphqlQueries.getAllLineHeadersQuery(),
         });
         const allExtLineNames: IExternalLineHeader[] = queryResult.data.node.nodes;
         const filteredExtLineNames: IExternalLineHeader[] = allExtLineNames.filter(
@@ -50,8 +50,8 @@ class LineHeaderService {
             query: GraphqlQueries.getLineHeaderQuery(),
             variables: {
                 lineId,
-                startDate: Moment(startDate).format()
-            }
+                startDate: Moment(startDate).format(),
+            },
         });
 
         return LineHeaderFactory.mapExternalLineHeader(queryResult.data.lineHeader);
@@ -73,7 +73,7 @@ class LineHeaderService {
                 return;
             }
             const originalLineHeader = currentLineHeader.originalStartDate
-                ? oldLineHeaders.find(oldLineHeader =>
+                ? oldLineHeaders.find((oldLineHeader) =>
                       areDatesEqual(
                           oldLineHeader.originalStartDate!,
                           currentLineHeader.originalStartDate!
@@ -95,7 +95,7 @@ class LineHeaderService {
             added,
             edited,
             removed,
-            originals
+            originals,
         };
 
         await HttpUtils.postRequest(EndpointPath.LINE_HEADER_MASS_EDIT, lineHeaderSaveModel);

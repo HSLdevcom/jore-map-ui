@@ -31,15 +31,13 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
     };
 
     private removeLineHeader = (massEditLineHeader: IMassEditLineHeader) => () => {
-        const confirmText = `Haluatko varmasti poistaa linjan otsikon ${
-            massEditLineHeader.lineHeader.lineNameFi
-        }?`;
+        const confirmText = `Haluatko varmasti poistaa linjan otsikon ${massEditLineHeader.lineHeader.lineNameFi}?`;
         this.props.confirmStore!.openConfirm({
             content: confirmText,
             onConfirm: () => {
                 this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
             },
-            confirmButtonText: 'Kyllä'
+            confirmButtonText: 'Kyllä',
         });
     };
 
@@ -48,7 +46,7 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
         const lineHeaderToCopyId =
             id !== undefined ? id : lineHeaderMassEditStore!.selectedLineHeaderId;
         const selectedLineHeader = lineHeaderMassEditStore!.massEditLineHeaders!.find(
-            m => m.id === lineHeaderToCopyId
+            (m) => m.id === lineHeaderToCopyId
         )!.lineHeader;
         const newLineHeader = _.cloneDeep(selectedLineHeader);
         newLineHeader.originalStartDate = undefined;
@@ -99,11 +97,16 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                                     isValid: isLineHeaderValid,
                                     errorMessage: isLineHeaderValid
                                         ? ''
-                                        : 'Sisältää validaatiovirheitä'
+                                        : 'Sisältää validaatiovirheitä',
                                 }}
                             />
                         </td>
-                        <td className={s.lineHeaderTableCalendarCell}>
+                        <td
+                            className={classnames(
+                                s.lineHeaderTableCalendarCell,
+                                !isEditingDisabled ? s.editedCalendarCell : undefined
+                            )}
+                        >
                             <InputContainer
                                 className={s.timeInput}
                                 disabled={isEditingDisabled}
@@ -117,7 +120,12 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                                 onFocus={this.openLineHeaderById(currentMassEditLineHeader.id)}
                             />
                         </td>
-                        <td className={s.lineHeaderTableCalendarCell}>
+                        <td
+                            className={classnames(
+                                s.lineHeaderTableCalendarCell,
+                                !isEditingDisabled ? s.editedCalendarCell : undefined
+                            )}
+                        >
                             <InputContainer
                                 className={s.timeInput}
                                 disabled={isEditingDisabled}

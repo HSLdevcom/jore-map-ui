@@ -1,11 +1,14 @@
 import * as L from 'leaflet';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
+import NumberIterator from '~/helpers/NumberIterator';
 import { INode } from '~/models';
 import { INodeBase, INodeMapHighlight } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/utils/geomUtils';
 import NodeStopFactory from './nodeStopFactory';
+
+const numberIterator = new NumberIterator();
 
 class NodeFactory {
     public static mapExternalNode = (externalNode: IExternalNode): INode => {
@@ -19,14 +22,12 @@ class NodeFactory {
             ...NodeFactory.createNodeBase(externalNode),
             coordinates,
             coordinatesProjection,
-            transitTypes: externalNode.transitTypes
-                ? (externalNode.transitTypes.split(',') as TransitType[])
-                : [],
+            internalId: `node-${numberIterator.getNumber()}`,
             stop: nodeStop ? NodeStopFactory.mapExternalStop(nodeStop) : null,
             measurementDate: externalNode.mittpvm ? new Date(externalNode.mittpvm) : undefined,
             measurementType: externalNode.solotapa,
             modifiedOn: externalNode.solviimpvm ? new Date(externalNode.solviimpvm) : undefined,
-            modifiedBy: externalNode.solkuka
+            modifiedBy: externalNode.solkuka,
         };
     };
 
@@ -36,7 +37,10 @@ class NodeFactory {
             type,
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
-            id: externalNode.soltunnus
+            id: externalNode.soltunnus,
+            transitTypes: externalNode.transitTypes
+                ? (externalNode.transitTypes.split(',') as TransitType[])
+                : [],
         };
     };
 
@@ -44,14 +48,16 @@ class NodeFactory {
         const coordinates = _getLatLng(
             externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
+        const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
 
         return {
             coordinates,
+            type,
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])
                 : [],
-            dateRanges: externalNode.dateRanges!
+            dateRanges: externalNode.dateRanges!,
         };
     };
 
@@ -60,13 +66,14 @@ class NodeFactory {
         return {
             coordinates,
             id: '',
+            internalId: `node-${numberIterator.getNumber()}`,
             stop: newStop,
             type: NodeType.STOP,
             transitTypes: [],
             coordinatesProjection: coordinates,
             modifiedOn: new Date(),
             modifiedBy: '',
-            measurementType: ''
+            measurementType: '',
         };
     }
 }

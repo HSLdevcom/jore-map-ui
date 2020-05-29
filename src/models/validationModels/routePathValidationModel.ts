@@ -17,8 +17,8 @@ const routePathValidationModel: IRoutePathValidationModel = {
     routePathLinks: '',
     routeId: 'required|min:4|max:6|string',
     direction: 'required|min:1|max:1|string',
-    startTime: dateRule,
-    endTime: dateRule,
+    startDate: dateRule,
+    endDate: dateRule,
     originFi: originRule,
     originSw: originRule,
     destinationFi: destinationRule,
@@ -26,13 +26,13 @@ const routePathValidationModel: IRoutePathValidationModel = {
     length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     modifiedBy: '',
     modifiedOn: '',
-    shortName: shortNameRule,
+    shortNameFi: shortNameRule,
     shortNameSw: shortNameRule,
-    name: nameRule,
+    nameFi: nameRule,
     nameSw: nameRule,
     isStartNodeUsingBookSchedule: 'boolean',
     startNodeBookScheduleColumnNumber: 'numeric|min:0|max:99',
-    exceptionPath: 'min:1|max:1|string'
+    exceptionPath: 'min:1|max:1|string',
 };
 
 export default routePathValidationModel;

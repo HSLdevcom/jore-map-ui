@@ -5,7 +5,7 @@ const KEYCODES = {
     arrowUp: 'ArrowUp',
     arrowDown: 'ArrowDown',
     Y: 'KeyY',
-    Z: 'KeyZ'
+    Z: 'KeyZ',
 };
 
 class KeyEventHandler {
@@ -43,8 +43,9 @@ class KeyEventHandler {
                     break;
                 }
             }
-            // Macbook
-        } else if (event.metaKey && event.code === KEYCODES.Z) {
+        }
+        // Macbook
+        else if (event.metaKey && event.code === KEYCODES.Z) {
             if (event.shiftKey) {
                 EventHelper.trigger('redo');
                 event.preventDefault(); // to disable native undo event

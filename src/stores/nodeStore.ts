@@ -1,22 +1,27 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
+import { IDropdownItem } from '~/components/controls/Dropdown';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import { ILink, INode, IStop, IStopArea } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import nodeValidationModel, {
-    editableNodeIdValidationModel,
-    INodeValidationModel
+    nodeIdEditingValidationModel,
+    INodeValidationModel,
 } from '~/models/validationModels/nodeValidationModel';
 import stopValidationModel, {
-    IStopValidationModel
+    IStopValidationModel,
 } from '~/models/validationModels/stopValidationModel';
-import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
+import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
+import NodeService from '~/services/nodeService';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import NodeLocationType from '~/types/NodeLocationType';
+import NodeUtils from '~/utils/NodeUtils';
+import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import { roundLatLng, roundLatLngs } from '~/utils/geomUtils';
 import FormValidator from '~/validation/FormValidator';
+import AlertStore from './alertStore';
 import CodeListStore from './codeListStore';
 import NavigationStore from './navigationStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
@@ -42,12 +47,15 @@ class NodeStore {
     @observable private _node: INode | null;
     @observable private _oldNode: INode | null;
     @observable private _oldLinks: ILink[];
+    @observable private _isNewNode: boolean;
     @observable private _hastusArea: IHastusArea | null;
     @observable private _oldHastusArea: IHastusArea | null;
     @observable private _isEditingDisabled: boolean;
     @observable private _nodeCache: INodeCache;
     @observable private _stopAreas: IStopArea[];
     @observable private _isNodeIdEditable: boolean;
+    @observable private _isNodeIdQueryLoading: boolean;
+    @observable private _nodeIdSuffixOptions: IDropdownItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
     private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
@@ -57,14 +65,17 @@ class NodeStore {
         this._node = null;
         this._oldNode = null;
         this._oldLinks = [];
+        this._isNewNode = false;
         this._geometryUndoStore = new GeometryUndoStore();
         this._nodeValidationStore = new ValidationStore();
         this._stopValidationStore = new ValidationStore();
         this._isEditingDisabled = true;
+        this._isNodeIdEditable = false;
+        this._isNodeIdQueryLoading = false;
+        this._nodeIdSuffixOptions = [];
         this._nodeCache = {
-            newNodeCache: null
+            newNodeCache: null,
         };
-
         reaction(
             () => this.isDirty && !this._isEditingDisabled,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
@@ -73,8 +84,15 @@ class NodeStore {
             () => this._node && this._node.stop && this._node.stop.stopAreaId,
             (value: string) => this.onStopAreaChange(value)
         );
-        reaction(() => this._stopAreas, () => this.onStopAreasChange());
+        reaction(
+            () => this._stopAreas,
+            () => this.onStopAreasChange()
+        );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
+        reaction(
+            () => [this._node?.type, this._node?.transitType],
+            _.debounce(() => this.updateNodeId(), 25)
+        );
     }
 
     @computed
@@ -118,11 +136,6 @@ class NodeStore {
     }
 
     @computed
-    get nodeCache() {
-        return this._nodeCache;
-    }
-
-    @computed
     get stopAreas() {
         return this._stopAreas;
     }
@@ -130,6 +143,16 @@ class NodeStore {
     @computed
     get isNodeIdEditable() {
         return this._isNodeIdEditable;
+    }
+
+    @computed
+    get isNodeIdQueryLoading() {
+        return this._isNodeIdQueryLoading;
+    }
+
+    @computed
+    get nodeIdSuffixOptions() {
+        return this._nodeIdSuffixOptions;
     }
 
     @computed
@@ -158,7 +181,7 @@ class NodeStore {
         links,
         isNewNode,
         oldNode,
-        oldLinks
+        oldLinks,
     }: {
         node: INode;
         links: ILink[];
@@ -166,14 +189,15 @@ class NodeStore {
         oldNode?: INode;
         oldLinks?: ILink[];
     }) => {
-        this.clear();
-
         const newNode = _.cloneDeep(node);
         const newLinks = _.cloneDeep(links);
 
+        this.clear();
+        this.clearNodeCache({ nodeId: node.id, shouldClearNewNodeCache: isNewNode });
+
         const currentUndoState: UndoState = {
             links: newLinks,
-            node: newNode
+            node: newNode,
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
@@ -182,51 +206,63 @@ class NodeStore {
         this._links = newLinks;
         this._oldLinks = oldLinks ? oldLinks : newLinks;
         this._isEditingDisabled = !isNewNode;
+        this._isNewNode = isNewNode;
 
         const customValidatorMap: ICustomValidatorMap = {
-            id: {
-                validator: (node: INode, property: string, nodeId: string) => {
-                    if (this.isNodeIdEditable) {
-                        const validationResult = FormValidator.validateProperty(
-                            editableNodeIdValidationModel.id,
-                            nodeId
-                        );
-                        return validationResult;
-                    }
-                    return;
-                }
+            beginningOfNodeId: {
+                validators: [
+                    (node: INode, property: string, beginningOfNodeId: string) => {
+                        if (this.isNodeIdEditable) {
+                            const validationResult = FormValidator.validateProperty(
+                                nodeIdEditingValidationModel['beginningOfNodeId']!,
+                                beginningOfNodeId
+                            );
+                            return validationResult;
+                        }
+                        return {
+                            isValid: true,
+                        };
+                    },
+                ],
             },
             idSuffix: {
-                validator: (node: INode, property: string, idSuffix: string) => {
-                    if (this.isNodeIdEditable) {
-                        const validationResult = FormValidator.validateProperty(
-                            editableNodeIdValidationModel.idSuffix,
-                            idSuffix
-                        );
-                        return validationResult;
-                    }
-                    return;
-                }
+                validators: [
+                    (node: INode, property: string, idSuffix: string) => {
+                        if (this.isNodeIdEditable) {
+                            const validationResult = FormValidator.validateProperty(
+                                nodeIdEditingValidationModel['idSuffix']!,
+                                idSuffix
+                            );
+                            return validationResult;
+                        }
+                        return {
+                            isValid: true,
+                        };
+                    },
+                ],
             },
             measurementType: {
-                validator: (node: INode, property: string, measurementType: string) => {
-                    if (node.type === NodeType.STOP) {
+                validators: [
+                    (node: INode, property: string, measurementType: string) => {
+                        if (node.type === NodeType.STOP) {
+                            const validationResult = FormValidator.validateProperty(
+                                'required|min:1|max:1|string',
+                                measurementType
+                            );
+                            return validationResult;
+                        }
                         const validationResult = FormValidator.validateProperty(
-                            'required|min:1|max:1|string',
+                            'min:0|max:0|string',
                             measurementType
                         );
                         return validationResult;
-                    }
-                    const validationResult = FormValidator.validateProperty(
-                        'min:0|max:0|string',
-                        measurementType
-                    );
-                    return validationResult;
-                }
+                    },
+                ],
             },
             type: {
-                dependentProperties: ['measurementType']
-            }
+                validators: [],
+                dependentProperties: ['measurementType'],
+            },
         };
 
         this._nodeValidationStore.init(node, nodeValidationModel, customValidatorMap);
@@ -243,7 +279,7 @@ class NodeStore {
         newLinks[index].geometry = roundLatLngs(latLngs);
         const currentUndoState: UndoState = {
             links: newLinks,
-            node: this._node
+            node: this._node,
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
@@ -264,29 +300,43 @@ class NodeStore {
         const coordinatesProjection = newNode.coordinatesProjection;
         // Update the first link geometry of startNodes to coordinatesProjection
         newLinks
-            .filter(link => link.startNode.id === newNode!.id)
-            .map(link => (link.geometry[0] = coordinatesProjection));
+            .filter((link) => link.startNode.id === newNode!.id)
+            .map((link) => (link.geometry[0] = coordinatesProjection));
         // Update the last link geometry of endNodes to coordinatesProjection
         newLinks
-            .filter(link => link.endNode.id === newNode!.id)
-            .map(link => (link.geometry[link.geometry.length - 1] = coordinatesProjection));
+            .filter((link) => link.endNode.id === newNode!.id)
+            .map((link) => (link.geometry[link.geometry.length - 1] = coordinatesProjection));
 
         const currentUndoState: UndoState = {
             links: newLinks,
-            node: newNode
+            node: newNode,
         };
         this._geometryUndoStore.addItem(currentUndoState);
 
         this._links = newLinks;
         const geometryVariables: NodeLocationType[] = ['coordinates', 'coordinatesProjection'];
-        geometryVariables.forEach(coordinateName =>
+        geometryVariables.forEach((coordinateName) =>
             this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
 
         if (nodeLocationType === 'coordinatesProjection') {
-            this.updateAddressData();
-            this.updateMunicipality();
+            this.updateStopPropertiesAccordingToNodeLocation();
         }
+    };
+
+    @action
+    public updateStopPropertiesAccordingToNodeLocation = async () => {
+        const coordinates = this.node.coordinatesProjection;
+        const features:
+            | IGeoJSONFeature[]
+            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
+            coordinates,
+            searchResultCount: 1,
+        });
+
+        this.updateAddressData(features);
+        this.updateMunicipality(features);
+        this.updateSection(features);
     };
 
     @action
@@ -297,7 +347,7 @@ class NodeStore {
     };
 
     @action
-    public updateAddressData = async () => {
+    public updateAddressData = async (features: IGeoJSONFeature[] | null) => {
         if (!this.node || !this.node.stop) return;
 
         const coordinates = this.node.coordinatesProjection;
@@ -309,12 +359,6 @@ class NodeStore {
             coordinates,
             'sv'
         );
-        const features:
-            | IAddressFeature[]
-            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-            coordinates,
-            searchResultCount: 1
-        });
         let postalNumber = '';
         if (features && features[0]) {
             postalNumber = features[0].properties.postalcode;
@@ -326,21 +370,14 @@ class NodeStore {
     };
 
     @action
-    public updateMunicipality = async () => {
+    public updateMunicipality = (features: IGeoJSONFeature[] | null) => {
         if (!this.node || !this.node.stop) return;
 
-        const coordinates = this.node.coordinatesProjection;
-        const features:
-            | IAddressFeature[]
-            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-            coordinates,
-            searchResultCount: 1
-        });
         const municipality =
             features && features[0] ? features[0].properties.localadmin : undefined;
         const municipalityDropdownItems = CodeListStore.getDropdownItemList('Kunta (KELA)');
         const municipalityCode = municipalityDropdownItems.find(
-            municipalityDropdownItem => municipalityDropdownItem.label === municipality
+            (municipalityDropdownItem) => municipalityDropdownItem.label === municipality
         );
         if (municipalityCode) {
             this.updateStopProperty('municipality', municipalityCode.value);
@@ -350,7 +387,27 @@ class NodeStore {
     };
 
     @action
-    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng) => {
+    public updateSection = (features: IGeoJSONFeature[] | null) => {
+        if (!this.node || !this.node.stop) return;
+
+        // Format: HSL:A, HSL:B etc.
+        const externalSection =
+            features &&
+            features[0] &&
+            features[0].properties.zones &&
+            features[0].properties.zones[0]
+                ? features[0].properties.zones[0]
+                : undefined;
+        if (externalSection) {
+            const formattedSection = externalSection.replace('HSL:', '');
+            this.updateStopProperty('section', formattedSection);
+        } else {
+            this.updateStopProperty('section', '');
+        }
+    };
+
+    @action
+    public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng | null) => {
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
     };
@@ -411,7 +468,7 @@ class NodeStore {
         const nodeCacheObj: INodeCacheObj = {
             node: _.cloneDeep(this._node!),
             links: _.cloneDeep(this._links),
-            isNodeIdEditable: this._isNodeIdEditable
+            isNodeIdEditable: this._isNodeIdEditable,
         };
         if (isNewNode) {
             this._nodeCache.newNodeCache = nodeCacheObj;
@@ -423,7 +480,7 @@ class NodeStore {
     @action
     public clearNodeCache = ({
         nodeId,
-        shouldClearNewNodeCache
+        shouldClearNewNodeCache,
     }: {
         nodeId?: string;
         shouldClearNewNodeCache?: boolean;
@@ -444,6 +501,16 @@ class NodeStore {
     @action
     public setIsNodeIdEditable = (isEditable: boolean) => {
         this._isNodeIdEditable = isEditable;
+    };
+
+    @action
+    public setIsNodeIdQueryLoading = (isQueryLoading: boolean) => {
+        this._isNodeIdQueryLoading = isQueryLoading;
+    };
+
+    @action
+    public setNodeIdSuffixOptions = (isSuffixOptions: IDropdownItem[]) => {
+        this._nodeIdSuffixOptions = isSuffixOptions;
     };
 
     @action
@@ -509,7 +576,7 @@ class NodeStore {
         this.updateStopProperty('stopAreaId', stopAreaId);
         if (!stopAreaId) return;
 
-        const stopArea = this._stopAreas.find(obj => {
+        const stopArea = this._stopAreas.find((obj) => {
             return obj.id === stopAreaId;
         });
         if (stopArea) {
@@ -523,9 +590,9 @@ class NodeStore {
         if (!_.isEqual(this._node!.coordinatesProjection, this._oldNode!.coordinatesProjection)) {
             return this._links;
         }
-        return this._links.filter(link => {
+        return this._links.filter((link) => {
             const oldLink = this._oldLinks.find(
-                oldLink =>
+                (oldLink) =>
                     oldLink.transitType === link.transitType &&
                     oldLink.startNode.id === link.startNode.id &&
                     oldLink.endNode.id === link.endNode.id
@@ -534,13 +601,63 @@ class NodeStore {
         });
     }
 
-    public getNodeCacheObjById(nodeId: string): INodeCacheObj | null {
-        return this._nodeCache[nodeId];
-    }
+    public getNodeCacheObjById = (nodeId: string): INodeCacheObj | null => {
+        return _.cloneDeep(this._nodeCache[nodeId]);
+    };
 
-    public getNewNodeCacheObj(): INodeCacheObj | null {
-        return this._nodeCache.newNodeCache;
-    }
+    public getNewNodeCacheObj = (): INodeCacheObj | null => {
+        return _.cloneDeep(this._nodeCache.newNodeCache);
+    };
+
+    public updateNodeId = async () => {
+        if (!this._node || !this._isNewNode) return;
+
+        this.setIsNodeIdQueryLoading(true);
+        const nodeId = await NodeService.fetchAvailableNodeId({
+            node: this._node!,
+            transitType: this._node?.transitType,
+        });
+
+        if (nodeId) {
+            this.setIsNodeIdEditable(false);
+            this.updateNodeProperty('id', nodeId);
+        } else {
+            if (!this.isNodeIdEditable) {
+                AlertStore.setNotificationMessage({
+                    message:
+                        'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Valitse solmun tyyppi, syötä solmun tunnus kenttään ensimmäiset 4 solmutunnuksen numeroa ja valitse lopuksi solmun tunnuksen viimeiset 2 juoksevaa numeroa.',
+                });
+            }
+            this.setIsNodeIdEditable(true);
+            await this.queryNodeIdSuffixes();
+        }
+        // Call updateNodeProperty trigger validation for these properties related to nodeId:
+        this.updateNodeProperty(
+            'beginningOfNodeId',
+            this._node.beginningOfNodeId ? this._node.beginningOfNodeId : null
+        );
+        this.updateNodeProperty('idSuffix', this._node.idSuffix ? this._node.idSuffix : null);
+
+        this.setIsNodeIdQueryLoading(false);
+    };
+
+    public queryNodeIdSuffixes = async () => {
+        const node = this._node;
+        if (!node) return;
+
+        const beginningOfNodeId = node.beginningOfNodeId;
+        if (!beginningOfNodeId || beginningOfNodeId.length !== 4) return;
+
+        const nodeIdUsageCode = NodeUtils.getNodeIdUsageCode(node.type, node.transitType);
+        const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(
+            `${beginningOfNodeId}${nodeIdUsageCode}`
+        );
+
+        // slide(-2): get last two letters of a nodeId
+        const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
+
+        this.setNodeIdSuffixOptions(createDropdownItemsFromList(nodeIdSuffixList));
+    };
 
     private onChangeIsEditingDisabled = () => {
         if (this._isEditingDisabled) {

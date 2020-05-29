@@ -1,28 +1,21 @@
 import TransitType from '~/enums/transitType';
 import { IRoutePath, IRoutePathLink } from '~/models';
-import { IRoutePathPrimaryKey } from '~/models/IRoutePath';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
 import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
 import HashUtils from '~/utils/HashUtils';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
-    public static mapExternalRoutePathToRoutePathPrimaryKey = (
-        externalRoutePath: IExternalRoutePath
-    ): IRoutePathPrimaryKey => {
-        return {
-            routeId: externalRoutePath.reitunnus,
-            direction: externalRoutePath.suusuunta,
-            startTime: new Date(externalRoutePath.suuvoimast)
-        };
-    };
-
-    public static mapExternalRoutePath = (externalRoutePath: IExternalRoutePath, lineId?: string, transitType?: TransitType): IRoutePath => {
+    public static mapExternalRoutePath = (
+        externalRoutePath: IExternalRoutePath,
+        lineId?: string,
+        transitType?: TransitType
+    ): IRoutePath => {
         const internalRoutePathId = HashUtils.getHashFromString(
             [
                 externalRoutePath.reitunnus,
                 externalRoutePath.suuvoimast,
-                externalRoutePath.suusuunta
+                externalRoutePath.suusuunta,
             ].join('-')
         ).toString();
 
@@ -45,26 +38,26 @@ class RoutePathFactory {
             transitType,
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
-            startTime: new Date(externalRoutePath.suuvoimast),
+            startDate: new Date(externalRoutePath.suuvoimast),
             routePathLinks: routePathLinks ? routePathLinks : [],
             internalId: internalRoutePathId,
-            name: externalRoutePath.suunimi,
+            nameFi: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,
-            endTime: new Date(externalRoutePath.suuvoimviimpvm),
+            endDate: new Date(externalRoutePath.suuvoimviimpvm),
             modifiedOn: externalRoutePath.suuviimpvm
                 ? new Date(externalRoutePath.suuviimpvm)
                 : undefined,
             modifiedBy: externalRoutePath.suukuka,
-            visible: false,
+            isVisible: false,
             originFi: externalRoutePath.suulahpaik,
             originSw: externalRoutePath.suulahpaikr,
             destinationFi: externalRoutePath.suupaapaik,
             destinationSw: externalRoutePath.suupaapaikr,
-            shortName: externalRoutePath.suunimilyh,
+            shortNameFi: externalRoutePath.suunimilyh,
             shortNameSw: externalRoutePath.suunimilyhr,
             length: externalRoutePath.suupituus,
             isStartNodeUsingBookSchedule: externalRoutePath.kirjaan === '1',
-            startNodeBookScheduleColumnNumber: externalRoutePath.kirjasarake
+            startNodeBookScheduleColumnNumber: externalRoutePath.kirjasarake,
         };
     };
 
@@ -81,35 +74,36 @@ class RoutePathFactory {
             routeId,
             transitType,
             internalId: '',
-            name: '',
+            nameFi: '',
             nameSw: '',
             direction: '',
-            visible: true,
-            startTime: new Date(defaultDate.getTime()),
-            endTime: new Date(defaultDate.getTime()),
+            isVisible: true,
+            startDate: new Date(defaultDate.getTime()),
+            endDate: new Date(defaultDate.getTime()),
             modifiedOn: new Date(),
             routePathLinks: [],
             originFi: '',
             originSw: '',
             destinationFi: '',
             destinationSw: '',
-            shortName: '',
+            shortNameFi: '',
             shortNameSw: '',
             modifiedBy: '',
             length: 0,
             exceptionPath: '0',
             isStartNodeUsingBookSchedule: false,
-            startNodeBookScheduleColumnNumber: undefined
+            startNodeBookScheduleColumnNumber: undefined,
         };
     }
 
+    // TODO: remove (this is deprecated)
     public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
-        const startTime = routePath.startTime;
-        startTime.setDate(startTime.getDate() + 1);
+        const startDate = routePath.startDate;
+        startDate.setDate(startDate.getDate() + 1);
         return {
             ...routePath,
-            // TODO: this is only temporary, but required since starttime is part of ID
-            startTime
+            // TODO: this is only temporary, but required since startDate is part of ID
+            startDate,
         };
     }
 }

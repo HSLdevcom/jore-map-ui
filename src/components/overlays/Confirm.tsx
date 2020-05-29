@@ -4,8 +4,7 @@ import React from 'react';
 import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
-import SaveButton from '../shared/SaveButton';
-import Modal from './Modal';
+import ModalContainer from './ModalContainer';
 import * as s from './confirm.scss';
 
 interface IConfirmProps {
@@ -21,8 +20,16 @@ class Confirm extends React.Component<IConfirmProps> {
 
         const isConfirmButtonDisabled = confirmStore.isConfirmButtonDisabled;
         const confirmType = confirmStore.confirmType;
+
+        const confirmButtonClassName =
+            confirmType === 'save'
+                ? s.saveButton
+                : confirmType === 'delete'
+                ? s.deleteButton
+                : undefined;
+
         return (
-            <Modal>
+            <ModalContainer>
                 <div className={s.confirmView} data-cy='confirmView'>
                     <div
                         className={classnames(
@@ -46,30 +53,20 @@ class Confirm extends React.Component<IConfirmProps> {
                             >
                                 {confirmStore!.cancelButtonText}
                             </Button>
-                            {confirmType === 'save' ? (
-                                <SaveButton
-                                    disabled={isConfirmButtonDisabled}
-                                    onClick={confirmStore!.confirm}
-                                    isWide={true}
-                                    hasPadding={false}
-                                >
-                                    {confirmStore!.confirmButtonText}
-                                </SaveButton>
-                            ) : (
-                                <Button
-                                    disabled={isConfirmButtonDisabled}
-                                    type={ButtonType.SQUARE}
-                                    onClick={confirmStore!.confirm}
-                                    isWide={true}
-                                    data-cy='confirmButton'
-                                >
-                                    {confirmStore!.confirmButtonText}
-                                </Button>
-                            )}
+                            <Button
+                                className={confirmButtonClassName}
+                                disabled={isConfirmButtonDisabled}
+                                type={ButtonType.SQUARE}
+                                onClick={confirmStore!.confirm}
+                                isWide={true}
+                                data-cy='confirmButton'
+                            >
+                                {confirmStore!.confirmButtonText}
+                            </Button>
                         </div>
                     </div>
                 </div>
-            </Modal>
+            </ModalContainer>
         );
     }
 }

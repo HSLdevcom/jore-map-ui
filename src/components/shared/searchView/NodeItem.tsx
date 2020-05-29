@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react';
 import React from 'react';
-import { IoIosRadioButtonOff } from 'react-icons/io';
 import NodeType from '~/enums/nodeType';
 import { INodeBase } from '~/models/INode';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
+import TransitTypeNodeIcon from '../TransitTypeNodeIcon';
 import * as s from './nodeItem.scss';
 
 interface INodeItemProps {
@@ -20,7 +20,9 @@ const NodeItem = observer((props: INodeItemProps) => {
             onClick={() => NavigationUtils.openNodeView({ nodeId: props.node.id })}
             data-cy={`nodeItem${node.type}`}
         >
-            <IoIosRadioButtonOff />
+            <div className={s.nodeIconWrapper}>
+                <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
+            </div>
             <div className={s.nodeItemTextContainer}>
                 <span>{node.id}</span>
                 <div>{NodeUtils.getNodeTypeName(node.type)}</div>

@@ -138,7 +138,8 @@ class RoutePathCopySegmentStore {
     };
 
     private _getEndLinkOrderNumber = (links: IRoutePathSegmentLink[], endNodeId: string) => {
-        return links.find((link: IRoutePathSegmentLink) => link.endNodeId === endNodeId)!.orderNumber;
+        return links.find((link: IRoutePathSegmentLink) => link.endNodeId === endNodeId)!
+            .orderNumber;
     };
 }
 

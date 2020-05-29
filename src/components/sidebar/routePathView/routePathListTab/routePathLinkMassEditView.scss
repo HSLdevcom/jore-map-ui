@@ -1,0 +1,21 @@
+@import '../../../shared/styles/common';
+@import '../../../shared/styles/flexbox';
+@import '../../../shared/styles/form';
+
+.routePathMassEditView {
+    border-top: 1px solid $lightGrey;
+
+    .headerWrapper {
+        padding: 10px;
+    }
+    .content {
+        padding: 0px 20px 20px 20px;
+
+        .editModeSelectionButton {
+            margin: 10px;
+        }
+    }
+    .editButton {
+        margin-top: 10px;
+    }
+}

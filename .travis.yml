@@ -10,4 +10,9 @@ services: docker
 
 language: C
 
+cache:
+    yarn: true
+    directories:
+        - node_modules
+
 script: ./travis-build.sh

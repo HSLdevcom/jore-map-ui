@@ -4,7 +4,7 @@
 @import '../../shared/styles/form';
 
 .routePathView {
-    width: $sidebarWide;
+    width: 600px; // If changed, have to change hard coded routePathLink column widths
     height: 100%;
     display: flex;
     flex-direction: column;

@@ -1,65 +1,156 @@
-import classnames from 'classnames';
+import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import { FiChevronRight } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
 import { Button, Checkbox, Dropdown } from '~/components/controls';
+import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import { INode, IRoutePathLink, IStop } from '~/models';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import NavigationUtils from '~/utils/NavigationUtils';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
-import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
-    routePathStore?: RoutePathStore;
-    codeListStore?: CodeListStore;
     node: INode;
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
+    isFirstNode?: boolean;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    routePathStore?: RoutePathStore;
+    codeListStore?: CodeListStore;
+    mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('routePathStore', 'codeListStore')
+@inject(
+    'routePathStore',
+    'codeListStore',
+    'mapStore',
+    'routePathLinkMassEditStore',
+    'toolbarStore',
+    'errorStore'
+)
 @observer
 class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private renderHeader = () => {
         const node = this.props.node;
+        const routePathLink = this.props.routePathLink;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const isExtended = this.props.routePathStore!.isListItemExtended(node.id);
+        const isExtended = this.props.routePathStore!.extendedListItemId === node.internalId;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
+        const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
+        const isLastNode = this.props.isLastNode;
         return (
-            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
-                <div className={s.headerContent}>
-                    <div className={s.headerNodeTypeContainer}>
-                        <div>{node.type === NodeType.STOP ? stopName : nodeTypeName}</div>
-                    </div>
-                    <div className={s.label}>
-                        <div className={s.headerContentDescription}>
-                            <div className={s.hastusId}>
-                                {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
-                            </div>
-                            <div className={s.longId}>{node.id}</div>
-                            <div className={s.shortId}>{shortId || '?'}</div>
-                        </div>
-                    </div>
+            <div
+                className={s.itemHeader}
+                onClick={this.toggleExtendedListItemId}
+                data-cy='itemHeader'
+            >
+                <div className={s.headerSubtopicContainer} title={subTopic}>
+                    {subTopic}
                 </div>
-                <div className={s.itemToggle}>
-                    {isExtended && <FaAngleDown />}
-                    {!isExtended && <FaAngleRight />}
+                <div className={s.headerContent}>
+                    <div className={s.hastusId}>
+                        {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
+                    </div>
+                    <div className={s.longId}>{node.id}</div>
+                    <div className={s.shortId}>{shortId ? shortId : ''}</div>
+                    <div className={s.viaWrapper}>
+                        {!isLastNode && (
+                            <>
+                                <div className={s.via}>
+                                    {routePathLink.destinationFi1
+                                        ? routePathLink.destinationFi1
+                                        : ''}
+                                </div>
+                                <div className={s.via}>
+                                    {routePathLink.destinationFi2
+                                        ? routePathLink.destinationFi2
+                                        : ''}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                    <div className={s.viaShield}>
+                        {!isLastNode && routePathLink.destinationShieldFi
+                            ? routePathLink.destinationShieldFi
+                            : ''}
+                    </div>
+                    <div className={s.itemToggle}>
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
+                    </div>
                 </div>
             </div>
         );
+    };
+
+    private isNodeSelected = () => {
+        return (
+            !this.props.isLastNode &&
+            this.props.node.type === NodeType.STOP &&
+            this.props.routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                this.props.routePathLink
+            ) > -1
+        );
+    };
+
+    private toggleExtendedListItemId = (event: React.MouseEvent) => {
+        const currentListItemId = this.props.node.internalId;
+        const routePathStore = this.props.routePathStore;
+        const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
+        // Mass edit routePathLinks toggle
+        if (
+            !this.props.isLastNode &&
+            this.props.node.type === NodeType.STOP &&
+            isCtrlOrShiftPressed
+        ) {
+            const selectedTool = this.props.toolbarStore!.selectedTool;
+            if (selectedTool && selectedTool.toolType !== ToolbarToolType.SelectNetworkEntity) {
+                this.props.errorStore!.addError(
+                    `Pysäkkien massa editointi editointi estetty, sulje ensin aktiivinen karttatyökalu.`
+                );
+                return;
+            }
+            routePathStore!.setIsEditingDisabled(false);
+            this.props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(
+                this.props.routePathLink
+            );
+            // List item toggle
+        } else {
+            if (currentListItemId === routePathStore!.extendedListItemId) {
+                this.props.routePathStore!.setExtendedListItemId(null);
+            } else {
+                this.props.routePathStore!.setExtendedListItemId(currentListItemId);
+                this.props.mapStore!.setMapBounds(this.getBounds());
+            }
+        }
+    };
+
+    private getBounds = () => {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+        return bounds;
     };
 
     private onRoutePathLinkStartNodeTypeChange = () => (value: any) => {
@@ -173,6 +264,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 validationResult={invalidPropertiesMap['destinationFi1']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationFi1')}
                                 isInputLabelDarker={true}
+                                data-cy='destinationFi1'
                             />
                             <InputContainer
                                 label='2. MÄÄRÄNPÄÄ SUOMEKSI'
@@ -198,6 +290,25 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 value={routePathLink.destinationSw2}
                                 validationResult={invalidPropertiesMap['destinationSw2']}
                                 onChange={this.onRoutePathLinkPropertyChange('destinationSw2')}
+                                isInputLabelDarker={true}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <InputContainer
+                                label='1. MÄÄRÄNPÄÄ KILPI SUOMEKSI'
+                                disabled={isEditingDisabled}
+                                value={routePathLink.destinationShieldFi}
+                                validationResult={invalidPropertiesMap['destinationShieldFi']}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationShieldFi')}
+                                isInputLabelDarker={true}
+                                data-cy='destinationShieldFi'
+                            />
+                            <InputContainer
+                                label='2. MÄÄRÄNPÄÄ KILPI RUOTSIKSI'
+                                disabled={isEditingDisabled}
+                                value={routePathLink.destinationShieldSw}
+                                validationResult={invalidPropertiesMap['destinationShieldSw']}
+                                onChange={this.onRoutePathLinkPropertyChange('destinationShieldSw')}
                                 isInputLabelDarker={true}
                             />
                         </div>
@@ -255,62 +366,25 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         );
     };
 
-    private renderListIcon = () => {
-        const node = this.props.node;
-        const routePathLink = this.props.routePathLink;
-        let icon = (
-            <div
-                className={classnames(
-                    s.nodeIcon,
-                    !this.props.isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
-                        ? s.timeAlignmentIcon
-                        : undefined
-                )}
-            />
-        );
-        const isNodeDisabled =
-            !this.props.isLastNode &&
-            this.props.routePathLink.startNodeType === StartNodeType.DISABLED;
-
-        if (node.type === NodeType.MUNICIPALITY_BORDER) {
-            icon = this.addBorder(icon, '#c900ff');
-        } else if (node.type === NodeType.CROSSROAD) {
-            icon = this.addBorder(icon, '#727272');
-        } else if (isNodeDisabled) {
-            icon = this.addBorder(icon, '#353333');
-        } else if (node.type === NodeType.STOP) {
-            node.transitTypes!.forEach(type => {
-                icon = this.addBorder(icon, TransitTypeUtils.getColor(type));
-            });
-        }
-
-        return icon;
-    };
-
-    private addBorder = (icon: React.ReactNode, color: string) => {
-        return (
-            <div className={s.iconBorder} style={{ borderColor: color }}>
-                {icon}
-            </div>
-        );
-    };
-
     private renderBody = () => {
+        const node = this.props.node;
         return (
-            <div className={s.extendedContent}>
-                {Boolean(this.props.node.stop) && this.renderStopView(this.props.node.stop!)}
-                {this.renderNodeView(this.props.node)}
+            <>
+                {Boolean(node.stop) && this.renderStopView(node.stop!)}
+                {this.renderNodeView(node)}
                 <div className={s.footer}>
-                    <Button
-                        onClick={() => NavigationUtils.openNodeView({ nodeId: this.props.node.id })}
-                        type={ButtonType.SQUARE}
-                    >
+                    <Button onClick={() => this.openNodeInNewTab(node.id)} type={ButtonType.SQUARE}>
                         <div>Avaa solmu</div>
-                        <FiChevronRight />
+                        <FiExternalLink />
                     </Button>
                 </div>
-            </div>
+            </>
         );
+    };
+
+    private openNodeInNewTab = (nodeId: string) => {
+        const nodeViewLink = routeBuilder.to(SubSites.node).toTarget(':id', nodeId).toLink();
+        window.open(nodeViewLink, '_blank');
     };
 
     private getShadowClass() {
@@ -324,16 +398,30 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     render() {
-        const geometry = this.props.routePathStore!.getNodeGeom(this.props.node.id);
+        const { node, routePathLink, isFirstNode, isLastNode } = this.props;
         return (
             <RoutePathListItem
+                // Use internalId as key instead of id because there might be duplicate nodes
+                id={node.internalId}
                 reference={this.props.reference}
-                id={this.props.node.id}
-                geometry={geometry}
                 shadowClass={this.getShadowClass()}
                 header={this.renderHeader()}
                 body={this.renderBody()}
-                listIcon={this.renderListIcon()}
+                listIcon={
+                    <TransitTypeNodeIcon
+                        nodeType={node.type}
+                        transitTypes={node.transitTypes}
+                        isTimeAlignmentStop={
+                            !isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
+                        }
+                        isDisabled={
+                            !isLastNode && routePathLink.startNodeType === StartNodeType.DISABLED
+                        }
+                    />
+                }
+                isFirstNode={isFirstNode}
+                isLastNode={isLastNode}
+                isItemHighlighted={this.isNodeSelected()}
             />
         );
     }

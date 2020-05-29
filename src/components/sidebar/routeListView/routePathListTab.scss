@@ -1,74 +1,13 @@
 @import '../../shared/styles/common';
+@import '../../shared/styles/form';
 @import '../../shared/styles/flexbox';
 
 .routePathListTab {
-    .groupedRoutes {
-        padding: 10px 15px;
-
-        .groupedRoutesDate {
-            color: rgb(102, 102, 102);
-            font-weight: 500;
-            font-size: 16px;
-        }
-
-        .groupedRoutesContent {
-            padding-left: 10px;
-        }
-    }
-
-    .shadow {
-        background-color: white;
-    }
-
-    .routePathContainer {
+    .buttonContainer {
         display: flex;
-        -webkit-box-align: center;
-        justify-content: space-between;
-        flex-direction: row;
-        -ms-flex-align: center;
-        align-items: center;
-        padding-top: 5px;
-
-        .routePathInfo {
-            display: flex;
-            &.highlight {
-                font-weight: bold;
-            }
-
-            .routePathDirection {
-                font-size: 1.2rem;
-                display: flex;
-                width: 25px;
-                align-items: center;
-            }
-
-            .stopNameLoader {
-                display: flex;
-                justify-content: center;
-                width: 150px;
-            }
-
-            .destinations1 {
-                font-size: $mediumFontSize;
-            }
-
-            .destinations2 {
-                color: $mediumLightGrey;
-                font-size: $smallFontSize;
-            }
-        }
-
-        .routePathControls {
-            display: flex;
-
-            > * {
-                margin: 0 5px;
-            }
-
-            .openRoutePathViewButton {
-                font-size: 1.8em;
-                padding: 3px;
-            }
+        width: 100%;
+        div {
+            margin: 0px 0px 1px 0px;
         }
     }
 }
@@ -81,6 +20,13 @@
 
 .noRoutePathsMessage {
     padding: 15px;
+}
+
+.noRoutePathsWithCurrentTimespanMessage {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    padding: 20px 10px 10px 10px;
 }
 
 .toggleAllRoutePathsVisibleButton {
@@ -107,4 +53,9 @@
     .toggleAllRoutePathsVisibleText {
         color: darken($busBlue, 10);
     }
+}
+
+.routeActiveSchedulesWrapper {
+    max-width: fit-content;
+    padding: 0px 10px 10px 10px;
 }

@@ -7,13 +7,16 @@ import LoginStore from '~/stores/loginStore';
 import { Button } from '../controls';
 import * as s from './saveButton.scss';
 
+type SaveButtonType = 'saveButton' | 'warningButton' | 'deleteButton';
+
 interface ISaveButtonProps {
     children: React.ReactNode;
-    className?: string;
     onClick: () => void;
-    disabled?: boolean;
-    isSavePrevented?: boolean;
-    savePreventedNotification?: string;
+    disabled: boolean; // disabled save button can still be clicked to show savePreventedNotification
+    type?: SaveButtonType;
+    className?: string;
+    title?: string;
+    savePreventedNotification: string;
     isWide?: boolean;
     hasPadding?: boolean; // defaults to true
 }
@@ -24,7 +27,8 @@ const SaveButton = observer((props: ISaveButtonProps) => {
         className,
         onClick,
         disabled,
-        isSavePrevented,
+        type = 'saveButton',
+        title,
         savePreventedNotification,
         isWide,
         hasPadding,
@@ -32,34 +36,69 @@ const SaveButton = observer((props: ISaveButtonProps) => {
     } = props;
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
-    const isWarningButton = isSaveLockEnabled || isSavePrevented;
-    const typeClass = disabled ? undefined : isWarningButton ? s.warningButton : s.saveButton;
+    const isDisabled = disabled && savePreventedNotification.length === 0;
+
+    // Render button that shows a notification when clicked (save prevented)
+    if (isSaveLockEnabled || savePreventedNotification.length > 0) {
+        const typeClass =
+            savePreventedNotification.length > 0
+                ? s.savePreventedNotificationButton
+                : s.warningButton;
+        return (
+            // Render special button type for this situation (using duplicated <Button/> to simplify code)
+            <Button
+                {...attrs}
+                className={classnames(
+                    s.saveButtonBase,
+                    typeClass,
+                    className ? className : undefined
+                )}
+                onClick={() => showSavePreventedNotification(savePreventedNotification)}
+                disabled={isDisabled}
+                type={ButtonType.SQUARE}
+                isWide={isWide}
+                hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
+                title={title ? title : ''}
+                data-cy={attrs['data-cy'] ? attrs['data-cy'] : 'saveButton'}
+            >
+                {children}
+            </Button>
+        );
+    }
+
+    let typeClass;
+    if (isDisabled) {
+        typeClass = undefined;
+    } else if (type === 'deleteButton') {
+        typeClass = s.deleteButton;
+    } else if (type === 'warningButton') {
+        typeClass = s.warningButton;
+    } else if (type === 'saveButton') {
+        typeClass = s.saveButton;
+    }
     return (
         <Button
             {...attrs}
             className={classnames(s.saveButtonBase, typeClass, className ? className : undefined)}
-            onClick={
-                isWarningButton
-                    ? () => showSavePreventedNotification(savePreventedNotification)
-                    : onClick
-            }
-            disabled={disabled}
+            onClick={onClick}
+            disabled={isDisabled}
             type={ButtonType.SQUARE}
             isWide={isWide}
             hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
-            data-cy='saveButton'
+            title={title ? title : ''}
+            data-cy={attrs['data-cy'] ? attrs['data-cy'] : 'saveButton'}
         >
             {children}
         </Button>
     );
 });
 
-const showSavePreventedNotification = (savePreventedNotification?: string) => {
+const showSavePreventedNotification = (savePreventedNotification: string) => {
     const alertText = LoginStore.isSaveLockEnabled
         ? 'Tallentaminen estetty, infopoiminta on käynnissä. Odota kunnes infopoiminta loppuu.'
-        : savePreventedNotification!;
+        : savePreventedNotification;
     AlertStore.setNotificationMessage({
-        message: alertText
+        message: alertText,
     });
 };
 

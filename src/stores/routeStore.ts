@@ -2,11 +2,11 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { IRoute } from '~/models';
 import routeValidationModel, {
-    IRouteValidationModel
+    IRouteValidationModel,
 } from '~/models/validationModels/routeValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
-import SearchStore from './searchStore';
+import RouteListStore from './routeListStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 class RouteStore {
@@ -14,7 +14,6 @@ class RouteStore {
     @observable private _oldRoute: IRoute | null;
     @observable private _isNewRoute: boolean;
     @observable private _existingRouteIds: string[] = [];
-    @observable private _routeIdToEdit: string | null;
     private _validationStore: ValidationStore<IRoute, IRouteValidationModel>;
 
     constructor() {
@@ -23,10 +22,6 @@ class RouteStore {
         reaction(
             () => this.shouldShowUnsavedChangesPrompt,
             (value: boolean) => NavigationStore.setShouldShowUnsavedChangesPrompt(value)
-        );
-        reaction(
-            () => this._routeIdToEdit != null,
-            (value: boolean) => SearchStore.setIsSearchDisabled(value)
         );
     }
 
@@ -51,8 +46,8 @@ class RouteStore {
     }
 
     @computed
-    get routeIdToEdit(): string | null {
-        return this._routeIdToEdit;
+    get shouldShowUnsavedChangesPrompt(): boolean {
+        return this.isDirty && RouteListStore.routeIdToEdit != null;
     }
 
     @computed
@@ -63,11 +58,6 @@ class RouteStore {
             _.omit(this._route, ['line', 'routePaths']),
             _.omit(this._oldRoute, ['line', 'routePaths'])
         );
-    }
-
-    @computed
-    get shouldShowUnsavedChangesPrompt(): boolean {
-        return this.isDirty && this._routeIdToEdit != null;
     }
 
     @computed
@@ -84,38 +74,27 @@ class RouteStore {
     public init = ({ route, isNewRoute }: { route: IRoute; isNewRoute: boolean }) => {
         this._route = _.cloneDeep(route);
         this._oldRoute = _.cloneDeep(route);
+        this._validationStore.clear();
+
         this._isNewRoute = isNewRoute;
         const customValidatorMap: ICustomValidatorMap = {
             id: {
-                validator: (route: IRoute, property: string, routeId: string) => {
-                    if (!this._isNewRoute) return;
-                    if (Boolean(this._existingRouteIds.includes(routeId))) {
-                        const validationResult: IValidationResult = {
-                            isValid: false,
-                            errorMessage: `Reitti ${routeId} on jo olemassa.`
-                        };
-                        return validationResult;
-                    }
-                    return;
-                }
-            }
+                validators: [
+                    (route: IRoute, property: string, routeId: string) => {
+                        if (!this._isNewRoute) return;
+                        if (Boolean(this._existingRouteIds.includes(routeId))) {
+                            const validationResult: IValidationResult = {
+                                isValid: false,
+                                errorMessage: `Reitti ${routeId} on jo olemassa.`,
+                            };
+                            return validationResult;
+                        }
+                        return;
+                    },
+                ],
+            },
         };
         this._validationStore.init(this._route, routeValidationModel, customValidatorMap);
-    };
-
-    @action
-    public setRouteToEdit = (route: IRoute | null) => {
-        if (!route) {
-            this._routeIdToEdit = null;
-            return;
-        }
-        if (route.id === this._routeIdToEdit) {
-            this.resetChanges();
-            this._routeIdToEdit = null;
-        } else {
-            this.init({ route, isNewRoute: false });
-            this._routeIdToEdit = route.id;
-        }
     };
 
     @action
@@ -134,14 +113,6 @@ class RouteStore {
         this._route = null;
         this._oldRoute = null;
         this._validationStore.clear();
-        this._routeIdToEdit = null;
-    };
-
-    @action
-    public resetChanges = () => {
-        if (this._oldRoute) {
-            this.init({ route: this._oldRoute, isNewRoute: this._isNewRoute });
-        }
     };
 }
 

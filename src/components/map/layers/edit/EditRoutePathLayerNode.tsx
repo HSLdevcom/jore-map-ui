@@ -1,9 +1,10 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component, ReactNode } from 'react';
-import ToolbarTool from '~/enums/toolbarTool';
+import StartNodeType from '~/enums/startNodeType';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
-    INodeClickParams
+    INodeClickParams,
 } from '~/helpers/EventHelper';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
@@ -21,7 +22,7 @@ interface IRoutePathLayerProps {
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    highlightItemById: (id: string) => void;
+    setExtendedListItem: (id: string) => void;
 }
 
 @inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
@@ -30,24 +31,49 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathNodes = () => {
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         if (!routePathLinks || routePathLinks.length < 1) return;
-
-        const res: ReactNode[] = [];
-        routePathLinks.forEach((rpLink, index) => {
-            // Render node which is lacking preceeding link
-            if (index === 0 || routePathLinks[index - 1].endNode.id !== rpLink.startNode.id) {
-                res.push(this.renderNode(rpLink.startNode, rpLink.orderNumber, index));
-            }
-            res.push(this.renderNode(rpLink.endNode, rpLink.orderNumber, index));
+        const res: ReactNode[] = routePathLinks.map((rpLink, index) => {
+            const isDisabled = rpLink.startNodeType === StartNodeType.DISABLED;
+            return this.renderNode({
+                isDisabled,
+                node: rpLink.startNode,
+                linkOrderNumber: rpLink.orderNumber,
+                key: `node-${index}`,
+            });
         });
+
+        const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
+        res.push(
+            this.renderNode({
+                isDisabled: false, // Last routePath node can't be disabled
+                node: lastRoutePathLink.endNode,
+                linkOrderNumber: lastRoutePathLink.orderNumber,
+                key: 'lastNode',
+            })
+        );
+
         return res;
     };
 
-    private renderNode = (node: INode, linkOrderNumber: number, index: number) => {
-        const toolHighlightedNodeIds = this.props.routePathStore!.toolHighlightedNodeIds;
+    private renderNode = ({
+        node,
+        linkOrderNumber,
+        isDisabled,
+        key,
+    }: {
+        node: INode;
+        linkOrderNumber: number;
+        isDisabled: boolean;
+        key: string;
+    }) => {
+        const routePathStore = this.props.routePathStore;
+        const toolHighlightedNodeIds = routePathStore!.toolHighlightedNodeIds;
         const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
-        const isNodeHighlightedByList = this.props.routePathStore!.listHighlightedNodeIds.includes(
-            node.id
-        );
+        let isNodeHighlighted;
+        if (routePathStore!.highlightedListItemId) {
+            isNodeHighlighted = routePathStore!.highlightedListItemId === node.internalId;
+        } else {
+            isNodeHighlighted = routePathStore!.extendedListItemId === node.internalId;
+        }
 
         // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
         const isClickDisabled = toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
@@ -57,49 +83,48 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             onNodeClick = () => {
                 const clickParams: IEditRoutePathLayerNodeClickParams = {
                     node,
-                    linkOrderNumber
+                    linkOrderNumber,
                 };
                 EventHelper.trigger('editRoutePathLayerNodeClick', clickParams);
             };
         } else {
             onNodeClick = () => {
-                this.props.highlightItemById(node.id);
+                this.props.setExtendedListItem(node.internalId);
                 const clickParams: INodeClickParams = { node };
                 EventHelper.trigger('nodeClick', clickParams);
             };
         }
 
-        const highlight = {
-            isHighlighted: false,
-            color: NodeHighlightColor.BLUE
-        };
+        let isHighlighted = false;
+        let highlightColor;
         if (isNodeHighlightedByTool) {
-            highlight.isHighlighted = true;
-            highlight.color = NodeHighlightColor.GREEN;
-        } else if (isNodeHighlightedByList) {
-            highlight.isHighlighted = true;
-            highlight.color = NodeHighlightColor.BLUE;
+            isHighlighted = true;
+            highlightColor = NodeHighlightColor.GREEN;
+        } else if (isNodeHighlighted) {
+            isHighlighted = true;
+            highlightColor = NodeHighlightColor.BLUE;
         }
 
         return (
             <NodeMarker
-                key={`${node.id}-${index}`}
+                key={key}
                 coordinates={node.coordinates}
                 nodeType={node.type}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                isSelected={this.props.mapStore!.selectedNodeId === node.id}
+                isHighlighted={isHighlighted}
+                highlightColor={highlightColor}
+                isDisabled={isDisabled}
                 onClick={onNodeClick}
-                highlight={highlight}
                 isClickDisabled={isClickDisabled}
             />
         );
     };
 
     private renderStartMarker = () => {
-        if (this.props.toolbarStore!.isSelected(ToolbarTool.AddNewRoutePathLink)) {
+        if (this.props.toolbarStore!.isSelected(ToolbarToolType.AddNewRoutePathLink)) {
             // Hiding start marker if we set target node adding new links.
             // Due to the UI otherwise getting messy
             return null;

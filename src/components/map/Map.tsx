@@ -2,12 +2,12 @@ import classnames from 'classnames';
 import * as L from 'leaflet';
 import 'leaflet-editable';
 import 'leaflet/dist/leaflet.css';
-import { reaction, toJS, IReactionDisposer } from 'mobx';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
 import EventHelper from '~/helpers/EventHelper';
-import { MapStore } from '~/stores/mapStore';
+import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -15,7 +15,7 @@ import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
-import RouteLayer from './layers/RouteLayer';
+import RoutePathLayer from './layers/RoutePathLayer';
 import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
@@ -117,7 +117,7 @@ class LeafletMap extends React.Component<IMapProps> {
                 maxZoom: 20,
                 animate: true,
                 padding: [100, 100],
-                duration: 0.5
+                duration: 0.5,
             });
     };
 
@@ -134,12 +134,11 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     componentWillUnmount() {
-        this.reactionDisposers.forEach(r => r());
+        this.reactionDisposers.forEach((r) => r());
     }
 
     render() {
-        const isLoading = Boolean(!this.props.mapStore!.coordinates);
-        const routes = toJS(this.props.routeListStore!.routes);
+        const isMapInteractionRestricted = this.props.mapStore!.isMapInteractionRestricted;
         return (
             <div className={s.mapView} data-cy='mapView'>
                 {this.props.children}
@@ -148,19 +147,25 @@ class LeafletMap extends React.Component<IMapProps> {
                     zoomControl={false}
                     id={s.mapLeaflet}
                     editable={true}
-                    className={isLoading ? s.disableInteraction : ''}
+                    className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
                     <TileLayer
-                        url='https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
-                        attribution={`
-                                Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
+                        url={
+                            this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
+                                ? 'https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
+                                : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
+                        }
+                        attribution={
+                            this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
+                                ? `Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,
                                 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
                                 Imagery © <a href="http://mapbox.com">Mapbox</a>
-                                />
-                            `}
+                                />`
+                                : `© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY`
+                        }
                         baseLayer={true}
-                        maxZoom={21}
-                        minZoom={8}
+                        maxZoom={19}
+                        minZoom={9}
                         detectRetina={true}
                         tileSize={512}
                         zoomOffset={-1}
@@ -168,7 +173,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
-                    <RouteLayer routes={routes} />
+                    <RoutePathLayer />
                     <EditRoutePathLayer />
                     <PopupLayer />
                     <StopAreaLayer />

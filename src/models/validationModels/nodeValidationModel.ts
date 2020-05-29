@@ -5,7 +5,7 @@ type INodeValidationModel = { [key in keyof INode]: string };
 
 const nodeValidationModel: INodeValidationModel = {
     id: '',
-    idSuffix: '',
+    internalId: '',
     type: 'required|min:1|max:1|string',
     shortIdString: `min:4|max:4|string|${regexRules.numbers}`,
     modifiedBy: '',
@@ -16,14 +16,19 @@ const nodeValidationModel: INodeValidationModel = {
     measurementType: '',
     measurementDate: 'date',
     stop: '',
-    transitTypes: ''
+    transitTypes: '',
+    beginningOfNodeId: '',
+    idSuffix: '',
+    transitType: '',
 };
 
-const editableNodeIdValidationModel = {
-    id: `required|min:5|max:5|string|${regexRules.numbers}`,
-    idSuffix: `required|min:2|max:2|string|${regexRules.numbers}`
+const nodeIdEditingValidationModel = {
+    ...nodeValidationModel,
+    beginningOfNodeId: `required|min:4|max:4|string|${regexRules.numbers}`,
+    idSuffix: `required|min:2|max:2|string|${regexRules.numbers}`,
+    transitType: '',
 };
 
 export default nodeValidationModel;
 
-export { INodeValidationModel, editableNodeIdValidationModel };
+export { INodeValidationModel, nodeValidationModel, nodeIdEditingValidationModel };

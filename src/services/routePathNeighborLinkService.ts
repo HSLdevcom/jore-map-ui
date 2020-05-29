@@ -47,7 +47,11 @@ const _parseNeighborLinks = (
         (link: IExtendedExternalLink): INeighborLink => ({
             routePathLink: RoutePathLinkFactory.mapExternalLink(link, orderNumber),
             nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
-                (rp: IExternalRoutePath) => RoutePathFactory.mapExternalRoutePath(rp)
+                (rp: IExternalRoutePath) => {
+                    const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
+                    const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;
+                    return RoutePathFactory.mapExternalRoutePath(rp, lineId, transitType);
+                }
             )
         })
     );
@@ -70,7 +74,6 @@ class RoutePathNeighborLinkService {
                 variables: { nodeId, date }
             });
             res = getNeighborLinks(queryResult, orderNumber, 'startNode');
-
             // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<any> = await ApolloClient.query({

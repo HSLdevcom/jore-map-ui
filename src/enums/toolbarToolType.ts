@@ -1,4 +1,4 @@
-enum ToolbarTool {
+enum ToolbarToolType {
     AddNetworkNode = 1,
     AddNetworkLink,
     AddNewRoutePathLink,
@@ -10,4 +10,4 @@ enum ToolbarTool {
     SplitLink
 }
 
-export default ToolbarTool;
+export default ToolbarToolType;

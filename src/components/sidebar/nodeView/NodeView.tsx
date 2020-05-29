@@ -3,13 +3,11 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
-import { IDropdownItem } from '~/components/controls/Dropdown';
 import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import NodeType from '~/enums/nodeType';
-import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import EventHelper from '~/helpers/EventHelper';
 import { ILink, INode, IRoutePath } from '~/models';
@@ -26,7 +24,6 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
-import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -44,8 +41,6 @@ interface INodeViewProps {
 
 interface INodeViewState {
     isLoading: boolean;
-    nodeIdSuffixOptions: IDropdownItem[];
-    isNodeIdSuffixQueryLoading: boolean;
     isRoutePathsUsingNodeQueryLoading: boolean;
     routePathsUsingNode: IRoutePath[];
 }
@@ -58,10 +53,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         super(props);
         this.state = {
             isLoading: true,
-            nodeIdSuffixOptions: [],
-            isNodeIdSuffixQueryLoading: false,
             isRoutePathsUsingNodeQueryLoading: false,
-            routePathsUsingNode: []
+            routePathsUsingNode: [],
         };
     }
 
@@ -113,7 +106,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             const coordinate = new L.LatLng(lat, lng);
             const node = NodeFactory.createNewNode(coordinate);
             this.centerMapToNode(node, []);
-            node.id = await this.fetchNodeId(node);
             this.props.nodeStore!.init({ node, links: [], isNewNode: true });
             this.updateSelectedStopAreaId();
         };
@@ -126,19 +118,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         }
         this._setState({ isLoading: false });
     };
-
-    private fetchNodeId = async (node: INode) => {
-        const nodeId = await NodeService.fetchAvailableNodeId(node);
-        if (!nodeId) {
-            this.props.alertStore!.setNotificationMessage({
-                message:
-                    'Solmun tunnuksen automaattinen generointi epäonnistui, koska aluedatasta ei löytynyt tarvittavia tietoja tai solmutunnusten avaruus on loppunut. Syötä solmun tunnus kenttään ensimmäiset 5 solmutunnuksen numeroa.'
-            });
-            this.props.nodeStore!.setIsNodeIdEditable(true);
-            return '';
-        }
-        return nodeId;
-    }
 
     private initExistingNode = async (nodeId: string) => {
         const nodeStore = this.props.nodeStore!;
@@ -162,7 +141,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     this.updateSelectedStopAreaId();
                 },
                 oldNode: node!,
-                oldLinks: links!
+                oldLinks: links!,
             });
         } else {
             this.initNode(node!, links!);
@@ -177,38 +156,38 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
         this.props.mapStore!.setSelectedNodeId(node.id);
         this.centerMapToNode(node, links);
-        this.props.nodeStore!.init({ node, links, oldNode, oldLinks, isNewNode: this.props.isNewNode });
+        this.props.nodeStore!.init({
+            node,
+            links,
+            oldNode,
+            oldLinks,
+            isNewNode: this.props.isNewNode,
+        });
     };
 
     private showNodeCachePrompt = ({
         nodeCacheObj,
         promptCancelCallback,
         oldNode,
-        oldLinks
+        oldLinks,
     }: {
         nodeCacheObj: INodeCacheObj;
         promptCancelCallback: Function;
         oldNode?: INode;
         oldLinks?: ILink[];
-        }) => {
+    }) => {
         const nodeStore = this.props.nodeStore;
         this.props.confirmStore!.openConfirm({
             content:
                 'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
             onConfirm: async () => {
-                this.initNode(
-                    nodeCacheObj.node,
-                    nodeCacheObj.links,
-                    oldNode,
-                    oldLinks
-                );
+                this.initNode(nodeCacheObj.node, nodeCacheObj.links, oldNode, oldLinks);
                 this.updateSelectedStopAreaId();
-                await this.queryAvailableNodeIdSuffixes(nodeCacheObj.node.id);
                 nodeStore!.setIsNodeIdEditable(nodeCacheObj.isNodeIdEditable);
                 nodeStore!.setIsEditingDisabled(false);
                 this._setState({ isLoading: false });
             },
-            onCancel: async () => await promptCancelCallback()
+            onCancel: async () => await promptCancelCallback(),
         });
     };
 
@@ -230,9 +209,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             return await LinkService.fetchLinksWithStartNodeOrEndNode(node.id);
         } catch (e) {
             this.props.errorStore!.addError(
-                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${
-                    node.id
-                } (soltunnus), ei onnistunut.`,
+                `Haku löytää linkkejä, joilla lnkalkusolmu tai lnkloppusolmu on ${node.id} (soltunnus), ei onnistunut.`,
                 e
             );
             return null;
@@ -244,9 +221,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const routePaths = await RoutePathService.fetchRoutePathsUsingNode(nodeId);
         this._setState({
             isRoutePathsUsingNodeQueryLoading: false,
-            routePathsUsingNode: routePaths
+            routePathsUsingNode: routePaths,
         });
-    }
+    };
 
     private centerMapToNode = (node: INode, links: ILink[]) => {
         let latLngs: L.LatLng[] = [node.coordinates, node.coordinatesProjection];
@@ -263,30 +240,18 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const nodeStore = this.props.nodeStore!;
         try {
             if (this.props.isNewNode) {
-                let nodeToUpdate;
-                if (nodeStore.isNodeIdEditable) {
-                    // Merge nodeId parts (5 num + 2 num) as a nodeId
-                    nodeToUpdate = _.cloneDeep(nodeStore.node);
-                    const nodeId = nodeToUpdate.id + nodeToUpdate.idSuffix;
-                    nodeToUpdate.id = nodeId;
-                } else {
-                    nodeToUpdate = nodeStore.node;
-                }
-                const nodeId = await NodeService.createNode(nodeToUpdate);
+                const nodeId = await NodeService.createNode(nodeStore.node);
                 const nodeViewLink = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', nodeId)
                     .toLink();
                 navigator.goTo({
                     link: nodeViewLink,
-                    shouldSkipUnsavedChangesPrompt: true
+                    shouldSkipUnsavedChangesPrompt: true,
                 });
                 nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
-                await NodeService.updateNode(
-                    nodeStore.node,
-                    nodeStore.getDirtyLinks()
-                );
+                await NodeService.updateNode(nodeStore.node, nodeStore.getDirtyLinks());
                 nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
                 this.initExistingNode(nodeStore.node.id);
                 nodeStore.setIsEditingDisabled(true);
@@ -311,26 +276,31 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             delete currentNode['stop'];
             delete oldNode['stop'];
 
-            if (currentNode.type === NodeType.CROSSROAD || currentNode.type === NodeType.MUNICIPALITY_BORDER) {
+            if (
+                currentNode.type === NodeType.CROSSROAD ||
+                currentNode.type === NodeType.MUNICIPALITY_BORDER
+            ) {
                 delete currentNode['measurementType'];
                 delete currentNode['coordinatesProjection'];
             }
         }
-        const saveModels: (ISaveModel|ITextModel)[] = [{
+        const saveModels: (ISaveModel | ITextModel)[] = [
+            {
                 type: 'saveModel',
                 subTopic: 'Solmu',
                 newData: currentNode,
                 oldData: oldNode,
-                model: 'node'
-        }]
+                model: 'node',
+            },
+        ];
 
         if (!_.isEqual(currentLinks, oldLinks)) {
             const textModel: ITextModel = {
-            type: 'textModel',
-            subTopic: 'Linkit',
-            oldText: 'Vanhat linkit',
-            newText: 'Uudet linkit'
-        }
+                type: 'textModel',
+                subTopic: 'Linkit',
+                oldText: 'Vanhat linkit',
+                newText: 'Uudet linkit',
+            };
             saveModels.push(textModel);
         }
 
@@ -346,7 +316,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 subTopic: 'Pysäkin tiedot',
                 newData: currentStop!,
                 oldData: oldStop!,
-                model: 'stop'
+                model: 'stop',
             };
             saveModels.push(stopSaveModel);
         }
@@ -355,7 +325,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             content: <SavePrompt models={saveModels} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -367,64 +337,19 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.nodeStore!.updateNodeProperty(property, value);
     };
 
-    private onChangeNodeId = async (value: string) => {
-        this.onChangeNodeProperty('id')(value);
-        await this.queryAvailableNodeIdSuffixes(value);
-        if (value.length === 5) {
-            this.onChangeNodeProperty('idSuffix')('');
-        }
-    };
-
     private onChangeNodeType = async (type: NodeType) => {
-        this._setState({ isLoading: true });
         this.props.nodeStore!.updateNodeType(type);
-        const nodeId = await this.fetchNodeId(this.props.nodeStore!.node);
-        this.props.nodeStore!.updateNodeProperty('id', nodeId);
-        this._setState({ isLoading: false });
-    }
-
-    private queryAvailableNodeIdSuffixes = async (beginningOfNodeId: string) => {
-        if (beginningOfNodeId.length === 5) {
-            this._setState({
-                isNodeIdSuffixQueryLoading: true
-            });
-            const availableNodeIds = await NodeService.fetchAvailableNodeIdsWithPrefix(beginningOfNodeId);
-            // slide(-2): get last two letters of a nodeId
-            const nodeIdSuffixList = availableNodeIds.map((nodeId: string) => nodeId.slice(-2));
-            this._setState({
-                nodeIdSuffixOptions: createDropdownItemsFromList(nodeIdSuffixList),
-                isNodeIdSuffixQueryLoading: false
-            });
-        } else {
-            if (this.state.nodeIdSuffixOptions.length > 0) {
-                this._setState({
-                    nodeIdSuffixOptions: []
-                });
-            }
-        }
-    }
-
-    private toggleTransitType = async (type: TransitType) => {
-        const nodeStore = this.props.nodeStore!;
-        const transitType = nodeStore.node.stop?.transitType;
-        if (transitType === type) {
-            this.props.nodeStore!.updateStopProperty('transitType', undefined);
-        } else {
-            this.props.nodeStore!.updateStopProperty('transitType', type);
-        }
-        if (nodeStore!.isNodeIdEditable) return;
-
-        this._setState({ isLoading: true });
-        const nodeId = await NodeService.fetchAvailableNodeId(nodeStore.node);
-        nodeStore.updateNodeProperty('id', nodeId);
-        this._setState({ isLoading: false });
     };
 
     render() {
         const nodeStore = this.props.nodeStore!;
         const node = nodeStore.node;
         if (this.state.isLoading || !node) {
-            return <div className={s.nodeView}><Loader /></div>
+            return (
+                <div className={s.nodeView}>
+                    <Loader />
+                </div>
+            );
         }
         const isNewNode = this.props.isNewNode;
         const isEditingDisabled = nodeStore.isEditingDisabled;
@@ -434,12 +359,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const isStopFormInvalid = node.type === NodeType.STOP && !nodeStore.isStopFormValid;
         const isSaveButtonDisabled =
             isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
-
         return (
             <div className={s.nodeView} data-cy='nodeView'>
                 <div className={s.content}>
                     <SidebarHeader
                         isEditButtonVisible={!isNewNode}
+                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >
@@ -451,9 +377,6 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         isEditingDisabled={isEditingDisabled}
                         isNodeIdEditable={isNodeIdEditable}
                         invalidPropertiesMap={invalidPropertiesMap}
-                        nodeIdSuffixOptions={this.state.nodeIdSuffixOptions}
-                        isNodeIdSuffixQueryLoading={this.state.isNodeIdSuffixQueryLoading}
-                        onChangeNodeId={this.onChangeNodeId}
                         onChangeNodeGeometry={this.onChangeNodeGeometry}
                         onChangeNodeProperty={this.onChangeNodeProperty}
                         onChangeNodeType={this.onChangeNodeType}
@@ -461,24 +384,25 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     {node.type === NodeType.STOP && node.stop && (
                         <StopView
                             node={node}
-                            isTransitToggleButtonBarVisible={isNewNode && !isNodeIdEditable}
-                            toggleTransitType={this.toggleTransitType}
                             onNodePropertyChange={this.onChangeNodeProperty}
                             isNewStop={isNewNode}
                             nodeInvalidPropertiesMap={invalidPropertiesMap}
                         />
                     )}
-                    { !isNewNode &&
-                        this.state.isRoutePathsUsingNodeQueryLoading ? (
-                            <Loader size={'small'} />
-                        ) : (
-                            <RoutePathList className={s.routePathList} topic={'Solmua käyttävät reitinsuunnat'} routePaths={this.state.routePathsUsingNode} />
-                        )
-                    }
+                    {!isNewNode && this.state.isRoutePathsUsingNodeQueryLoading ? (
+                        <Loader size={'small'} />
+                    ) : (
+                        <RoutePathList
+                            className={s.routePathList}
+                            topic={'Solmua käyttävät reitinsuunnat'}
+                            routePaths={this.state.routePathsUsingNode}
+                        />
+                    )}
                 </div>
                 <SaveButton
-                    disabled={isSaveButtonDisabled}
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
+                    disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
                 >
                     {isNewNode ? 'Luo uusi solmu' : 'Tallenna muutokset'}
                 </SaveButton>

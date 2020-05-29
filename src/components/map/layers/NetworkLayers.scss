@@ -1,11 +1,15 @@
 @import '../../shared/styles/common.scss';
-// TODO replace hexes with imported colors.
 
-.stop {
-    stroke: #3e3c87;
-    fill: $white;
+.networkBase {
     opacity: 1;
     fill-opacity: 1;
+    stroke-width: 2;
+}
+
+.stop {
+    @extend .networkBase;
+    stroke: $unusedNodeColor;
+    fill: $white;
 
     &.bus {
         stroke: $busBlue;
@@ -29,34 +33,15 @@
 }
 
 .crossroad {
-    stroke: #727272;
-    fill: #c6c6c6;
-    opacity: 1;
-    fill-opacity: 1;
-
-    &.bus {
-        fill: $busBlue;
-    }
-
-    &.tram {
-        fill: $tramGreen;
-    }
-
-    &.train {
-        fill: $trainPurple;
-    }
-
-    &.subway {
-        fill: $subwayOrange;
-    }
-
-    &.ferry {
-        fill: $ferryBlue;
-    }
+    @extend .networkBase;
+    stroke: $crossroadBorder;
+    fill: $crossroadFill;
 }
 
 .border {
-    stroke: #c900ff;
+    @extend .networkBase;
+    stroke: $municipalityBorder;
+    fill: $municipalityFill;
 }
 
 .hidden {

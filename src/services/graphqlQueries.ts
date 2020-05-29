@@ -178,6 +178,7 @@ const getNetworkNodesFromPointQuery = () => {
             ) {
                 nodes {
                     soltunnus
+                    soltyyppi
                     geojson
                     geojsonManual
                     transitTypes
@@ -262,6 +263,7 @@ const getAllNodesQuery = () => {
                     soltyyppi
                     sollistunnus
                     solkirjain
+                    transitTypes
                 }
             }
         }
@@ -305,20 +307,6 @@ const getRoutePathsUsingLinkFromDate = () => {
                 }
             }
         }`;
-};
-
-const getAllRoutePathPrimaryKeysQuery = () => {
-    return gql`
-        query routePathPrimaryKeys($routeId: String) {
-            routePathPrimaryKeys: allReitinsuuntas(condition: { reitunnus: $routeId }) {
-                nodes {
-                    reitunnus
-                    suusuunta
-                    suuvoimast
-                }
-            }
-        }
-    `;
 };
 
 const getStopAreaQuery = () => {
@@ -429,15 +417,55 @@ const getAllLineHeadersQuery = () => {
     `;
 };
 
-const getViaName = () => {
+const getViaNameQuery = () => {
     return gql`
-        query getViaName($relid: Int!) {
-            viaName: viaNimetByRelid(relid: $relid) {
-                relid
-                maaranpaa1
-                maaranpaa2
-                maaranpaa1R
-                maaranpaa2R
+        query getViaNames($routeId: String, $startDate: Datetime, $direction: String) {
+            get_via_names: getViaNames(
+                routeid: $routeId
+                startdate: $startDate
+                direction: $direction
+            ) {
+                nodes {
+                    relid
+                    maaranpaa1
+                    maaranpaa2
+                    maaranpaa1R
+                    maaranpaa2R
+                }
+            }
+        }
+    `;
+};
+
+const getViaShieldNameQuery = () => {
+    return gql`
+        query getViaShieldNames($routeId: String, $startDate: Datetime, $direction: String) {
+            get_via_shield_names: getViaShieldNames(
+                routeid: $routeId
+                startdate: $startDate
+                direction: $direction
+            ) {
+                nodes {
+                    relid
+                    viasuomi
+                    viaruotsi
+                }
+            }
+        }
+    `;
+};
+
+const getAllSchedulesQuery = () => {
+    return gql`
+        {
+            allAikataulus {
+                nodes {
+                    reitunnus
+                    lavoimast
+                    laviimvoi
+                    lakuka
+                    laviimpvm
+                }
             }
         }
     `;
@@ -754,7 +782,6 @@ export default {
     getLinksByEndNodeQuery,
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
-    getAllRoutePathPrimaryKeysQuery,
     getStopAreaQuery,
     getAllStopAreas,
     getAllStopItems,
@@ -764,5 +791,7 @@ export default {
     getAllStopSections,
     getAllHastusAreas,
     getReservedShortIds,
-    getViaName
+    getViaNameQuery,
+    getViaShieldNameQuery,
+    getAllSchedulesQuery,
 };

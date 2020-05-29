@@ -5,22 +5,27 @@ import IStop from './IStop';
 
 interface INodePrimaryKey {
     id: string;
-    idSuffix?: string; // 2 num (used at manual nodeId input)
 }
 
 interface INodeBase extends INodePrimaryKey {
     shortIdLetter?: string;
     shortIdString?: string;
     type: NodeType;
+    transitTypes?: TransitType[];
 }
 
 interface INodeMapHighlight extends INodePrimaryKey {
     coordinates: L.LatLng;
-    transitTypes: TransitType[];
+    type: NodeType;
     dateRanges: string;
+    transitTypes: TransitType[];
 }
 
 interface INode extends INodeBase {
+    internalId: string;
+    beginningOfNodeId?: string; // new node property
+    idSuffix?: string | null; // new node property
+    transitType?: TransitType | null; // new node property
     stop: IStop | null;
     coordinates: L.LatLng;
     coordinatesProjection: L.LatLng;
@@ -28,7 +33,6 @@ interface INode extends INodeBase {
     measurementType?: string;
     modifiedOn?: Date;
     modifiedBy?: string;
-    transitTypes?: TransitType[];
 }
 
 export default INode;

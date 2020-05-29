@@ -30,6 +30,8 @@ select:focus {
     width: auto !important;
     padding: 0;
     margin: 0;
+    border: 1px solid #cacaca;
+    box-shadow: none;
 }
 
 :global(.leaflet-popup-tip) {

@@ -81,6 +81,11 @@ $textFieldLineHeight: 25px;
     font-size: 12px;
 }
 
+.warningMessage {
+    color: $warningYellow;
+    font-size: 12px;
+}
+
 .invalidInput {
     border-color: $errorRed;
 }

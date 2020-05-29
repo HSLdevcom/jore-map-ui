@@ -203,7 +203,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     render() {
         const isSaveButtonDisabled =
-            this.state.selectedDate && this.getRoutepathsBeingSplit().length === 0;
+            Boolean(this.state.selectedDate) && this.getRoutepathsBeingSplit().length === 0;
         const node = this.getNode();
 
         const link = this.props.linkStore!.link;
@@ -258,7 +258,11 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
                         </div>
                     )}
                 </div>
-                <SaveButton disabled={isSaveButtonDisabled} onClick={this.openSaveConfirm}>
+                <SaveButton
+                    onClick={this.openSaveConfirm}
+                    disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
+                >
                     Jaa linkki
                 </SaveButton>
             </div>

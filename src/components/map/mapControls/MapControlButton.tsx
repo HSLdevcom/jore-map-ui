@@ -7,27 +7,28 @@ interface MapControlButtonProps {
     label: string;
     isActive: boolean;
     isDisabled: boolean;
-    children: React.ReactNode;
     onClick: () => void;
     hasNoPadding?: boolean;
+    children: React.ReactNode;
 }
 
 const MapControlButton = observer((props: MapControlButtonProps) => {
-    const onClick = () => {
-        if (!props.isDisabled) {
-            props.onClick();
-        }
-    };
+    const { label, isActive, isDisabled, onClick, hasNoPadding, children, ...attrs } = props;
 
     const classes = classnames(
         s.mapControlButton,
-        props.isActive && !props.isDisabled ? s.active : null,
-        props.isDisabled ? s.disabled : null,
-        props.hasNoPadding ? s.hasNoPadding : undefined
+        isActive && !isDisabled ? s.active : null,
+        isDisabled ? s.disabled : null,
+        hasNoPadding ? s.hasNoPadding : undefined
     );
 
     return (
-        <div className={classes} onClick={onClick} title={props.label}>
+        <div
+            className={classes}
+            onClick={isDisabled ? () => void 0 : onClick}
+            title={label}
+            {...attrs}
+        >
             {props.children}
         </div>
     );

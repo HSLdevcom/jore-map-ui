@@ -16,17 +16,13 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import HttpUtils from '~/utils/HttpUtils';
 import '~/utils/KeyEventHandler';
-import ErrorBar from './ErrorBar';
-import NavigationBar from './NavigationBar';
+import AppFrame from './AppFrame';
 import * as s from './app.scss';
 import Login from './login/Login';
-import Map from './map/Map';
-import OverlayContainer from './overlays/OverlayContainer';
-import Sidebar from './sidebar/Sidebar';
 
 interface IAppState {
     isLoginInProgress: boolean;
-    isCodeListQueryInProgress: boolean;
+    isAppInitializationInProgress: boolean;
 }
 
 interface IAppProps {
@@ -46,7 +42,7 @@ class App extends React.Component<IAppProps, IAppState> {
         super(props);
         this.state = {
             isLoginInProgress: true,
-            isCodeListQueryInProgress: true
+            isAppInitializationInProgress: false,
         };
     }
 
@@ -63,7 +59,7 @@ class App extends React.Component<IAppProps, IAppState> {
             if (response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
-                this.initApp();
+                await this.initApp();
             } else {
                 // Redirect to login
                 LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
@@ -72,40 +68,25 @@ class App extends React.Component<IAppProps, IAppState> {
         }
 
         this.setState({
-            isLoginInProgress: false
+            isLoginInProgress: false,
         });
     };
 
-    private initApp = () => {
-        this.initCodeLists();
-        this.fetchSaveLock();
-    };
-
-    private renderApp = () => {
-        if (this.state.isCodeListQueryInProgress) return <div>Ladataan sovellusta...</div>;
-
-        return (
-            <>
-                <NavigationBar />
-                <div className={s.appContent}>
-                    {/* Map needs to be rendered before <Sidebar /> so that listeners get initialized before Views set map coordinates. */}
-                    <Map>
-                        <ErrorBar />
-                    </Map>
-                    <Sidebar />
-                </div>
-                <OverlayContainer />
-            </>
-        );
+    private initApp = async () => {
+        this.setState({
+            isAppInitializationInProgress: true,
+        });
+        await this.initCodeLists();
+        await this.fetchSaveLock();
+        this.setState({
+            isAppInitializationInProgress: false,
+        });
     };
 
     private initCodeLists = async () => {
         try {
             const codeLists = await CodeListService.fetchAllCodeLists();
             this.props.codeListStore!.setCodeListItems(codeLists);
-            this.setState({
-                isCodeListQueryInProgress: false
-            });
         } catch (e) {
             this.props.errorStore!.addError('Koodiston haku epäonnistui', e);
         }
@@ -119,12 +100,13 @@ class App extends React.Component<IAppProps, IAppState> {
     private renderAfterLogin = () => {
         AuthService.authenticate(
             () => {
+                this.initApp();
+
                 // On success: Redirecting user to where she left off.
                 const originUrl = LocalStorageHelper.getItem('origin_url');
                 const destination = originUrl ? originUrl : SubSites.home;
                 LocalStorageHelper.removeItem('origin_url');
                 navigator.goTo({ link: destination });
-                this.initApp();
             },
             () => {
                 // On error
@@ -137,7 +119,7 @@ class App extends React.Component<IAppProps, IAppState> {
     };
 
     render() {
-        if (this.state.isLoginInProgress) {
+        if (this.state.isLoginInProgress || this.state.isAppInitializationInProgress) {
             return <div>Ladataan sovellusta...</div>;
         }
         return (
@@ -150,7 +132,7 @@ class App extends React.Component<IAppProps, IAppState> {
                             render={this.renderAfterLogin}
                         />
                         <Route path='/login' component={Login} />
-                        <Route component={() => this.renderApp()} />
+                        <Route path={'*'} component={AppFrame} />
                     </Switch>
                 </Router>
             </div>

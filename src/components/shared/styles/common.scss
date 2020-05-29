@@ -5,13 +5,21 @@ $hslFont: Gotham Rounded SSm A, Gotham Rounded SSm B, Arial, Georgia, Serif;
 
 $smallFontSize: 0.8rem;
 $mediumFontSize: 1rem;
-$largeFontSize: 1.5rem;
+$largeFontSize: 1.2rem;
+$extraLargeFontSize: 1.5rem;
 
 $busBlue: rgb(0, 122, 201);
 $tramGreen: rgb(0, 152, 95);
 $subwayOrange: rgb(255, 99, 25);
 $trainPurple: rgb(140, 71, 153);
 $ferryBlue: rgb(0, 185, 228);
+
+$crossroadBorder: #727272;
+$crossroadFill: #cfcfcf;
+$municipalityBorder: #c900ff;
+$municipalityFill: #fff;
+
+$unusedNodeColor: #000;
 
 $blue: rgb(0, 122, 201);
 $red: rgb(201, 0, 0);
@@ -29,7 +37,8 @@ $lightGrey: rgb(222, 222, 222);
 $mediumLightGrey: rgb(190, 190, 190);
 $mediumGrey: rgb(137, 137, 137);
 $darkGrey: rgb(87, 87, 87);
-$disabledGrey: #cccccc;
+$disabledGrey: #b1b0b0;
+$disabledGreyHover: $mediumGrey;
 
 $backgroundlightGrey: #eef1f3;
 $backgroundHoverColor: #e6e6e6;
@@ -50,6 +59,7 @@ $textareaMaxHeight: 200px;
 
 $buttonPadding: 10px;
 $saveButtonGreen: #00ba11;
+$deleteButtonRed: #c90000;
 
 $nodeProjectionColor: rgba(255, 255, 0, 0.5);
 
@@ -58,8 +68,9 @@ $lightblue: #aaddff;
 :export {
     smallFontSize: $smallFontSize;
     mediumFontSize: $mediumFontSize;
-    largeFontSize: $largeFontSize;
+    extraLargeFontSize: $extraLargeFontSize;
     busBlue: $busBlue;
+    unusedNodeColor: $unusedNodeColor;
     lightGrey: $lightGrey;
     mediumLightGrey: $mediumLightGrey;
     darkGrey: $darkGrey;

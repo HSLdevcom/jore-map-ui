@@ -1,9 +1,9 @@
 import NodeType from '~/enums/nodeType';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
-    INetworkNodeClickParams
+    INetworkNodeClickParams,
 } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
@@ -16,7 +16,7 @@ import BaseTool from './BaseTool';
  * Tool for creating new routePath
  */
 class ExtendRoutePathTool implements BaseTool {
-    public toolType = ToolbarTool.AddNewRoutePathLink;
+    public toolType = ToolbarToolType.AddNewRoutePathLink;
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
     public toolHelpText =
         'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista virheitä tai punaisia solmuja klikkailemalla. Solmun sisällä oleva numero kertoo, kuinka monta reitinsuuntaa tällä hetkellä käyttää kyseistä solmua.';
@@ -27,6 +27,7 @@ class ExtendRoutePathTool implements BaseTool {
         EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
         EventHelper.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         this.highlightClickableNodes();
+        RoutePathStore.setIsEditingDisabled(false);
     }
     public deactivate() {
         this.reset();

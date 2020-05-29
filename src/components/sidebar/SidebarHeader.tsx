@@ -12,13 +12,14 @@ import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
     children: ReactNode;
+    className?: string;
     isEditing?: boolean;
     isEditButtonVisible?: boolean;
     isEditPromptHidden?: boolean;
     onEditButtonClick?: () => void;
-    isBackButtonVisible?: boolean;
-    onBackButtonClick?: () => void;
     isCloseButtonVisible?: boolean;
+    onBackButtonClick?: () => void;
+    isBackButtonVisible?: boolean;
     closePromptMessage?: string;
     onCloseButtonClick?: () => void;
     loginStore?: LoginStore;
@@ -44,7 +45,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
             this.props.confirmStore!.openConfirm({
                 content: defaultEditPromptMessage,
                 onConfirm: this.props.onEditButtonClick!,
-                confirmButtonText: 'Kyllä'
+                confirmButtonText: 'Kyllä',
             });
         } else {
             this.props.onEditButtonClick!();
@@ -83,25 +84,29 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     };
 
     render() {
+        const { className, isEditing, isBackButtonVisible, isCloseButtonVisible } = this.props;
         return (
-            <div className={s.sidebarHeaderView} data-cy='sidebarHeaderView'>
-                <div className={s.topic}>{this.props.children}</div>
-                <div className={s.buttonContainer}>
+            <div
+                className={classnames(s.sidebarHeaderView, className ? className : undefined)}
+                data-cy='sidebarHeaderView'
+            >
+                <div className={s.containerLeft}>{this.props.children}</div>
+                <div className={s.containerRight}>
                     {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
                         <FiEdit3
                             onClick={this.onEditButtonClick}
-                            className={classnames(s.icon, this.props.isEditing && s.active)}
+                            className={classnames(s.icon, isEditing && s.active)}
                             data-cy='editButton'
                         />
                     )}
-                    {!this.props.isBackButtonVisible && (
+                    {isBackButtonVisible && (
                         <FiArrowLeft
                             className={s.icon}
                             onClick={this.onBackButtonClick}
                             data-cy='backButton'
                         />
                     )}
-                    {!this.props.isCloseButtonVisible && (
+                    {isCloseButtonVisible && (
                         <FiXCircle
                             className={s.icon}
                             onClick={this.onCloseButtonClick}

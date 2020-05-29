@@ -9,7 +9,7 @@ import * as s from './routeForm.scss';
 interface IRouteFormProps {
     route: IRoute;
     isNewRoute: boolean;
-    isEditingDisabled: boolean;
+    isEditing: boolean;
     onChangeRouteProperty: (property: keyof IRoute) => (value: any) => void;
     invalidPropertiesMap: object;
 }
@@ -20,12 +20,12 @@ class RouteForm extends React.Component<IRouteFormProps> {
             route,
             isNewRoute,
             invalidPropertiesMap,
-            isEditingDisabled,
+            isEditing,
             onChangeRouteProperty
         } = this.props;
         const onChange = onChangeRouteProperty;
-        const isUpdating = !isNewRoute || isEditingDisabled;
         const queryParamLineId = navigator.getQueryParam(QueryParams.lineId);
+        const isEditingDisabled = !isEditing;
         return (
             <div className={s.formSection}>
                 <div className={s.flexRow}>
@@ -35,7 +35,7 @@ class RouteForm extends React.Component<IRouteFormProps> {
                         value={isNewRoute ? queryParamLineId : route.lineId}
                     />
                     <InputContainer
-                        disabled={isUpdating}
+                        disabled={!(isNewRoute && isEditing)}
                         label='REITIN TUNNUS'
                         value={route.id}
                         onChange={onChange('id')}

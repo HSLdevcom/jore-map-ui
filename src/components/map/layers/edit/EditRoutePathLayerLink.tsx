@@ -17,7 +17,7 @@ interface IRoutePathLayerProps {
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    highlightItemById: (id: string) => void;
+    setExtendedListItem: (id: string) => void;
 }
 
 @inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
@@ -38,12 +38,13 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private renderLink = (routePathLink: IRoutePathLink) => {
-        const onRoutePathLinkClick =
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick
-                ? this.props.toolbarStore!.selectedTool!.onRoutePathLinkClick!(routePathLink.id)
-                : () => this.props.highlightItemById(routePathLink.id);
-
+        const routePathStore = this.props.routePathStore;
+        let isLinkHighlighted;
+        if (routePathStore!.highlightedListItemId) {
+            isLinkHighlighted = routePathStore!.highlightedListItemId === routePathLink.id;
+        } else {
+            isLinkHighlighted = routePathStore!.extendedListItemId === routePathLink.id;
+        }
         return [
             <Polyline
                 positions={routePathLink.geometry}
@@ -51,19 +52,30 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 color={ROUTE_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={onRoutePathLinkClick}
+                onClick={this.handleLinkClick(routePathLink)}
             />,
-            this.props.routePathStore!.listHighlightedNodeIds.includes(routePathLink.id) && (
+            isLinkHighlighted && (
                 <Polyline
                     positions={routePathLink.geometry}
                     key={`${routePathLink.id}-highlight`}
                     color={ROUTE_COLOR}
                     weight={25}
                     opacity={0.5}
-                    onClick={onRoutePathLinkClick}
+                    onClick={this.handleLinkClick(routePathLink)}
                 />
-            )
+            ),
         ];
+    };
+
+    private handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
+        if (
+            this.props.toolbarStore!.selectedTool &&
+            this.props.toolbarStore!.selectedTool.onRoutePathLinkClick
+        ) {
+            this.props.toolbarStore!.selectedTool.onRoutePathLinkClick(routePathLink.id)(e);
+        } else {
+            this.props.setExtendedListItem(routePathLink.id);
+        }
     };
 
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
@@ -79,7 +91,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 startPoint={routePathLink.geometry[routePathLink.geometry.length - 1]}
                 endPoint={routePathLink.endNode.coordinates}
                 color={'#efc210'}
-            />
+            />,
         ];
     };
 
@@ -90,7 +102,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
 
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
         const coherentPolylines = createCoherentLinesFromPolylines(
-            routePathLinks.map(rpLink => rpLink.geometry)
+            routePathLinks.map((rpLink) => rpLink.geometry)
         );
         return coherentPolylines.map((polyline, index) => (
             <ArrowDecorator key={index} color={ROUTE_COLOR} geometry={polyline} />

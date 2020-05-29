@@ -1,24 +1,22 @@
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import * as s from './modal.scss';
+import { ModalStore } from '~/stores/modalStore';
+import ModalContainer from './ModalContainer';
 
 interface IModalProps {
-    onExteriorClick?: () => void;
-    children: React.ReactNode;
+    modalStore?: ModalStore;
 }
 
-const Modal = observer((props: IModalProps) => {
-    const onExteriorDivClick = (e: any) => {
-        if (e.target.className === s.modalView && props.onExteriorClick) {
-            props.onExteriorClick();
-        }
-    };
+@inject('modalStore')
+@observer
+class Modal extends React.Component<IModalProps> {
+    render() {
+        const modalStore = this.props.modalStore!;
 
-    return (
-        <div className={s.modalView} onClick={onExteriorDivClick}>
-            <div className={s.wrapper}>{props.children}</div>
-        </div>
-    );
-});
+        if (!modalStore.isOpen) return null;
+
+        return <ModalContainer>{modalStore.content}</ModalContainer>;
+    }
+}
 
 export default Modal;

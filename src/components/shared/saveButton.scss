@@ -16,10 +16,25 @@
     background-color: darken(#00ba11, 10);
 }
 
+.savePreventedNotificationButton {
+    background-color: $disabledGrey;
+}
+.savePreventedNotificationButton:hover {
+    background-color: $disabledGreyHover;
+}
+
 .warningButton {
     background-color: #bebe02;
 }
 
 .warningButton:hover {
     background-color: darken(#bebe02, 10);
+}
+
+.deleteButton {
+    background-color: $red;
+}
+
+.deleteButton:hover {
+    background-color: darken($red, 10);
 }

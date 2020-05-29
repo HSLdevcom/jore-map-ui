@@ -20,7 +20,7 @@ class EventHelper {
     public trigger(eventName: eventName, data?: any) {
         const event = new CustomEvent(eventName, {
             bubbles: true,
-            detail: data
+            detail: data,
         });
         document.dispatchEvent(event);
     }
@@ -64,5 +64,5 @@ export {
     INetworkNodeClickParams,
     INetworkLinkClickParams,
     IEditRoutePathLayerNodeClickParams,
-    IEditRoutePathNeighborLinkClickParams
+    IEditRoutePathNeighborLinkClickParams,
 };

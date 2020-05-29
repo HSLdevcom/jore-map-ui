@@ -5,6 +5,7 @@ import { Popup } from 'react-leaflet';
 import { IPopup, PopupStore } from '~/stores/popupStore';
 import * as s from './popupLayer.scss';
 import NodePopup from './popups/NodePopup';
+import NodeUsagePopup from './popups/NodeUsagePopup';
 import SelectNetworkEntityPopup from './popups/SelectNetworkEntityPopup';
 
 interface PopupLayerProps {
@@ -31,6 +32,8 @@ class PopupLayer extends Component<PopupLayerProps> {
                 return <SelectNetworkEntityPopup popupId={popup.id} data={popup.data} />;
             case 'nodePopup':
                 return <NodePopup popupId={popup.id} data={popup.data} />;
+            case 'nodeUsagePopup':
+                return <NodeUsagePopup popupId={popup.id} data={popup.data} />;
             default:
                 return popup.content!(popup.id!);
         }

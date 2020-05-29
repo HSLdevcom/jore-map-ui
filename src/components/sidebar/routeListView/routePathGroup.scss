@@ -1,0 +1,100 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+
+.routePathGroup {
+    padding: 5px 10px;
+
+    .dateContainer {
+        display: flex;
+    }
+    .editingDisabledDateContainer {
+        padding: 5px;
+    }
+
+    .routePath {
+        display: flex;
+        -webkit-box-align: center;
+        justify-content: space-between;
+        flex-direction: row;
+        -ms-flex-align: center;
+        align-items: center;
+
+        .routePathInfoNotEditing {
+            display: flex;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .routePathInfoNotEditing:hover {
+            padding: 5px;
+            transition: 0.5s;
+            background-color: $backgroundHoverColor;
+        }
+
+        .routePathInfoEditing {
+            display: flex;
+            padding: 5px;
+        }
+
+        .routePathHighlighted {
+            font-weight: bold;
+        }
+
+        .routePathDirection {
+            font-size: $largeFontSize;
+            display: flex;
+            width: 25px;
+            align-items: center;
+        }
+
+        .stopNameLoader {
+            display: flex;
+            justify-content: center;
+            width: 150px;
+        }
+
+        .destinations1 {
+            font-size: $mediumFontSize;
+        }
+
+        .destinations2 {
+            color: $mediumLightGrey;
+            font-size: $smallFontSize;
+        }
+
+        .routePathControls {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+
+            > * {
+                margin: 0 5px;
+            }
+        }
+
+        .shadow {
+            background-color: white;
+        }
+
+        .removeNewRoutePathButton {
+            border: none;
+            color: $red;
+        }
+        .removeNewRoutePathButton:hover {
+            color: white;
+            background-color: $red;
+        }
+    }
+
+    .highlighAsNew {
+        background-color: lighten($saveButtonGreen, 50);
+    }
+
+    .highlightAsSelected {
+        background-color: #adf;
+    }
+}
+
+.routePathGroup:nth-child(even) {
+    background-color: #fff;
+}

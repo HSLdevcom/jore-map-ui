@@ -6,7 +6,7 @@ import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
-import { toDateString } from '~/utils/dateUtils';
+import { getMaxDate, getMinDate, toDateString } from '~/utils/dateUtils';
 import * as s from './datePicker.scss';
 
 registerLocale('fi', fi);
@@ -17,6 +17,9 @@ interface IDatePickerProps {
     isClearButtonVisible?: boolean;
     onChange: (date: Date | null) => void;
     onFocus?: () => void;
+    minStartDate?: Date;
+    maxEndDate?: Date;
+    excludeDates?: Date[];
 }
 
 interface IDatePickerState {
@@ -30,7 +33,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         super(props);
         this.state = {
             isOpen: false,
-            selectedDate: this.props.value ? toDateString(this.props.value) : ''
+            selectedDate: this.props.value ? toDateString(this.props.value) : '',
         };
     }
 
@@ -43,12 +46,18 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     }
 
     componentDidUpdate(prevProps: IDatePickerProps) {
+        if (!this.props.value && !_.isEmpty(this.state.selectedDate)) {
+            this.setState({
+                selectedDate: '',
+            });
+            return;
+        }
         if (this.props.value === prevProps.value) return;
 
         const newValue = this.props.value ? toDateString(this.props.value) : '';
         if (this.state.selectedDate !== newValue) {
             this.setState({
-                selectedDate: newValue
+                selectedDate: newValue,
             });
         }
     }
@@ -75,7 +84,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
 
         const dateString: string | null = getDateString(inputValue);
         this.setState({
-            selectedDate: dateString ? dateString : ''
+            selectedDate: dateString ? dateString : '',
         });
 
         this.closeCalendar();
@@ -93,15 +102,15 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     };
 
     render() {
-        const { isClearButtonVisible, isEmptyValueAllowed } = this.props;
-        const minDate = new Date();
-        minDate.setFullYear(1970);
-        minDate.setMonth(0);
-        minDate.setDate(1);
-        const maxDate = new Date();
-        maxDate.setFullYear(2051);
-        maxDate.setMonth(0);
-        maxDate.setDate(1);
+        const {
+            isClearButtonVisible,
+            isEmptyValueAllowed,
+            minStartDate,
+            maxEndDate,
+            excludeDates,
+        } = this.props;
+        const minDate = minStartDate ? minStartDate : getMinDate();
+        const maxDate = maxEndDate ? maxEndDate : getMaxDate();
 
         // TODO: scroll to selected year missing from react-datepicker
         // open issue for this: https://github.com/Hacker0x01/react-datepicker/pull/1700
@@ -114,11 +123,10 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                         value: this.state.selectedDate,
                         onChange: this.onChange,
                         openCalendar: this.openCalendar,
-                        placeholder: 'Syötä päivä'
+                        placeholder: 'Syötä päivä',
                     })}
                     open={this.state.isOpen}
                     onClickOutside={this.closeCalendar}
-                    onSelect={this.onChange}
                     onFocus={this.props.onFocus}
                     autoFocus={true}
                     adjustDateOnChange={false}
@@ -135,6 +143,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                     yearDropdownItemNumber={100}
                     minDate={minDate}
                     maxDate={maxDate}
+                    excludeDates={excludeDates}
                     dateFormatCalendar={'dd.MM.yyyy'}
                     popperContainer={_renderCalendarContainer}
                 />
@@ -154,7 +163,7 @@ const renderDatePickerInput = ({
     value,
     isClearButtonVisible,
     isEmptyValueAllowed,
-    openCalendar
+    openCalendar,
 }: {
     onChange: (value: any) => void;
     placeholder: string;

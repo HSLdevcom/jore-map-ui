@@ -7,7 +7,7 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import EventHelper, {
     INetworkLinkClickParams,
-    INetworkNodeClickParams
+    INetworkNodeClickParams,
 } from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
 import { LinkStore } from '~/stores/linkStore';
@@ -16,7 +16,11 @@ import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
+import {
+    isNetworkLinkHidden,
+    isNetworkLinkPointHidden,
+    isNetworkNodeHidden,
+} from '~/utils/networkUtils';
 import * as s from './NetworkLayers.scss';
 import VectorGridLayer from './VectorGridLayer';
 import { INodePopupData } from './popups/NodePopup';
@@ -24,7 +28,7 @@ import { INodePopupData } from './popups/NodePopup';
 enum GeoserverLayer {
     Node = 'solmu',
     Link = 'linkki',
-    Point = 'piste'
+    Point = 'piste',
 }
 
 interface INetworkLayersProps {
@@ -67,16 +71,15 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     lnkalkusolmu: startNodeId,
                     lnkloppusolmu: endNodeId,
                     lnkverkko: transitType,
-                    date_ranges: dateRangesString
+                    date_ranges: dateRangesString,
                 } = properties;
 
                 if (
-                    isNetworkElementHidden({
+                    isNetworkLinkHidden({
                         transitType,
                         startNodeId,
                         endNodeId,
-                        type: MapLayer.link,
-                        dateRangesString: dateRangesString!
+                        dateRangesString: dateRangesString!,
                     })
                 ) {
                     return this.getEmptyStyle();
@@ -86,9 +89,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     color: TransitTypeUtils.getColor(transitType),
                     weight: 3,
                     fillOpacity: 1,
-                    fill: true
+                    fill: true,
                 };
-            }
+            },
         };
     };
 
@@ -100,25 +103,24 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     lnkalkusolmu: startNodeId,
                     lnkloppusolmu: endNodeId,
                     lnkverkko: transitType,
-                    date_ranges: dateRangesString
+                    date_ranges: dateRangesString,
                 } = properties;
 
                 if (
-                    isNetworkElementHidden({
+                    isNetworkLinkPointHidden({
                         transitType,
                         startNodeId,
                         endNodeId,
-                        type: MapLayer.linkPoint,
-                        dateRangesString: dateRangesString!
+                        dateRangesString: dateRangesString!,
                     })
                 ) {
                     return this.getEmptyStyle();
                 }
                 return {
                     color: TransitTypeUtils.getColor(transitType),
-                    radius: 1
+                    radius: 1,
                 };
-            }
+            },
         };
     };
 
@@ -130,7 +132,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     transit_types: transitTypeCodes,
                     date_ranges: dateRangesString,
                     soltyyppi: nodeType,
-                    soltunnus: nodeId
+                    soltunnus: nodeId,
                 } = properties;
 
                 if (isNetworkNodeHidden({ nodeId, transitTypeCodes, dateRangesString })) {
@@ -151,10 +153,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                 let radius: any;
                 switch (this.props.networkStore!.nodeSize) {
                     case NodeSize.normal:
-                        radius = 5;
+                        radius = 6;
                         break;
                     case NodeSize.large:
-                        radius = 6;
+                        radius = 7;
                         break;
                     default:
                         throw new Error(
@@ -183,9 +185,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
                 return {
                     className,
-                    radius
+                    radius,
                 };
-            }
+            },
         };
     };
 
@@ -201,13 +203,13 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private showNodePopup = async (nodeId: string) => {
         const node = await NodeService.fetchNode(nodeId);
         const popupData: INodePopupData = {
-            node: node!
+            node: node!,
         };
         const nodePopup: IPopupProps = {
             type: 'nodePopup',
             data: popupData,
             coordinates: node!.coordinates,
-            isCloseButtonVisible: false
+            isCloseButtonVisible: false,
         };
 
         this.props.popupStore!.showPopup(nodePopup);
@@ -217,7 +219,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const properties = clickEvent.sourceTarget.properties;
         const clickParams: INetworkNodeClickParams = {
             nodeId: properties.soltunnus,
-            nodeType: properties.soltyyppi
+            nodeType: properties.soltyyppi,
         };
         EventHelper.trigger('networkNodeClick', clickParams);
     };
@@ -227,7 +229,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         const clickParams: INetworkLinkClickParams = {
             startNodeId: properties.lnkalkusolmu,
             endNodeId: properties.lnkloppusolmu,
-            transitType: properties.lnkverkko
+            transitType: properties.lnkverkko,
         };
         EventHelper.trigger('networkLinkClick', clickParams);
     };
@@ -244,18 +246,14 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     };
 
     render() {
-        const mapZoomLevel = this.props.mapStore!.zoom;
-        if (mapZoomLevel <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
-            return null;
-        }
-        if (!this.props.mapStore!.coordinates) return null;
-
+        if (this.props.mapStore!.areNetworkLayersHidden) return null;
         const selectedTransitTypes = this.props.networkStore!.selectedTransitTypes;
         const selectedDate = this.props.networkStore!.selectedDate;
         const nodeSize = this.props.networkStore!.nodeSize;
         return (
             <>
-                {this.props.networkStore!.isMapLayerVisible(MapLayer.link) && (
+                {(this.props.networkStore!.isMapLayerVisible(MapLayer.link) ||
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.unusedLink)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
@@ -283,7 +281,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     />
                 )}
                 {(this.props.networkStore!.isMapLayerVisible(MapLayer.node) ||
-                    this.props.networkStore!.isMapLayerVisible(MapLayer.nodeWithoutLink)) && (
+                    this.props.networkStore!.isMapLayerVisible(MapLayer.unusedNode)) && (
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
