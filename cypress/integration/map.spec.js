@@ -26,7 +26,7 @@ describe('Map tests - read access user', () => {
         cy.getTestElement('mapLayerControlView').find('[data-cy=showBus]').first().click();
 
         cy.centerMapToHelsinki();
-        cy.wait(1000);
+        cy.wait(5000);
         cy.getTestElement('mapView').click(590, 500); // Note: click position is according to the map of position after centerMapToHelsinki()
 
         cy.getTestElement('selectNetworkEntityPopup').should('exist');
@@ -41,7 +41,7 @@ describe('Map tests - read access user', () => {
         cy.getTestElement('mapLayerControlView').find('[data-cy=showBus]').first().click();
 
         cy.centerMapToHelsinki();
-        cy.wait(1000);
+        cy.wait(5000);
         cy.getTestElement('mapView').rightclick(590, 500); // Note: click position is according to the map of position after centerMapToHelsinki()
 
         cy.getTestElement('nodePopup').should('exist');
