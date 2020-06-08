@@ -1,40 +1,75 @@
 import _ from 'lodash';
 import EndpointPath from '~/enums/endpointPath';
 import ApolloClient from '~/helpers/ApolloClient';
-import { IRoutePath } from '~/models';
-import { IMassEditRoutePath } from '~/models/IRoutePath';
+import IRoutePath, {
+    IMassEditRoutePath,
+    IMultipleRoutePathSaveModel,
+    IRoutePathPrimaryKey,
+    IRoutePathSaveModel,
+} from '~/models/IRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
-
-interface IMassEditRoutePathSaveModel {
-    added: IRoutePath[];
-    modified: IRoutePath[];
-    originals: IRoutePath[];
-}
 
 class RoutePathMassEditService {
     public static massEditRoutePaths = async (massEditRoutePaths: IMassEditRoutePath[]) => {
-        const added: IRoutePath[] = [];
-        const modified: IRoutePath[] = [];
-        const originals: IRoutePath[] = [];
-        massEditRoutePaths.forEach(massEditRp => {
+        const addedRpSaveModel: IRoutePathSaveModel[] = [];
+        const modifiedRpSaveModel: IRoutePathSaveModel[] = [];
+        const originalRpSaveModel: IRoutePathSaveModel[] = [];
+        massEditRoutePaths.forEach((massEditRp) => {
+            const currentRp = massEditRp.routePath;
+            const oldRp = massEditRp.oldRoutePath;
             if (_.isEqual(massEditRp.routePath, massEditRp.oldRoutePath)) {
-                originals.push(massEditRp.routePath);
+                originalRpSaveModel.push({
+                    routePath: currentRp,
+                    routePathLinkSaveModel: {
+                        added: [],
+                        modified: [],
+                        removed: [],
+                        originals: [],
+                    },
+                    originalPrimaryKey: _getOriginalRpPrimaryKey(currentRp),
+                });
             } else {
-                if (!massEditRp.oldRoutePath) {
-                    added.push(massEditRp.routePath);
+                if (massEditRp.isNew) {
+                    addedRpSaveModel.push({
+                        routePath: currentRp,
+                        routePathLinkSaveModel: {
+                            added: currentRp.routePathLinks,
+                            modified: [],
+                            removed: [],
+                            originals: [],
+                        },
+                        originalPrimaryKey: _getOriginalRpPrimaryKey(oldRp!),
+                    });
                 } else {
-                    modified.push(massEditRp.routePath);
+                    modifiedRpSaveModel.push({
+                        routePath: currentRp,
+                        routePathLinkSaveModel: {
+                            added: [],
+                            modified: currentRp.routePathLinks,
+                            removed: [],
+                            originals: [],
+                        },
+                        originalPrimaryKey: _getOriginalRpPrimaryKey(oldRp!),
+                    });
                 }
             }
         });
-        const massEditRoutePathSaveModel: IMassEditRoutePathSaveModel = {
-            added,
-            modified,
-            originals
+        const massEditRoutePathSaveModel: IMultipleRoutePathSaveModel = {
+            added: addedRpSaveModel,
+            modified: modifiedRpSaveModel,
+            originals: originalRpSaveModel,
         };
         await HttpUtils.postRequest(EndpointPath.ROUTE_PATH_MASS_EDIT, massEditRoutePathSaveModel);
         ApolloClient.clearStore();
     };
 }
+
+const _getOriginalRpPrimaryKey = (routePath: IRoutePath): IRoutePathPrimaryKey => {
+    return {
+        routeId: routePath.routeId,
+        direction: routePath.direction,
+        startDate: routePath.startDate,
+    };
+};
 
 export default RoutePathMassEditService;

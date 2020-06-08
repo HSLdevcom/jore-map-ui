@@ -271,7 +271,7 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
         if (isEditing) {
             if (isEditingRoutePaths) {
                 routeListStore.setAllRoutePathsVisible(route.id);
-                routePathMassEditStore.init({ routePaths: route.routePaths });
+                routePathMassEditStore.init({ routePaths: route.routePaths, routeId: route.id });
             } else {
                 routeStore.init({ route, isNewRoute: false });
             }
