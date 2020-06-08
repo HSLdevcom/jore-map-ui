@@ -368,7 +368,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 this.props.routePathMassEditStore!.massEditRoutePaths!
             );
             this.props.routePathMassEditStore!.clear();
-            // TODO: clear & fetch routePaths
+            // TODO: instead of this call, force routeItem.route.routePaths to be fetched again
+            this.updateGroupedRoutePathsToDisplay();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
