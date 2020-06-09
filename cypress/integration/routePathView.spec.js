@@ -81,7 +81,7 @@ describe('RoutePathView tests - write access user', () => {
 const _openRoutePath = () => {
     cy.getTestElement('lineToggle').click();
     cy.getTestElement('lineSearch').click();
-    cy.getTestElement('lineSearch').type('550');
+    cy.getTestElement('lineSearch').type('1819');
     cy.wait(1000);
     cy.getTestElement('routeItem').first().click();
 
