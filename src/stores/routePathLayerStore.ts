@@ -74,12 +74,12 @@ class RoutePathLayerStore {
                 routePath.startDate,
                 routePath.direction
             );
-            this.fetchRoutePathLinksToRoutePath(routePathWithGeometry!.routePathLinks, id);
+            this.setRoutePathLinksToRoutePath(routePathWithGeometry!.routePathLinks, id);
         }
     };
 
     @action
-    public fetchRoutePathLinksToRoutePath = (routePathLinks: IRoutePathLink[], id: string) => {
+    public setRoutePathLinksToRoutePath = (routePathLinks: IRoutePathLink[], id: string) => {
         const routePath = this._routePaths.find((rp) => rp.internalId === id);
         // If component is unmounted, routePath won't be found
         if (routePath) {

@@ -1,3 +1,5 @@
+import constants from '../constants';
+
 describe('NodeView tests - read access user', () => {
     it('Can open node and close it to return home page', () => {
         cy.hslLoginReadAccess();
@@ -169,12 +171,8 @@ const _openStop = () => {
     cy.getTestElement('authInfo').should('exist');
     cy.getTestElement('lineSearch').should('exist');
 
-    // Have to use different link for dev / stage to prevent local db out-of-sync errors
-    if (Cypress.config().baseUrl.includes('dev')) {
-        cy.visit('node/1270103');
-    } else {
-        cy.visit('node/1260105');
-    }
+    cy.visit(constants.NODE_UPDATE_URI);
+
     cy.getTestElement('nodeView').should('exist');
 };
 

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
-import { IRoutePath } from '~/models';
+import { IRoutePath, IRoutePathLink } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
 import RouteListStore from '~/stores/routeListStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
@@ -14,11 +14,13 @@ class RoutePathMassEditStore {
     @observable private _newRoutePathIdCounter: number;
     @observable private _selectedRoutePath: IRoutePath | null;
     @observable private _selectedRoutePathIdPairs: string[][]; // RoutePath pairs that user has manually selected (shift+click)
+    @observable private _routeId: string | null;
 
     constructor() {
         this._massEditRoutePaths = null;
         this._newRoutePathIdCounter = 1;
         this._selectedRoutePathIdPairs = [];
+        this._routeId = null;
 
         reaction(
             () => this.shouldShowUnsavedChangesPrompt,
@@ -88,7 +90,7 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public init = ({ routePaths }: { routePaths: IRoutePath[] }) => {
+    public init = ({ routePaths, routeId }: { routePaths: IRoutePath[]; routeId: string }) => {
         const massEditRoutePaths: IMassEditRoutePath[] = [];
         _.cloneDeep(routePaths).forEach((rp: IRoutePath) => {
             massEditRoutePaths.push({
@@ -99,6 +101,7 @@ class RoutePathMassEditStore {
                 isNew: false,
             });
         });
+        this._routeId = routeId;
         this._massEditRoutePaths = massEditRoutePaths.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
     };
@@ -120,6 +123,13 @@ class RoutePathMassEditStore {
         this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.endDate = newEndDate;
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
+    };
+
+    @action
+    public setRoutePathLinksToRoutePath = (id: string, routePathLinks: IRoutePathLink[]) => {
+        this._massEditRoutePaths?.find(
+            (m) => m.id === id
+        )!.routePath.routePathLinks = routePathLinks;
     };
 
     @action
@@ -159,6 +169,7 @@ class RoutePathMassEditStore {
             const oldRoutePath = _.cloneDeep(rpToCopy.routePath);
             newRoutePath.direction = rpToCopy.direction;
             newRoutePath.internalId = newRoutePathId;
+            newRoutePath.routeId = this._routeId!;
 
             const maxDatePlusOne = getMaxDate();
             maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
@@ -234,6 +245,7 @@ class RoutePathMassEditStore {
                     isValid: false,
                     errorMessage: 'Alkupäivämäärä on loppupäivämäärän jälkeen.',
                 };
+                // Display a warning, non continuous routePaths are still valid
             } else if (prevRoutePathWithGap) {
                 currMassEditRp.validationResult = {
                     isValid: true,
@@ -302,6 +314,7 @@ class RoutePathMassEditStore {
         );
         routePathsToRemove.forEach((rp) => RoutePathLayerStore.removeRoutePath(rp.internalId));
 
+        this._routeId = null;
         this._massEditRoutePaths = null;
 
         RouteListStore.setRouteIdToEdit(null);
