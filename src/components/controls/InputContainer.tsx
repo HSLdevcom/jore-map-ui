@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import React from 'react';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../shared/loader/Loader';
 import DatePicker from './DatePicker';
 import TextContainer from './TextContainer';
 import * as s from './inputContainer.scss';
@@ -24,7 +25,11 @@ interface IInputProps {
     isClearButtonVisibleOnDates?: boolean;
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
+    isLoading?: boolean;
     onFocus?: () => void;
+    minStartDate?: Date;
+    maxEndDate?: Date;
+    excludeDates?: Date[];
 }
 
 const InputContainer = observer((props: IInputProps) => {
@@ -43,7 +48,10 @@ const InputContainer = observer((props: IInputProps) => {
         isClearButtonVisibleOnDates,
         isTimeIncluded,
         isInputLabelDarker,
+        isLoading,
         onFocus,
+        minStartDate,
+        maxEndDate,
         ...attrs
     } = props;
 
@@ -56,6 +64,7 @@ const InputContainer = observer((props: IInputProps) => {
                 isTimeIncluded={isTimeIncluded}
                 isInputLabelDarker={isInputLabelDarker}
                 isInputColorRed={isInputColorRed}
+                isLoading={isLoading}
                 {...attrs}
             />
         );
@@ -76,19 +85,23 @@ const InputContainer = observer((props: IInputProps) => {
 
     return (
         <div className={classnames(s.formItem, className)}>
-            {label && (
-                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                    {label}
+            <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                {label ? label : ''}
+            </div>
+            {isLoading ? (
+                <div className={s.loaderContainer}>
+                    <Loader size='tiny' hasNoMargin={true} />
                 </div>
-            )}
-
-            {type === 'date' ? (
+            ) : type === 'date' ? (
                 <DatePicker
                     value={props.value! as Date}
                     onChange={props.onChange!}
                     isClearButtonVisible={props.isClearButtonVisibleOnDates}
                     isEmptyValueAllowed={props.isEmptyDateValueAllowed}
                     onFocus={props.onFocus}
+                    minStartDate={props.minStartDate}
+                    maxEndDate={props.maxEndDate}
+                    excludeDates={props.excludeDates}
                 />
             ) : (
                 <input
@@ -112,7 +125,9 @@ const InputContainer = observer((props: IInputProps) => {
             )}
 
             {validationResult && validationResult.errorMessage && (
-                <div className={s.errorMessage}>{validationResult.errorMessage}</div>
+                <div className={validationResult.isValid ? s.warningMessage : s.errorMessage}>
+                    {validationResult.errorMessage}
+                </div>
             )}
         </div>
     );

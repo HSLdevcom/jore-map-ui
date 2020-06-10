@@ -21,7 +21,6 @@ class StopAreaLayer extends Component<IStopAreaLayerProps> {
                     color={'#007ac9'}
                     coordinates={stopItem.coordinates!}
                     nodeType={NodeType.STOP}
-                    isSelected={false}
                     nodeLocationType={'coordinates'}
                     nodeId={stopItem.nodeId}
                 />

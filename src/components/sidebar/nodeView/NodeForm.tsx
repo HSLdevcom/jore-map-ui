@@ -10,42 +10,47 @@ import NodeMeasurementType from '~/enums/nodeMeasurementType';
 import NodeType from '~/enums/nodeType';
 import { INode } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
+import { NodeStore } from '~/stores/nodeStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import CoordinateInputRow from './CoordinateInputRow';
+import NodeIdInput from './NodeIdInput';
 import * as s from './nodeForm.scss';
 
-interface INodeViewProps {
+interface INodeFormProps {
     node: INode;
     isNewNode: boolean;
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
     isNodeIdEditable?: boolean;
-    nodeIdSuffixOptions?: IDropdownItem[];
-    isNodeIdSuffixQueryLoading?: boolean;
-    onChangeNodeId?: (value: any) => void;
     onChangeNodeGeometry?: (property: NodeLocationType) => (value: L.LatLng) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
     onChangeNodeType?: (type: NodeType) => void;
+    nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
 }
 
-@inject('codeListStore')
+@inject('nodeStore', 'codeListStore')
 @observer
-class NodeForm extends Component<INodeViewProps> {
+class NodeForm extends Component<INodeFormProps> {
     private createMeasuredDropdownItems = (): IDropdownItem[] => {
         const items: IDropdownItem[] = [
             {
                 value: NodeMeasurementType.Calculated,
-                label: 'Laskettu'
+                label: 'Laskettu',
             },
             {
                 value: NodeMeasurementType.Measured,
-                label: 'Mitattu'
-            }
+                label: 'Mitattu',
+            },
         ];
         return items;
+    };
+
+    private changeNodeType = (nodeType: NodeType) => {
+        this.props.onChangeNodeType!(nodeType);
+        this.props.onChangeNodeProperty!('idSuffix')(null);
     };
 
     render() {
@@ -53,46 +58,31 @@ class NodeForm extends Component<INodeViewProps> {
             node,
             isNewNode,
             isEditingDisabled,
-            isNodeIdEditable,
-            nodeIdSuffixOptions,
-            isNodeIdSuffixQueryLoading,
-            onChangeNodeId,
             invalidPropertiesMap,
+            isNodeIdEditable,
             onChangeNodeGeometry,
             onChangeNodeProperty,
-            onChangeNodeType
+            onChangeNodeType,
         } = this.props;
         const nodeTypeCodeList = createDropdownItemsFromList(['P', 'X']);
+        const isNodeIdQueryLoading = this.props.nodeStore!.isNodeIdQueryLoading;
         return (
             <div className={classnames(s.nodeForm, s.form)}>
                 <div className={s.formSection}>
                     {isNewNode && (
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                value={node.id}
-                                onChange={onChangeNodeId ? onChangeNodeId : undefined}
-                                label={isNodeIdEditable ? 'SOLMUN TUNNUS (5 num.' : 'SOLMUN TUNNUS'}
-                                disabled={!isNodeIdEditable || Boolean(isNodeIdSuffixQueryLoading)}
-                                validationResult={invalidPropertiesMap['id']}
-                            />
-                            {isNodeIdEditable && (
-                                <Dropdown
-                                    label='+ 2 num.)'
-                                    onChange={onChangeNodeProperty!('idSuffix')}
-                                    disabled={_.isEmpty(nodeIdSuffixOptions)}
-                                    isLoading={isNodeIdSuffixQueryLoading}
-                                    selected={node.idSuffix}
-                                    items={nodeIdSuffixOptions ? nodeIdSuffixOptions : []}
-                                    validationResult={invalidPropertiesMap['idSuffix']}
-                                />
-                            )}
-                        </div>
+                        <NodeIdInput
+                            node={node}
+                            isEditingDisabled={isEditingDisabled}
+                            invalidPropertiesMap={invalidPropertiesMap}
+                            isNodeIdEditable={isNodeIdEditable}
+                            onChangeNodeProperty={onChangeNodeProperty}
+                        />
                     )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='TYYPPI'
-                            onChange={onChangeNodeType ? onChangeNodeType : undefined}
-                            disabled={isEditingDisabled || !isNewNode}
+                            onChange={onChangeNodeType ? this.changeNodeType : undefined}
+                            disabled={isEditingDisabled || !isNewNode || isNodeIdQueryLoading}
                             selected={node.type}
                             items={nodeTypeCodeList}
                             data-cy='nodeTypeDropdown'
@@ -118,15 +108,17 @@ class NodeForm extends Component<INodeViewProps> {
                                 <div
                                     className={classnames(
                                         s.labelIcon,
-                                        NodeUtils.getNodeTypeClass(node.type, {
-                                            isNodeHighlighted: true
-                                        })
+                                        ...NodeUtils.getNodeTypeClasses(node.type, {})
                                     )}
                                 />
                             </div>
                         }
                         coordinates={node.coordinates}
-                        onChange={onChangeNodeGeometry!('coordinates')}
+                        onChange={
+                            onChangeNodeGeometry
+                                ? onChangeNodeGeometry('coordinates')
+                                : () => void 0
+                        }
                     />
                     {node.type === NodeType.STOP && (
                         <div className={s.flexRow}>
@@ -135,7 +127,11 @@ class NodeForm extends Component<INodeViewProps> {
                                 label='MITTAUSPVM'
                                 value={node.measurementDate}
                                 disabled={isEditingDisabled}
-                                onChange={onChangeNodeProperty!('measurementDate')}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementDate')
+                                        : undefined
+                                }
                                 isClearButtonVisibleOnDates={true}
                                 isEmptyDateValueAllowed={true}
                                 validationResult={invalidPropertiesMap['measurementDate']}
@@ -147,7 +143,12 @@ class NodeForm extends Component<INodeViewProps> {
                                 selected={node.measurementType}
                                 items={this.createMeasuredDropdownItems()}
                                 validationResult={invalidPropertiesMap['measurementType']}
-                                onChange={onChangeNodeProperty!('measurementType')}
+                                onChange={
+                                    onChangeNodeProperty
+                                        ? onChangeNodeProperty('measurementType')
+                                        : undefined
+                                }
+                                data-cy='measurementType'
                             />
                         </div>
                     )}
@@ -161,7 +162,11 @@ class NodeForm extends Component<INodeViewProps> {
                                 </div>
                             }
                             coordinates={node.coordinatesProjection}
-                            onChange={onChangeNodeGeometry!('coordinatesProjection')}
+                            onChange={
+                                onChangeNodeGeometry
+                                    ? onChangeNodeGeometry('coordinatesProjection')
+                                    : () => void 0
+                            }
                         />
                     )}
                 </div>

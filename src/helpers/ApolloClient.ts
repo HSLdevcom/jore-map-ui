@@ -1,7 +1,7 @@
 import {
     defaultDataIdFromObject,
     InMemoryCache,
-    NormalizedCacheObject
+    NormalizedCacheObject,
 } from 'apollo-cache-inmemory';
 import * as Apollo from 'apollo-client';
 import { BatchHttpLink } from 'apollo-link-batch-http';
@@ -11,8 +11,17 @@ import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 
 const cache = new InMemoryCache({
-    // Let apollo-client know which object property to use as caching key
+    // Let apollo-client know which object property to use as caching key (always use primarykey)
     dataIdFromObject: (obj: any) => {
+        if (obj.__typename === 'Reitinsuunta') {
+            return `${obj.reitunnus}${obj.suusuunta}${obj.suuvoimast}`;
+        }
+        if (obj.__typename === 'Reitti') {
+            return obj.reitunnus;
+        }
+        if (obj.__typename === 'Linja') {
+            return obj.lintunnus;
+        }
         if (obj.__typename === 'Solmu') {
             return obj.soltunnus;
         }
@@ -20,7 +29,7 @@ const cache = new InMemoryCache({
             return obj.soltunnus;
         }
         return defaultDataIdFromObject(obj);
-    }
+    },
 });
 
 class ApolloClient {
@@ -32,8 +41,8 @@ class ApolloClient {
             link: new BatchHttpLink({
                 uri: `${constants.API_URL}/graphql`,
                 // To keep the same express session information with each request
-                credentials: 'include'
-            })
+                credentials: 'include',
+            }),
         });
     }
 

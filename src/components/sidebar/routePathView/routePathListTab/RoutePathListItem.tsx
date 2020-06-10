@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { MapStore } from '~/stores/mapStore';
@@ -7,56 +6,65 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListItemProps {
-    mapStore?: MapStore;
-    routePathStore?: RoutePathStore;
     id: string;
-    geometry: L.LatLng[];
-    shadowClass?: string;
+    reference: React.RefObject<HTMLDivElement>;
     header: JSX.Element;
     body: JSX.Element;
-    listIcon: JSX.Element;
-    reference: React.RefObject<HTMLDivElement>;
+    isItemHighlighted?: boolean;
+    shadowClass?: string;
+    listIcon?: JSX.Element;
+    isLastNode?: boolean;
+    isFirstNode?: boolean;
+    mapStore?: MapStore;
+    routePathStore?: RoutePathStore;
 }
 
 @inject('routePathStore', 'mapStore')
 @observer
 class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
-    private toggleIsExtended = () => {
-        this.props.routePathStore!.toggleExtendedListItem(this.props.id);
-
-        if (this.props.routePathStore!.isListItemExtended(this.props.id)) {
-            this.props.mapStore!.setMapBounds(this.getBounds());
-        }
-    };
-
-    private getBounds = () => {
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-        this.props.geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
-        return bounds;
-    };
-
     private onMouseEnter = () => {
-        this.props.routePathStore!.setListHighlightedNodeIds([this.props.id]);
+        this.props.routePathStore!.setHighlightedListItemId(this.props.id);
     };
 
     private onMouseLeave = () => {
-        if (this.props.routePathStore!.listHighlightedNodeIds.includes(this.props.id)) {
-            this.props.routePathStore!.setListHighlightedNodeIds([]);
+        if (this.props.routePathStore!.highlightedListItemId === this.props.id) {
+            this.props.routePathStore!.setHighlightedListItemId(null);
         }
     };
 
     render() {
-        const isExtended = this.props.routePathStore!.isListItemExtended(this.props.id);
+        const isExtended = this.props.routePathStore!.extendedListItemId === this.props.id;
+        const isFirstNode = this.props.isFirstNode;
+        const isLastNode = this.props.isLastNode;
+        const isItemHighlighted = this.props.isItemHighlighted;
         return (
             <div
                 ref={this.props.reference}
-                className={classnames(s.item, this.props.shadowClass)}
-                onMouseEnter={this.onMouseEnter}
-                onMouseLeave={this.onMouseLeave}
+                className={classnames(
+                    s.routePathListItem,
+                    this.props.shadowClass,
+                    isItemHighlighted ? s.highlightedItem : undefined
+                )}
             >
-                <div className={s.listIcon}>{this.props.listIcon}</div>
-                <div onClick={this.toggleIsExtended}>{this.props.header}</div>
-                {isExtended && <div className={s.itemContent}>{this.props.body}</div>}
+                <div
+                    className={s.contentBorder}
+                    onMouseEnter={this.onMouseEnter}
+                    onMouseLeave={this.onMouseLeave}
+                >
+                    <div className={s.borderContainer}>
+                        <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
+                        <div />
+                    </div>
+                    {this.props.listIcon && <div className={s.listIcon}>{this.props.listIcon}</div>}
+                    <div className={s.borderContainer}>
+                        <div className={!isLastNode ? s.borderLeftContainer : undefined} />
+                        <div />
+                    </div>
+                </div>
+                <div className={s.contentWrapper}>
+                    {this.props.header}
+                    {isExtended && <div className={s.itemContent}>{this.props.body}</div>}
+                </div>
             </div>
         );
     }

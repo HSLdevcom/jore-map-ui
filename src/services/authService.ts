@@ -3,8 +3,8 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
-import CodeListUtils from '~/utils/CodeListUtils';
 import HttpUtils from '~/utils/HttpUtils';
+import { getText } from '~/utils/textUtils';
 
 interface IAuthorizationResponse {
     isOk: boolean;
@@ -32,11 +32,11 @@ class AuthService {
             if (errorResponse.errorTextKey) {
                 let errorMessage;
                 if (errorResponse.email) {
-                    errorMessage = CodeListUtils.getText(errorResponse.errorTextKey, {
+                    errorMessage = getText(errorResponse.errorTextKey, {
                         email: errorResponse.email
                     });
                 } else {
-                    errorMessage = CodeListUtils.getText(errorResponse.errorTextKey);
+                    errorMessage = getText(errorResponse.errorTextKey);
                 }
                 ErrorStore.addError(errorMessage);
             }

@@ -6,14 +6,16 @@ enum EndpointPath {
     LINE = 'line',
     LINE_HEADER_MASS_EDIT = 'lineHeaderMassEdit',
     ROUTE = 'route',
-    ROUTEPATH = 'routePath',
+    ROUTE_PATH = 'routePath',
+    ROUTE_PATH_REMOVE = 'routePathRemove',
+    ROUTE_PATH_MASS_EDIT = 'routePathMassEdit',
     NODE = 'node',
     GET_AVAILABLE_NODE_ID = 'getAvailableNodeId',
     GET_AVAILABLE_NODE_IDS_WITH_PREFIX = 'getAvailableNodeIdsWithPrefix',
     HASTUS_AREA = 'hastusArea',
     STOP_AREA = 'stopArea',
     LINK = 'link',
-    SAVE_LOCK = 'saveLock'
+    SAVE_LOCK = 'saveLock',
 }
 
 export default EndpointPath;

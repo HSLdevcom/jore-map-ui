@@ -16,12 +16,17 @@ import LineStore from './stores/lineStore';
 import LinkStore from './stores/linkStore';
 import LoginStore from './stores/loginStore';
 import MapStore from './stores/mapStore';
+import ModalStore from './stores/modalStore';
 import NavigationStore from './stores/navigationStore';
 import NetworkStore from './stores/networkStore';
 import NodeStore from './stores/nodeStore';
 import PopupStore from './stores/popupStore';
 import RouteListStore from './stores/routeListStore';
 import RoutePathCopySegmentStore from './stores/routePathCopySegmentStore';
+import RoutePathCopyStore from './stores/routePathCopyStore';
+import RoutePathLayerStore from './stores/routePathLayerStore';
+import RoutePathLinkMassEditStore from './stores/routePathLinkMassEditStore';
+import RoutePathMassEditStore from './stores/routePathMassEditStore';
 import RoutePathStore from './stores/routePathStore';
 import RouteStore from './stores/routeStore';
 import SearchResultStore from './stores/searchResultStore';
@@ -42,7 +47,11 @@ const stores = {
     lineHeaderMassEditStore: LineHeaderMassEditStore,
     routeStore: RouteStore,
     routeListStore: RouteListStore,
+    routePathLayerStore: RoutePathLayerStore,
+    routePathMassEditStore: RoutePathMassEditStore,
+    routePathLinkMassEditStore: RoutePathLinkMassEditStore,
     routePathStore: RoutePathStore,
+    routePathCopyStore: RoutePathCopyStore,
     routePathCopySegmentStore: RoutePathCopySegmentStore,
     searchStore: SearchStore,
     popupStore: PopupStore,
@@ -53,10 +62,11 @@ const stores = {
     linkStore: LinkStore,
     alertStore: AlertStore,
     codeListStore: CodeListStore,
+    modalStore: ModalStore,
     confirmStore: ConfirmStore,
     highlightEntityStore: HighlightEntityStore,
     navigationStore: NavigationStore,
-    userStore: UserStore
+    userStore: UserStore,
 };
 
 ReactDOM.render(

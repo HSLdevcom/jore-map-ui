@@ -36,6 +36,10 @@
 -   Use export and export default at the end of file
 -   Put lifecycle methods on top of components after constructor
 
+### App development
+
+-   Always use <SaveButton> component if saving (or deleting) something from jore
+
 ### IModels
 
 -   **IDs** are in the same format as in jore.

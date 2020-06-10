@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper from '~/helpers/EventHelper';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
@@ -10,14 +10,14 @@ import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
-import NetworkStore, { MapLayer } from '~/stores/networkStore';
+import NetworkStore from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
-import { isNetworkElementHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
+import { isNetworkLinkHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
 
 class SelectNetworkEntityTool implements BaseTool {
-    public toolType = ToolbarTool.SelectNetworkEntity;
+    public toolType = ToolbarToolType.SelectNetworkEntity;
     public activate() {
         EventHelper.on('mapClick', this.onMapClick);
     }
@@ -30,10 +30,7 @@ class SelectNetworkEntityTool implements BaseTool {
         if (zoomLevel <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL) {
             return;
         }
-        if (
-            !NetworkStore!.isMapLayerVisible(MapLayer.node) &&
-            !NetworkStore!.isMapLayerVisible(MapLayer.link)
-        ) {
+        if (NetworkStore!.visibleMapLayers.length === 0) {
             return;
         }
 
@@ -91,8 +88,7 @@ class SelectNetworkEntityTool implements BaseTool {
         );
         links = links.filter(
             (link: ILinkMapHighlight) =>
-                !isNetworkElementHidden({
-                    type: MapLayer.link,
+                !isNetworkLinkHidden({
                     transitType: link.transitType,
                     startNodeId: link.startNodeId,
                     endNodeId: link.endNodeId,

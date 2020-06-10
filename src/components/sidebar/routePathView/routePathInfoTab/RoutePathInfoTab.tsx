@@ -9,6 +9,7 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
+import RemoveRoutePathButton from './RemoveRoutePathButton';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
@@ -32,7 +33,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     constructor(props: IRoutePathInfoTabProps) {
         super(props);
         this.state = {
-            calculatedValue: null
+            calculatedValue: null,
         };
     }
 
@@ -63,7 +64,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         const calculatedValue = await this.getCalculatedLength();
         if (this.mounted) {
             this.setState({
-                calculatedValue
+                calculatedValue,
             });
         }
     };
@@ -78,7 +79,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         const routePathStore = this.props.routePathStore;
         const routePath = routePathStore!.routePath;
         const promises: Promise<ILink | null>[] = [];
-        routePath!.routePathLinks.forEach(routePathLink => {
+        routePath!.routePathLinks.forEach((routePathLink) => {
             promises.push(
                 LinkService.fetchLink(
                     routePathLink.startNode.id,
@@ -91,7 +92,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         // RoutePath length is calculated by summing up length & measuredLength values of each link.
         // If measured length is missing for a link, use length instead.
         let length = 0;
-        links.forEach(link => {
+        links.forEach((link) => {
             length += link!.measuredLength ? link!.measuredLength : link!.length;
         });
         return length;
@@ -102,23 +103,57 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
     };
 
     render() {
+        const routePathStore = this.props.routePathStore!;
         const isEditingDisabled = this.props.isEditingDisabled;
-        const isUpdating =
-            !this.props.routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
+        const isUpdating = !routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
         const invalidPropertiesMap = this.props.invalidPropertiesMap;
         const onChange = this.onChangeRoutePathProperty;
         const routePath = this.props.routePath;
+        const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
+            'routePathPrimaryKey'
+        ];
         return (
             <div className={s.routePathInfoTabView}>
                 <div className={s.form}>
                     <div className={s.formSection}>
                         <div className={s.flexRow}>
+                            <Dropdown
+                                label='SUUNTA'
+                                disabled={isUpdating}
+                                selected={this.props.routePath.direction}
+                                items={this.props.codeListStore!.getDropdownItemList('Suunta')}
+                                onChange={onChange('direction')}
+                                validationResult={invalidPropertiesMap['direction']}
+                            />
+                            <InputContainer
+                                label='VOIM. AST'
+                                disabled={isUpdating}
+                                type='date'
+                                value={routePath.startDate}
+                                onChange={onChange('startDate')}
+                                validationResult={invalidPropertiesMap['startDate']}
+                            />
+                            <InputContainer
+                                label='VIIM.VOIM.OLO'
+                                disabled={isUpdating}
+                                type='date'
+                                value={routePath.endDate}
+                                onChange={onChange('endDate')}
+                                validationResult={invalidPropertiesMap['endDate']}
+                            />
+                        </div>
+                        <div className={s.errorMessage}>
+                            {routePathPrimaryKeyValidationResult?.errorMessage}
+                        </div>
+                        <div className={s.sectionDivider} />
+                        <div className={s.flexRow}>
                             <InputContainer
                                 label='NIMI SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.name}
-                                onChange={onChange('name')}
-                                validationResult={invalidPropertiesMap['name']}
+                                value={routePath.nameFi}
+                                onChange={onChange('nameFi')}
+                                validationResult={invalidPropertiesMap['nameFi']}
+                                data-cy='nameFi'
                             />
                             <InputContainer
                                 label='NIMI RUOTSIKSI'
@@ -164,9 +199,9 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             <InputContainer
                                 label='LYHENNE SUOMEKSI'
                                 disabled={isEditingDisabled}
-                                value={routePath.shortName}
-                                onChange={onChange('shortName')}
-                                validationResult={invalidPropertiesMap['shortName']}
+                                value={routePath.shortNameFi}
+                                onChange={onChange('shortNameFi')}
+                                validationResult={invalidPropertiesMap['shortNameFi']}
                             />
                             <InputContainer
                                 label='LYHENNE RUOTSIKSI'
@@ -177,21 +212,13 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <InputContainer
-                                label='VOIM. AST'
-                                disabled={isUpdating}
-                                type='date'
-                                value={routePath.startTime}
-                                onChange={onChange('startTime')}
-                                validationResult={invalidPropertiesMap['startTime']}
-                            />
-                            <InputContainer
-                                label='VIIM.VOIM.OLO'
-                                disabled={this.props.isEditingDisabled}
-                                type='date'
-                                value={routePath.endTime}
-                                onChange={onChange('endTime')}
-                                validationResult={invalidPropertiesMap['endTime']}
+                            <Dropdown
+                                label='POIKKEUSREITTI'
+                                disabled={isEditingDisabled}
+                                selected={this.props.routePath.exceptionPath}
+                                items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
+                                onChange={onChange('exceptionPath')}
+                                validationResult={invalidPropertiesMap['exceptionPath']}
                             />
                             <CalculatedInputField
                                 label='PITUUS (m)'
@@ -204,24 +231,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <Dropdown
-                                label='SUUNTA'
-                                disabled={isUpdating}
-                                selected={this.props.routePath.direction}
-                                items={this.props.codeListStore!.getDropdownItemList('Suunta')}
-                                onChange={onChange('direction')}
-                                validationResult={invalidPropertiesMap['direction']}
-                            />
-                            <Dropdown
-                                label='POIKKEUSREITTI'
-                                disabled={isEditingDisabled}
-                                selected={this.props.routePath.exceptionPath}
-                                items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
-                                onChange={onChange('exceptionPath')}
-                                validationResult={invalidPropertiesMap['exceptionPath']}
-                            />
-                        </div>
-                        <div className={s.flexRow}>
                             <TextContainer label='MUOKANNUT' value={routePath.modifiedBy} />
                             <TextContainer
                                 label='MUOKATTU PVM'
@@ -229,6 +238,11 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                                 value={routePath.modifiedOn}
                             />
                         </div>
+                        {!routePathStore.isNewRoutePath && (
+                            <div className={s.flexRow}>
+                                <RemoveRoutePathButton />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

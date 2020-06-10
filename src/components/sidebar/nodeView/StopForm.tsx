@@ -4,11 +4,10 @@ import React, { Component } from 'react';
 import { FiInfo } from 'react-icons/fi';
 import { IoIosAddCircleOutline } from 'react-icons/io';
 import { match } from 'react-router';
-import { Button, Dropdown, TransitToggleButtonBar } from '~/components/controls';
+import { Button, Dropdown } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import ButtonType from '~/enums/buttonType';
-import TransitType from '~/enums/transitType';
 import { INode, IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import IStopArea from '~/models/IStopArea';
@@ -18,11 +17,11 @@ import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
-import { ConfirmStore } from '~/stores/confirmStore';
+import { ModalStore } from '~/stores/modalStore';
 import { NodeStore } from '~/stores/nodeStore';
 import SidebarHeader from '../SidebarHeader';
 import ShortIdInput from './ShortIdInput';
-import HastusAreaForm from './hastusAreaForm';
+import HastusAreaModal from './hastusAreaModal';
 import * as s from './stopForm.scss';
 
 interface IStopFormProps {
@@ -37,14 +36,12 @@ interface IStopFormProps {
     saveHastusArea?: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
     match?: match<any>;
     isReadOnly?: boolean;
-    isTransitToggleButtonBarVisible?: boolean;
-    toggleTransitType?: (type: TransitType) => void;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     setCurrentStateIntoNodeCache?: () => void;
     codeListStore?: CodeListStore;
-    confirmStore?: ConfirmStore;
     nodeStore?: NodeStore;
+    modalStore?: ModalStore;
 }
 
 // Key: node id beginning, value: short id options array
@@ -63,17 +60,17 @@ const SHORT_ID_OPTIONS_MAP = {
     95: ['Jä'],
     96: ['Tu'],
     97: ['Nu'],
-    98: ['Mä']
+    98: ['Mä'],
 };
 
-@inject('codeListStore', 'confirmStore', 'nodeStore')
+@inject('codeListStore', 'nodeStore', 'modalStore')
 @observer
 class StopForm extends Component<IStopFormProps> {
     private createStopAreaDropdownItems = (stopAreas: IStopArea[]): IDropdownItem[] => {
         return stopAreas.map((stopArea: IStopArea) => {
             const item: IDropdownItem = {
                 value: `${stopArea.id}`,
-                label: `${stopArea.id} - ${stopArea.nameFi}`
+                label: `${stopArea.id} - ${stopArea.nameFi}`,
             };
             return item;
         });
@@ -92,7 +89,7 @@ class StopForm extends Component<IStopFormProps> {
                         );
                         const dropdownItem = {
                             value: nodeIdOption,
-                            label: `${nodeIdOption} - ${codeListLabel}`
+                            label: `${nodeIdOption} - ${codeListLabel}`,
                         };
                         dropdownItems.push(dropdownItem);
                     });
@@ -140,44 +137,36 @@ class StopForm extends Component<IStopFormProps> {
     private openCreateHastusAreaModal = () => {
         this.props.nodeStore!.setHastusArea({
             id: '',
-            name: ''
+            name: '',
         });
         this.props.nodeStore!.setOldHastusArea(null);
-        this.props.confirmStore!.openConfirm({
+        this.props.modalStore!.openModal({
             content: (
-                <HastusAreaForm
+                <HastusAreaModal
                     isNewHastusArea={true}
                     existingHastusAreas={this.props.hastusAreas}
+                    saveHastusArea={this.props.saveHastusArea!}
                 />
             ),
-            onConfirm: () => {
-                this.props.saveHastusArea!({ isNewHastusArea: true });
-            },
-            confirmButtonText: 'Tallenna',
-            confirmType: 'save'
         });
     };
 
     private openEditHastusAreaModal = () => {
         const currentHastusArea = this.props.hastusAreas.find(
-            hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
+            (hastusArea) => hastusArea.id === this.props.node!.stop!.hastusId
         );
         this.props.nodeStore!.setHastusArea(currentHastusArea!);
         this.props.nodeStore!.setOldHastusArea(currentHastusArea!);
-        this.props.confirmStore!.openConfirm({
+        this.props.modalStore!.openModal({
             content: (
-                <HastusAreaForm
+                <HastusAreaModal
                     isNewHastusArea={false}
                     existingHastusAreas={this.props.hastusAreas.filter(
-                        hastusArea => hastusArea.id !== currentHastusArea!.id
+                        (hastusArea) => hastusArea.id !== currentHastusArea!.id
                     )}
+                    saveHastusArea={this.props.saveHastusArea!}
                 />
             ),
-            onConfirm: () => {
-                this.props.saveHastusArea!({ isNewHastusArea: false });
-            },
-            confirmButtonText: 'Tallenna',
-            confirmType: 'save'
         });
     };
 
@@ -187,7 +176,7 @@ class StopForm extends Component<IStopFormProps> {
         return stopSections.map((stopSection: IStopSectionItem) => {
             const item: IDropdownItem = {
                 value: `${stopSection.selite}`,
-                label: `${stopSection.selite}`
+                label: `${stopSection.selite}`,
             };
             return item;
         });
@@ -197,7 +186,7 @@ class StopForm extends Component<IStopFormProps> {
         return hastusAreas.map((hastusArea: IHastusArea) => {
             const item: IDropdownItem = {
                 value: `${hastusArea.id}`,
-                label: `${hastusArea.id} - ${hastusArea.name}`
+                label: `${hastusArea.id} - ${hastusArea.name}`,
             };
             return item;
         });
@@ -206,41 +195,24 @@ class StopForm extends Component<IStopFormProps> {
     render() {
         const {
             node,
-            isTransitToggleButtonBarVisible,
             isEditingDisabled,
             stopAreas,
             stopSections,
             hastusAreas,
             stopInvalidPropertiesMap,
             nodeInvalidPropertiesMap,
-            toggleTransitType,
             onNodePropertyChange,
             updateStopProperty,
-            isReadOnly
+            isReadOnly,
         } = this.props;
         const stop = node.stop!;
         const currentHastusArea = hastusAreas.find(
-            hastusArea => hastusArea.id === this.props.node!.stop!.hastusId
+            (hastusArea) => hastusArea.id === this.props.node!.stop!.hastusId
         );
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader isCloseButtonVisible={true} isBackButtonVisible={true}>
-                    Pysäkin tiedot
-                </SidebarHeader>
+                <SidebarHeader>Pysäkin tiedot</SidebarHeader>
                 <div className={s.formSection}>
-                    {isTransitToggleButtonBarVisible && (
-                        <div className={s.flexRow}>
-                            <div className={s.formItem}>
-                                <div className={s.inputLabel}>VERKKO</div>
-                                <TransitToggleButtonBar
-                                    selectedTransitTypes={
-                                        stop.transitType ? [stop.transitType] : []
-                                    }
-                                    toggleSelectedTransitType={toggleTransitType}
-                                />
-                            </div>
-                        </div>
-                    )}
                     <div className={s.flexRow}>
                         <Dropdown
                             label='LYHYTTUNNUS (2 kirj.'
@@ -249,7 +221,7 @@ class StopForm extends Component<IStopFormProps> {
                             selected={node.shortIdLetter}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             items={this.getShortIdLetterDropdownItems(node.id)}
                         />
@@ -287,11 +259,12 @@ class StopForm extends Component<IStopFormProps> {
                             selected={stop.stopAreaId}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             disabled={isEditingDisabled}
                             label='PYSÄKKIALUE'
                             validationResult={stopInvalidPropertiesMap['stopAreaId']}
+                            data-cy='stopArea'
                         />
                         {!isReadOnly && (
                             <>
@@ -365,6 +338,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.addressFi}
                             onChange={updateStopProperty!('addressFi')}
                             validationResult={stopInvalidPropertiesMap['addressFi']}
+                            data-cy='addressFi'
                         />
                         <InputContainer
                             label='OSOITE RUOTSIKSI'
@@ -372,6 +346,7 @@ class StopForm extends Component<IStopFormProps> {
                             value={stop.addressSw}
                             onChange={updateStopProperty!('addressSw')}
                             validationResult={stopInvalidPropertiesMap['addressSw']}
+                            data-cy='addressSw'
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -389,6 +364,7 @@ class StopForm extends Component<IStopFormProps> {
                             disabled={isEditingDisabled}
                             label='KUNTA'
                             validationResult={stopInvalidPropertiesMap['municipality']}
+                            data-cy='municipality'
                         />
                     </div>
                 </div>
@@ -401,11 +377,12 @@ class StopForm extends Component<IStopFormProps> {
                             selected={stop.section}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             disabled={isEditingDisabled}
                             label='VYÖHYKE'
                             validationResult={stopInvalidPropertiesMap['section']}
+                            data-cy='section'
                         />
                         <Dropdown
                             onChange={updateStopProperty!('roof')}
@@ -414,6 +391,7 @@ class StopForm extends Component<IStopFormProps> {
                             disabled={isEditingDisabled}
                             label='PYSÄKKIKATOS'
                             validationResult={stopInvalidPropertiesMap['roof']}
+                            data-cy='roof'
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -448,7 +426,7 @@ class StopForm extends Component<IStopFormProps> {
                             selected={stop.hastusId}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             disabled={isEditingDisabled}
                             label='HASTUS-PAIKKA'

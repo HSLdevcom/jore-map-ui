@@ -1,13 +1,10 @@
+import constants from '../constants';
+
 const openLink = () => {
     cy.getTestElement('authInfo').should('exist');
     cy.getTestElement('lineSearch').should('exist');
 
-    // Have to use different link for dev / stage to prevent local db out-of-sync errors
-    if (Cypress.config().baseUrl.includes('dev')) {
-        cy.visit('link/1270003,1270103,1');
-    } else {
-        cy.visit('link/1260011,1260105,1');
-    }
+    cy.visit(constants.LINK_UPDATE_URI);
     cy.getTestElement('linkView').should('exist');
 };
 
@@ -18,10 +15,7 @@ describe('LinkView tests - read access user', () => {
 
         cy.getTestElement('editButton').should('not.exist');
 
-        cy.getTestElement('sidebarHeaderView')
-            .find('[data-cy=closeButton]')
-            .first()
-            .click();
+        cy.getTestElement('sidebarHeaderView').find('[data-cy=closeButton]').first().click();
         cy.getTestElement('linkView').should('not.exist');
     });
 });
@@ -36,11 +30,9 @@ describe('LinkView tests - write access user', () => {
 
         cy.getTestElement('measuredLength')
             .invoke('val')
-            .then(value => {
+            .then((value) => {
                 const newInputValue = parseInt(value) + 1;
-                cy.getTestElement('measuredLength')
-                    .clear()
-                    .type(newInputValue);
+                cy.getTestElement('measuredLength').clear().type(newInputValue);
 
                 cy.saveButtonShouldBeActive();
 

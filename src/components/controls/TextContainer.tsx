@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../shared/loader/Loader';
 import * as s from './inputContainer.scss';
 
 interface ITextContainerProps {
@@ -12,13 +13,18 @@ interface ITextContainerProps {
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
     isInputColorRed?: boolean;
+    isLoading?: boolean;
 }
 
 const renderValidatorResult = (validationResult?: IValidationResult) => {
     if (!validationResult || !validationResult.errorMessage) {
         return null;
     }
-    return <div className={s.errorMessage}>{validationResult.errorMessage}</div>;
+    return (
+        <div className={validationResult.isValid ? s.warningMessage : s.errorMessage}>
+            {validationResult.errorMessage}
+        </div>
+    );
 };
 
 const TextContainer = observer((props: ITextContainerProps) => {
@@ -29,16 +35,15 @@ const TextContainer = observer((props: ITextContainerProps) => {
         isTimeIncluded,
         isInputLabelDarker,
         isInputColorRed,
+        isLoading,
         ...attrs
     } = props;
 
     return (
         <div className={s.formItem}>
-            {label && (
-                <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
-                    {label}
-                </div>
-            )}
+            <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
+                {label ? label : ''}
+            </div>
             <div
                 className={classnames(
                     s.textField,
@@ -47,11 +52,17 @@ const TextContainer = observer((props: ITextContainerProps) => {
                 )}
                 {...attrs}
             >
-                {value instanceof Date
-                    ? Moment(value!).format(isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
-                    : value || typeof value === 'number'
-                    ? value
-                    : '-'}
+                {isLoading ? (
+                    <div className={s.loaderContainer}>
+                        <Loader size='tiny' hasNoMargin={true} />
+                    </div>
+                ) : value instanceof Date ? (
+                    Moment(value!).format(isTimeIncluded ? 'DD.MM.YYYY HH:mm' : 'DD.MM.YYYY')
+                ) : value || typeof value === 'number' ? (
+                    value
+                ) : (
+                    '-'
+                )}
             </div>
             {renderValidatorResult(validationResult)}
         </div>

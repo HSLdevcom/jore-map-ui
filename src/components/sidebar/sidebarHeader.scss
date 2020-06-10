@@ -6,12 +6,13 @@
     justify-content: space-between;
     align-items: center;
 
-    .topic {
-        font-size: $largeFontSize;
+    .containerLeft {
+        display: flex;
+        font-size: $extraLargeFontSize;
         font-weight: bold;
     }
 
-    .buttonContainer {
+    .containerRight {
         display: flex;
     }
 

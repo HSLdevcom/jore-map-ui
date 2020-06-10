@@ -12,4 +12,4 @@ class NumberIterator {
     };
 }
 
-export default new NumberIterator();
+export default NumberIterator;

@@ -67,12 +67,12 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
             <>
                 {this.renderNode({
                     coordinates: node.coordinates,
-                    nodeLocationType: 'coordinates'
+                    nodeLocationType: 'coordinates',
                 })}
                 {node.type === NodeType.STOP &&
                     this.renderNode({
                         coordinates: node.coordinatesProjection,
-                        nodeLocationType: 'coordinatesProjection'
+                        nodeLocationType: 'coordinatesProjection',
                     })}
             </>
         );
@@ -80,14 +80,13 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
 
     private renderNode = ({
         coordinates,
-        nodeLocationType
+        nodeLocationType,
     }: {
         coordinates: L.LatLng;
         nodeLocationType: NodeLocationType;
     }) => {
         const node = this.props.nodeStore!.node;
 
-        const isNewNodeView = Boolean(matchPath(navigator.getPathName(), SubSites.newNode));
         const onNodeClick = () => {
             const clickParams: INodeClickParams = { node };
             EventHelper.trigger('nodeClick', clickParams);
@@ -102,7 +101,10 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 isDraggable={this.props.loginStore!.hasWriteAccess}
-                isSelected={isNewNodeView || this.props.mapStore!.selectedNodeId === node.id}
+                isDisabled={false}
+                radius={
+                    node.stop && nodeLocationType === 'coordinates' ? node.stop.radius : undefined
+                }
                 onClick={onNodeClick}
                 onMoveMarker={this.onMoveMarker(nodeLocationType)}
             />
@@ -116,7 +118,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
     private drawEditableLinks = () => {
         this.removeOldLinks();
 
-        this.props.nodeStore!.links.forEach(link => this.drawEditableLink(link));
+        this.props.nodeStore!.links.forEach((link) => this.drawEditableLink(link));
 
         const map = this.props.leaflet.map;
 
@@ -151,7 +153,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         if (map) {
             const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
                 interactive: false,
-                color: '#000'
+                color: '#000',
             }).addTo(map);
 
             if (this.props.loginStore!.hasWriteAccess) {

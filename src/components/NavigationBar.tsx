@@ -105,7 +105,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                                 <div
                                     className={s.refreshIconWrapper}
                                     title={
-                                        'Päivitä sisäinen JORE-tietokanta (vie noin 10 min). Käytä, jos vanhalla käyttöliittymällä on tehty muutoksia eivätkä ne näy tässä uudessa käyttöliittymässä. Päivittää linjojen, linjaotsikoiden, reittien, pysäkkien, pysäkkialueiden ja reitinsuuntien tiedot. Huom. päivittää vain muokatut tiedot eli lisätyt tai poistetut tiedot eivät päivity.'
+                                        'Päivitä sisäinen JORE-tietokanta (vie noin 10 min). Käytä, jos vanhalla käyttöliittymällä on tehty muutoksia eivätkä ne näy tässä uudessa käyttöliittymässä. Päivittää linjojen, linjaotsikoiden, reittien, pysäkkien ja pysäkkialueiden. Huom. päivittää vain muokatut tiedot eli lisätyt tai poistetut tiedot eivät päivity.'
                                     }
                                 >
                                     <IoMdRefresh

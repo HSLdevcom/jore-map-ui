@@ -30,4 +30,17 @@
             display: flex;
         }
     }
+
+    .saveButton {
+        background-color: $saveButtonGreen;
+    }
+    .saveButton:hover {
+        background-color: darken($saveButtonGreen, 10);
+    }
+    .deleteButton {
+        background-color: $deleteButtonRed;
+    }
+    .deleteButton:hover {
+        background-color: darken($deleteButtonRed, 10);
+    }
 }

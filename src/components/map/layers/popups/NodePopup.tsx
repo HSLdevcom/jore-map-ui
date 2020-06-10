@@ -24,11 +24,10 @@ class NodePopup extends Component<INodePopupProps> {
         const { data, popupId } = this.props;
         const node = data.node;
         return (
-            <div className={s.nodePopup}>
+            <div className={s.nodePopup} data-cy='nodePopup'>
                 <div className={s.sidebarHeaderWrapper}>
                     <SidebarHeader
-                        isEditButtonVisible={false}
-                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                         onCloseButtonClick={() => {
                             this.props.popupStore!.closePopup(popupId);
                         }}

@@ -37,7 +37,7 @@ const transitTypeDefaultValueMap = {
     '3': '02',
     '4': '12',
     '2': '06',
-    '7': '07'
+    '7': '07',
 };
 
 @inject('lineStore', 'codeListStore', 'errorStore', 'lineHeaderMassEditStore', 'navigationStore')
@@ -46,7 +46,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
     constructor(props: any) {
         super(props);
         this.state = {
-            isLoading: true
+            isLoading: true,
         };
     }
 
@@ -109,8 +109,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                     isEditButtonVisible={!this.props.isNewLine}
                     onEditButtonClick={this.editLinePrompt}
                     isEditing={!lineStore!.isEditingDisabled}
-                    isCloseButtonVisible={true}
-                    isBackButtonVisible={true}
                 >
                     {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
                 </SidebarHeader>
@@ -155,7 +153,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             selected={line.publicTransportType}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             items={this.props.codeListStore!.getDropdownItemList(
                                 'Joukkoliikennelaji'
@@ -181,7 +179,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             selected={line.publicTransportDestination}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             items={this.props.codeListStore!.getDropdownItemList(
                                 'Joukkoliikennekohde'
@@ -195,7 +193,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             selected={line.lineReplacementType}
                             emptyItem={{
                                 value: '',
-                                label: ''
+                                label: '',
                             }}
                             items={this.props.codeListStore!.getDropdownItemList(
                                 'LinjanKorvaavaTyyppi'
@@ -225,6 +223,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                     <SaveButton
                         onClick={this.props.saveLine}
                         disabled={this.props.isLineSaveButtonDisabled}
+                        savePreventedNotification={''}
                     >
                         {this.props.lineStore!.isNewLine ? 'Luo uusi linja' : 'Tallenna linja'}
                     </SaveButton>

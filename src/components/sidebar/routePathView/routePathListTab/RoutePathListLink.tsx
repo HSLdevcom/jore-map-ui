@@ -1,58 +1,94 @@
-import classnames from 'classnames';
+import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
-import { FiChevronRight } from 'react-icons/fi';
+import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
+    reference: React.RefObject<HTMLDivElement>;
+    routePathLink: IRoutePathLink;
+    mapStore?: MapStore;
     routePathStore?: RoutePathStore;
     codeListStore?: CodeListStore;
-    routePathLink: IRoutePathLink;
-    reference: React.RefObject<HTMLDivElement>;
 }
 
-@inject('routePathStore', 'codeListStore')
+@inject('routePathStore', 'codeListStore', 'mapStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
         const orderNumber = this.props.routePathLink.orderNumber;
-        const isExtended = this.props.routePathStore!.isListItemExtended(id);
+        const isExtended = this.props.routePathStore!.extendedListItemId === id;
         return (
-            <div className={classnames(s.itemHeader, isExtended ? s.itemExtended : null)}>
+            <div
+                className={s.itemHeader}
+                onClick={this.toggleExtendedListItemId}
+                data-cy='itemHeader'
+            >
+                <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
                 <div className={s.headerContent}>
-                    <div className={s.headerNodeTypeContainer}>Reitinlinkki {orderNumber}</div>
-                    <div className={s.label} />
-                </div>
-                <div className={s.itemToggle}>
-                    {isExtended && <FaAngleDown />}
-                    {!isExtended && <FaAngleRight />}
+                    <div className={s.itemToggle}>
+                        {isExtended && <FaAngleDown />}
+                        {!isExtended && <FaAngleRight />}
+                    </div>
                 </div>
             </div>
         );
     };
 
+    private toggleExtendedListItemId = () => {
+        const currentListItemId = this.props.routePathLink.id;
+        const routePathStore = this.props.routePathStore;
+        if (currentListItemId === routePathStore!.extendedListItemId) {
+            this.props.routePathStore!.setExtendedListItemId(null);
+        } else {
+            this.props.routePathStore!.setExtendedListItemId(currentListItemId);
+            this.props.mapStore!.setMapBounds(this.getBounds());
+        }
+    };
+
+    private getBounds = () => {
+        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
+        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+        return bounds;
+    };
+
     private renderBody = () => {
         return (
-            <div className={s.extendedContent}>
+            <>
                 {this.renderRoutePathLinkView(this.props.routePathLink)}
                 <div className={s.footer}>
-                    <Button onClick={this.openInNetworkView} type={ButtonType.SQUARE}>
-                        Avaa linkki verkkonäkymässä
-                        <FiChevronRight />
+                    <Button onClick={() => this.openLinkInNewTab()} type={ButtonType.SQUARE}>
+                        Avaa linkki
+                        <FiExternalLink />
                     </Button>
                 </div>
-            </div>
+            </>
         );
+    };
+
+    private openLinkInNewTab = () => {
+        const routeLink = this.props.routePathLink;
+        const linkViewLink = routeBuilder
+            .to(SubSites.link)
+            .toTarget(
+                ':id',
+                [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(',')
+            )
+            .toLink();
+        window.open(linkViewLink, '_blank');
     };
 
     private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
@@ -81,27 +117,13 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     };
 
-    private openInNetworkView = () => {
-        const routeLink = this.props.routePathLink;
-        NavigationUtils.openLinkView({
-            startNodeId: routeLink.startNode.id,
-            endNodeId: routeLink.endNode.id,
-            transitType: routeLink.transitType
-        });
-    };
-
-    private renderListIcon = () => <div className={s.linkIcon} />;
-
     render() {
-        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
         return (
             <RoutePathListItem
-                reference={this.props.reference}
                 id={this.props.routePathLink.id}
-                geometry={geometry}
+                reference={this.props.reference}
                 header={this.renderHeader()}
                 body={this.renderBody()}
-                listIcon={this.renderListIcon()}
             />
         );
     }

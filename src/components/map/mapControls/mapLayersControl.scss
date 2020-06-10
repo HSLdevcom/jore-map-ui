@@ -9,7 +9,7 @@
     height: 100%;
 
     .checkboxContainer {
-        padding-top: 10px;
+        padding-top: 5px;
         display: flex;
     }
 
@@ -27,17 +27,20 @@
             font-weight: 900;
             color: rgb(137, 137, 137);
             letter-spacing: 0em;
-            padding-bottom: 3px;
             display: block;
             text-transform: uppercase;
+        }
+
+        .transitTypeToggleButtonBar {
+            padding-bottom: 5px;
         }
     }
 }
 
 .mapLayerControlIcon {
     display: flex;
-    font-size: $largeFontSize;
-    line-height: $largeFontSize;
+    font-size: $extraLargeFontSize;
+    line-height: $extraLargeFontSize;
     cursor: pointer;
     padding: 10px;
     background-color: white;

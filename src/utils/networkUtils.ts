@@ -7,7 +7,24 @@ import NodeStore from '~/stores/nodeStore';
 
 type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
 
-const isNetworkElementHidden = ({
+interface INetworkLinkHiddenProps {
+    transitType: TransitType;
+    startNodeId: string;
+    endNodeId: string;
+    dateRangesString: string;
+}
+
+interface INetworkLinkPointHiddenProps extends INetworkLinkHiddenProps {}
+
+const isNetworkLinkHidden = (props: INetworkLinkHiddenProps) => {
+    return _isNetworkElementHidden({ type: MapLayer.link, ...props });
+};
+
+const isNetworkLinkPointHidden = (props: INetworkLinkPointHiddenProps) => {
+    return _isNetworkElementHidden({ type: MapLayer.linkPoint, ...props });
+};
+
+const _isNetworkElementHidden = ({
     type,
     transitType,
     startNodeId,
@@ -26,13 +43,20 @@ const isNetworkElementHidden = ({
     const link = LinkStore.link;
     const node = NodeStore.node;
 
+    if (!selectedTransitTypes.includes(transitType)) {
+        return true;
+    }
+
+    if (!dateRanges) {
+        return !NetworkStore.isMapLayerVisible(MapLayer.unusedLink);
+    }
     if (type === MapLayer.link && !NetworkStore!.isMapLayerVisible(MapLayer.link)) {
         return true;
     }
     if (type === MapLayer.linkPoint && !NetworkStore!.isMapLayerVisible(MapLayer.linkPoint)) {
         return true;
     }
-    if (!dateRanges || !selectedDate) {
+    if (!selectedDate) {
         return false;
     }
 
@@ -46,12 +70,7 @@ const isNetworkElementHidden = ({
     // the element is related to a link that is related to an opened node
     const isLinkRelatedToOpenedNode = node && (node.id === startNodeId || node.id === endNodeId);
 
-    return (
-        !selectedTransitTypes.includes(transitType) ||
-        !_isDateInRanges(selectedDate, dateRanges) ||
-        isLinkOpen ||
-        isLinkRelatedToOpenedNode
-    );
+    return !_isDateInRanges(selectedDate, dateRanges) || isLinkOpen || isLinkRelatedToOpenedNode;
 };
 
 const isNetworkNodeHidden = ({
@@ -80,7 +99,7 @@ const isNetworkNodeHidden = ({
             return true;
         }
     } else {
-        if (!NetworkStore.isMapLayerVisible(MapLayer.nodeWithoutLink)) {
+        if (!NetworkStore.isMapLayerVisible(MapLayer.unusedNode)) {
             return true;
         }
     }
@@ -101,4 +120,4 @@ const _isDateInRanges = (selectedDate: Moment.Moment, dateRanges: Moment.Moment[
     return dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
 };
 
-export { isNetworkElementHidden, isNetworkNodeHidden };
+export { isNetworkLinkHidden, isNetworkNodeHidden, isNetworkLinkPointHidden };

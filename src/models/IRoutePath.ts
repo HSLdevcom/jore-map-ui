@@ -1,30 +1,31 @@
 import TransitType from '~/enums/transitType';
+import { IValidationResult } from '~/validation/FormValidator';
 import IRoutePathLink, { IRoutePathLinkSaveModel, IRoutePathSegmentLink } from './IRoutePathLink';
 
 interface IRoutePathPrimaryKey {
     routeId: string;
     direction: string;
-    startTime: Date;
+    startDate: Date;
 }
 
 interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
-    visible: boolean;
+    isVisible?: boolean;
     transitType?: TransitType;
     lineId?: string;
 }
 
 interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties {
     routePathLinks: IRoutePathLink[];
-    name: string;
+    nameFi: string;
     nameSw: string;
-    endTime: Date;
+    endDate: Date;
     originFi: string;
     originSw: string;
     destinationFi: string;
     destinationSw: string;
-    shortName: string;
+    shortNameFi: string;
     shortNameSw: string;
     length: number;
     isStartNodeUsingBookSchedule?: boolean;
@@ -34,16 +35,31 @@ interface IRoutePath extends IRoutePathPrimaryKey, IViewOnlyRoutePathProperties 
     modifiedBy?: string;
 }
 
+interface IMassEditRoutePath {
+    id: string;
+    routePath: IRoutePath;
+    oldRoutePath?: IRoutePath;
+    validationResult: IValidationResult;
+    isNew: boolean;
+}
+
 interface IRoutePathSegment extends IRoutePathPrimaryKey {
-    endTime: Date;
+    endDate: Date;
     originFi: string;
     destinationFi: string;
     links: IRoutePathSegmentLink[];
 }
 
 interface IRoutePathSaveModel {
+    originalPrimaryKey: IRoutePathPrimaryKey; // Used when editing primarykey or copying routePaths
     routePath: Omit<IRoutePath, 'routePathLinks'>;
     routePathLinkSaveModel: IRoutePathLinkSaveModel;
+}
+
+interface IMultipleRoutePathSaveModel {
+    added: IRoutePathSaveModel[];
+    modified: IRoutePathSaveModel[];
+    originals: IRoutePathSaveModel[];
 }
 
 export default IRoutePath;
@@ -51,6 +67,8 @@ export default IRoutePath;
 export {
     IRoutePathPrimaryKey,
     IViewOnlyRoutePathProperties,
+    IMassEditRoutePath,
     IRoutePathSegment,
-    IRoutePathSaveModel
+    IRoutePathSaveModel,
+    IMultipleRoutePathSaveModel,
 };

@@ -6,89 +6,130 @@ import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
-import navigator from '~/routing/navigator';
-import QueryParams from '~/routing/queryParams';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
+import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNode from './RoutePathListNode';
 import s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
-    routePathStore?: RoutePathStore;
     routePath: IRoutePath;
     isEditingDisabled: boolean;
+    routePathStore?: RoutePathStore;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
 }
 
-@inject('routePathStore')
+@inject('routePathStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
-    reactionDisposer: IReactionDisposer;
-    listObjectReferences: {
-        [id: string]: React.RefObject<HTMLDivElement>;
-    } = {};
+    private extendedItemListener: IReactionDisposer;
+    listObjectReferences: { [id: string]: React.RefObject<HTMLDivElement> } = {};
 
     constructor(props: IRoutePathLinksTabProps) {
         super(props);
         this.listObjectReferences = {};
-    }
-
-    componentDidMount() {
-        this.reactionDisposer = reaction(
-            () => this.props.routePathStore!.extendedListItems,
-            this.onExtend
+        this.extendedItemListener = reaction(
+            () => this.props.routePathStore!.extendedListItemId,
+            this.onListItemExtend
         );
-        const showItemParam = navigator.getQueryParamValues()[QueryParams.showItem];
-        if (showItemParam) {
-            const itemId = showItemParam[0];
-            const isExtended = this.props.routePathStore!.isListItemExtended(itemId);
-            if (isExtended) this.scrollIntoListItem(itemId);
-        }
     }
 
     componentWillUnmount() {
-        this.reactionDisposer();
+        this.extendedItemListener();
     }
 
+    /**
+     * @param {IRoutePathLink[]} routePathLinks - list of routePathLinks sorted by orderNumber
+     */
     private renderList = (routePathLinks: IRoutePathLink[]) => {
-        return routePathLinks.map((routePathLink, index) => {
-            this.listObjectReferences[routePathLink.startNode.id] = React.createRef();
-            this.listObjectReferences[routePathLink.id] = React.createRef();
-            const result = [
-                this.isNodeVisible(routePathLink.startNode) ? (
-                    <RoutePathListNode
-                        key={`${routePathLink.id}-${index}-startNode`}
-                        reference={this.listObjectReferences[routePathLink.startNode.id]}
-                        node={routePathLink.startNode}
-                        routePathLink={routePathLink}
-                        isEditingDisabled={this.props.isEditingDisabled}
-                    />
-                ) : null,
-                this.isLinksVisible() ? (
-                    <RoutePathListLink
-                        key={`${routePathLink.id}-${index}-link`}
-                        reference={this.listObjectReferences[routePathLink.id]}
-                        routePathLink={routePathLink}
-                    />
-                ) : null
-            ];
-
-            if (index === routePathLinks.length - 1) {
-                this.listObjectReferences[routePathLink.endNode.id] = React.createRef();
-                if (this.isNodeVisible(routePathLink.endNode)) {
-                    result.push(
-                        <RoutePathListNode
-                            key={`${routePathLink.id}-${index}-endNode`}
-                            reference={this.listObjectReferences[routePathLink.endNode.id]}
-                            node={routePathLink.endNode}
-                            routePathLink={routePathLink}
-                            isLastNode={true}
-                            isEditingDisabled={this.props.isEditingDisabled}
-                        />
-                    );
-                }
+        // Split routePathLinks into sub lists with coherent routePathLinks
+        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
+        let index = 0;
+        routePathLinks.forEach((currentRpLink) => {
+            const currentList = coherentRoutePathLinksList[index];
+            if (!currentList && index === 0) {
+                coherentRoutePathLinksList[index] = [currentRpLink];
+                return;
             }
-            return result;
+            const lastRpLink = currentList[currentList.length - 1];
+            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
+                currentList.push(currentRpLink);
+            } else {
+                const newList = [currentRpLink];
+                coherentRoutePathLinksList.push(newList);
+                index += 1;
+            }
         });
+
+        return coherentRoutePathLinksList.map((routePathLinks) =>
+            routePathLinks.map((routePathLink, index) => {
+                // Use node.internalId as key instead of id because there might be nodes with the same id
+                this.listObjectReferences[routePathLink.startNode.internalId] = React.createRef();
+                this.listObjectReferences[routePathLink.id] = React.createRef();
+                const result = [
+                    this.isNodeVisible(routePathLink.startNode) ? (
+                        <RoutePathListNode
+                            key={`${routePathLink.id}-${index}-startNode`}
+                            reference={
+                                this.listObjectReferences[routePathLink.startNode.internalId]
+                            }
+                            node={routePathLink.startNode}
+                            routePathLink={routePathLink}
+                            isEditingDisabled={this.props.isEditingDisabled}
+                            isFirstNode={index === 0}
+                            isLastNode={false}
+                        />
+                    ) : null,
+                    this.areLinksVisible() ? (
+                        <RoutePathListLink
+                            key={`${routePathLink.id}-${index}-link`}
+                            reference={this.listObjectReferences[routePathLink.id]}
+                            routePathLink={routePathLink}
+                        />
+                    ) : null,
+                ];
+
+                if (index === routePathLinks.length - 1) {
+                    if (this.isNodeVisible(routePathLink.endNode)) {
+                        // Use node.internalId as key instead of id because there might be nodes with the same id
+                        this.listObjectReferences[
+                            routePathLink.endNode.internalId
+                        ] = React.createRef();
+                        result.push(
+                            <RoutePathListNode
+                                key={`${routePathLink.id}-${index}-endNode`}
+                                reference={
+                                    this.listObjectReferences[routePathLink.endNode.internalId]
+                                }
+                                node={routePathLink.endNode}
+                                routePathLink={routePathLink}
+                                isLastNode={true}
+                                isEditingDisabled={this.props.isEditingDisabled}
+                            />
+                        );
+                    }
+                }
+                return result;
+            })
+        );
+    };
+
+    private onListItemExtend = () => {
+        const extendedListItemId = this.props.routePathStore!.extendedListItemId;
+        if (extendedListItemId) {
+            this.scrollIntoListItem(extendedListItemId);
+        }
+    };
+
+    private scrollIntoListItem = (listItemId: string) => {
+        const item = this.listObjectReferences[listItemId].current!;
+        if (item) {
+            // use setTimeout so that listItem will be extended before scrolling to get the final positioning better
+            setTimeout(() => {
+                item.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }, 25);
+        }
     };
 
     private isNodeVisible = (node: INode) => {
@@ -98,23 +139,8 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         return !this.props.routePathStore!.listFilters.includes(ListFilter.otherNodes);
     };
 
-    private isLinksVisible = () => {
+    private areLinksVisible = () => {
         return !this.props.routePathStore!.listFilters.includes(ListFilter.link);
-    };
-
-    private onExtend = () => {
-        const extendedListItems = this.props.routePathStore!.extendedListItems;
-        if (extendedListItems.length === 1) {
-            const listItemId = extendedListItems[0];
-            this.scrollIntoListItem(listItemId);
-        }
-    };
-
-    private scrollIntoListItem = (listItemId: string) => {
-        const item = this.listObjectReferences[listItemId].current!;
-        if (item) {
-            item.scrollIntoView({ block: 'center', behavior: 'smooth' });
-        }
     };
 
     private toggleListFilter = (listFilter: ListFilter) => {
@@ -128,28 +154,44 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const listFilters = this.props.routePathStore!.listFilters;
 
         return (
-            <div className={s.RoutePathLinksTabView}>
+            <div className={s.routePathLinksTabView}>
                 <ToggleView>
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
                         text='Pysäkit'
                         isActive={!listFilters.includes(ListFilter.stop)}
-                        onClick={this.toggleListFilter.bind(this, ListFilter.stop)}
+                        onClick={() => this.toggleListFilter(ListFilter.stop)}
                     />
                     <ToggleItem
                         icon={<IoIosRadioButtonOn />}
                         text='Muut solmut'
                         isActive={!listFilters.includes(ListFilter.otherNodes)}
-                        onClick={this.toggleListFilter.bind(this, ListFilter.otherNodes)}
+                        onClick={() => this.toggleListFilter(ListFilter.otherNodes)}
                     />
                     <ToggleItem
                         icon={<TiLink />}
                         text='Linkit'
                         isActive={!listFilters.includes(ListFilter.link)}
-                        onClick={this.toggleListFilter.bind(this, ListFilter.link)}
+                        onClick={() => this.toggleListFilter(ListFilter.link)}
                     />
                 </ToggleView>
-                <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                <div className={s.listHeader}>
+                    <div className={s.name}>Nimi</div>
+                    <div className={s.hastusId}>Hastus id</div>
+                    <div className={s.longId}>Pitkä id</div>
+                    <div className={s.shortId}>Lyhyt id</div>
+                    <div className={s.via}>Määränpää</div>
+                    <div className={s.via}>Määränpää kilpi</div>
+                </div>
+                <div className={s.listWrapper}>
+                    <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                </div>
+                <RoutePathLinkMassEditView
+                    isEditingDisabled={this.props.isEditingDisabled}
+                    routePathLinks={
+                        this.props.routePathLinkMassEditStore!.selectedMassEditRoutePathLinks
+                    }
+                />
             </div>
         );
     }

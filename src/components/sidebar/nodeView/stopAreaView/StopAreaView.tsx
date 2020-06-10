@@ -62,7 +62,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         super(props);
         this.state = {
             isLoading: false,
-            terminalAreas: []
+            terminalAreas: [],
         };
         this.mounted = false;
     }
@@ -80,7 +80,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
 
         if (this.mounted) {
             this.setState({
-                terminalAreas: this.createTerminalAreaDropdownItems(terminalAreas)
+                terminalAreas: this.createTerminalAreaDropdownItems(terminalAreas),
             });
         }
     }
@@ -116,7 +116,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         }
         this.props.stopAreaStore!.init({
             stopArea,
-            isNewStopArea: false
+            isNewStopArea: false,
         });
         this.setState({ isLoading: false });
     };
@@ -127,7 +127,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         const stopArea = StopAreaFactory.createNewStopArea();
         this.props.stopAreaStore!.init({
             stopArea,
-            isNewStopArea: true
+            isNewStopArea: true,
         });
 
         this.setState({ isLoading: false });
@@ -184,7 +184,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                 currentStopArea.nameSw !== oldStopArea.nameSw);
         const confirmNotification = shouldShowNotification
             ? `Huom. nimimuutokset muuttavat kaikkien pysäkkialueeseen kuuluvien pysäkkien ( ${stopItems
-                  .map(stopItem => stopItem.nodeId)
+                  .map((stopItem) => stopItem.nodeId)
                   .join(', ')
                   .toString()} ) nimet.`
             : undefined;
@@ -193,14 +193,14 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
             type: 'saveModel',
             newData: currentStopArea,
             oldData: oldRoute,
-            model: 'stopArea'
+            model: 'stopArea',
         };
         confirmStore.openConfirm({
             confirmNotification,
             content: <SavePrompt models={[saveModel]} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -208,7 +208,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         return terminalAreas.map((terminalArea: ITerminalArea) => {
             const item: IDropdownItem = {
                 value: `${terminalArea.id}`,
-                label: `${terminalArea.name}`
+                label: `${terminalArea.name}`,
             };
             return item;
         });
@@ -255,6 +255,8 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                     <SidebarHeader
                         isEditButtonVisible={!this.props.isNewStopArea}
                         isEditing={!isEditingDisabled}
+                        isBackButtonVisible={true}
+                        isCloseButtonVisible={true}
                         onEditButtonClick={stopAreaStore.toggleIsEditingDisabled}
                     >
                         {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Pysäkkialue'}
@@ -306,7 +308,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                                     selected={stopArea.terminalAreaId}
                                     emptyItem={{
                                         value: undefined,
-                                        label: ''
+                                        label: '',
                                     }}
                                     disabled={isEditingDisabled}
                                     label='TERMINAALIALUE'
@@ -331,7 +333,11 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                         )}
                     </div>
                 </div>
-                <SaveButton disabled={isSaveButtonDisabled} onClick={() => this.showSavePrompt()}>
+                <SaveButton
+                    onClick={() => this.showSavePrompt()}
+                    disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
+                >
                     {this.props.isNewStopArea ? 'Luo uusi pysäkkialue' : 'Tallenna muutokset'}
                 </SaveButton>
             </div>

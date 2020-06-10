@@ -2,12 +2,13 @@ import * as L from 'leaflet';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
 import IViaName from './IViaName';
+import IViaShieldName from './IViaShieldName';
 
 interface IRoutePathLinkPrimaryKey {
     id: string;
 }
 
-interface IRoutePathLink extends IRoutePathLinkPrimaryKey, IViaName {
+interface IRoutePathLink extends IRoutePathLinkPrimaryKey, IViaName, IViaShieldName {
     geometry: L.LatLng[];
     orderNumber: number;
     transitType: TransitType;

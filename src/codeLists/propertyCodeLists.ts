@@ -4,7 +4,7 @@ type NodeKeys = keyof INode;
 type INodePropertyCodeList = { [key in NodeKeys]: string };
 const nodePropertyCodeList: INodePropertyCodeList = {
     id: '',
-    idSuffix: '',
+    internalId: '',
     shortIdLetter: 'LYHYTTUNNUS (2 kirj.)',
     shortIdString: 'LYHYTTUNNUS (4 num)',
     type: 'TYYPPI',
@@ -15,7 +15,10 @@ const nodePropertyCodeList: INodePropertyCodeList = {
     measurementType: 'MITTAUSTAPA',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM',
-    transitTypes: 'VERKKO'
+    transitTypes: 'VERKKO',
+    beginningOfNodeId: '',
+    idSuffix: '',
+    transitType: '',
 };
 
 type StopKeys = keyof IStop;
@@ -41,7 +44,6 @@ const stopPropertyCodeList: IStopPropertyCodeList = {
     nameLongSw: 'PITKÄ NIMI RUOTSIKSI',
     section: 'VYÖHYKE',
     postalNumber: 'POSTINUMERO',
-    transitType: 'VERKKO'
 };
 
 type LinkKeys = keyof ILink;
@@ -55,7 +57,7 @@ const linkPropertyCodeList: ILinkPropertyCodeList = {
     measuredLength: 'MITATTU PITUUS (m)',
     speed: 'NOPEUS (km/h)',
     modifiedBy: 'MUOKANNUT',
-    modifiedOn: 'MUOKATTU PVM'
+    modifiedOn: 'MUOKATTU PVM',
 };
 
 type RouteKeys = keyof IRoute;
@@ -67,7 +69,7 @@ const routePropertyCodeList: IRoutePropertyCodeList = {
     routeNameSw: 'NIMI RUOTSIKSI',
     lineId: '',
     modifiedBy: 'MUOKANNUT',
-    modifiedOn: 'MUOKATTU PVM'
+    modifiedOn: 'MUOKATTU PVM',
 };
 
 type StopAreaKeys = keyof IStopArea;
@@ -80,7 +82,7 @@ const stopAreaPropertyCodeList: IStopAreaPropertyCodeList = {
     terminalAreaId: 'TERMINAALIALUE',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM',
-    stopAreaGroupId: 'PYSÄKKIALUE'
+    stopAreaGroupId: 'PYSÄKKIALUE',
 };
 
 type LineKeys = keyof ILine;
@@ -95,7 +97,7 @@ const linePropertyCodeList: ILinePropertyCodeList = {
     modifiedOn: '',
     publicTransportDestination: 'JOUKKOLIIKENNEKOHDE',
     exchangeTime: 'VAIHTOAJAN PIDENNYS (min)',
-    lineReplacementType: 'LINJAN KORVAAVA TYYPPI'
+    lineReplacementType: 'LINJAN KORVAAVA TYYPPI',
 };
 
 type RoutePathKeys = keyof IRoutePath;
@@ -103,28 +105,28 @@ type IRoutePathPropertyCodeList = { [key in RoutePathKeys]: string };
 const routePathPropertyCodeList: IRoutePathPropertyCodeList = {
     routeId: '',
     direction: 'SUUNTA',
-    startTime: 'VOIM. AST',
+    startDate: 'VOIM. AST',
     internalId: '',
     color: '',
-    visible: '',
+    isVisible: '',
     transitType: '',
     lineId: '',
     routePathLinks: 'SOLMUT JA LINKIT',
-    name: 'NIMI SUOMEKSI',
+    nameFi: 'NIMI SUOMEKSI',
     nameSw: 'NIMI RUOTSIKSI',
-    endTime: 'VIIM.VOIM.OLO',
+    endDate: 'VIIM.VOIM.OLO',
     originFi: 'LÄHTÖPAIKKA SUOMEKSI',
     originSw: 'LÄHTÖPAIKKA RUOTSIKSI',
     destinationFi: 'PÄÄTEPAIKKA SUOMEKSI',
     destinationSw: 'PÄÄTEPAIKKA RUOTSIKSI',
-    shortName: 'LYHENNE SUOMEKSI',
+    shortNameFi: 'LYHENNE SUOMEKSI',
     shortNameSw: 'LYHENNE RUOTSIKSI',
     length: 'PITUUS (m)',
     isStartNodeUsingBookSchedule: '',
     startNodeBookScheduleColumnNumber: '',
     exceptionPath: 'POIKKEUSREITTI',
     modifiedOn: '',
-    modifiedBy: ''
+    modifiedBy: '',
 };
 
 type LineHeaderKeys = keyof ILineHeader;
@@ -143,7 +145,7 @@ const lineHeaderPropertyCodeList: ILineHeaderPropertyCodeList = {
     lineStartPlace2Fi: 'LÄHTÖPAIKKA SUUNNASSA 2',
     lineStartPlace2Sw: 'LÄHTÖPAIKKA SUUNNASSA 2 RUOTSIKSI',
     modifiedBy: '',
-    modifiedOn: ''
+    modifiedOn: '',
 };
 
 export default {
@@ -154,5 +156,5 @@ export default {
     stopArea: stopAreaPropertyCodeList,
     line: linePropertyCodeList,
     routePath: routePathPropertyCodeList,
-    lineHeader: lineHeaderPropertyCodeList
+    lineHeader: lineHeaderPropertyCodeList,
 };

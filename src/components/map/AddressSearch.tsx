@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import EventHelper from '~/helpers/EventHelper';
 import PinIcon from '~/icons/PinIcon';
-import GeocodingService, { IAddressFeature } from '~/services/geocodingService';
+import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
 import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './addressSearch.scss';
 
@@ -15,9 +15,9 @@ interface IAddressSearchProps {
 
 interface IAddressSearchState {
     input: string;
-    searchResults: IAddressFeature[];
+    searchResults: IGeoJSONFeature[];
     searchIndex: number;
-    selectedSearchResult: IAddressFeature | null;
+    selectedSearchResult: IGeoJSONFeature | null;
 }
 
 const SEARCH_RESULT_MARKER_COLOR = '#f44242';
@@ -133,14 +133,14 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
 
         return (
             <div className={s.searchResults}>
-                {searchResults.map((searchResult: IAddressFeature, index) => {
+                {searchResults.map((searchResult: IGeoJSONFeature, index) => {
                     return this.renderSearchResult(searchResult, index);
                 })}
             </div>
         );
     };
 
-    private renderSearchResult = (searchResult: IAddressFeature, searchIndex: number) => {
+    private renderSearchResult = (searchResult: IGeoJSONFeature, searchIndex: number) => {
         const isHighlighted = this.state.searchIndex === searchIndex;
         return (
             <div

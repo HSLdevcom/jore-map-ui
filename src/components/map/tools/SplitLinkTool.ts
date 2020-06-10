@@ -1,6 +1,6 @@
 import SplitConfirmContent from '~/components/sidebar/splitLinkView/SplitConfirmContent';
 import NodeType from '~/enums/nodeType';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper from '~/helpers/EventHelper';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -15,13 +15,13 @@ import NodeUtils from '~/utils/NodeUtils';
 import BaseTool from './BaseTool';
 
 class SplitLinkTool implements BaseTool {
-    public toolType = ToolbarTool.SplitLink;
+    public toolType = ToolbarToolType.SplitLink;
     public toolHelpHeader = 'Jaa linkki solmulla';
     public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
 
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
-        NetworkStore.showMapLayer(MapLayer.nodeWithoutLink);
+        NetworkStore.showMapLayer(MapLayer.unusedNode);
         EventHelper.on('networkNodeClick', this.openNodeConfirm);
     }
 

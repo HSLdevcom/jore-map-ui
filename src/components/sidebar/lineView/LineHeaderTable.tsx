@@ -57,7 +57,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         super(props);
         this.state = {
             isLoading: true,
-            lineHeaders: null
+            lineHeaders: null,
         };
     }
 
@@ -86,7 +86,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         }
         this._setState({
             lineHeaders,
-            isLoading: false
+            isLoading: false,
         });
     };
 
@@ -101,7 +101,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const newLineHeader = LineHeaderFactory.createNewLineHeader({
             lineId: this.props.lineId,
             startDate: defaultDate,
-            endDate: defaultDate
+            endDate: defaultDate,
         });
         this.props.lineHeaderMassEditStore!.createLineHeader(newLineHeader);
     };
@@ -184,7 +184,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                       subTopic: `Linjan otsikko: ${currentLineHeader.lineNameFi}`,
                       newData: currentLineHeader,
                       oldData: {},
-                      model: 'lineHeader'
+                      model: 'lineHeader',
                   })
                 : oldLineHeaders!.forEach((oldLineHeader: ILineHeader) => {
                       if (this.isSameLineHeader(oldLineHeader, currentLineHeader)) {
@@ -193,7 +193,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                               subTopic: `Linjan otsikko: ${currentLineHeader.lineNameFi}`,
                               newData: currentLineHeader,
                               oldData: oldLineHeader,
-                              model: 'lineHeader'
+                              model: 'lineHeader',
                           });
                       }
                   });
@@ -207,7 +207,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 isRemoved: true,
                 newData: null,
                 oldData: null,
-                model: 'lineHeader'
+                model: 'lineHeader',
             });
         });
 
@@ -215,7 +215,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             content: <SavePrompt models={saveModels} />,
             onConfirm: () => {
                 this.save();
-            }
+            },
         });
     };
 
@@ -240,7 +240,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const selectedMassEditLineHeader =
             lineHeaderMassEditStore!.selectedLineHeaderId !== null
                 ? lineHeaderMassEditStore!.massEditLineHeaders!.find(
-                      m => m.id === lineHeaderMassEditStore!.selectedLineHeaderId
+                      (m) => m.id === lineHeaderMassEditStore!.selectedLineHeaderId
                   )
                 : null;
         const activeLineHeaderName = this.getActiveLineHeaderName();
@@ -256,8 +256,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     isEditing={!isEditingDisabled}
                     onEditButtonClick={this.editLineHeaderPrompt}
                     isEditButtonVisible={currentLineHeaders.length > 0}
-                    isCloseButtonVisible={true}
-                    isBackButtonVisible={true}
                 >
                     Linjan otsikot
                 </SidebarHeader>
@@ -271,7 +269,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                                 : 'Ei voimassa olevaa otsikkoa.'
                         }
                         validationResult={{
-                            isValid: Boolean(activeLineHeaderName)
+                            isValid: Boolean(activeLineHeaderName),
                         }}
                         isInputColorRed={!Boolean(activeLineHeaderName)}
                         data-cy='activeLineHeaderName'
@@ -320,9 +318,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     />
                 )}
                 <SaveButton
-                    className={s.saveLineHeadersButton}
                     onClick={this.showSavePrompt}
                     disabled={isSaveButtonDisabled}
+                    savePreventedNotification={''}
+                    className={s.saveLineHeadersButton}
                 >
                     Tallenna linjan otsikot
                 </SaveButton>

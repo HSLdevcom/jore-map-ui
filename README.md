@@ -1,4 +1,4 @@
-# JoreMapUI
+# Joukkoliikennerekisteri Map UI
 
 ### Travis status
 
@@ -44,12 +44,12 @@ Runs at http://localhost:3000/
 
 ### Release a new version
 
-- `git checkout master && git pull origin master`
-- `yarn run release`-(`major`/`minor`/`patch`)
-   - checkouts to a `Release-x.x.x` branch, creates a new tag, updates change log, pushes changes to remote
-- make a pull request from `Release-x.x.x` branch -> `master` branch
-- make a pull request from `master` branch -> `release-prod` branch
-- deploy via `hsl gitlab/jore/jore-map-deploy` repository
+-   `git checkout master && git pull origin master`
+-   `yarn run release`-(`major`/`minor`/`patch`)
+    -   checkouts to a `Release-x.x.x` branch, creates a new tag, updates change log, pushes changes to remote
+-   make a pull request from `Release-x.x.x` branch -> `master` branch
+-   make a pull request from `master` branch -> `release-prod` branch
+-   deploy via `hsl gitlab/jore/jore-map-deploy` repository
 
 ## License
 

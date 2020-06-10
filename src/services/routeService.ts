@@ -16,13 +16,16 @@ interface IAllRoutesQueryResult {
 }
 
 class RouteService {
-    public static fetchRoute = async (
-        routeId: string,
-        { areRoutePathLinksExcluded }: { areRoutePathLinksExcluded?: boolean } = {}
-    ): Promise<IRoute | null> => {
+    public static fetchRoute = async ({
+        routeId,
+        areRoutePathLinksExcluded,
+    }: {
+        routeId: string;
+        areRoutePathLinksExcluded?: boolean;
+    }): Promise<IRoute | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRouteQuery(Boolean(areRoutePathLinksExcluded)),
-            variables: { routeId }
+            variables: { routeId },
         });
         const externalRoute: IExternalRoute = queryResult.data.route;
         if (!externalRoute) {
@@ -34,13 +37,13 @@ class RouteService {
             const transitType = routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
             return RoutePathFactory.mapExternalRoutePath(routePath, lineId, transitType);
         });
-        routePaths.sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
+        routePaths.sort((a, b) => b.endDate.getTime() - a.endDate.getTime());
         return RouteFactory.mapExternalRoute(queryResult.data.route, routePaths);
     };
 
     public static fetchAllRouteIds = async (): Promise<string[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllRoutesQuery()
+            query: GraphqlQueries.getAllRoutesQuery(),
         });
 
         return queryResult.data.allReittis.nodes.map(

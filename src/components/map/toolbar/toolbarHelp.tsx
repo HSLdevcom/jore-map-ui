@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathCopySegmentStore, { setNodeType } from '~/stores/routePathCopySegmentStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import * as s from './toolbarHelp.scss';
@@ -43,7 +43,7 @@ class ToolbarHelp extends Component {
             <div className={s.toolbarHelp}>
                 <div className={s.toolbarHelpHeader}>{selectedTool.toolHelpHeader}</div>
                 {selectedTool.toolHelpText}
-                {selectedTool.toolType === ToolbarTool.CopyRoutePathSegmentTool &&
+                {selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool &&
                     this.renderCopyRoutePathToolToolHelpContent()}
             </div>
         );

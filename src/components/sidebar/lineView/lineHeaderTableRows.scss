@@ -17,11 +17,13 @@ $rowHighlightColor: $lightblue;
     .lineHeaderTableCalendarCell {
         min-width: 125px;
         padding: $cellPadding;
-        vertical-align: top;
 
         .timeInput {
             padding-top: 0px;
         }
+    }
+    .editedCalendarCell {
+        vertical-align: top;
     }
 
     .lineHeaderTableButtonCell {
@@ -31,7 +33,7 @@ $rowHighlightColor: $lightblue;
 
     .lineHeaderButton {
         display: flex;
-        font-size: $largeFontSize;
+        font-size: $extraLargeFontSize;
         padding: 5px;
         margin-top: 4px;
         margin-bottom: auto;

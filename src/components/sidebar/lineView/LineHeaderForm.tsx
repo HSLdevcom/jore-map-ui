@@ -42,7 +42,7 @@ class LineHeaderView extends React.Component<ILineHeaderViewProps> {
         return (
             <div className={classnames(s.lineHeaderForm, s.form)}>
                 <SidebarHeader
-                    isBackButtonVisible={true}
+                    isCloseButtonVisible={true}
                     isEditButtonVisible={false}
                     onCloseButtonClick={this.closeLineHeader}
                 >

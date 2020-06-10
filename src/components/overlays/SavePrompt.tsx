@@ -120,17 +120,17 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
             coordinatesProjection: () => (isNew ? 'Uusi sijainti' : 'Vanha sijainti'),
             measurementDate: () => (value ? toDateString(value) : ''),
             measurementType: () =>
-                value === NodeMeasurementType.Calculated ? 'Laskettu' : 'Mitattu'
+                value === NodeMeasurementType.Calculated ? 'Laskettu' : 'Mitattu',
         },
         stop: {
             municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', value),
-            roof: () => codeListStore.getCodeListLabel('Pysäkkityyppi', value)
+            roof: () => codeListStore.getCodeListLabel('Pysäkkityyppi', value),
         },
         stopArea: {
-            transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : '')
+            transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : ''),
         },
         link: {
-            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria')
+            geometry: () => (isNew ? 'Uusi geometria' : 'Vanha geometria'),
         },
         line: {
             publicTransportType: () => codeListStore.getCodeListLabel('Joukkoliikennelaji', value),
@@ -139,22 +139,22 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
                 codeListStore.getCodeListLabel('Joukkoliikennekohde', value),
             lineReplacementType: () =>
                 codeListStore.getCodeListLabel('LinjanKorvaavaTyyppi', value),
-            transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : '')
+            transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : ''),
         },
         routePath: {
-            startTime: () => (value ? toDateString(value) : ''),
-            endTime: () => (value ? toDateString(value) : ''),
+            startDate: () => (value ? toDateString(value) : ''),
+            endDate: () => (value ? toDateString(value) : ''),
             routePathLinks: () =>
                 isNew
                     ? 'Uudet reitinsuunnan linkit ja solmut'
                     : 'Vanhat reitinsuunnan linkit ja solmut',
-            exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', value)
+            exceptionPath: () => codeListStore.getCodeListLabel('Kyllä/Ei', value),
         },
         lineHeader: {
             startDate: () => (value ? toDateString(value) : ''),
             endDate: () => (value ? toDateString(value) : ''),
-            originalStartDate: () => (value ? toDateString(value) : '')
-        }
+            originalStartDate: () => (value ? toDateString(value) : ''),
+        },
     };
 
     const customPropertyValueFunc =
@@ -171,19 +171,17 @@ const renderChangeRow = (oldValue: string, newValue: string, property?: string) 
     return (
         <div className={s.flexInnerRow}>
             <div className={s.attributeWrapper}>
-                {oldValue ||
-                    (typeof oldValue === 'number' && (
-                        <div className={s.oldAttribute}>{oldValue}</div>
-                    ))}
+                {(oldValue || typeof oldValue === 'number') && (
+                    <div className={s.oldAttribute}>{oldValue}</div>
+                )}
             </div>
             <div className={s.arrowRightWrapper}>
                 <FiArrowRight />
             </div>
             <div className={s.attributeWrapper}>
-                {newValue ||
-                    (typeof newValue === 'number' && (
-                        <div className={s.newAttribute}>{newValue}</div>
-                    ))}
+                {(newValue || typeof newValue === 'number') && (
+                    <div className={s.newAttribute}>{newValue}</div>
+                )}
             </div>
         </div>
     );

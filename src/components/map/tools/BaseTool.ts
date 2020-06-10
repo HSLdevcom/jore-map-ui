@@ -1,7 +1,7 @@
-import ToolbarTool from '~/enums/toolbarTool';
+import ToolbarToolType from '~/enums/toolbarToolType';
 
 export default interface BaseTool {
-    toolType: ToolbarTool;
+    toolType: ToolbarToolType;
     activate: Function;
     deactivate: Function;
     toolHelpHeader?: string;

@@ -1,23 +1,25 @@
 @import '../components/shared/styles/common.scss';
 
 .crossroadMarker {
-    border-color: #727272;
-    background-color: #cfcfcf;
+    border-color: $crossroadBorder;
+    background-color: $crossroadFill;
 }
 
 .crossroadMarkerHighlight {
-    border-color: #727272;
-    background-color: #727272;
+    border-color: $crossroadBorder;
+    background-color: $crossroadFill;
+    box-shadow: 0px 0px 15px 9px $municipalityBorder;
 }
 
 .stopMarker {
-    border-color: #007ac9;
+    border-color: $busBlue;
     background-color: #fff;
 }
 
 .stopMarkerHighlight {
-    border-color: #007ac9;
-    background-color: #007ac9;
+    border-color: $busBlue;
+    background-color: #fff;
+    box-shadow: 0px 0px 15px 9px $busBlue;
 }
 
 .coordinatesProjectionMarker {
@@ -25,28 +27,23 @@
 }
 
 .municipalityMarker {
-    border-color: #c900ff;
-    background-color: #fff;
+    border-color: $municipalityBorder;
+    background-color: $municipalityFill;
 }
 
 .municipalityMarkerHighlight {
-    border-color: #ff00f0;
-    background-color: #ff00f0;
+    border-color: $municipalityBorder;
+    background-color: $municipalityFill;
+    box-shadow: 0px 0px 15px 9px $municipalityBorder;
 }
 
 .disabledMarker {
-    border-color: #353333;
-    background-color: #615e5e;
-}
-
-.disabledMarkerHighlight {
-    border-color: #353333;
-    background-color: #615e5e;
+    opacity: 0.5;
 }
 
 .timeAlignmentMarker {
     background: url('~/icons/time.svg');
-    background-color: white;
+    background-color: #fff;
     border-style: none;
     height: 20px;
     width: 20px;

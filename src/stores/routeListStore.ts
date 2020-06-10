@@ -1,23 +1,31 @@
-import { action, computed, observable } from 'mobx';
-import ColorScale from '~/helpers/ColorScale';
-import { ILine, IRoute, IRoutePath } from '~/models';
-import RoutePathService from '~/services/routePathService';
+import { action, computed, observable, reaction } from 'mobx';
+import { ILine, IRoute } from '~/models';
+import ISchedule from '~/models/ISchedule';
+import RoutePathLayerStore from './routePathLayerStore';
+import SearchStore from './searchStore';
 
 interface IRouteItem {
     route: IRoute;
     selectedTabIndex: number; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
     areAllRoutePathsVisible: boolean; // Needs to be in store instead of RouteItem's state to prevent state reseting when RouteItem re-renders
+    areSchedulesVisible: boolean;
+    activeSchedules: ISchedule[];
 }
 
 class RouteListStore {
     @observable private _routeItems: IRouteItem[];
     @observable private _lines: ILine[];
-    private colorScale: ColorScale;
+    @observable private _routeIdToEdit: string | null;
 
     constructor() {
         this._routeItems = [];
         this._lines = [];
-        this.colorScale = new ColorScale();
+        this._routeIdToEdit = null;
+
+        reaction(
+            () => this.routeIdToEdit != null,
+            (value: boolean) => SearchStore.setIsSearchDisabled(value)
+        );
     }
 
     @computed
@@ -34,8 +42,13 @@ class RouteListStore {
         );
     }
 
+    @computed
+    get routeIdToEdit(): string | null {
+        return this._routeIdToEdit;
+    }
+
     public getLine(lineId: string): ILine | undefined {
-        return this._lines.find(line => line.id === lineId);
+        return this._lines.find((line) => line.id === lineId);
     }
 
     @action
@@ -45,11 +58,16 @@ class RouteListStore {
                 return {
                     route,
                     selectedTabIndex: 0,
-                    areAllRoutePathsVisible: false
+                    areAllRoutePathsVisible: false,
+                    areSchedulesVisible: false,
+                    activeSchedules: [],
                 };
             }
         );
         this._routeItems = this._routeItems.concat(routeItems);
+        routes.forEach((route) => {
+            RoutePathLayerStore.addRoutePaths({ routePaths: route.routePaths });
+        });
     };
 
     @action
@@ -61,8 +79,8 @@ class RouteListStore {
     public removeFromRouteItems = (routeId: string) => {
         for (let i = 0; i < this._routeItems.length; i += 1) {
             if (this._routeItems[i].route.id === routeId) {
-                this._routeItems[i].route.routePaths.forEach(routePath =>
-                    this.colorScale.releaseColor(routePath.color!)
+                this._routeItems[i].route.routePaths.forEach((routePath) =>
+                    RoutePathLayerStore.removeRoutePath(routePath.internalId)
                 );
                 this._routeItems.splice(i, 1);
             }
@@ -78,71 +96,49 @@ class RouteListStore {
     };
 
     @action
-    public clearRouteItems = () => {
-        this._routeItems = [];
-        this.colorScale = new ColorScale();
+    public setRouteIdToEdit = (routeId: string | null) => {
+        this._routeIdToEdit = routeId;
     };
 
     @action
-    public setRoutePathVisibility = async (isVisible: boolean, internalId: string) => {
-        const currentRoutePath = this.getRoutePath(internalId);
-        if (!currentRoutePath) return;
-        if (isVisible === currentRoutePath.visible) return;
-
-        currentRoutePath.visible = isVisible;
-        currentRoutePath.color = currentRoutePath.visible
-            ? this.colorScale.reserveColor()
-            : this.colorScale.releaseColor(currentRoutePath.color!);
-        if (currentRoutePath.visible && currentRoutePath.routePathLinks.length === 0) {
-            const newRoutePath = await RoutePathService.fetchRoutePath(
-                currentRoutePath.routeId,
-                currentRoutePath.startTime,
-                currentRoutePath.direction
-            );
-            this.updateRoutePathLinks(newRoutePath!, internalId);
+    public setActiveSchedules = (routeId: string, activeSchedules: ISchedule[] | null) => {
+        const routeItem = this.routeItems.find((item) => item.route.id === routeId)!;
+        if (activeSchedules) {
+            routeItem.areSchedulesVisible = true;
+            routeItem.activeSchedules = activeSchedules;
+        } else {
+            routeItem.areSchedulesVisible = false;
+            routeItem.activeSchedules = [];
         }
     };
 
     @action
-    public toggleRoutePathVisibility = async (internalId: string) => {
-        const currentRoutePath = this.getRoutePath(internalId);
-        if (!currentRoutePath) return;
-        this.setRoutePathVisibility(!currentRoutePath.visible, internalId);
+    public clear = () => {
+        this._routeItems = [];
+        this._routeIdToEdit = null;
+        RoutePathLayerStore.clear();
     };
 
     @action
     public setSelectedTabIndex = (routeId: string, index: number) => {
-        const routeItem = this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
         routeItem!.selectedTabIndex = index;
     };
 
     @action
     public toggleAllRoutePathsVisible = (routeId: string) => {
-        const routeItem = this._routeItems.find(routeItem => routeItem.route.id === routeId);
+        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
         routeItem!.areAllRoutePathsVisible = !routeItem!.areAllRoutePathsVisible;
     };
 
     @action
-    private updateRoutePathLinks = (newRoutePath: IRoutePath, internalId: string) => {
-        const oldRoutePath = this.getRoutePath(internalId);
-        if (oldRoutePath) {
-            oldRoutePath.routePathLinks = newRoutePath.routePathLinks;
-        }
+    public setAllRoutePathsVisible = (routeId: string) => {
+        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
+        routeItem!.areAllRoutePathsVisible = true;
     };
 
-    private getRoutePath = (internalId: string): IRoutePath | null => {
-        let foundRoutePath: IRoutePath | null = null;
-        this._routeItems.find(routeItem => {
-            const found = routeItem.route.routePaths.find(
-                _routePath => _routePath.internalId === internalId
-            );
-            if (found) {
-                foundRoutePath = found;
-                return true;
-            }
-            return false;
-        });
-        return foundRoutePath;
+    public getRouteItem = (routeId: string): IRouteItem | undefined => {
+        return this._routeItems.find((routeItem) => routeItem.route.id === routeId);
     };
 }
 

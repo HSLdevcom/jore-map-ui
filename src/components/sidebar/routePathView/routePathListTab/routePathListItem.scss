@@ -18,135 +18,94 @@
     background-color: rgba(0, 122, 201, 0.1);
 }
 
-.item {
-    border-bottom: 1px solid $lightGrey;
-    position: relative;
+.routePathListItem {
+    display: flex;
 
-    .listIcon {
-        width: 30px;
-        position: absolute;
-        height: 30px;
-        left: 5px;
-        top: 50%;
-        margin-top: -15px;
-
-        & > div {
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 7px;
-        }
-
-        .iconBorder {
-            border-style: solid;
-            border-radius: 30px;
-            display: table;
-            border-width: 3px;
-        }
-
-        .nodeIcon {
-            height: 10px;
-            width: 10px;
-            border-radius: 5px;
-            background-color: white;
-        }
-
-        .linkIcon {
-            height: 90px;
-            background-color: #639fd5;
-            width: 5px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin: 0;
-            transform: translate(-50%, -50%);
-        }
-    }
-
-    .itemHeader {
+    .contentWrapper {
         display: flex;
-        flex-direction: row;
-        border-right: 3px solid rgba(255, 255, 255, 0);
-        cursor: pointer;
+        flex-direction: column;
+        width: 100%;
 
-        .headerContent {
-            padding: 0px 0px 0px 40px;
-            position: relative;
+        .itemHeader {
             display: flex;
+            flex-direction: row;
             align-items: center;
-            width: 100%;
             justify-content: space-between;
+            margin-left: 10px;
+            height: 40px; // To make items have equal height
+            cursor: pointer;
 
-            .label {
+            .headerSubtopicContainer {
+                display: block;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                cursor: pointer;
+                font-size: 0.9rem;
+                width: 117px;
+            }
+
+            .headerContent {
                 display: flex;
-                flex-grow: 1;
-                color: $blue;
-                font-weight: bold;
+                align-items: center;
+                cursor: pointer;
 
-                .headerContentDescription {
-                    width: 100%;
+                div {
                     display: flex;
-                    justify-content: flex-end;
-                    align-items: center;
-                    div {
-                        margin-left: 10px;
-                    }
-                    div:first-of-type {
-                        margin-left: 0px;
-                    }
-                    .hastusId {
-                        font-size: $smallFontSize;
-                    }
-                    .longId {
-                        font-size: $smallFontSize;
-                    }
-                    .shortId {
-                        width: 55px; /* To align items vertically */
-                        font-size: $mediumFontSize;
-                    }
-                }
-            }
-
-            .headerDescription {
-                margin-left: 10px;
-                color: #0dd5cd;
-            }
-
-            .headerNodeTypeContainer {
-                display: flex;
-                line-height: 25px;
-                flex-direction: column;
-                white-space: nowrap;
-
-                .description {
+                    justify-content: center;
+                    text-align: center;
                     font-size: $smallFontSize;
-                    white-space: nowrap;
+                    padding: 5px;
+                    border-left: 1px solid transparent; // To make column widths match header
+                }
+                .hastusId {
+                    width: 50px;
+                }
+                .longId {
+                    width: 60px;
+                }
+                .shortId {
+                    width: 45px;
+                }
+                .viaWrapper {
+                    padding: 0px 5px 0px 5px;
+                    display: block;
+                    width: 100px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    .via {
+                        padding: 0px;
+                        display: block;
+                        width: 100px;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                    }
+                }
+                .viaShield {
+                    display: block;
+                    width: 100px;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+
+                .itemToggle {
+                    font-size: 16px;
+                    transition: 0.5s;
+                    padding: 0px;
+                    text-align: end;
+                    align-self: center;
+                    color: $mediumGrey;
+
+                    :hover {
+                        color: darken($mediumGrey, 10);
+                        transition: 0.5s;
+                    }
                 }
             }
         }
 
-        .itemToggle {
-            font-size: 22px;
-            color: $mediumGrey;
-            transition: 0.5s;
-            padding: 15px;
-            text-align: end;
-            align-self: center;
+        .itemContent {
+            padding: 0px 10px 20px 20px;
 
-            :hover {
-                color: darken($mediumGrey, 10);
-                transition: 0.5s;
-            }
-        }
-    }
-
-    .itemContent {
-        padding: 0px 10px 20px 10px;
-        margin-left: 45px;
-        border-right-style: solid;
-        border-color: #0285d0;
-        border-width: 3px;
-
-        .extendedContent {
             .header {
                 font-size: 20px;
             }
@@ -172,15 +131,29 @@
         }
     }
 
-    .itemExtended {
-        border-right: 3px solid $blue;
-    }
+    .contentBorder {
+        display: flex;
+        flex-direction: column;
+        width: 30px;
+        cursor: pointer;
 
-    .itemHeader:hover {
-        border-right: 3px solid $blue;
-    }
+        .borderContainer {
+            display: flex;
+            height: 100%;
 
-    .disabled {
-        color: red;
+            .borderLeftContainer {
+                border-right: 2px solid $blue; // border width
+                width: calc(50% - 1px); // needs to be half of the border width
+            }
+        }
+        .listIcon {
+            display: flex;
+            justify-content: center;
+        }
     }
+}
+
+.highlightedItem {
+    transition: 0.5s;
+    background-color: #ffff82;
 }

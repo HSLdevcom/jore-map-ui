@@ -1,4 +1,6 @@
 @import '../../shared/styles/common.scss';
+@import '../../shared/styles/form.scss';
+
 .routeListView {
     display: flex;
     flex-direction: column;
@@ -12,6 +14,7 @@
         flex-direction: column;
         overflow-y: auto;
         height: 100%;
+
         .searchContainerWrapper {
             position: absolute;
             display: flex;
@@ -21,9 +24,55 @@
             width: 100%;
             background-color: #eef1f3;
         }
+
+        .routeList {
+            border-top: 1px solid $borderLightGrey;
+
+            .routeListItem:not(:first-child) {
+                padding-top: 10px;
+            }
+
+            .schedulesLink {
+                display: flex;
+                padding: 10px;
+                font-weight: bold;
+                cursor: pointer;
+                align-items: center;
+                transition: 0.5s;
+                color: $busBlue;
+            }
+
+            .schedulesLink:hover {
+                background-color: $backgroundHoverColor;
+                transition: 0.5s;
+            }
+
+            .activeSchedulesLink {
+                color: #fff;
+                background-color: $busBlue;
+                transition: 0.5s;
+            }
+            .activeSchedulesLink:hover {
+                background-color: darken($busBlue, 10);
+                transition: 0.5s;
+            }
+
+            .routeActiveSchedulesWrapper {
+                padding: 10px;
+                border-bottom: 1px solid #bebebe;
+            }
+        }
+
+        .routeItemWrapper {
+            border-top: 1px solid #bebebe;
+        }
     }
 
     .routesText {
         font-weight: bold;
     }
+}
+
+.routeListWide {
+    width: $sidebarExtraWide;
 }

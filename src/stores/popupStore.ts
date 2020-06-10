@@ -1,7 +1,7 @@
 import { action, computed, observable, reaction } from 'mobx';
 import NetworkStore, { MapLayer } from './networkStore';
 
-type PopupType = 'selectNetworkEntityPopup' | 'nodePopup';
+type PopupType = 'selectNetworkEntityPopup' | 'nodePopup' | 'nodeUsagePopup';
 
 interface IPopupProps {
     type?: PopupType;

@@ -1,0 +1,115 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/form';
+@import '../../shared/styles/flexbox';
+
+$pagePadding: 15px;
+$routePathTablePadding: 15px;
+
+.copyRoutePathView {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .sidebarHeader {
+        padding: $pagePadding;
+        border-bottom: 1px solid $lightGrey;
+    }
+
+    .copyRoutePathViewWrapper {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: $pagePadding;
+        overflow-y: auto;
+
+        .copyRoutePathViewInnerWrapper {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .subTopic {
+            font-size: $largeFontSize;
+            padding: 10px 0px 5px 0px;
+        }
+
+        .direction {
+            font-weight: bold;
+        }
+
+        .selectedRoutePath {
+            padding-bottom: 10px;
+        }
+
+        .noQueryResults {
+            padding-bottom: $routePathTablePadding;
+        }
+
+        table {
+            width: 100%;
+            border-spacing: 0px;
+        }
+        tr:nth-child(even) {
+            background-color: #ebedee;
+        }
+        td {
+            cursor: pointer;
+        }
+
+        .routePathTable {
+            padding-bottom: $routePathTablePadding;
+
+            .routePathTableHeader {
+                font-size: $smallFontSize;
+                th {
+                    font-weight: normal;
+                    align-items: start;
+                    align-self: flex-start;
+                }
+            }
+            .maxWidthColumn {
+                white-space: nowrap;
+                max-width: 100px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                padding: 10px 0px 10px 0px;
+            }
+            .removeRoutePathToCopyButton {
+                border: 1px solid $lightGrey;
+            }
+
+            .selectedRow {
+                background-color: #adf;
+            }
+
+            .circle {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                display: inline-block;
+            }
+        }
+
+        .findRoutePathTableWrapper {
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .selectView {
+            height: 100%;
+            padding: 10px;
+            border-top: 1px solid $lightGrey;
+
+            .addRoutePathToCopyButton {
+                margin: 15px 0px 15px 0px;
+            }
+
+            .routePathSelectView {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    }
+}
