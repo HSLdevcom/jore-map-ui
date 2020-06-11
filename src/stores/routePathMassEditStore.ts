@@ -152,7 +152,7 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
+    public addRoutePathsToCopy = (routePathsToCopy: IRoutePathToCopy[]) => {
         let idCounter = this._newRoutePathIdCounter;
         const routePathsWithNewId: IRoutePath[] = [];
         const newMassEditRoutePaths: IMassEditRoutePath[] = [];
