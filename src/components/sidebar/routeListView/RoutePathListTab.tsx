@@ -364,9 +364,10 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this._setState({ isLoading: true });
 
         try {
-            await RoutePathMassEditService.massEditRoutePaths(
-                this.props.routePathMassEditStore!.massEditRoutePaths!
-            );
+            await RoutePathMassEditService.massEditRoutePaths({
+                routeId: this.props.routeId,
+                massEditRoutePaths: this.props.routePathMassEditStore!.massEditRoutePaths!,
+            });
             this.props.routePathMassEditStore!.clear();
             // TODO: instead of this call, force routeItem.route.routePaths to be fetched again
             this.updateGroupedRoutePathsToDisplay();

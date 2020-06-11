@@ -10,7 +10,13 @@ import IRoutePath, {
 import HttpUtils from '~/utils/HttpUtils';
 
 class RoutePathMassEditService {
-    public static massEditRoutePaths = async (massEditRoutePaths: IMassEditRoutePath[]) => {
+    public static massEditRoutePaths = async ({
+        routeId,
+        massEditRoutePaths,
+    }: {
+        routeId: string;
+        massEditRoutePaths: IMassEditRoutePath[];
+    }) => {
         const addedRpSaveModel: IRoutePathSaveModel[] = [];
         const modifiedRpSaveModel: IRoutePathSaveModel[] = [];
         const originalRpSaveModel: IRoutePathSaveModel[] = [];
@@ -55,6 +61,7 @@ class RoutePathMassEditService {
             }
         });
         const massEditRoutePathSaveModel: IMultipleRoutePathSaveModel = {
+            routeId,
             added: addedRpSaveModel,
             modified: modifiedRpSaveModel,
             originals: originalRpSaveModel,
