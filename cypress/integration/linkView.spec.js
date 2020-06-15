@@ -1,13 +1,10 @@
+import constants from '../constants';
+
 const openLink = () => {
     cy.getTestElement('authInfo').should('exist');
     cy.getTestElement('lineSearch').should('exist');
 
-    // Have to use different link for dev / stage to prevent local db out-of-sync errors
-    if (Cypress.config().baseUrl.includes('dev')) {
-        cy.visit('link/1270003,1270103,1');
-    } else {
-        cy.visit('link/0000001,2117231,1');
-    }
+    cy.visit(constants.LINK_UPDATE_URI);
     cy.getTestElement('linkView').should('exist');
 };
 
