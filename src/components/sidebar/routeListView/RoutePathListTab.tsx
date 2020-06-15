@@ -364,14 +364,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this._setState({ isLoading: true });
 
         try {
+            this.props.alertStore!.setLoaderMessage('Tallennetaan reitinsuuntia...');
             await RoutePathMassEditService.massEditRoutePaths({
                 routeId: this.props.routeId,
                 massEditRoutePaths: this.props.routePathMassEditStore!.massEditRoutePaths!,
             });
             this.props.routePathMassEditStore!.clear();
-            // TODO: instead of this call, force routeItem.route.routePaths to be fetched again
-            this.updateGroupedRoutePathsToDisplay();
-            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+            this.props.routeListStore!.removeFromRouteItems(this.props.routeId);
+            await this.props.routeListStore!.fetchRoutes({ forceUpdate: true });
+            await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
