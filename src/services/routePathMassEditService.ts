@@ -39,7 +39,7 @@ class RoutePathMassEditService {
                     addedRpSaveModel.push({
                         routePath: currentRp,
                         routePathLinkSaveModel: {
-                            added: currentRp.routePathLinks,
+                            added: [],
                             modified: [],
                             removed: [],
                             originals: [],
@@ -51,7 +51,7 @@ class RoutePathMassEditService {
                         routePath: currentRp,
                         routePathLinkSaveModel: {
                             added: [],
-                            modified: currentRp.routePathLinks,
+                            modified: [],
                             removed: [],
                             originals: [],
                         },
