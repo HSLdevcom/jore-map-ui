@@ -6,14 +6,12 @@ import { IoIosCalendar } from 'react-icons/io';
 import { match } from 'react-router';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import TransitType from '~/enums/transitType';
-import { ILine, IRoute, IRoutePath } from '~/models';
+import { IRoute } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import LineService from '~/services/lineService';
-import RouteService from '~/services/routeService';
 import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -28,7 +26,6 @@ import { RoutePathStore } from '~/stores/routePathStore';
 import { RouteStore } from '~/stores/routeStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
 import Loader from '../../shared/loader/Loader';
 import SearchInput from '../../shared/searchView/SearchInput';
@@ -55,11 +52,6 @@ interface IRouteListViewProps {
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-interface IRouteListViewState {
-    routeIds: string[];
-    isLoading: boolean;
-}
-
 @inject(
     'routeStore',
     'searchStore',
@@ -75,38 +67,17 @@ interface IRouteListViewState {
     'routePathMassEditStore'
 )
 @observer
-class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewState> {
-    private _isMounted: boolean;
-    constructor(props: IRouteListViewProps) {
-        super(props);
-        this.state = {
-            routeIds: [],
-            isLoading: false,
-        };
-    }
-
-    private _setState = (newState: object) => {
-        if (this._isMounted) {
-            this.setState(newState);
-        }
-    };
-
+class RouteListView extends React.Component<IRouteListViewProps> {
     async componentDidUpdate() {
         if (!navigator.getQueryParam(QueryParams.routes)) {
             const homeViewLink = routeBuilder.to(SubSites.home).toLink();
             navigator.goTo({ link: homeViewLink });
         }
-        const currentRouteIds = navigator.getQueryParam(QueryParams.routes) as string[];
-        const oldRouteIds = this.state.routeIds;
-        if (!this.state.isLoading && !_.isEqual(oldRouteIds, currentRouteIds)) {
-            await this.fetchRoutes(currentRouteIds);
-        }
+        await this.props.routeListStore!.fetchRoutes({ forceUpdate: false });
     }
 
     async componentDidMount() {
-        this._isMounted = true;
-        const routeIds = navigator.getQueryParam(QueryParams.routes) as string[];
-        await this.fetchRoutes(routeIds);
+        await this.props.routeListStore!.fetchRoutes({ forceUpdate: true });
 
         this.props.routePathStore!.clear();
         this.props.searchStore!.setSearchInput('');
@@ -114,66 +85,8 @@ class RouteListView extends React.Component<IRouteListViewProps, IRouteListViewS
 
     componentWillUnmount() {
         this.props.routeStore!.clear();
-        this._isMounted = false;
         this.props.routeListStore!.clear();
     }
-
-    private fetchRoutes = async (routeIds: string[]) => {
-        if (routeIds) {
-            this._setState({ isLoading: true });
-            const currentRouteIds = this.props.routeListStore!.routeItems.map(
-                (routeItem) => routeItem.route.id
-            );
-            const missingRouteIds = routeIds.filter((id) => !currentRouteIds.includes(id));
-            currentRouteIds
-                .filter((id) => !routeIds.includes(id))
-                .forEach((id) => this.props.routeListStore!.removeFromRouteItems(id));
-
-            const routeIdsNotFound: string[] = [];
-            const promises: Promise<void>[] = [];
-            const missingRoutes: IRoute[] = [];
-            const missingLines: ILine[] = [];
-            missingRouteIds.map((routeId: string) => {
-                const createPromise = async () => {
-                    const route = await RouteService.fetchRoute({
-                        routeId,
-                        areRoutePathLinksExcluded: true,
-                    });
-                    if (!route) {
-                        routeIdsNotFound.push(routeId);
-                    } else {
-                        missingRoutes.push(route);
-                        const line = await LineService.fetchLine(route.lineId);
-                        missingLines.push(line);
-                    }
-                };
-                promises.push(createPromise());
-            });
-
-            await Promise.all(promises);
-            this.props.routeListStore!.addToLines(missingLines);
-            this.props.routeListStore!.addToRouteItems(missingRoutes);
-
-            let hasActiveRoutePath: boolean = false;
-            missingRoutes.forEach((route: IRoute) => {
-                route.routePaths.forEach((rp: IRoutePath, index: number) => {
-                    if (isCurrentDateWithinTimeSpan(rp.startDate, rp.endDate)) {
-                        hasActiveRoutePath = true;
-                    }
-                });
-            });
-            if (!hasActiveRoutePath) {
-                this.props.mapStore!.initCoordinates();
-            }
-
-            if (routeIdsNotFound.length > 0) {
-                this.props.errorStore!.addError(
-                    `Reittien (${routeIdsNotFound.join(', ')}) haku epäonnistui.`
-                );
-            }
-            this._setState({ routeIds, isLoading: false });
-        }
-    };
 
     private closeRoutePrompt = (route: IRoute) => {
         const routeListStore = this.props.routeListStore!;

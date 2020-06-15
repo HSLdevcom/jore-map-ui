@@ -57,6 +57,7 @@ interface IRoutePathSaveModel {
 }
 
 interface IMultipleRoutePathSaveModel {
+    routeId: string;
     added: IRoutePathSaveModel[];
     modified: IRoutePathSaveModel[];
     originals: IRoutePathSaveModel[];

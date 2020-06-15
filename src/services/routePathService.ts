@@ -46,6 +46,12 @@ class RoutePathService {
                 startDate: Moment(routePathPrimaryKey.startDate).format(),
             },
         });
+        if (!queryResult.data.routePath) {
+            return {
+                firstStopName: '-',
+                lastStopName: '-',
+            };
+        }
         const nodes: IExternalRoutePathLink[] =
             queryResult.data.routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
         nodes.sort((a: IExternalRoutePathLink, b: IExternalRoutePathLink) =>

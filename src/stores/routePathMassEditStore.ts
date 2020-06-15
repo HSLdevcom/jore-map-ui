@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
-import { IRoutePath, IRoutePathLink } from '~/models';
+import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
 import RouteListStore from '~/stores/routeListStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
@@ -126,13 +126,6 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public setRoutePathLinksToRoutePath = (id: string, routePathLinks: IRoutePathLink[]) => {
-        this._massEditRoutePaths?.find(
-            (m) => m.id === id
-        )!.routePath.routePathLinks = routePathLinks;
-    };
-
-    @action
     public removeRoutePath = (id: string) => {
         const massEditRpRemoveIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
         this._massEditRoutePaths!.splice(massEditRpRemoveIndex, 1);
@@ -152,7 +145,7 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
+    public addRoutePathsToCopy = (routePathsToCopy: IRoutePathToCopy[]) => {
         let idCounter = this._newRoutePathIdCounter;
         const routePathsWithNewId: IRoutePath[] = [];
         const newMassEditRoutePaths: IMassEditRoutePath[] = [];

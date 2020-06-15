@@ -13,7 +13,6 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import RoutePathService from '~/services/routePathService';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
@@ -45,31 +44,13 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 routePath.internalId,
                 value
             );
-            const massEditRp = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                (m) => m.routePath.internalId === routePath.internalId
-            )!;
-            const isNew = massEditRp && massEditRp.isNew;
-            if (!isNew) {
-                // TODO: remove fetching geometry later if startDate of old routePaths cannot be changed
-                const routePathWithGeometry = await RoutePathService.fetchRoutePath(
-                    routePath.routeId,
-                    routePath.startDate,
-                    routePath.direction
-                );
-                this.props.routePathMassEditStore!.setRoutePathLinksToRoutePath(
-                    routePath.internalId,
-                    routePathWithGeometry!.routePathLinks
-                );
-            }
         }
-        // TODO: also fetch rpLinks (as with modified routePaths, need to send rpLinks to the backend)
     };
 
     private updateEndDates = (routePaths: IRoutePath[]) => (value: Date) => {
         routePaths.forEach((rp) => {
             this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
         });
-        // TODO: also fetch rpLinks (as with modified routePaths, need to send rpLinks to the backend)
     };
 
     private openRoutePathView = (routePath: IRoutePath) => () => {

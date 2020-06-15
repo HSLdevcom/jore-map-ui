@@ -95,7 +95,7 @@ class RoutePathCopyStore {
     @action
     public copyRoutePathPair = () => {
         this.restoreRouteListRoutePaths();
-        RoutePathMassEditStore.addCopiedRoutePaths(this._routePathsToCopy);
+        RoutePathMassEditStore.addRoutePathsToCopy(this._routePathsToCopy);
         this.clear();
     };
 
