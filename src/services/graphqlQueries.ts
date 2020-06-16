@@ -90,31 +90,37 @@ const getRoutePathQuery = () => {
         }`;
 };
 
-const getFirstAndLastStopNamesOfRoutePath = () => {
+const getFirstStopNameOfRoutePath = () => {
     return gql`
-        query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
-            routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(
-                reitunnus: $routeId
-                suuvoimast: $startDate
-                suusuunta: $direction
+        query getFirstStopNameOfRoutePath(
+            $routeId: String!
+            $startDate: Datetime!
+            $direction: String!
+        ) {
+            get_first_stop_name_of_route_path: getFirstStopNameOfRoutePath(
+                routeid: $routeId
+                startdate: $startDate
+                direction: $direction
             ) {
-                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                    nodes {
-                        reljarjnro
-                        solmuByLnkalkusolmu {
-                            soltyyppi
-                            pysakkiBySoltunnus {
-                                pysnimi
-                            }
-                        }
-                        solmuByLnkloppusolmu {
-                            soltyyppi
-                            pysakkiBySoltunnus {
-                                pysnimi
-                            }
-                        }
-                    }
-                }
+                nodes
+            }
+        }
+    `;
+};
+
+const getLastStopNameOfRoutePath = () => {
+    return gql`
+        query getLastStopNameOfRoutePath(
+            $routeId: String!
+            $startDate: Datetime!
+            $direction: String!
+        ) {
+            get_last_stop_name_of_route_path: getLastStopNameOfRoutePath(
+                routeid: $routeId
+                startdate: $startDate
+                direction: $direction
+            ) {
+                nodes
             }
         }
     `;
@@ -767,7 +773,8 @@ export default {
     getRouteQuery,
     getAllRoutesQuery,
     getRoutePathQuery,
-    getFirstAndLastStopNamesOfRoutePath,
+    getFirstStopNameOfRoutePath,
+    getLastStopNameOfRoutePath,
     getRoutePathLinkQuery,
     getRoutePathSegmentQuery,
     getRoutePathsUsingLinkQuery,
