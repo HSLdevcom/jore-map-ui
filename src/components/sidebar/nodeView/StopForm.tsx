@@ -367,6 +367,13 @@ class StopForm extends Component<IStopFormProps> {
                             data-cy='municipality'
                         />
                     </div>
+                    <div className={s.messageContainer}>
+                        Jos osoitetiedot eivät päivity automaattisesti, voit hakea oikeat tiedot
+                        esim. täältä:{' '}
+                        <a href='https://kartta.hsy.fi/' target='blank_'>
+                            https://kartta.hsy.fi/
+                        </a>
+                    </div>
                 </div>
                 <div className={s.formSection}>
                     <div className={s.sectionHeader}>Muut tiedot</div>
