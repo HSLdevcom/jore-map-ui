@@ -6,6 +6,7 @@ import React, { ChangeEvent } from 'react';
 import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
+import EventHelper from '~/helpers/EventHelper';
 import { getMaxDate, getMinDate, toDateString } from '~/utils/dateUtils';
 import * as s from './datePicker.scss';
 
@@ -39,10 +40,12 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
 
     componentDidMount() {
         this.mounted = true;
+        EventHelper.on('enter', this.trimInputString);
     }
 
     componentWillUnmount() {
         this.mounted = false;
+        EventHelper.off('enter', this.trimInputString);
     }
 
     componentDidUpdate(prevProps: IDatePickerProps) {
