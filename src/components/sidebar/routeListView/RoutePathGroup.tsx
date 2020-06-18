@@ -135,8 +135,8 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
             }
         }
         const startDate =
-            first.startDate.getTime() < getMaxDate().getTime() ? first.startDate : null;
-        const endDate = first.endDate.getTime() < getMaxDate().getTime() ? first.endDate : null;
+            first.startDate.getTime() <= getMaxDate().getTime() ? first.startDate : null;
+        const endDate = first.endDate.getTime() <= getMaxDate().getTime() ? first.endDate : null;
         return (
             <div
                 key={`${header}-${index}`}

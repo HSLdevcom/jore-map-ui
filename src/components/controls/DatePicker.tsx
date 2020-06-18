@@ -65,6 +65,19 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         }
     }
 
+    private onChangeDate = (date: Date | null) => {
+        let newDate = date;
+        if (date) {
+            const timeInMs = date.getTime();
+            if (timeInMs < getMinDate().getTime()) {
+                newDate = getMinDate();
+            } else if (timeInMs > getMaxDate().getTime()) {
+                newDate = getMaxDate();
+            }
+        }
+        this.props.onChange(newDate);
+    }
+
     private openCalendar = () => {
         if (this.mounted) {
             this.setState({ isOpen: true });
@@ -78,15 +91,13 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     };
 
     private onInputChange = (inputValue: string) => {
-        if (this.mounted) {
-            this.setState({ isOpen: false });
-        }
+        this.closeCalendar();
 
         // Allow input date that is in the correct format
         if (Moment(inputValue, 'DD.MM.YYYY', true).isValid()) {
             const dateMomentObject = Moment(inputValue, 'DD.MM.YYYY');
             const dateObject = dateMomentObject.toDate();
-            this.props.onChange(dateObject);
+            this.onChangeDate(dateObject);
             return;
         }
 
@@ -95,10 +106,9 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         })
 
         if (_.isEmpty(inputValue) && this.props.isEmptyValueAllowed) {
-            this.props.onChange(null);
+            this.onChangeDate(null);
             return;
         }
-        this.forceUpdate();
     };
 
     private onCalendarDateSelect = (date: Date) => {
@@ -123,7 +133,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                 this.setState({
                     currentValue: trimmedDateString
                 })
-                this.props.onChange(Moment(trimmedDateString, 'DD.MM.YYYY').toDate());
+                this.onChangeDate(Moment(trimmedDateString, 'DD.MM.YYYY').toDate());
             }
         }
     }
