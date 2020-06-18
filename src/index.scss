@@ -45,3 +45,10 @@ select:focus {
 :global(.react-datepicker-popper) {
     z-index: 9999;
 }
+
+:global(.react-datepicker__header) {
+    select {
+        margin-top: 5px;
+        padding: 5px;
+    }
+}
