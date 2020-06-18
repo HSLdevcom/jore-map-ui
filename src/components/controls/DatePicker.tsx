@@ -77,7 +77,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         }
     };
 
-    private onChange = (inputValue: string) => {
+    private onInputChange = (inputValue: string) => {
         if (this.mounted) {
             this.setState({ isOpen: false });
         }
@@ -108,7 +108,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
 
     private selectDateIfCalendarIsOpen = (date: Date) => {
         if (this.state.isOpen) {
-            this.onChange(toDateString(date));
+            this.onInputChange(toDateString(date));
         }
     }
 
@@ -146,7 +146,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                         isClearButtonVisible,
                         isEmptyValueAllowed,
                         value: this.state.currentValue,
-                        onChange: this.onChange,
+                        onInputChange: this.onInputChange,
                         onInputBlur: this.trimInputString,
                         openCalendar: this.openCalendar,
                         placeholder: 'Syötä päivä',
@@ -185,7 +185,7 @@ const _renderCalendarContainer = ({ children }: { children: JSX.Element[] }): Re
 };
 
 const renderDatePickerInput = ({
-    onChange,
+    onInputChange,
     onInputBlur,
     placeholder,
     value,
@@ -193,7 +193,7 @@ const renderDatePickerInput = ({
     isEmptyValueAllowed,
     openCalendar,
 }: {
-    onChange: (value: any) => void;
+    onInputChange: (value: any) => void;
     onInputBlur: () => void;
     placeholder: string;
     value?: string;
@@ -201,12 +201,12 @@ const renderDatePickerInput = ({
     isEmptyValueAllowed?: boolean;
     openCalendar: Function;
 }) => {
-    const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        onChange(event.target.value);
+    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+        onInputChange(event.target.value);
     };
 
     const clearInputValue = (event: React.MouseEvent) => {
-        onChange('');
+        onInputChange('');
         event.preventDefault();
     };
 
@@ -221,7 +221,7 @@ const renderDatePickerInput = ({
                 placeholder={placeholder}
                 type={'text'}
                 value={value}
-                onChange={onInputChange}
+                onChange={onChange}
                 onBlur={onInputBlur}
             />
             <IoMdCalendar className={s.calendarIcon} />
