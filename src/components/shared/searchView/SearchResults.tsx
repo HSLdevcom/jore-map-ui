@@ -42,7 +42,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         super(props);
         this.state = {
             isLoading: true,
-            showLimit: SHOW_LIMIT_DEFAULT
+            showLimit: SHOW_LIMIT_DEFAULT,
         };
 
         this.paginatedDiv = React.createRef();
@@ -54,7 +54,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         this.reactionDisposer = reaction(
             () => [
                 this.props.searchStore!.searchInput,
-                this.props.searchStore!.selectedTransitTypes
+                this.props.searchStore!.selectedTransitTypes,
             ],
             this.scrollToBeginning
         );
@@ -105,14 +105,14 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT
         ) {
             this.setState({
-                showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT
+                showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT,
             });
         }
     };
 
     private scrollToBeginning = () => {
         this.setState({
-            showLimit: SHOW_LIMIT_DEFAULT
+            showLimit: SHOW_LIMIT_DEFAULT,
         });
         if (this.paginatedDiv && this.paginatedDiv.current) {
             this.paginatedDiv.current.scrollTo(0, 0);

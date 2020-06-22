@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { Checkbox } from '~/components/controls';
 import TransitType from '~/enums/transitType';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -36,11 +37,22 @@ class HomeView extends React.Component<IHomeViewProps> {
         navigator.goTo({ link: newLineViewLink });
     };
 
+    private toggleShowActiveLines = () => {
+        // TODO
+    };
+
     render() {
         return (
             <div className={s.homeView}>
                 <SearchInput />
                 <EntityTypeToggles />
+                <div className={s.toggleActiveLinesContainer}>
+                    <Checkbox
+                        content='Näytä vain aktiiviset linjat'
+                        checked={true}
+                        onClick={this.toggleShowActiveLines}
+                    />
+                </div>
                 <TransitToggleButtonBar
                     toggleSelectedTransitType={this.toggleTransitType}
                     selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}

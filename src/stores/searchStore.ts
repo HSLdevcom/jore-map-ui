@@ -15,7 +15,7 @@ class SearchStore {
             TransitType.FERRY,
             TransitType.SUBWAY,
             TransitType.TRAIN,
-            TransitType.TRAM
+            TransitType.TRAM,
         ];
         this._isSearchingForLines = true;
         this._isSearchingForNodes = false;
@@ -67,7 +67,7 @@ class SearchStore {
     @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+            this._selectedTransitTypes = this._selectedTransitTypes.filter((t) => t !== type);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
             this._selectedTransitTypes = this._selectedTransitTypes.concat(type);
