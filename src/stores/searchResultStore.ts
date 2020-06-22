@@ -24,6 +24,7 @@ class SearchResultStore {
                 SearchStore.selectedTransitTypes,
                 SearchStore.isSearchingForLines,
                 SearchStore.isSearchingForNodes,
+                SearchStore.areInactiveLinesHidden,
             ],
             this.startUpdateTimer
         );
@@ -104,7 +105,20 @@ class SearchResultStore {
     };
 
     private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
+        const areInactiveLinesHidden = SearchStore.areInactiveLinesHidden;
         return this._allLines.filter((line) => {
+            // Filter by route.isUsedByRoutePath
+            if (areInactiveLinesHidden) {
+                let isLineActive = false;
+                line.routes.forEach((route) => {
+                    if (route.isUsedByRoutePath) {
+                        isLineActive = true;
+                        return;
+                    }
+                });
+                if (!isLineActive) return false;
+            }
+
             // Filter by transitType
             if (!transitTypes.includes(line.transitType)) {
                 return false;

@@ -6,6 +6,7 @@ class SearchStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
     @observable private _isSearchingForNodes: boolean;
+    @observable private _areInactiveLinesHidden: boolean;
     @observable private _isSearchDisabled: boolean;
 
     constructor() {
@@ -19,6 +20,7 @@ class SearchStore {
         ];
         this._isSearchingForLines = true;
         this._isSearchingForNodes = false;
+        this._areInactiveLinesHidden = true;
         this._isSearchDisabled = false;
     }
 
@@ -48,6 +50,11 @@ class SearchStore {
     }
 
     @computed
+    get areInactiveLinesHidden(): boolean {
+        return this._areInactiveLinesHidden;
+    }
+
+    @computed
     get isSearchDisabled() {
         return this._isSearchDisabled;
     }
@@ -62,6 +69,11 @@ class SearchStore {
     public toggleIsSearchingForNodes() {
         this._isSearchingForNodes = true;
         this._isSearchingForLines = false;
+    }
+
+    @action
+    public toggleAreInactiveLinesHidden() {
+        this._areInactiveLinesHidden = !this._areInactiveLinesHidden;
     }
 
     @action

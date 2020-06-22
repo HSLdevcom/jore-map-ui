@@ -25,6 +25,11 @@
             background-color: #eef1f3;
         }
 
+        .toggleActiveLinesContainer {
+            display: flex;
+            padding: 5px;
+        }
+
         .routeList {
             border-top: 1px solid $borderLightGrey;
 

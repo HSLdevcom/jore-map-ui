@@ -37,8 +37,8 @@ class HomeView extends React.Component<IHomeViewProps> {
         navigator.goTo({ link: newLineViewLink });
     };
 
-    private toggleShowActiveLines = () => {
-        // TODO
+    private toggleAreInactiveLinesHidden = () => {
+        this.props.searchStore!.toggleAreInactiveLinesHidden();
     };
 
     render() {
@@ -49,8 +49,8 @@ class HomeView extends React.Component<IHomeViewProps> {
                 <div className={s.toggleActiveLinesContainer}>
                     <Checkbox
                         content='Näytä vain aktiiviset linjat'
-                        checked={true}
-                        onClick={this.toggleShowActiveLines}
+                        checked={this.props.searchStore!.areInactiveLinesHidden}
+                        onClick={this.toggleAreInactiveLinesHidden}
                     />
                 </div>
                 <TransitToggleButtonBar
