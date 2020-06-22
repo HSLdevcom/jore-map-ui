@@ -9,6 +9,7 @@ export default interface IExternalRoute {
     reinimi: string;
     reinimir: string;
     lintunnus: string;
+    isUsedByRoutePath?: boolean;
     reikuka?: string;
     reiviimpvm?: Date;
 }
