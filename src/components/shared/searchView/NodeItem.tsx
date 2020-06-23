@@ -1,14 +1,14 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import NodeType from '~/enums/nodeType';
-import { INodeBase } from '~/models/INode';
+import { ISearchNode } from '~/models/INode';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeNodeIcon from '../TransitTypeNodeIcon';
 import * as s from './nodeItem.scss';
 
 interface INodeItemProps {
-    node: INodeBase;
+    node: ISearchNode;
 }
 
 const NodeItem = observer((props: INodeItemProps) => {

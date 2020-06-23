@@ -1,15 +1,15 @@
 import { action, computed, observable, reaction } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { ISearchLine } from '~/models/ILine';
-import { INodeBase } from '~/models/INode';
+import { ISearchNode } from '~/models/INode';
 import NodeUtils from '~/utils/NodeUtils';
 import SearchStore from './searchStore';
 
 class SearchResultStore {
     @observable private _allLines: ISearchLine[];
-    @observable private _allNodes: INodeBase[];
+    @observable private _allNodes: ISearchNode[];
     @observable private _filteredLines: ISearchLine[];
-    @observable private _filteredNodes: INodeBase[];
+    @observable private _filteredNodes: ISearchNode[];
     @observable private _isSearching: boolean;
     private delayTimer: NodeJS.Timeout;
 
@@ -38,7 +38,7 @@ class SearchResultStore {
     }
 
     @computed
-    get allNodes(): INodeBase[] {
+    get allNodes(): ISearchNode[] {
         return this._allNodes;
     }
 
@@ -53,7 +53,7 @@ class SearchResultStore {
     }
 
     @computed
-    get filteredNodes(): INodeBase[] {
+    get filteredNodes(): ISearchNode[] {
         return this._filteredNodes;
     }
 
@@ -63,7 +63,7 @@ class SearchResultStore {
     };
 
     @action
-    public setAllNodes = (nodes: INodeBase[]) => {
+    public setAllNodes = (nodes: ISearchNode[]) => {
         this._allNodes = nodes.sort((a, b) => (a.id > b.id ? 1 : -1));
     };
 
@@ -109,7 +109,10 @@ class SearchResultStore {
         this.setIsSearching(false);
     };
 
-    private getFilteredLines = (searchInput: string, transitTypes: TransitType[]) => {
+    private getFilteredLines = (
+        searchInput: string,
+        transitTypes: TransitType[]
+    ): ISearchLine[] => {
         const areInactiveLinesHidden = SearchStore.areInactiveLinesHidden;
         return this._allLines.filter((line) => {
             // Filter by route.isUsedByRoutePath
@@ -139,12 +142,15 @@ class SearchResultStore {
         });
     };
 
-    private getFilteredNodes = (searchInput: string) => {
+    private getFilteredNodes = (searchInput: string): ISearchNode[] => {
+        const trimmedSearchInput = searchInput.toLowerCase();
         return this._allNodes.filter((node) => {
             const shortId = NodeUtils.getShortId(node);
             return (
-                this.matchText(node.id, searchInput) ||
-                (Boolean(shortId) && this.matchText(shortId, searchInput))
+                this.matchText(node.id, trimmedSearchInput) ||
+                (Boolean(shortId) && this.matchText(shortId.toLowerCase(), trimmedSearchInput)) ||
+                (Boolean(node.stopName) &&
+                    this.matchText(node.stopName!.toLowerCase(), trimmedSearchInput))
             );
         });
     };
