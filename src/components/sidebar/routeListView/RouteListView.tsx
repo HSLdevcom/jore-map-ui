@@ -232,21 +232,32 @@ class RouteListView extends React.Component<IRouteListViewProps> {
             <>
                 <SearchInput />
                 {/* Render search container on top of routeList when needed to prevent routeList from re-rendering each time search container is shown. */}
-                <div className={s.contentWrapper}>
+                <div
+                    className={classnames(
+                        s.contentWrapper,
+                        this.props.searchStore!.searchInput !== '' ? s.hiddenScrolling : undefined
+                    )}
+                >
                     {this.props.searchStore!.searchInput !== '' && (
                         <div className={s.searchContainerWrapper}>
                             <EntityTypeToggles />
-                            <div className={s.toggleActiveLinesContainer}>
-                                <Checkbox
-                                    content='Näytä vain aktiiviset linjat'
-                                    checked={this.props.searchStore!.areInactiveLinesHidden}
-                                    onClick={this.toggleAreInactiveLinesHidden}
-                                />
-                            </div>
-                            <TransitToggleButtonBar
-                                toggleSelectedTransitType={this.toggleTransitType}
-                                selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
-                            />
+                            {this.props.searchStore!.isSearchingForLines && (
+                                <>
+                                    <div className={s.toggleActiveLinesContainer}>
+                                        <Checkbox
+                                            content='Näytä vain aktiiviset linjat'
+                                            checked={this.props.searchStore!.areInactiveLinesHidden}
+                                            onClick={this.toggleAreInactiveLinesHidden}
+                                        />
+                                    </div>
+                                    <TransitToggleButtonBar
+                                        toggleSelectedTransitType={this.toggleTransitType}
+                                        selectedTransitTypes={
+                                            this.props.searchStore!.selectedTransitTypes
+                                        }
+                                    />
+                                </>
+                            )}
                             <SearchResults />
                         </div>
                     )}

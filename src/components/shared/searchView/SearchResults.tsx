@@ -90,8 +90,12 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     };
 
-    private getFilteredItems = () => {
-        return this.props.searchResultStore!.filteredItems.slice().splice(0, this.state.showLimit);
+    private getFilteredLines = () => {
+        return this.props.searchResultStore!.filteredLines.slice().splice(0, this.state.showLimit);
+    };
+
+    private getFilteredNodes = () => {
+        return this.props.searchResultStore!.filteredNodes.slice().splice(0, this.state.showLimit);
     };
 
     private closeSearchResults = () => {
@@ -119,19 +123,11 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         }
     };
 
-    private isLine(item: INodeBase | ISearchLine): item is ISearchLine {
-        return (
-            ((item as ISearchLine).routes !== undefined ||
-                (item as ISearchLine).transitType !== undefined) &&
-            ((item as INodeBase).shortIdLetter === undefined ||
-                (item as INodeBase).shortIdString === undefined ||
-                (item as INodeBase).type === undefined)
-        );
-    }
-
     render() {
+        const searchStore = this.props.searchStore!;
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
-        const filteredItems = this.getFilteredItems();
+        const filteredLines = this.getFilteredLines();
+        const filteredNodes = this.getFilteredNodes();
         return (
             <div className={s.searchResultsView}>
                 {this.state.isLoading ? (
@@ -144,16 +140,22 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                         onScroll={this.showMoreResults}
                         ref={this.paginatedDiv}
                     >
-                        {filteredItems.length === 0 ? (
-                            <div className={s.noResults}>Ei hakutuloksia.</div>
-                        ) : (
-                            filteredItems.map((item: ISearchLine | INodeBase) => {
-                                if (this.isLine(item)) {
+                        {searchStore.isSearchingForLines &&
+                            (filteredLines.length === 0 ? (
+                                <div className={s.noResults}>Ei hakutuloksia.</div>
+                            ) : (
+                                filteredLines.map((item: ISearchLine) => {
                                     return <LineItem key={item.id} line={item} />;
-                                }
-                                return <NodeItem key={item.id} node={item} />;
-                            })
-                        )}
+                                })
+                            ))}
+                        {searchStore.isSearchingForNodes &&
+                            (filteredNodes.length === 0 ? (
+                                <div className={s.noResults}>Ei hakutuloksia.</div>
+                            ) : (
+                                filteredNodes.map((item: INodeBase) => {
+                                    return <NodeItem key={item.id} node={item} />;
+                                })
+                            ))}
                     </div>
                 )}
                 {isRouteListView && (
