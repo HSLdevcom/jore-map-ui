@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
-import ISearchLine from '~/models/searchModels/ISearchLine';
-import ISearchLineRoute from '~/models/searchModels/ISearchLineRoute';
+import { ISearchLine } from '~/models/ILine';
+import { ISearchLineRoute } from '~/models/IRoute';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';

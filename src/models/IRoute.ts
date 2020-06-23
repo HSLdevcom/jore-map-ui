@@ -4,7 +4,7 @@ interface IRoutePrimaryKey {
     id: string;
 }
 
-export default interface IRoute extends IRoutePrimaryKey {
+interface IRoute extends IRoutePrimaryKey {
     routePaths: IRoutePath[];
     routeName: string;
     routeNameSw: string;
@@ -13,4 +13,13 @@ export default interface IRoute extends IRoutePrimaryKey {
     modifiedOn?: Date;
 }
 
-export { IRoutePrimaryKey };
+interface ISearchLineRoute {
+    id: string;
+    name: string;
+    isUsedByRoutePath: boolean;
+    date?: Date;
+}
+
+export default IRoute;
+
+export { IRoutePrimaryKey, ISearchLineRoute };

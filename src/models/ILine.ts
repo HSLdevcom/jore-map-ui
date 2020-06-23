@@ -1,10 +1,11 @@
 import TransitType from '~/enums/transitType';
+import { ISearchLineRoute } from './IRoute';
 
 interface ILinePrimaryKey {
     id: string;
 }
 
-export default interface ILine extends ILinePrimaryKey {
+interface ILine extends ILinePrimaryKey {
     transitType?: TransitType;
     lineBasicRoute: string;
     publicTransportType: string;
@@ -16,4 +17,12 @@ export default interface ILine extends ILinePrimaryKey {
     lineReplacementType?: string;
 }
 
-export { ILinePrimaryKey };
+interface ISearchLine {
+    id: string;
+    transitType: TransitType;
+    routes: ISearchLineRoute[];
+}
+
+export default ILine;
+
+export { ILinePrimaryKey, ISearchLine };

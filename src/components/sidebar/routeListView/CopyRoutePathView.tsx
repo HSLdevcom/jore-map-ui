@@ -9,7 +9,7 @@ import { Button, Checkbox, ToggleSwitch } from '~/components/controls';
 import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePath } from '~/models';
-import ISearchLine from '~/models/searchModels/ISearchLine';
+import { ISearchLine } from '~/models/ILine';
 import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
