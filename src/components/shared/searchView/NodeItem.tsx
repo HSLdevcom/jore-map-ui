@@ -24,9 +24,10 @@ const NodeItem = observer((props: INodeItemProps) => {
                 <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
             </div>
             <div className={s.nodeItemTextContainer}>
-                <span>{node.id}</span>
+                <div className={s.nodeId}>{node.id}</div>
                 <div>{NodeUtils.getNodeTypeName(node.type)}</div>
                 {node.type === NodeType.STOP && <div>{NodeUtils.getShortId(node)}</div>}
+                <div className={s.stopName}>{node.stopName ? node.stopName : ''}</div>
             </div>
         </div>
     );
