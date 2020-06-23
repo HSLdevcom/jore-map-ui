@@ -65,15 +65,6 @@ class LineService {
         });
     };
 
-    public static fetchSearchLine = async (lintunnus: string): Promise<ISearchLine> => {
-        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getSearchLineQuery(),
-            variables: { lineId: lintunnus },
-        });
-
-        return LineFactory.createSearchLine(queryResult.data.linjaByLintunnus);
-    };
-
     public static updateLine = async (line: ILine) => {
         const lineSaveModel = _.cloneDeep(line);
         if (!lineSaveModel.exchangeTime) {

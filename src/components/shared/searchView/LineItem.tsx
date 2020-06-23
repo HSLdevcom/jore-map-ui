@@ -24,32 +24,31 @@ class LineItem extends React.Component<ILineItemProps> {
 
     private renderRoute(route: ISearchLineRoute): any {
         return (
-            <div key={route.id} className={s.routeItem} data-cy='routeItem'>
-                <div className={s.routeItemHeader}>
-                    <div
-                        className={classNames(
-                            s.routeName,
-                            TransitTypeUtils.getColorClass(this.props.line.transitType)
-                        )}
-                        onClick={this.openRoute(route.id)}
-                    >
-                        <div>{route.id}</div>
-                        <div>{route.name}</div>
-                    </div>
-                </div>
+            <div
+                key={route.id}
+                className={classNames(
+                    s.routeItem,
+                    TransitTypeUtils.getColorClass(this.props.line.transitType),
+                    !route.isUsedByRoutePath ? s.inactiveRouteItem : undefined
+                )}
+                data-cy='routeItem'
+                onClick={this.openRoute(route.id)}
+            >
+                <div>{route.id}</div>
+                <div>{route.name}</div>
             </div>
         );
     }
 
     private openAllRoutes = () => {
         const routesLinkBuilder = routeBuilder.to(SubSites.routes);
-        this.props.line.routes.forEach(route => {
+        this.props.line.routes.forEach((route) => {
             routesLinkBuilder.append(QueryParams.routes, route.id);
         });
         const routesLink = routesLinkBuilder.toLink();
         searchStore.setSearchInput('');
         navigator.goTo({
-            link: routesLink
+            link: routesLink,
         });
     };
 
@@ -66,7 +65,11 @@ class LineItem extends React.Component<ILineItemProps> {
                         data-cy='lineItem'
                     />
                     {this.props.line.routes.length > 0 && (
-                        <div className={s.openAllRoutesButton} onClick={this.openAllRoutes} data-cy='openAllRoutesButton'>
+                        <div
+                            className={s.openAllRoutesButton}
+                            onClick={this.openAllRoutes}
+                            data-cy='openAllRoutesButton'
+                        >
                             Avaa reitit ({this.props.line.routes.length})
                         </div>
                     )}
@@ -74,7 +77,7 @@ class LineItem extends React.Component<ILineItemProps> {
                 {this.props.line.routes
                     .slice()
                     .sort((a, b) => (a.id < b.id ? -1 : 1))
-                    .map(route => this.renderRoute(route))}
+                    .map((route) => this.renderRoute(route))}
             </div>
         );
     }

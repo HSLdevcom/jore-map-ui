@@ -24,14 +24,14 @@ class EntityTypeToggles extends React.Component<IEntityTypeToggleProps> {
             <ToggleView>
                 <ToggleItem
                     icon={<IoMdAnalytics />}
-                    text='Linjat ja Reitit'
+                    text='Linjat, reitit'
                     isActive={this.props.searchStore!.isSearchingForLines}
                     onClick={this.toggleSearchingLines}
                     data-cy='lineToggle'
                 />
                 <ToggleItem
                     icon={<IoIosRadioButtonOff />}
-                    text='Solmut'
+                    text='Pysäkit, risteykset'
                     isActive={this.props.searchStore!.isSearchingForNodes}
                     onClick={this.toggleSearchingNodes}
                     data-cy='nodeToggle'

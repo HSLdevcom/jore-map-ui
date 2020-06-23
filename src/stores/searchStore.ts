@@ -6,6 +6,7 @@ class SearchStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
     @observable private _isSearchingForNodes: boolean;
+    @observable private _areInactiveLinesHidden: boolean;
     @observable private _isSearchDisabled: boolean;
 
     constructor() {
@@ -15,10 +16,11 @@ class SearchStore {
             TransitType.FERRY,
             TransitType.SUBWAY,
             TransitType.TRAIN,
-            TransitType.TRAM
+            TransitType.TRAM,
         ];
         this._isSearchingForLines = true;
         this._isSearchingForNodes = false;
+        this._areInactiveLinesHidden = true;
         this._isSearchDisabled = false;
     }
 
@@ -48,6 +50,11 @@ class SearchStore {
     }
 
     @computed
+    get areInactiveLinesHidden(): boolean {
+        return this._areInactiveLinesHidden;
+    }
+
+    @computed
     get isSearchDisabled() {
         return this._isSearchDisabled;
     }
@@ -65,9 +72,14 @@ class SearchStore {
     }
 
     @action
+    public toggleAreInactiveLinesHidden() {
+        this._areInactiveLinesHidden = !this._areInactiveLinesHidden;
+    }
+
+    @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+            this._selectedTransitTypes = this._selectedTransitTypes.filter((t) => t !== type);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
             this._selectedTransitTypes = this._selectedTransitTypes.concat(type);

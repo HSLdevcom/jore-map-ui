@@ -1,10 +1,11 @@
 import classnames from 'classnames';
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
-import { Button, ToggleSwitch } from '~/components/controls';
+import { Button, Checkbox, ToggleSwitch } from '~/components/controls';
 import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePath } from '~/models';
@@ -34,11 +35,13 @@ interface ICopyRoutePathState {
     lineDropdownItems: IDropdownItem[];
     routeDropdownItems: IDropdownItem[];
     newRoutePathCounter: number;
+    areInactiveLinesHidden: boolean;
 }
 
 @inject('routePathCopyStore', 'routePathLayerStore')
 @observer
 class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRoutePathState> {
+    private areInactiveLinesHiddenListener: IReactionDisposer;
     private _isMounted: boolean;
     state: ICopyRoutePathState = {
         isLoading: true,
@@ -50,6 +53,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         lineDropdownItems: [],
         routeDropdownItems: [],
         newRoutePathCounter: 0,
+        areInactiveLinesHidden: true,
     };
 
     private _setState = (newState: object) => {
@@ -64,14 +68,42 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         const lineQueryResult: ISearchLine[] = (await LineService.fetchAllSearchLines()).filter(
             (l) => l.transitType === this.props.routePathCopyStore!.transitType
         );
-        const lineDropdownItems = createDropdownItemsFromList(lineQueryResult.map((s) => s.id));
-        this._setState({ lineQueryResult, lineDropdownItems, isLoading: false });
+        this._setState({ lineQueryResult, isLoading: false });
+        this.createLineDropdownItems();
+
+        this.areInactiveLinesHiddenListener = reaction(
+            () => this.state.areInactiveLinesHidden,
+            this.createLineDropdownItems
+        );
     }
 
     componentWillUnmount() {
         this._isMounted = false;
         this.props.routePathCopyStore!.clear();
+        this.areInactiveLinesHiddenListener();
     }
+
+    private createLineDropdownItems = () => {
+        let filteredLineQueryResult = this.state.lineQueryResult;
+        if (this.state.areInactiveLinesHidden) {
+            filteredLineQueryResult = filteredLineQueryResult.filter((line) => {
+                let isLineActive = false;
+                line.routes.forEach((route) => {
+                    if (route.isUsedByRoutePath) {
+                        isLineActive = true;
+                        return;
+                    }
+                });
+                return isLineActive;
+            });
+        }
+        const lineDropdownItems = createDropdownItemsFromList(
+            filteredLineQueryResult.map((s) => s.id)
+        );
+        this._setState({
+            lineDropdownItems,
+        });
+    };
 
     private copyRoutePathPair = () => {
         this.props.routePathCopyStore!.copyRoutePathPair();
@@ -171,6 +203,12 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
     private onBackButtonClick = () => {
         this.props.routePathCopyStore!.restoreRouteListRoutePaths();
         this.props.routePathCopyStore!.clear();
+    };
+
+    private toggleAreInactiveLinesHidden = () => {
+        this.setState({
+            areInactiveLinesHidden: !this.state.areInactiveLinesHidden,
+        });
     };
 
     render() {
@@ -312,6 +350,13 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                         ? { isValid: false, errorMessage: 'Valitse reitti' }
                                         : undefined
                                 }
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                content='Näytä vain aktiiviset linjat'
+                                checked={this.state.areInactiveLinesHidden}
+                                onClick={this.toggleAreInactiveLinesHidden}
                             />
                         </div>
                         {this.state.selectedRouteId && (

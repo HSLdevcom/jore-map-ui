@@ -21,20 +21,6 @@ const getLineAndRoutesQuery = () => {
         }`;
 };
 
-const getSearchLineQuery = () => {
-    return gql`query getLineByLintunnus ($lineId: String!) {
-            linjaByLintunnus(lintunnus:$lineId) {
-                ${searchLineQueryFields}
-                reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
-                    nodes {
-                        reinimi
-                        reiviimpvm
-                    }
-                }
-            }
-        }`;
-};
-
 const getAllSearchLinesQuery = () => {
     return gql`{
             allLinjas {
@@ -42,9 +28,7 @@ const getAllSearchLinesQuery = () => {
                     ${searchLineQueryFields}
                     reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                         nodes {
-                            reinimi
-                            reitunnus
-                            reiviimpvm
+                            ${searchRouteQueryFields}
                         }
                     }
                 }
@@ -498,6 +482,13 @@ const searchLineQueryFields = `
     linverkko
 `;
 
+const searchRouteQueryFields = `
+    reinimi
+    isUsedByRoutePath
+    reitunnus
+    reiviimpvm
+`;
+
 const routeQueryFields = `
     reitunnus
     reinimi
@@ -766,7 +757,6 @@ linkkisByLnkloppusolmu {
 export default {
     getLineQuery,
     getLineAndRoutesQuery,
-    getSearchLineQuery,
     getAllSearchLinesQuery,
     getLinkQuery,
     getLinksQuery,

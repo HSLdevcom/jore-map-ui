@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { IoIosCalendar } from 'react-icons/io';
 import { match } from 'react-router';
+import { Checkbox } from '~/components/controls';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import TransitType from '~/enums/transitType';
 import { IRoute } from '~/models';
@@ -213,6 +214,10 @@ class RouteListView extends React.Component<IRouteListViewProps> {
         }
     };
 
+    private toggleAreInactiveLinesHidden = () => {
+        this.props.searchStore!.toggleAreInactiveLinesHidden();
+    };
+
     private _render = () => {
         const routeListStore = this.props.routeListStore!;
         const routeItems = routeListStore.routeItems;
@@ -227,14 +232,32 @@ class RouteListView extends React.Component<IRouteListViewProps> {
             <>
                 <SearchInput />
                 {/* Render search container on top of routeList when needed to prevent routeList from re-rendering each time search container is shown. */}
-                <div className={s.contentWrapper}>
+                <div
+                    className={classnames(
+                        s.contentWrapper,
+                        this.props.searchStore!.searchInput !== '' ? s.hiddenScrolling : undefined
+                    )}
+                >
                     {this.props.searchStore!.searchInput !== '' && (
                         <div className={s.searchContainerWrapper}>
                             <EntityTypeToggles />
-                            <TransitToggleButtonBar
-                                toggleSelectedTransitType={this.toggleTransitType}
-                                selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
-                            />
+                            {this.props.searchStore!.isSearchingForLines && (
+                                <>
+                                    <div className={s.toggleActiveLinesContainer}>
+                                        <Checkbox
+                                            content='Näytä vain aktiiviset linjat'
+                                            checked={this.props.searchStore!.areInactiveLinesHidden}
+                                            onClick={this.toggleAreInactiveLinesHidden}
+                                        />
+                                    </div>
+                                    <TransitToggleButtonBar
+                                        toggleSelectedTransitType={this.toggleTransitType}
+                                        selectedTransitTypes={
+                                            this.props.searchStore!.selectedTransitTypes
+                                        }
+                                    />
+                                </>
+                            )}
                             <SearchResults />
                         </div>
                     )}
