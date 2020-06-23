@@ -1,6 +1,6 @@
 import { ILine } from '~/models';
 import { ISearchLine } from '~/models/ILine';
-import { ISearchLineRoute } from '~/models/IRoute';
+import { ISearchRoute } from '~/models/IRoute';
 import IExternalLine from '~/models/externals/IExternalLine.ts';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 
@@ -36,7 +36,7 @@ class LineFactory {
 
     public static createSearchLine = (externalLine: IExternalLine): ISearchLine => {
         const routes = externalLine.reittisByLintunnus.nodes.map(
-            (route: IExternalRoute): ISearchLineRoute => {
+            (route: IExternalRoute): ISearchRoute => {
                 return {
                     id: route.reitunnus,
                     name: _getRouteName(route),

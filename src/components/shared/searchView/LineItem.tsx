@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { ISearchLine } from '~/models/ILine';
-import { ISearchLineRoute } from '~/models/IRoute';
+import { ISearchRoute } from '~/models/IRoute';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -22,7 +22,7 @@ class LineItem extends React.Component<ILineItemProps> {
         NavigationUtils.openRouteView({ routeId, queryValues: navigator.getQueryParamValues() });
     };
 
-    private renderRoute(route: ISearchLineRoute): any {
+    private renderRoute(route: ISearchRoute): any {
         return (
             <div
                 key={route.id}

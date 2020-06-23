@@ -13,7 +13,7 @@ interface IRoute extends IRoutePrimaryKey {
     modifiedOn?: Date;
 }
 
-interface ISearchLineRoute {
+interface ISearchRoute {
     id: string;
     name: string;
     isUsedByRoutePath: boolean;
@@ -22,4 +22,4 @@ interface ISearchLineRoute {
 
 export default IRoute;
 
-export { IRoutePrimaryKey, ISearchLineRoute };
+export { IRoutePrimaryKey, ISearchRoute };
