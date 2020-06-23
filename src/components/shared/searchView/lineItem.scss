@@ -48,24 +48,19 @@
     }
 
     .routeItem {
+        display: flex;
+        flex-direction: column;
         margin-left: 10px;
-        padding-bottom: 5px;
-
-        .routeItemHeader {
-            display: flex;
-            flex-direction: column;
-
-            .routeName {
-                cursor: pointer;
-                padding: 7px;
-                border-radius: 5px;
-                transition: 0.5s;
-            }
-
-            .routeName:hover {
-                background-color: $backgroundHoverColor;
-                transition: 0.5s;
-            }
-        }
+        cursor: pointer;
+        padding: 7px;
+        border-radius: 5px;
+        transition: 0.5s;
+    }
+    .routeItem:hover {
+        background-color: $backgroundHoverColor;
+        transition: 0.5s;
+    }
+    .inactiveRouteItem {
+        color: #bebebe;
     }
 }

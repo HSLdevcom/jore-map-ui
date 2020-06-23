@@ -1,6 +1,14 @@
+import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import { ILine, IRoute } from '~/models';
+import { ILine, IRoute, IRoutePath } from '~/models';
 import ISchedule from '~/models/ISchedule';
+import navigator from '~/routing/navigator';
+import QueryParams from '~/routing/queryParams';
+import LineService from '~/services/lineService';
+import RouteService from '~/services/routeService';
+import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
+import ErrorStore from './errorStore';
+import MapStore from './mapStore';
 import RoutePathLayerStore from './routePathLayerStore';
 import SearchStore from './searchStore';
 
@@ -16,11 +24,14 @@ class RouteListStore {
     @observable private _routeItems: IRouteItem[];
     @observable private _lines: ILine[];
     @observable private _routeIdToEdit: string | null;
+    @observable private _areRoutesLoading: boolean;
+    @observable private _loadedRouteIds: string[];
 
     constructor() {
         this._routeItems = [];
         this._lines = [];
         this._routeIdToEdit = null;
+        this._areRoutesLoading = false;
 
         reaction(
             () => this.routeIdToEdit != null,
@@ -45,6 +56,11 @@ class RouteListStore {
     @computed
     get routeIdToEdit(): string | null {
         return this._routeIdToEdit;
+    }
+
+    @computed
+    get areRoutesLoading(): boolean {
+        return this._areRoutesLoading;
     }
 
     public getLine(lineId: string): ILine | undefined {
@@ -116,6 +132,8 @@ class RouteListStore {
     public clear = () => {
         this._routeItems = [];
         this._routeIdToEdit = null;
+        this._loadedRouteIds = [];
+        this._areRoutesLoading = false;
         RoutePathLayerStore.clear();
     };
 
@@ -135,6 +153,77 @@ class RouteListStore {
     public setAllRoutePathsVisible = (routeId: string) => {
         const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
         routeItem!.areAllRoutePathsVisible = true;
+    };
+
+    @action
+    public setAreRoutesLoading = (areRoutesLoading: boolean) => {
+        this._areRoutesLoading = areRoutesLoading;
+    };
+
+    @action
+    public setLoadedRouteIds = (loadedRouteIds: string[]) => {
+        this._loadedRouteIds = loadedRouteIds;
+    };
+
+    public fetchRoutes = async ({ forceUpdate }: { forceUpdate: boolean }) => {
+        const routeIds: string[] = navigator.getQueryParam(QueryParams.routes) as string[];
+
+        if (!forceUpdate) {
+            if (this._areRoutesLoading || _.isEqual(this._loadedRouteIds, routeIds)) {
+                return;
+            }
+        }
+        if (routeIds) {
+            this.setAreRoutesLoading(true);
+            const currentRouteIds = this.routeItems.map((routeItem) => routeItem.route.id);
+            const missingRouteIds = routeIds.filter((id) => !currentRouteIds.includes(id));
+            currentRouteIds
+                .filter((id) => !routeIds.includes(id))
+                .forEach((id) => this.removeFromRouteItems(id));
+
+            const routeIdsNotFound: string[] = [];
+            const promises: Promise<void>[] = [];
+            const missingRoutes: IRoute[] = [];
+            const missingLines: ILine[] = [];
+            missingRouteIds.map((routeId: string) => {
+                const createPromise = async () => {
+                    const route = await RouteService.fetchRoute({
+                        routeId,
+                        areRoutePathLinksExcluded: true,
+                    });
+                    if (!route) {
+                        routeIdsNotFound.push(routeId);
+                    } else {
+                        missingRoutes.push(route);
+                        const line = await LineService.fetchLine(route.lineId);
+                        missingLines.push(line);
+                    }
+                };
+                promises.push(createPromise());
+            });
+
+            await Promise.all(promises);
+            this.addToLines(missingLines);
+            this.addToRouteItems(missingRoutes);
+
+            let hasActiveRoutePath: boolean = false;
+            missingRoutes.forEach((route: IRoute) => {
+                route.routePaths.forEach((rp: IRoutePath, index: number) => {
+                    if (isCurrentDateWithinTimeSpan(rp.startDate, rp.endDate)) {
+                        hasActiveRoutePath = true;
+                    }
+                });
+            });
+            if (!hasActiveRoutePath) {
+                MapStore.initCoordinates();
+            }
+
+            if (routeIdsNotFound.length > 0) {
+                ErrorStore.addError(`Reittien (${routeIdsNotFound.join(', ')}) haku epäonnistui.`);
+            }
+            this.setAreRoutesLoading(false);
+            this.setLoadedRouteIds(routeIds);
+        }
     };
 
     public getRouteItem = (routeId: string): IRouteItem | undefined => {

@@ -16,7 +16,7 @@ class LineFactory {
             modifiedOn: externalLine.linviimpvm ? new Date(externalLine.linviimpvm) : undefined,
             publicTransportDestination: externalLine.linjlkohde,
             exchangeTime: externalLine.vaihtoaika,
-            lineReplacementType: externalLine.linkorvtyyppi
+            lineReplacementType: externalLine.linkorvtyyppi,
         };
     };
 
@@ -30,7 +30,7 @@ class LineFactory {
             modifiedOn: undefined,
             publicTransportDestination: '',
             exchangeTime: 0,
-            lineReplacementType: ''
+            lineReplacementType: '',
         };
     };
 
@@ -40,7 +40,8 @@ class LineFactory {
                 return {
                     id: route.reitunnus,
                     name: _getRouteName(route),
-                    date: route.reiviimpvm ? new Date(route.reiviimpvm) : undefined
+                    isUsedByRoutePath: route.isUsedByRoutePath!,
+                    date: route.reiviimpvm ? new Date(route.reiviimpvm) : undefined,
                 };
             }
         );
@@ -48,7 +49,7 @@ class LineFactory {
         return {
             routes,
             transitType: externalLine.linverkko,
-            id: externalLine.lintunnus
+            id: externalLine.lintunnus,
         };
     };
 }
