@@ -2,8 +2,8 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { matchPath } from 'react-router';
-import { INodeBase } from '~/models/INode';
-import ISearchLine from '~/models/searchModels/ISearchLine';
+import { ISearchLine } from '~/models/ILine';
+import { ISearchNode } from '~/models/INode';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
@@ -152,7 +152,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                             (filteredNodes.length === 0 ? (
                                 <div className={s.noResults}>Ei hakutuloksia.</div>
                             ) : (
-                                filteredNodes.map((item: INodeBase) => {
+                                filteredNodes.map((item: ISearchNode) => {
                                     return <NodeItem key={item.id} node={item} />;
                                 })
                             ))}
