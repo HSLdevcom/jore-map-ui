@@ -49,12 +49,6 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
     }
 
     componentDidUpdate(prevProps: IDatePickerProps) {
-        if (!this.props.value && !_.isEmpty(this.state.currentValue)) {
-            this.setState({
-                currentValue: '',
-            });
-            return;
-        }
         if (this.props.value === prevProps.value) return;
 
         const newValue = this.props.value ? toDateString(this.props.value) : '';
