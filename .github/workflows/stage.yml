@@ -23,7 +23,7 @@ jobs:
           CYPRESS_HSLID_WRITE_ACCESS_PASSWORD: ${{ secrets.CYPRESS_HSLID_WRITE_ACCESS_PASSWORD }}
           CYPRESS_HSLID_READ_ACCESS_USERNAME: ${{ secrets.CYPRESS_HSLID_READ_ACCESS_USERNAME }}
           CYPRESS_HSLID_READ_ACCESS_PASSWORD: ${{ secrets.CYPRESS_HSLID_READ_ACCESS_PASSWORD }}
-          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # Only production records to Cypress.io
+          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # Only prod updates to record into Cypress.io
       - name: Upload screenshot artifacts
         uses: actions/upload-artifact@v1
         if: failure()
