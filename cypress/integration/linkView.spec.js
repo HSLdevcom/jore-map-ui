@@ -1,9 +1,6 @@
 import constants from '../constants';
 
 const openLink = () => {
-    cy.getTestElement('authInfo').should('exist');
-    cy.getTestElement('lineSearch').should('exist');
-
     cy.visit(constants.LINK_UPDATE_URI);
     cy.getTestElement('linkView').should('exist');
 };

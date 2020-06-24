@@ -1,8 +1,6 @@
 describe('LineView tests - read access user', () => {
     beforeEach(() => {
         cy.hslLoginReadAccess();
-        cy.getTestElement('authInfo').should('exist');
-        cy.getTestElement('lineSearch').should('exist');
         cy.getTestElement('lineItem', { timeout: 10000 })
             .first()
             .click();
