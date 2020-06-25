@@ -105,8 +105,8 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         });
     };
 
-    private copyRoutePathPair = () => {
-        this.props.routePathCopyStore!.copyRoutePathPair();
+    private copyRoutePaths = () => {
+        this.props.routePathCopyStore!.copyRoutePaths();
     };
 
     private onLineChange = (value: string) => {
@@ -220,7 +220,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         if (this.state.isLoading) return <Loader />;
 
         return (
-            <div className={s.copyRoutePathView}>
+            <div className={s.copyRoutePathView} data-cy='copyRoutePathView'>
                 <SidebarHeader
                     className={s.sidebarHeader}
                     isBackButtonVisible={true}
@@ -267,7 +267,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                 ? rpFromRpLayerStore.color
                                                 : '#898989';
                                         return (
-                                            <tr key={`rpToCopyRow-${index}`}>
+                                            <tr key={`rpToCopyRow-${index}`} data-cy={`rpToCopyRow-${index}`}>
                                                 <td>
                                                     <Dropdown
                                                         selected={rpToCopy.direction}
@@ -338,6 +338,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                         ? { isValid: false, errorMessage: 'Valitse linja' }
                                         : undefined
                                 }
+                                data-cy='lineDropdown'
                             />
                             <Dropdown
                                 label='REITTI'
@@ -350,6 +351,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                         ? { isValid: false, errorMessage: 'Valitse reitti' }
                                         : undefined
                                 }
+                                data-cy='routeDropdown'
                             />
                         </div>
                         <div className={s.flexRow}>
@@ -409,6 +411,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                             ? s.selectedRow
                                                                             : undefined
                                                                     }
+                                                                    data-cy={`rpQueryResult`}
                                                                 >
                                                                     <td>{routePath.direction}</td>
                                                                     <td
@@ -443,6 +446,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                                     ? selectedBackgroundColorStyle
                                                                                     : undefined
                                                                             }
+                                                                            data-cy={isSelected ? 'selectedRp' : ''}
                                                                         ></div>
                                                                     </td>
                                                                 </tr>
@@ -456,6 +460,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                             className={s.addRoutePathToCopyButton}
                                             disabled={this.state.selectedRoutePaths.length === 0}
                                             onClick={this.addRoutePathsToCopy}
+                                            data-cy='addRoutePathsToCopy'
                                         >
                                             Lisää valitut reitinsuunnat kopioitavaksi
                                         </Button>
@@ -468,7 +473,8 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                 <Button
                     disabled={routePathsToCopy.length === 0}
                     hasPadding={true}
-                    onClick={this.copyRoutePathPair}
+                    onClick={this.copyRoutePaths}
+                    data-cy='copyRoutePaths'
                 >
                     Kopioi valitut reitinsuunnat
                 </Button>

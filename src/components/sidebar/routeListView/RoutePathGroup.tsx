@@ -16,7 +16,7 @@ import subSites from '~/routing/subSites';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
-import { getMaxDate, isCurrentDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
+import { isCurrentDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
@@ -92,11 +92,13 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
 
     render() {
         const { routePaths, nextGroup, prevGroup, isEditing, index } = this.props;
-        const first = routePaths[0];
-        const header = `${toDateString(first.startDate)} - ${toDateString(first.endDate)}`;
+        const firstRp = routePaths[0];
+        const header = `${toDateString(firstRp.startDate)} - ${toDateString(firstRp.endDate)}`;
         let validationResult;
         let minStartDate = undefined;
         let maxEndDate = undefined;
+        let isStartDateSet = true;
+        let isEndDateSet = true;
         if (isEditing) {
             const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
                 (massEditRp: IMassEditRoutePath) => {
@@ -133,14 +135,18 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                     maxEndDate.setDate(maxEndDate.getDate() - 1);
                 }
             }
+            isStartDateSet = currentMassEditRoutePaths![0]!.isStartDateSet;
+            isEndDateSet = currentMassEditRoutePaths![0]!.isEndDateSet;
+
         }
-        const startDate =
-            first.startDate.getTime() <= getMaxDate().getTime() ? first.startDate : null;
-        const endDate = first.endDate.getTime() <= getMaxDate().getTime() ? first.endDate : null;
+        // Group's start & end date are the same, thats why you can use firstRp's startDate and endDate
+        const startDate = isStartDateSet ? firstRp.startDate : null;
+        const endDate = isEndDateSet ? firstRp.endDate : null;
         return (
             <div
                 key={`${header}-${index}`}
                 className={classnames(s.routePathGroup, index % 2 ? s.shadow : undefined)}
+                data-cy={`rpGroup-${index}`}
             >
                 <div
                     className={classnames(
@@ -159,6 +165,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                data-cy='startDateInput'
                             />
                             <InputContainer
                                 label=''
@@ -168,10 +175,11 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                data-cy='endDateInput'
                             />
                         </>
                     ) : (
-                        <div>{header}</div>
+                        <div data-cy='rpHeader'>{header}</div>
                     )}
                 </div>
                 <div>
@@ -225,6 +233,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}
                                 key={routePath.internalId}
+                                data-cy='routePathRow'
                             >
                                 <div
                                     className={classnames(
@@ -285,6 +294,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                                     routePath.internalId
                                                 )
                                             }
+                                            data-cy='removeRoutePath'
                                         >
                                             <FaTrashAlt />
                                         </Button>

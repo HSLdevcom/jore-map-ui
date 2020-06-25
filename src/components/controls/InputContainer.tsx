@@ -102,6 +102,7 @@ const InputContainer = observer((props: IInputProps) => {
                     minStartDate={props.minStartDate}
                     maxEndDate={props.maxEndDate}
                     excludeDates={props.excludeDates}
+                    {...attrs}
                 />
             ) : (
                 <input
