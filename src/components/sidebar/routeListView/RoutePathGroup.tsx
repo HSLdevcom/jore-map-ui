@@ -146,6 +146,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
             <div
                 key={`${header}-${index}`}
                 className={classnames(s.routePathGroup, index % 2 ? s.shadow : undefined)}
+                data-cy={`rpGroup-${index}`}
             >
                 <div
                     className={classnames(
@@ -164,6 +165,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                data-cy='startDateInput'
                             />
                             <InputContainer
                                 label=''
@@ -173,10 +175,11 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                data-cy='endDateInput'
                             />
                         </>
                     ) : (
-                        <div>{header}</div>
+                        <div data-cy='rpHeader'>{header}</div>
                     )}
                 </div>
                 <div>
@@ -230,6 +233,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}
                                 key={routePath.internalId}
+                                data-cy='routePathRow'
                             >
                                 <div
                                     className={classnames(
@@ -290,6 +294,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                                     routePath.internalId
                                                 )
                                             }
+                                            data-cy='removeRoutePath'
                                         >
                                             <FaTrashAlt />
                                         </Button>

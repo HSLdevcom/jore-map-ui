@@ -397,6 +397,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     type={ButtonType.SQUARE}
                     disabled={this.props.routeId !== this.props.routeListStore!.routeIdToEdit}
                     isWide={true}
+                    data-cy='copyRoutePathButton'
                 >
                     {`Kopioi reitinsuunta`}
                 </Button>

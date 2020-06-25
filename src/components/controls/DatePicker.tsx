@@ -134,11 +134,15 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
 
     render() {
         const {
-            isClearButtonVisible,
+            value,
             isEmptyValueAllowed,
+            isClearButtonVisible,
+            onChange,
+            onFocus,
             minStartDate,
             maxEndDate,
             excludeDates,
+            ...attrs
         } = this.props;
         const minDate = minStartDate ? minStartDate : getMinDate();
         const maxDate = maxEndDate ? maxEndDate : getMaxDate();
@@ -147,6 +151,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
             <div className={classnames(s.datePicker, s.staticHeight)}>
                 <ReactDatePicker
                     customInput={renderDatePickerInput({
+                        attrs,
                         isClearButtonVisible,
                         isEmptyValueAllowed,
                         value: this.state.currentValue,
@@ -196,6 +201,7 @@ const renderDatePickerInput = ({
     isClearButtonVisible,
     isEmptyValueAllowed,
     openCalendar,
+    attrs
 }: {
     onInputChange: (value: any) => void;
     onInputBlur: () => void;
@@ -204,6 +210,7 @@ const renderDatePickerInput = ({
     isClearButtonVisible?: boolean;
     isEmptyValueAllowed?: boolean;
     openCalendar: Function;
+    attrs: any;
 }) => {
     const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         onInputChange(event.target.value);
@@ -227,6 +234,7 @@ const renderDatePickerInput = ({
                 value={value}
                 onChange={onChange}
                 onBlur={onInputBlur}
+                {...attrs}
             />
             <IoMdCalendar className={s.calendarIcon} />
             {isClearButtonVisible && (
