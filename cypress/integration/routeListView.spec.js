@@ -55,7 +55,7 @@ describe('RouteListView tests - write access user', () => {
         cy.getTestElement('editButton').should('exist');
     });
 
-    it.only('Can copy routePath & save, edit routePath & save, finally remove routePath', () => {
+    it('Can copy routePath & save, edit routePath & save, finally remove routePath', () => {
         const initialStartDate = '10.05.2099';
         const initialEndDate = '11.05.2099';
         const startDateAfterEditing = '15.05.2099';
