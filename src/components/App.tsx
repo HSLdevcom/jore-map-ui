@@ -6,14 +6,18 @@ import { matchPath, Router, Switch } from 'react-router';
 import { Route } from 'react-router-dom';
 import EndpointPath from '~/enums/endpointPath';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
+import { ISearchLine } from '~/models/ILine';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
 import CodeListService from '~/services/codeListService';
+import LineService from '~/services/lineService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
+import { SearchStore } from '~/stores/searchStore';
 import HttpUtils from '~/utils/HttpUtils';
 import '~/utils/KeyEventHandler';
 import AppFrame from './AppFrame';
@@ -28,6 +32,8 @@ interface IAppState {
 interface IAppProps {
     loginStore?: LoginStore;
     mapStore?: MapStore;
+    searchStore?: SearchStore;
+    searchResultStore?: SearchResultStore;
     codeListStore?: CodeListStore;
     errorStore?: ErrorStore;
 }
@@ -35,7 +41,7 @@ interface IAppProps {
 const browserHistory = createBrowserHistory();
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
-@inject('mapStore', 'loginStore', 'codeListStore', 'errorStore')
+@inject('mapStore', 'loginStore', 'codeListStore', 'searchStore', 'searchResultStore', 'errorStore')
 @observer
 class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
@@ -76,11 +82,23 @@ class App extends React.Component<IAppProps, IAppState> {
         this.setState({
             isAppInitializationInProgress: true,
         });
-        await this.initCodeLists();
-        await this.fetchSaveLock();
-        this.setState({
-            isAppInitializationInProgress: false,
+        Promise.all([this.fetchAllLines(), this.initCodeLists(), this.fetchSaveLock()]).then(() => {
+            this.setState({
+                isAppInitializationInProgress: false,
+            });
         });
+    };
+
+    private fetchAllLines = async () => {
+        this.props.searchStore!.setIsLoading(true);
+        try {
+            const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
+            this.props.searchResultStore!.setAllLines(searchLines);
+            this.props.searchResultStore!.search();
+        } catch (e) {
+            this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
+        }
+        this.props.searchStore!.setIsLoading(false);
     };
 
     private initCodeLists = async () => {
