@@ -255,6 +255,7 @@ const getAllNodesQuery = () => {
                     solkirjain
                     transitTypes
                     pysakkiBySoltunnus {
+                        soltunnus
                         pysnimi
                     }
                 }

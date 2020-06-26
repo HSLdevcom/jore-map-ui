@@ -8,6 +8,7 @@ class SearchStore {
     @observable private _isSearchingForNodes: boolean;
     @observable private _areInactiveLinesHidden: boolean;
     @observable private _isSearchDisabled: boolean;
+    @observable private _isLoading: boolean;
 
     constructor() {
         this._searchInput = '';
@@ -22,6 +23,7 @@ class SearchStore {
         this._isSearchingForNodes = false;
         this._areInactiveLinesHidden = true;
         this._isSearchDisabled = false;
+        this._isLoading = false;
     }
 
     @computed
@@ -59,6 +61,11 @@ class SearchStore {
         return this._isSearchDisabled;
     }
 
+    @computed
+    get isLoading() {
+        return this._isLoading;
+    }
+
     @action
     public toggleIsSearchingForLines() {
         this._isSearchingForLines = true;
@@ -89,6 +96,11 @@ class SearchStore {
     @action
     public setIsSearchDisabled(isSearchDisabled: boolean) {
         this._isSearchDisabled = isSearchDisabled;
+    }
+
+    @action
+    public setIsLoading(isLoading: boolean) {
+        this._isLoading = isLoading;
     }
 }
 

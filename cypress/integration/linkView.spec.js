@@ -25,6 +25,8 @@ describe('LinkView tests - write access user', () => {
         cy.getTestElement('editButton').should('exist');
         cy.getTestElement('editButton').click();
 
+        cy.getTestElement('speed').clear().type(50);
+
         cy.getTestElement('measuredLength')
             .invoke('val')
             .then((value) => {

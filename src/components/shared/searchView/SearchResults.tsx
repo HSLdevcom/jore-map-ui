@@ -6,7 +6,6 @@ import { ISearchLine } from '~/models/ILine';
 import { ISearchNode } from '~/models/INode';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
-import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
 import { ErrorStore } from '~/stores/errorStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
@@ -23,7 +22,6 @@ interface ISearchResultsProps {
 }
 
 interface ISearchResultsState {
-    isLoading: boolean;
     showLimit: number;
 }
 
@@ -41,7 +39,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     constructor(props: ISearchResultsProps) {
         super(props);
         this.state = {
-            isLoading: true,
             showLimit: SHOW_LIMIT_DEFAULT,
         };
 
@@ -50,7 +47,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     async componentDidMount() {
         this.showMoreResults();
-        this.fetchAll();
         this.reactionDisposer = reaction(
             () => [
                 this.props.searchStore!.searchInput,
@@ -58,33 +54,22 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             ],
             this.scrollToBeginning
         );
+        // Lazy load nodes in the background
+        this.fetchAllNodes();
     }
 
     componentWillUnmount() {
         this.reactionDisposer();
     }
 
-    private fetchAll = async () => {
-        this.setState({ isLoading: true });
-        return Promise.all([this.fetchAllLines(), this.fetchAllNodes()]).then(() => {
-            this.setState({ isLoading: false });
-            this.props.searchResultStore!.search();
-        });
-    };
-
-    private fetchAllLines = async () => {
-        try {
-            const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
-            this.props.searchResultStore!.setAllLines(searchLines);
-        } catch (e) {
-            this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
-        }
-    };
-
     private fetchAllNodes = async () => {
+        if (this.props.searchResultStore!.allNodes.length > 0) return;
+
         try {
-            const nodes = await NodeService.fetchAllNodes();
-            this.props.searchResultStore!.setAllNodes(nodes);
+            await NodeService.fetchAllNodes().then((nodes: any) => {
+                this.props.searchResultStore!.setAllNodes(nodes);
+                this.props.searchResultStore!.search();
+            });
         } catch (e) {
             this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);
         }
@@ -130,7 +115,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const filteredNodes = this.getFilteredNodes();
         return (
             <div className={s.searchResultsView}>
-                {this.state.isLoading ? (
+                {searchStore!.isLoading ? (
                     <div className={s.searchResultsView}>
                         <Loader />
                     </div>
