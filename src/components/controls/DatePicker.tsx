@@ -47,15 +47,6 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         EventHelper.off('enter', this.trimInputString);
     }
 
-    componentDidUpdate() {
-        const newValue = this.props.value ? toDateString(this.props.value) : '';
-        if (this.state.currentValue !== newValue) {
-            this.setState({
-                currentValue: newValue,
-            });
-        }
-    }
-
     // Update props.value only through this method
     private onChangeDate = (date: Date | null) => {
         let newDate = date ? toMidnightDate(date) : null;
@@ -77,6 +68,11 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                 newDate = getMaxDate();
             }
         }
+        this.setState({
+            currentValue: newDate ? toDateString(newDate) : '',
+        });
+        if (!this.props.isEmptyValueAllowed && !newDate) return;
+
         this.props.onChange(newDate);
     };
 
@@ -100,16 +96,13 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
             const dateMomentObject = Moment(inputValue, 'DD.MM.YYYY');
             const dateObject = dateMomentObject.toDate();
             this.onChangeDate(dateObject);
-            return;
-        }
-
-        this.setState({
-            currentValue: inputValue,
-        });
-
-        if (_.isEmpty(inputValue) && this.props.isEmptyValueAllowed) {
+        } else if (_.isEmpty(inputValue)) {
             this.onChangeDate(null);
-            return;
+        } else {
+            // Change input field as invalid date which is not null
+            this.setState({
+                currentValue: inputValue,
+            });
         }
     };
 
@@ -134,9 +127,6 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         const trimmedDateString = `${day}.${month}.${dateObjectToTrim.getFullYear()}`;
         if (Moment(trimmedDateString, 'DD.MM.YYYY', true).isValid()) {
             if (currentValue !== trimmedDateString) {
-                this.setState({
-                    currentValue: trimmedDateString,
-                });
                 this.onChangeDate(Moment(trimmedDateString, 'DD.MM.YYYY').toDate());
             }
         }
