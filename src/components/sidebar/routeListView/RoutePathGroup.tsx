@@ -94,13 +94,16 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         const { routePaths, nextGroup, prevGroup, isEditing, index } = this.props;
         const firstRp = routePaths[0];
         const header = `${toDateString(firstRp.startDate)} - ${toDateString(firstRp.endDate)}`;
+        const currentDate = toMidnightDate(new Date());
+        const tomorrowDate = _.cloneDeep(currentDate);
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+
         let validationResult;
-        let minStartDate = undefined;
+        let minStartDate = _.cloneDeep(tomorrowDate);
         let maxEndDate = undefined;
         let isStartDateSet = true;
         let isEndDateSet = true;
 
-        const currentDate = toMidnightDate(new Date());
         const isStartDateEditable =
             isEditing && firstRp.startDate.getTime() > currentDate.getTime();
         const isEndDateEditable = isEditing && firstRp.endDate.getTime() > currentDate.getTime();
@@ -136,6 +139,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 if (prevGroup) {
                     minStartDate = _.cloneDeep(prevGroup[0].endDate);
                     minStartDate.setDate(minStartDate.getDate() + 1);
+                    if (minStartDate.getTime() < tomorrowDate.getTime()) {
+                        // minStartDate can't be earlier than tomorrow date
+                        minStartDate = _.cloneDeep(tomorrowDate);
+                    }
                 }
                 if (nextGroup) {
                     maxEndDate = _.cloneDeep(nextGroup[0].startDate);
