@@ -7,7 +7,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
 import EventHelper from '~/helpers/EventHelper';
-import { getMaxDate, getMinDate, toDateString } from '~/utils/dateUtils';
+import { getMaxDate, getMinDate, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import * as s from './datePicker.scss';
 
 registerLocale('fi', fi);
@@ -47,9 +47,7 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         EventHelper.off('enter', this.trimInputString);
     }
 
-    componentDidUpdate(prevProps: IDatePickerProps) {
-        if (this.props.value === prevProps.value) return;
-
+    componentDidUpdate() {
         const newValue = this.props.value ? toDateString(this.props.value) : '';
         if (this.state.currentValue !== newValue) {
             this.setState({
@@ -58,13 +56,24 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         }
     }
 
+    // Update props.value only through this method
     private onChangeDate = (date: Date | null) => {
-        let newDate = date;
-        if (date) {
-            const timeInMs = date.getTime();
-            if (timeInMs < getMinDate().getTime()) {
+        let newDate = date ? toMidnightDate(date) : null;
+
+        const minStartDate = this.props.minStartDate
+            ? toMidnightDate(this.props.minStartDate)
+            : undefined;
+        const maxEndDate = this.props.maxEndDate
+            ? toMidnightDate(this.props.maxEndDate)
+            : undefined;
+        if (newDate) {
+            if (minStartDate && minStartDate.getTime() >= newDate.getTime()) {
+                newDate = minStartDate;
+            } else if (maxEndDate && maxEndDate.getTime() <= newDate.getTime()) {
+                newDate = maxEndDate;
+            } else if (newDate.getTime() < getMinDate().getTime()) {
                 newDate = getMinDate();
-            } else if (timeInMs > getMaxDate().getTime()) {
+            } else if (newDate.getTime() > getMaxDate().getTime()) {
                 newDate = getMaxDate();
             }
         }
