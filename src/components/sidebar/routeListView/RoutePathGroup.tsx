@@ -137,7 +137,6 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
             }
             isStartDateSet = currentMassEditRoutePaths![0]!.isStartDateSet;
             isEndDateSet = currentMassEditRoutePaths![0]!.isEndDateSet;
-
         }
         // Group's start & end date are the same, thats why you can use firstRp's startDate and endDate
         const startDate = isStartDateSet ? firstRp.startDate : null;
