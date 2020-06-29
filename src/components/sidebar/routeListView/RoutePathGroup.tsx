@@ -16,7 +16,7 @@ import subSites from '~/routing/subSites';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
-import { isCurrentDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
+import { isCurrentDateWithinTimeSpan, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
@@ -99,7 +99,14 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         let maxEndDate = undefined;
         let isStartDateSet = true;
         let isEndDateSet = true;
-        if (isEditing) {
+
+        const currentDate = toMidnightDate(new Date());
+        const isStartDateEditable =
+            isEditing && firstRp.startDate.getTime() > currentDate.getTime();
+        const isEndDateEditable = isEditing && firstRp.endDate.getTime() > currentDate.getTime();
+        const isEditingEnabled = isStartDateEditable || isEndDateEditable;
+
+        if (isEditingEnabled) {
             const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
                 (massEditRp: IMassEditRoutePath) => {
                     return routePaths.find((rp) => rp.internalId === massEditRp.id);
@@ -150,15 +157,15 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 <div
                     className={classnames(
                         s.dateContainer,
-                        !isEditing ? s.editingDisabledDateContainer : undefined
+                        !isEditingEnabled ? s.editingDisabledDateContainer : undefined
                     )}
                 >
-                    {isEditing ? (
+                    {isEditingEnabled ? (
                         <>
                             <InputContainer
                                 label=''
-                                disabled={!this.props.isEditing}
                                 type='date'
+                                disabled={!isStartDateEditable}
                                 value={startDate}
                                 onChange={this.updateStartDates(routePaths)}
                                 validationResult={validationResult}
@@ -168,8 +175,8 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             />
                             <InputContainer
                                 label=''
-                                disabled={!this.props.isEditing}
                                 type='date'
+                                disabled={!isEndDateEditable}
                                 value={endDate}
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
@@ -227,7 +234,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditing && isNew ? s.highlighAsNew : undefined,
+                                    isEditingEnabled && isNew ? s.highlighAsNew : undefined,
                                     isSelected ? s.highlightAsSelected : undefined
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}
@@ -236,14 +243,18 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             >
                                 <div
                                     className={classnames(
-                                        isEditing
+                                        isEditingEnabled
                                             ? s.routePathInfoEditing
                                             : s.routePathInfoNotEditing,
                                         shouldHighlightRoutePath
                                             ? s.routePathHighlighted
                                             : undefined
                                     )}
-                                    onClick={isEditing ? void 0 : this.openRoutePathView(routePath)}
+                                    onClick={
+                                        isEditingEnabled
+                                            ? void 0
+                                            : this.openRoutePathView(routePath)
+                                    }
                                     title={
                                         isNew && oldRoutePath
                                             ? `Kopioitu reitinsuunta: ${
@@ -255,7 +266,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                               } - ${oldRoutePath.destinationFi} | ${
                                                   oldRoutePath.lineId
                                               } | ${oldRoutePath.routeId}`
-                                            : isEditing
+                                            : isEditingEnabled
                                             ? ``
                                             : `Avaa reitinsuunta ${destinations1} - ${destinations2}`
                                     }
@@ -284,7 +295,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     </div>
                                 </div>
                                 <div className={s.routePathControls}>
-                                    {isEditing && isNew && (
+                                    {isEditingEnabled && isNew && (
                                         <Button
                                             className={s.removeNewRoutePathButton}
                                             hasReverseColor={true}
