@@ -7,7 +7,7 @@ import ReactDatePicker, { registerLocale } from 'react-datepicker';
 import ReactDOM from 'react-dom';
 import { IoMdCalendar, IoMdClose } from 'react-icons/io';
 import EventHelper from '~/helpers/EventHelper';
-import { getMaxDate, getMinDate, toDateString } from '~/utils/dateUtils';
+import { getMaxDate, getMinDate, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import * as s from './datePicker.scss';
 
 registerLocale('fi', fi);
@@ -20,7 +20,6 @@ interface IDatePickerProps {
     onFocus?: () => void;
     minStartDate?: Date;
     maxEndDate?: Date;
-    excludeDates?: Date[];
 }
 
 interface IDatePickerState {
@@ -48,29 +47,34 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         EventHelper.off('enter', this.trimInputString);
     }
 
-    componentDidUpdate(prevProps: IDatePickerProps) {
-        if (this.props.value === prevProps.value) return;
+    // Update props.value only through this method
+    private onChangeDate = (date: Date | null) => {
+        let newDate = date ? toMidnightDate(date) : null;
 
-        const newValue = this.props.value ? toDateString(this.props.value) : '';
-        if (this.state.currentValue !== newValue) {
-            this.setState({
-                currentValue: newValue,
-            });
-        }
-    }
-
-    private onChangeDate = (date: Date | null) => {
-        let newDate = date;
-        if (date) {
-            const timeInMs = date.getTime();
-            if (timeInMs < getMinDate().getTime()) {
+        const minStartDate = this.props.minStartDate
+            ? toMidnightDate(this.props.minStartDate)
+            : undefined;
+        const maxEndDate = this.props.maxEndDate
+            ? toMidnightDate(this.props.maxEndDate)
+            : undefined;
+        if (newDate) {
+            if (minStartDate && minStartDate.getTime() >= newDate.getTime()) {
+                newDate = minStartDate;
+            } else if (maxEndDate && maxEndDate.getTime() <= newDate.getTime()) {
+                newDate = maxEndDate;
+            } else if (newDate.getTime() < getMinDate().getTime()) {
                 newDate = getMinDate();
-            } else if (timeInMs > getMaxDate().getTime()) {
+            } else if (newDate.getTime() > getMaxDate().getTime()) {
                 newDate = getMaxDate();
             }
         }
+        this.setState({
+            currentValue: newDate ? toDateString(newDate) : '',
+        });
+        if (!this.props.isEmptyValueAllowed && !newDate) return;
+
         this.props.onChange(newDate);
-    }
+    };
 
     private openCalendar = () => {
         if (this.mounted) {
@@ -92,45 +96,41 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
             const dateMomentObject = Moment(inputValue, 'DD.MM.YYYY');
             const dateObject = dateMomentObject.toDate();
             this.onChangeDate(dateObject);
-            return;
-        }
-
-        this.setState({
-            currentValue: inputValue
-        })
-
-        if (_.isEmpty(inputValue) && this.props.isEmptyValueAllowed) {
+        } else if (_.isEmpty(inputValue)) {
             this.onChangeDate(null);
-            return;
+        } else {
+            // Change input field as invalid date which is not null
+            this.setState({
+                currentValue: inputValue,
+            });
         }
     };
 
     private onCalendarDateSelect = (date: Date) => {
         // Have to set 1 ms timeout because state.isOpen might have not been updated
-        setTimeout(() => { this.selectDateIfCalendarIsOpen(date) }, 1)
-    }
+        setTimeout(() => {
+            this.selectDateIfCalendarIsOpen(date);
+        }, 1);
+    };
 
     private selectDateIfCalendarIsOpen = (date: Date) => {
         if (this.state.isOpen) {
             this.onInputChange(toDateString(date));
         }
-    }
+    };
 
     private trimInputString = () => {
         const currentValue = this.state.currentValue;
         const dateObjectToTrim = Moment(currentValue, 'DD.MM.YYYY').toDate();
-        const day = (`0${dateObjectToTrim.getDate()}`).slice(-2);
-        const month = (`0${(dateObjectToTrim.getMonth()+1)}`).slice(-2);
+        const day = `0${dateObjectToTrim.getDate()}`.slice(-2);
+        const month = `0${dateObjectToTrim.getMonth() + 1}`.slice(-2);
         const trimmedDateString = `${day}.${month}.${dateObjectToTrim.getFullYear()}`;
         if (Moment(trimmedDateString, 'DD.MM.YYYY', true).isValid()) {
             if (currentValue !== trimmedDateString) {
-                this.setState({
-                    currentValue: trimmedDateString
-                })
                 this.onChangeDate(Moment(trimmedDateString, 'DD.MM.YYYY').toDate());
             }
         }
-    }
+    };
 
     render() {
         const {
@@ -141,7 +141,6 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
             onFocus,
             minStartDate,
             maxEndDate,
-            excludeDates,
             ...attrs
         } = this.props;
         const minDate = minStartDate ? minStartDate : getMinDate();
@@ -178,7 +177,6 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
                     yearDropdownItemNumber={100}
                     minDate={minDate}
                     maxDate={maxDate}
-                    excludeDates={excludeDates}
                     dateFormatCalendar={'dd.MM.yyyy'}
                     popperContainer={_renderCalendarContainer}
                     fixedHeight={true}
@@ -201,7 +199,7 @@ const renderDatePickerInput = ({
     isClearButtonVisible,
     isEmptyValueAllowed,
     openCalendar,
-    attrs
+    attrs,
 }: {
     onInputChange: (value: any) => void;
     onInputBlur: () => void;
