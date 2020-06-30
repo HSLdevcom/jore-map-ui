@@ -192,6 +192,16 @@ class StopForm extends Component<IStopFormProps> {
         });
     };
 
+    private getTariffiDropdownOptions = () => {
+        const originalDropdownItemList = this.props.codeListStore!.getDropdownItemList(
+            'Tariffialue'
+        );
+        return originalDropdownItemList.filter((dropdownItem) => {
+            // filter out unwanted values 00 - TYHJÄ and 99 - EI HSL
+            return !(dropdownItem.value === '00' || dropdownItem.value === '99');
+        });
+    };
+
     render() {
         const {
             node,
@@ -403,6 +413,25 @@ class StopForm extends Component<IStopFormProps> {
                     </div>
                     <div className={s.flexRow}>
                         <InputContainer
+                            label='ELYNUMERO'
+                            disabled={isEditingDisabled}
+                            value={stop.elyNumber}
+                            validationResult={stopInvalidPropertiesMap['elyNumber']}
+                            onChange={updateStopProperty!('elyNumber')}
+                            data-cy='elyNumber'
+                        />
+                        <Dropdown
+                            onChange={updateStopProperty!('tariffi')}
+                            items={this.getTariffiDropdownOptions()}
+                            selected={stop.tariffi}
+                            disabled={isEditingDisabled}
+                            label='TARIFFI'
+                            validationResult={stopInvalidPropertiesMap['tariffi']}
+                            data-cy='tariffi'
+                        />
+                    </div>
+                    <div className={s.flexRow}>
+                        <InputContainer
                             label='LAITURI'
                             disabled={isEditingDisabled}
                             value={stop.platform}
@@ -416,14 +445,6 @@ class StopForm extends Component<IStopFormProps> {
                             type='number'
                             onChange={updateStopProperty!('radius')}
                             validationResult={stopInvalidPropertiesMap['radius']}
-                        />
-                        <InputContainer
-                            label='ELYNUMERO'
-                            disabled={isEditingDisabled}
-                            value={stop.elyNumber}
-                            validationResult={stopInvalidPropertiesMap['elyNumber']}
-                            onChange={updateStopProperty!('elyNumber')}
-                            data-cy='elyNumber'
                         />
                     </div>
                     <div className={s.flexRow}>
