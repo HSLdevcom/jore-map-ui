@@ -39,6 +39,7 @@ const stopPropertyCodeList: IStopPropertyCodeList = {
     radius: 'SÄDE',
     hastusId: 'HASTUS-PAIKKA',
     stopAreaId: 'PYSÄKKIALUE',
+    tariffi: 'TARIFFI',
     elyNumber: 'ELYNUMERO',
     nameLongFi: 'PITKÄ NIMI',
     nameLongSw: 'PITKÄ NIMI RUOTSIKSI',

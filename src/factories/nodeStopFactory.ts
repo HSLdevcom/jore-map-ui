@@ -11,6 +11,7 @@ class StopFactory {
             addressFi: node.pysosoite,
             addressSw: node.pysosoiter,
             stopAreaId: node.pysalueid,
+            tariffi: node.tariffi,
             elyNumber: node.elynumero,
             modifiedBy: node.pyskuka,
             modifiedOn: node.pysviimpvm ? new Date(node.pysviimpvm) : undefined,
@@ -23,7 +24,7 @@ class StopFactory {
             platform: node.pyslaituri,
             roof: node.pyskatos,
             postalNumber: node.postinro,
-            section: node.vyohyke
+            section: node.vyohyke,
         };
     };
 
@@ -36,6 +37,7 @@ class StopFactory {
             addressFi: '',
             addressSw: '',
             stopAreaId: '',
+            tariffi: '',
             elyNumber: '',
             modifiedBy: '',
             modifiedOn: new Date(),
@@ -48,7 +50,7 @@ class StopFactory {
             platform: '',
             roof: '',
             postalNumber: '',
-            section: ''
+            section: '',
         };
     };
 }
