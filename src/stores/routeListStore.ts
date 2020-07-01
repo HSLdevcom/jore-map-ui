@@ -150,12 +150,6 @@ class RouteListStore {
     };
 
     @action
-    public setAllRoutePathsVisible = (routeId: string) => {
-        const routeItem = this._routeItems.find((routeItem) => routeItem.route.id === routeId);
-        routeItem!.areAllRoutePathsVisible = true;
-    };
-
-    @action
     public setAreRoutesLoading = (areRoutesLoading: boolean) => {
         this._areRoutesLoading = areRoutesLoading;
     };

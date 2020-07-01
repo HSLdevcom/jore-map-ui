@@ -478,24 +478,21 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         Reitillä ei ole voimassaolevia tai voimaan astuvia reitinsuuntia.
                     </div>
                 )}
-                {!this.props.isEditing &&
-                    (this.props.areAllRoutePathsVisible ||
-                        this.state.groupedRoutePathsToDisplay.length <
-                            this.state.allGroupedRoutePaths.length) && (
-                        <div
-                            className={s.toggleAllRoutePathsVisibleButton}
-                            onClick={this.props.toggleAllRoutePathsVisible}
-                        >
-                            {!this.props.areAllRoutePathsVisible && (
-                                <div className={s.threeDots}>...</div>
-                            )}
-                            <div className={s.toggleAllRoutePathsVisibleText}>
-                                {this.props.areAllRoutePathsVisible
-                                    ? `Piilota vanhentuneet reitinsuunnat`
-                                    : `Näytä kaikki reitinsuunnat (${routePaths.length})`}
-                            </div>
+                {this.state.groupedRoutePathsToDisplay.length > 0 && (
+                    <div
+                        className={s.toggleAllRoutePathsVisibleButton}
+                        onClick={this.props.toggleAllRoutePathsVisible}
+                    >
+                        {!this.props.areAllRoutePathsVisible && (
+                            <div className={s.threeDots}>...</div>
+                        )}
+                        <div className={s.toggleAllRoutePathsVisibleText}>
+                            {this.props.areAllRoutePathsVisible
+                                ? `Piilota vanhentuneet reitinsuunnat`
+                                : `Näytä kaikki reitinsuunnat (${routePaths.length})`}
                         </div>
-                    )}
+                    </div>
+                )}
                 {this.renderBottomBarButtons()}
                 {this.props.loginStore!.hasWriteAccess && isEditing && (
                     <SaveButton
