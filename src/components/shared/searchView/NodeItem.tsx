@@ -1,14 +1,14 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import NodeType from '~/enums/nodeType';
-import { INodeBase } from '~/models/INode';
+import { ISearchNode } from '~/models/INode';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeNodeIcon from '../TransitTypeNodeIcon';
 import * as s from './nodeItem.scss';
 
 interface INodeItemProps {
-    node: INodeBase;
+    node: ISearchNode;
 }
 
 const NodeItem = observer((props: INodeItemProps) => {
@@ -24,9 +24,10 @@ const NodeItem = observer((props: INodeItemProps) => {
                 <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
             </div>
             <div className={s.nodeItemTextContainer}>
-                <span>{node.id}</span>
+                <div className={s.nodeId}>{node.id}</div>
                 <div>{NodeUtils.getNodeTypeName(node.type)}</div>
                 {node.type === NodeType.STOP && <div>{NodeUtils.getShortId(node)}</div>}
+                <div className={s.stopName}>{node.stopName ? node.stopName : ''}</div>
             </div>
         </div>
     );

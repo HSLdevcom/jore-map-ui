@@ -35,6 +35,15 @@ interface INode extends INodeBase {
     modifiedBy?: string;
 }
 
+interface ISearchNode {
+    id: string;
+    type: NodeType;
+    transitTypes: TransitType[];
+    shortIdLetter?: string;
+    shortIdString?: string;
+    stopName?: string;
+}
+
 export default INode;
 
-export { INodePrimaryKey, INodeBase, INodeMapHighlight };
+export { INodePrimaryKey, INodeBase, INodeMapHighlight, ISearchNode };

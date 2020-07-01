@@ -5,9 +5,8 @@ import LineFactory from '~/factories/lineFactory';
 import RouteFactory from '~/factories/routeFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { ILine, IRoute } from '~/models';
-import { ILinePrimaryKey } from '~/models/ILine';
+import { ILinePrimaryKey, ISearchLine } from '~/models/ILine';
 import IExternalRoute from '~/models/externals/IExternalRoute';
-import ISearchLine from '~/models/searchModels/ISearchLine';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
