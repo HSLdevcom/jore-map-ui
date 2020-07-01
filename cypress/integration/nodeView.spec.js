@@ -212,4 +212,7 @@ const _fillStopRequiredFields = () => {
 
     cy.getTestElement('roof').click();
     cy.getTestElement('dropdownOption').first().click();
+
+    cy.getTestElement('tariffi').click();
+    cy.getTestElement('dropdownOption').first().click();
 };
