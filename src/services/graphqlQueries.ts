@@ -254,6 +254,10 @@ const getAllNodesQuery = () => {
                     sollistunnus
                     solkirjain
                     transitTypes
+                    pysakkiBySoltunnus {
+                        soltunnus
+                        pysnimi
+                    }
                 }
             }
         }

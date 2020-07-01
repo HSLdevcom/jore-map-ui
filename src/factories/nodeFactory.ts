@@ -3,7 +3,7 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import NumberIterator from '~/helpers/NumberIterator';
 import { INode } from '~/models';
-import { INodeBase, INodeMapHighlight } from '~/models/INode';
+import { INodeBase, INodeMapHighlight, ISearchNode } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/utils/geomUtils';
 import NodeStopFactory from './nodeStopFactory';
@@ -74,6 +74,20 @@ class NodeFactory {
             modifiedOn: new Date(),
             modifiedBy: '',
             measurementType: '',
+        };
+    }
+
+    public static createSearchNode(externalNode: IExternalNode, stopName?: string): ISearchNode {
+        const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
+        return {
+            type,
+            stopName,
+            id: externalNode.soltunnus,
+            transitTypes: externalNode.transitTypes
+                ? (externalNode.transitTypes.split(',') as TransitType[])
+                : [],
+            shortIdLetter: externalNode.solkirjain,
+            shortIdString: externalNode.sollistunnus,
         };
     }
 }

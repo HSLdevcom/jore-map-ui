@@ -121,3 +121,9 @@ Cypress.Commands.add('centerMapToHelsinki', () => {
     cy.getTestElement('coordinateControlY').clear().type(60.1699);
     cy.getTestElement('coordinateControlX').clear().type(24.938).type('{enter}');
 });
+
+Cypress.Commands.add('waitUntilModalContainerDisappears', () => {
+    cy.waitUntil(() => {
+        return cy.getTestElement('modalContainer').should('not.visible');
+    });
+});
