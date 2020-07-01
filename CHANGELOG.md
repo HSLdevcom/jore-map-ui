@@ -1,3 +1,27 @@
+## 0.9.0 (2020-07-01)
+
+* 1195 fix calendar input (#1567) ([2f8d87b](https://github.com/HSLdevcom/jore-map-ui/commit/2f8d87b)), closes [#1567](https://github.com/HSLdevcom/jore-map-ui/issues/1567)
+* 1493 show lines currently in use (#1570) ([3823999](https://github.com/HSLdevcom/jore-map-ui/commit/3823999)), closes [#1570](https://github.com/HSLdevcom/jore-map-ui/issues/1570)
+* 1519 cypress tests for mass edit rp (#1579) ([063af59](https://github.com/HSLdevcom/jore-map-ui/commit/063af59)), closes [#1579](https://github.com/HSLdevcom/jore-map-ui/issues/1579)
+* 1547 search nodes by stop name (#1574) ([770ef92](https://github.com/HSLdevcom/jore-map-ui/commit/770ef92)), closes [#1574](https://github.com/HSLdevcom/jore-map-ui/issues/1574)
+* 1548 mass edit route paths (#1561) ([19f572e](https://github.com/HSLdevcom/jore-map-ui/commit/19f572e)), closes [#1561](https://github.com/HSLdevcom/jore-map-ui/issues/1561)
+* 1562 mass edit rp prevent editing dates (#1586) ([ff379a3](https://github.com/HSLdevcom/jore-map-ui/commit/ff379a3)), closes [#1586](https://github.com/HSLdevcom/jore-map-ui/issues/1586)
+* 1578 fetch only lines when the app starts (#1580) ([f940b49](https://github.com/HSLdevcom/jore-map-ui/commit/f940b49)), closes [#1580](https://github.com/HSLdevcom/jore-map-ui/issues/1580)
+* Added link to kartta.hsy.fi (#1566) ([f4a7e32](https://github.com/HSLdevcom/jore-map-ui/commit/f4a7e32)), closes [#1566](https://github.com/HSLdevcom/jore-map-ui/issues/1566)
+* Added Tariffi dropdown (#1589) ([94bae1d](https://github.com/HSLdevcom/jore-map-ui/commit/94bae1d)), closes [#1589](https://github.com/HSLdevcom/jore-map-ui/issues/1589)
+* Cypress tests: different entity id depending on environment (#1556) ([dd6f62e](https://github.com/HSLdevcom/jore-map-ui/commit/dd6f62e)), closes [#1556](https://github.com/HSLdevcom/jore-map-ui/issues/1556)
+* Fix bug where neighbor polyline refs were not always updated ([8a84932](https://github.com/HSLdevcom/jore-map-ui/commit/8a84932))
+* Fix cypress tests ([bc72ecf](https://github.com/HSLdevcom/jore-map-ui/commit/bc72ecf))
+* Fixed cypress tests (#1592) ([5976ea7](https://github.com/HSLdevcom/jore-map-ui/commit/5976ea7)), closes [#1592](https://github.com/HSLdevcom/jore-map-ui/issues/1592)
+* Mass editRpService, some required / temp ui fixes needed after mass editing routePaths ([e0e39ec](https://github.com/HSLdevcom/jore-map-ui/commit/e0e39ec))
+* Prevent routePath saving cypress tests at stage ([168b5e0](https://github.com/HSLdevcom/jore-map-ui/commit/168b5e0))
+* Reversed lineHeader sort orded (#1565) ([bc03868](https://github.com/HSLdevcom/jore-map-ui/commit/bc03868)), closes [#1565](https://github.com/HSLdevcom/jore-map-ui/issues/1565)
+* Tariffi label to savePrompt (#1590) ([1554396](https://github.com/HSLdevcom/jore-map-ui/commit/1554396)), closes [#1590](https://github.com/HSLdevcom/jore-map-ui/issues/1590)
+* Update master (#1593) ([5080366](https://github.com/HSLdevcom/jore-map-ui/commit/5080366)), closes [#1593](https://github.com/HSLdevcom/jore-map-ui/issues/1593)
+* Using SQL functions to query first and last stop names instead of slow graphql (#1563) ([9f85f31](https://github.com/HSLdevcom/jore-map-ui/commit/9f85f31)), closes [#1563](https://github.com/HSLdevcom/jore-map-ui/issues/1563)
+
+
+
 ## 0.8.0 (2020-06-08)
 
 * 1053 toggle editing when route path tools are used (#1451) ([d1c30b9](https://github.com/HSLdevcom/jore-map-ui/commit/d1c30b9)), closes [#1451](https://github.com/HSLdevcom/jore-map-ui/issues/1451)
