@@ -58,6 +58,7 @@ interface IRoutePathListTabProps {
 interface IRoutePathListTabState {
     stopNameMap: Map<string, IRoutePathStopNames>;
     areStopNamesLoading: boolean;
+    hasOldRoutePaths: boolean | null;
     allGroupedRoutePaths: IRoutePath[][];
     groupedRoutePathsToDisplay: IRoutePath[][];
 }
@@ -85,6 +86,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.state = {
             stopNameMap: new Map(),
             areStopNamesLoading: true,
+            hasOldRoutePaths: null,
             allGroupedRoutePaths: [],
             groupedRoutePathsToDisplay: [],
         };
@@ -150,21 +152,25 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
         const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
         let groupedRoutePathsToDisplay = allGroupedRoutePaths;
+        let lastSeenNotOldRoutePathGroupIndex = 0;
+        allGroupedRoutePaths.forEach((groupedRp: IRoutePath[], index: number) => {
+            const isNotOldRoutePath =
+                groupedRp[0].startDate.getTime() >= toMidnightDate(new Date()).getTime() ||
+                groupedRp[0].endDate.getTime() >= toMidnightDate(new Date()).getTime();
+            if (isNotOldRoutePath) {
+                lastSeenNotOldRoutePathGroupIndex = index + 1;
+            }
+        });
+        const hasOldRoutePaths = lastSeenNotOldRoutePathGroupIndex < allGroupedRoutePaths.length;
         if (!this.props.areAllRoutePathsVisible) {
-            let notOldRoutePathCount = 0;
-            allGroupedRoutePaths.some((groupedRp: IRoutePath[], index: number) => {
-                const isNotOldRoutePath =
-                    groupedRp[0].startDate.getTime() >= toMidnightDate(new Date()).getTime() ||
-                    groupedRp[0].endDate.getTime() >= toMidnightDate(new Date()).getTime();
-                if (isNotOldRoutePath) {
-                    notOldRoutePathCount += 1;
-                }
-                return !isNotOldRoutePath;
-            });
-            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(0, notOldRoutePathCount);
+            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(
+                0,
+                lastSeenNotOldRoutePathGroupIndex
+            );
         }
         this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
+            hasOldRoutePaths,
             allGroupedRoutePaths,
             groupedRoutePathsToDisplay,
         });
@@ -478,7 +484,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         Reitillä ei ole voimassaolevia tai voimaan astuvia reitinsuuntia.
                     </div>
                 )}
-                {this.state.groupedRoutePathsToDisplay.length > 0 && (
+                {this.state.hasOldRoutePaths && (
                     <div
                         className={s.toggleAllRoutePathsVisibleButton}
                         onClick={this.props.toggleAllRoutePathsVisible}
