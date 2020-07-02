@@ -5,7 +5,7 @@ import TransitType from '~/enums/transitType';
 import NodeFactory from '~/factories/nodeFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { ILink, INode } from '~/models';
-import { INodeBase, INodeMapHighlight, INodePrimaryKey } from '~/models/INode';
+import { INodeMapHighlight, INodePrimaryKey, ISearchNode } from '~/models/INode';
 import IExternalNode from '~/models/externals/IExternalNode';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
@@ -38,13 +38,17 @@ class NodeService {
         );
     };
 
-    public static fetchAllNodes = async () => {
+    public static fetchAllNodes = async (): Promise<ISearchNode[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllNodesQuery(),
         });
-        return queryResult.data.allNodes.nodes.map((node: IExternalNode) =>
-            NodeFactory.createNodeBase(node)
-        ) as INodeBase[];
+        return queryResult.data.allNodes.nodes.map((node: IExternalNode) => {
+            const searchNode: ISearchNode = NodeFactory.createSearchNode(
+                node,
+                node.pysakkiBySoltunnus ? node.pysakkiBySoltunnus.pysnimi : undefined
+            );
+            return searchNode;
+        });
     };
 
     public static updateNode = async (node: INode, links: ILink[]) => {

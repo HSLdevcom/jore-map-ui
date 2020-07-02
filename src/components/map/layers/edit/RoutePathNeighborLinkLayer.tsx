@@ -45,7 +45,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             polylineRefs: {},
         };
         this.linkListener = reaction(
-            () => this.props.routePathStore!.neighborLinks.length,
+            () => this.props.routePathStore!.neighborLinks,
             () => this.initializePolylineRefs()
         );
     }

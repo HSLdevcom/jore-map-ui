@@ -6,6 +6,7 @@ import { ILink, IRoutePath } from '~/models';
 import LinkService from '~/services/linkService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { toMidnightDate } from '~/utils/dateUtils';
 import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
@@ -112,6 +113,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
             'routePathPrimaryKey'
         ];
+        const tomorrowDate = toMidnightDate(new Date());
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
         return (
             <div className={s.routePathInfoTabView}>
                 <div className={s.form}>
@@ -128,6 +131,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             <InputContainer
                                 label='VOIM. AST'
                                 disabled={isUpdating}
+                                minStartDate={tomorrowDate}
                                 type='date'
                                 value={routePath.startDate}
                                 onChange={onChange('startDate')}

@@ -330,6 +330,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                                 type='number'
                                 validationResult={invalidPropertiesMap['speed']}
                                 onChange={this.onChangeLinkProperty('speed')}
+                                data-cy='speed'
                             />
                         </div>
                         {!this.props.isNewLink && (

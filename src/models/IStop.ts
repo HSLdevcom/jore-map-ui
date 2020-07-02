@@ -17,6 +17,7 @@ export default interface IStop extends IStopPrimaryKey {
     radius: number;
     hastusId?: string;
     stopAreaId?: string;
+    tariffi: string;
     elyNumber?: string;
     nameLongFi?: string;
     nameLongSw?: string;

@@ -13,11 +13,10 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import RoutePathService from '~/services/routePathService';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
-import { getMaxDate, isCurrentDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
+import { isCurrentDateWithinTimeSpan, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
@@ -45,31 +44,13 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 routePath.internalId,
                 value
             );
-            const massEditRp = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                (m) => m.routePath.internalId === routePath.internalId
-            )!;
-            const isNew = massEditRp && massEditRp.isNew;
-            if (!isNew) {
-                // TODO: remove fetching geometry later if startDate of old routePaths cannot be changed
-                const routePathWithGeometry = await RoutePathService.fetchRoutePath(
-                    routePath.routeId,
-                    routePath.startDate,
-                    routePath.direction
-                );
-                this.props.routePathMassEditStore!.setRoutePathLinksToRoutePath(
-                    routePath.internalId,
-                    routePathWithGeometry!.routePathLinks
-                );
-            }
         }
-        // TODO: also fetch rpLinks (as with modified routePaths, need to send rpLinks to the backend)
     };
 
     private updateEndDates = (routePaths: IRoutePath[]) => (value: Date) => {
         routePaths.forEach((rp) => {
             this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
         });
-        // TODO: also fetch rpLinks (as with modified routePaths, need to send rpLinks to the backend)
     };
 
     private openRoutePathView = (routePath: IRoutePath) => () => {
@@ -111,12 +92,24 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
 
     render() {
         const { routePaths, nextGroup, prevGroup, isEditing, index } = this.props;
-        const first = routePaths[0];
-        const header = `${toDateString(first.startDate)} - ${toDateString(first.endDate)}`;
+        const firstRp = routePaths[0];
+        const header = `${toDateString(firstRp.startDate)} - ${toDateString(firstRp.endDate)}`;
+        const currentDate = toMidnightDate(new Date());
+        const tomorrowDate = _.cloneDeep(currentDate);
+        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+
         let validationResult;
-        let minStartDate = undefined;
+        let minStartDate = _.cloneDeep(tomorrowDate);
         let maxEndDate = undefined;
-        if (isEditing) {
+        let isStartDateSet = true;
+        let isEndDateSet = true;
+
+        const isStartDateEditable =
+            isEditing && firstRp.startDate.getTime() > currentDate.getTime();
+        const isEndDateEditable = isEditing && firstRp.endDate.getTime() > currentDate.getTime();
+        const isEditingEnabled = isStartDateEditable || isEndDateEditable;
+
+        if (isEditingEnabled) {
             const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
                 (massEditRp: IMassEditRoutePath) => {
                     return routePaths.find((rp) => rp.internalId === massEditRp.id);
@@ -146,51 +139,60 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 if (prevGroup) {
                     minStartDate = _.cloneDeep(prevGroup[0].endDate);
                     minStartDate.setDate(minStartDate.getDate() + 1);
+                    if (minStartDate.getTime() < tomorrowDate.getTime()) {
+                        // minStartDate can't be earlier than tomorrow date
+                        minStartDate = _.cloneDeep(tomorrowDate);
+                    }
                 }
                 if (nextGroup) {
                     maxEndDate = _.cloneDeep(nextGroup[0].startDate);
                     maxEndDate.setDate(maxEndDate.getDate() - 1);
                 }
             }
+            isStartDateSet = currentMassEditRoutePaths![0]!.isStartDateSet;
+            isEndDateSet = currentMassEditRoutePaths![0]!.isEndDateSet;
         }
-        const startDate =
-            first.startDate.getTime() < getMaxDate().getTime() ? first.startDate : null;
-        const endDate = first.endDate.getTime() < getMaxDate().getTime() ? first.endDate : null;
+        // Group's start & end date are the same, thats why you can use firstRp's startDate and endDate
+        const startDate = isStartDateSet ? firstRp.startDate : null;
+        const endDate = isEndDateSet ? firstRp.endDate : null;
         return (
             <div
                 key={`${header}-${index}`}
                 className={classnames(s.routePathGroup, index % 2 ? s.shadow : undefined)}
+                data-cy={`rpGroup-${index}`}
             >
                 <div
                     className={classnames(
                         s.dateContainer,
-                        !isEditing ? s.editingDisabledDateContainer : undefined
+                        !isEditingEnabled ? s.editingDisabledDateContainer : undefined
                     )}
                 >
-                    {isEditing ? (
+                    {isEditingEnabled ? (
                         <>
                             <InputContainer
                                 label=''
-                                disabled={!this.props.isEditing}
                                 type='date'
+                                disabled={!isStartDateEditable}
                                 value={startDate}
                                 onChange={this.updateStartDates(routePaths)}
                                 validationResult={validationResult}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                data-cy='startDateInput'
                             />
                             <InputContainer
                                 label=''
-                                disabled={!this.props.isEditing}
                                 type='date'
+                                disabled={!isEndDateEditable}
                                 value={endDate}
                                 onChange={this.updateEndDates(routePaths)}
                                 minStartDate={minStartDate}
                                 maxEndDate={maxEndDate}
+                                data-cy='endDateInput'
                             />
                         </>
                     ) : (
-                        <div>{header}</div>
+                        <div data-cy='rpHeader'>{header}</div>
                     )}
                 </div>
                 <div>
@@ -239,22 +241,27 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditing && isNew ? s.highlighAsNew : undefined,
+                                    isEditingEnabled && isNew ? s.highlighAsNew : undefined,
                                     isSelected ? s.highlightAsSelected : undefined
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}
                                 key={routePath.internalId}
+                                data-cy='routePathRow'
                             >
                                 <div
                                     className={classnames(
-                                        isEditing
+                                        isEditingEnabled
                                             ? s.routePathInfoEditing
                                             : s.routePathInfoNotEditing,
                                         shouldHighlightRoutePath
                                             ? s.routePathHighlighted
                                             : undefined
                                     )}
-                                    onClick={isEditing ? void 0 : this.openRoutePathView(routePath)}
+                                    onClick={
+                                        isEditingEnabled
+                                            ? void 0
+                                            : this.openRoutePathView(routePath)
+                                    }
                                     title={
                                         isNew && oldRoutePath
                                             ? `Kopioitu reitinsuunta: ${
@@ -266,7 +273,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                               } - ${oldRoutePath.destinationFi} | ${
                                                   oldRoutePath.lineId
                                               } | ${oldRoutePath.routeId}`
-                                            : isEditing
+                                            : isEditingEnabled
                                             ? ``
                                             : `Avaa reitinsuunta ${destinations1} - ${destinations2}`
                                     }
@@ -295,7 +302,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     </div>
                                 </div>
                                 <div className={s.routePathControls}>
-                                    {isEditing && isNew && (
+                                    {isEditingEnabled && isNew && (
                                         <Button
                                             className={s.removeNewRoutePathButton}
                                             hasReverseColor={true}
@@ -304,6 +311,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                                     routePath.internalId
                                                 )
                                             }
+                                            data-cy='removeRoutePath'
                                         >
                                             <FaTrashAlt />
                                         </Button>

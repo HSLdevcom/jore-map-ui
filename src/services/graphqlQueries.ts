@@ -21,20 +21,6 @@ const getLineAndRoutesQuery = () => {
         }`;
 };
 
-const getSearchLineQuery = () => {
-    return gql`query getLineByLintunnus ($lineId: String!) {
-            linjaByLintunnus(lintunnus:$lineId) {
-                ${searchLineQueryFields}
-                reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
-                    nodes {
-                        reinimi
-                        reiviimpvm
-                    }
-                }
-            }
-        }`;
-};
-
 const getAllSearchLinesQuery = () => {
     return gql`{
             allLinjas {
@@ -42,9 +28,7 @@ const getAllSearchLinesQuery = () => {
                     ${searchLineQueryFields}
                     reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
                         nodes {
-                            reinimi
-                            reitunnus
-                            reiviimpvm
+                            ${searchRouteQueryFields}
                         }
                     }
                 }
@@ -90,31 +74,37 @@ const getRoutePathQuery = () => {
         }`;
 };
 
-const getFirstAndLastStopNamesOfRoutePath = () => {
+const getFirstStopNameOfRoutePath = () => {
     return gql`
-        query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
-            routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(
-                reitunnus: $routeId
-                suuvoimast: $startDate
-                suusuunta: $direction
+        query getFirstStopNameOfRoutePath(
+            $routeId: String!
+            $startDate: Datetime!
+            $direction: String!
+        ) {
+            get_first_stop_name_of_route_path: getFirstStopNameOfRoutePath(
+                routeid: $routeId
+                startdate: $startDate
+                direction: $direction
             ) {
-                reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
-                    nodes {
-                        reljarjnro
-                        solmuByLnkalkusolmu {
-                            soltyyppi
-                            pysakkiBySoltunnus {
-                                pysnimi
-                            }
-                        }
-                        solmuByLnkloppusolmu {
-                            soltyyppi
-                            pysakkiBySoltunnus {
-                                pysnimi
-                            }
-                        }
-                    }
-                }
+                nodes
+            }
+        }
+    `;
+};
+
+const getLastStopNameOfRoutePath = () => {
+    return gql`
+        query getLastStopNameOfRoutePath(
+            $routeId: String!
+            $startDate: Datetime!
+            $direction: String!
+        ) {
+            get_last_stop_name_of_route_path: getLastStopNameOfRoutePath(
+                routeid: $routeId
+                startdate: $startDate
+                direction: $direction
+            ) {
+                nodes
             }
         }
     `;
@@ -264,6 +254,10 @@ const getAllNodesQuery = () => {
                     sollistunnus
                     solkirjain
                     transitTypes
+                    pysakkiBySoltunnus {
+                        soltunnus
+                        pysnimi
+                    }
                 }
             }
         }
@@ -490,6 +484,13 @@ const searchLineQueryFields = `
     lintunnus
     linjoukkollaji
     linverkko
+`;
+
+const searchRouteQueryFields = `
+    reinimi
+    isUsedByRoutePath
+    reitunnus
+    reiviimpvm
 `;
 
 const routeQueryFields = `
@@ -760,14 +761,14 @@ linkkisByLnkloppusolmu {
 export default {
     getLineQuery,
     getLineAndRoutesQuery,
-    getSearchLineQuery,
     getAllSearchLinesQuery,
     getLinkQuery,
     getLinksQuery,
     getRouteQuery,
     getAllRoutesQuery,
     getRoutePathQuery,
-    getFirstAndLastStopNamesOfRoutePath,
+    getFirstStopNameOfRoutePath,
+    getLastStopNameOfRoutePath,
     getRoutePathLinkQuery,
     getRoutePathSegmentQuery,
     getRoutePathsUsingLinkQuery,

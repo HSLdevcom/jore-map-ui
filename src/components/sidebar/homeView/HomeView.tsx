@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { Checkbox } from '~/components/controls';
 import TransitType from '~/enums/transitType';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
@@ -36,17 +37,31 @@ class HomeView extends React.Component<IHomeViewProps> {
         navigator.goTo({ link: newLineViewLink });
     };
 
+    private toggleAreInactiveLinesHidden = () => {
+        this.props.searchStore!.toggleAreInactiveLinesHidden();
+    };
+
     render() {
         return (
             <div className={s.homeView}>
                 <SearchInput />
                 <EntityTypeToggles />
-                <TransitToggleButtonBar
-                    toggleSelectedTransitType={this.toggleTransitType}
-                    selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
-                    disabled={!this.props.searchStore!.isSearchingForLines}
-                    blurred={!this.props.searchStore!.isSearchingForLines}
-                />
+                {this.props.searchStore!.isSearchingForLines && (
+                    <>
+                        <div className={s.toggleActiveLinesContainer}>
+                            <Checkbox
+                                content='Näytä vain aktiiviset linjat'
+                                checked={this.props.searchStore!.areInactiveLinesHidden}
+                                onClick={this.toggleAreInactiveLinesHidden}
+                            />
+                        </div>
+                        <TransitToggleButtonBar
+                            toggleSelectedTransitType={this.toggleTransitType}
+                            selectedTransitTypes={this.props.searchStore!.selectedTransitTypes}
+                            disabled={!this.props.searchStore!.isSearchingForLines}
+                        />
+                    </>
+                )}
                 <SearchResults />
                 <div className={s.largeButton} onClick={this.redirectToNewLineView}>
                     Luo uusi linja

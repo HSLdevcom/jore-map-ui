@@ -2,11 +2,10 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { matchPath } from 'react-router';
-import { INodeBase } from '~/models/INode';
-import ISearchLine from '~/models/searchModels/ISearchLine';
+import { ISearchLine } from '~/models/ILine';
+import { ISearchNode } from '~/models/INode';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
-import LineService from '~/services/lineService';
 import NodeService from '~/services/nodeService';
 import { ErrorStore } from '~/stores/errorStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
@@ -23,7 +22,6 @@ interface ISearchResultsProps {
 }
 
 interface ISearchResultsState {
-    isLoading: boolean;
     showLimit: number;
 }
 
@@ -41,8 +39,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     constructor(props: ISearchResultsProps) {
         super(props);
         this.state = {
-            isLoading: true,
-            showLimit: SHOW_LIMIT_DEFAULT
+            showLimit: SHOW_LIMIT_DEFAULT,
         };
 
         this.paginatedDiv = React.createRef();
@@ -50,48 +47,40 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
 
     async componentDidMount() {
         this.showMoreResults();
-        this.fetchAll();
         this.reactionDisposer = reaction(
             () => [
                 this.props.searchStore!.searchInput,
-                this.props.searchStore!.selectedTransitTypes
+                this.props.searchStore!.selectedTransitTypes,
             ],
             this.scrollToBeginning
         );
+        // Lazy load nodes in the background
+        this.fetchAllNodes();
     }
 
     componentWillUnmount() {
         this.reactionDisposer();
     }
 
-    private fetchAll = async () => {
-        this.setState({ isLoading: true });
-        return Promise.all([this.fetchAllLines(), this.fetchAllNodes()]).then(() => {
-            this.setState({ isLoading: false });
-            this.props.searchResultStore!.search();
-        });
-    };
-
-    private fetchAllLines = async () => {
-        try {
-            const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
-            this.props.searchResultStore!.setAllLines(searchLines);
-        } catch (e) {
-            this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
-        }
-    };
-
     private fetchAllNodes = async () => {
+        if (this.props.searchResultStore!.allNodes.length > 0) return;
+
         try {
-            const nodes = await NodeService.fetchAllNodes();
-            this.props.searchResultStore!.setAllNodes(nodes);
+            await NodeService.fetchAllNodes().then((nodes: any) => {
+                this.props.searchResultStore!.setAllNodes(nodes);
+                this.props.searchResultStore!.search();
+            });
         } catch (e) {
             this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);
         }
     };
 
-    private getFilteredItems = () => {
-        return this.props.searchResultStore!.filteredItems.slice().splice(0, this.state.showLimit);
+    private getFilteredLines = () => {
+        return this.props.searchResultStore!.filteredLines.slice().splice(0, this.state.showLimit);
+    };
+
+    private getFilteredNodes = () => {
+        return this.props.searchResultStore!.filteredNodes.slice().splice(0, this.state.showLimit);
     };
 
     private closeSearchResults = () => {
@@ -105,36 +94,28 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                 this.paginatedDiv.current.scrollHeight / SCROLL_PAGINATION_TRIGGER_POINT
         ) {
             this.setState({
-                showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT
+                showLimit: this.state.showLimit + INCREASE_SHOW_LIMIT,
             });
         }
     };
 
     private scrollToBeginning = () => {
         this.setState({
-            showLimit: SHOW_LIMIT_DEFAULT
+            showLimit: SHOW_LIMIT_DEFAULT,
         });
         if (this.paginatedDiv && this.paginatedDiv.current) {
             this.paginatedDiv.current.scrollTo(0, 0);
         }
     };
 
-    private isLine(item: INodeBase | ISearchLine): item is ISearchLine {
-        return (
-            ((item as ISearchLine).routes !== undefined ||
-                (item as ISearchLine).transitType !== undefined) &&
-            ((item as INodeBase).shortIdLetter === undefined ||
-                (item as INodeBase).shortIdString === undefined ||
-                (item as INodeBase).type === undefined)
-        );
-    }
-
     render() {
+        const searchStore = this.props.searchStore!;
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
-        const filteredItems = this.getFilteredItems();
+        const filteredLines = this.getFilteredLines();
+        const filteredNodes = this.getFilteredNodes();
         return (
             <div className={s.searchResultsView}>
-                {this.state.isLoading ? (
+                {searchStore!.isLoading ? (
                     <div className={s.searchResultsView}>
                         <Loader />
                     </div>
@@ -144,16 +125,22 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                         onScroll={this.showMoreResults}
                         ref={this.paginatedDiv}
                     >
-                        {filteredItems.length === 0 ? (
-                            <div className={s.noResults}>Ei hakutuloksia.</div>
-                        ) : (
-                            filteredItems.map((item: ISearchLine | INodeBase) => {
-                                if (this.isLine(item)) {
+                        {searchStore.isSearchingForLines &&
+                            (filteredLines.length === 0 ? (
+                                <div className={s.noResults}>Ei hakutuloksia.</div>
+                            ) : (
+                                filteredLines.map((item: ISearchLine) => {
                                     return <LineItem key={item.id} line={item} />;
-                                }
-                                return <NodeItem key={item.id} node={item} />;
-                            })
-                        )}
+                                })
+                            ))}
+                        {searchStore.isSearchingForNodes &&
+                            (filteredNodes.length === 0 ? (
+                                <div className={s.noResults}>Ei hakutuloksia.</div>
+                            ) : (
+                                filteredNodes.map((item: ISearchNode) => {
+                                    return <NodeItem key={item.id} node={item} />;
+                                })
+                            ))}
                     </div>
                 )}
                 {isRouteListView && (

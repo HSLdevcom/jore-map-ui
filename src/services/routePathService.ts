@@ -2,14 +2,11 @@ import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
-import NodeType from '~/enums/nodeType';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath } from '~/models';
 import { IRoutePathPrimaryKey, IRoutePathSaveModel } from '~/models/IRoutePath';
 import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
-import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
-import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import HttpUtils from '~/utils/HttpUtils';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
@@ -38,22 +35,32 @@ class RoutePathService {
     public static fetchFirstAndLastStopNamesOfRoutePath = async (
         routePathPrimaryKey: IRoutePathPrimaryKey
     ): Promise<Object> => {
-        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getFirstAndLastStopNamesOfRoutePath(),
+        const firstStopNameQueryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getFirstStopNameOfRoutePath(),
             variables: {
                 routeId: routePathPrimaryKey.routeId,
                 direction: routePathPrimaryKey.direction,
                 startDate: Moment(routePathPrimaryKey.startDate).format(),
             },
         });
-        const nodes: IExternalRoutePathLink[] =
-            queryResult.data.routePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes;
-        nodes.sort((a: IExternalRoutePathLink, b: IExternalRoutePathLink) =>
-            a.reljarjnro < b.reljarjnro ? -1 : 1
-        );
+        const firstStopName = firstStopNameQueryResult
+            ? firstStopNameQueryResult.data.get_first_stop_name_of_route_path.nodes[0]
+            : '-';
+        const lastStopNameQueryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getLastStopNameOfRoutePath(),
+            variables: {
+                routeId: routePathPrimaryKey.routeId,
+                direction: routePathPrimaryKey.direction,
+                startDate: Moment(routePathPrimaryKey.startDate).format(),
+            },
+        });
+        const lastStopName = lastStopNameQueryResult
+            ? lastStopNameQueryResult.data.get_last_stop_name_of_route_path.nodes[0]
+            : '-';
+
         const stopNames = {
-            firstStopName: _getFirstStopName(nodes),
-            lastStopName: _getLastStopName(nodes),
+            firstStopName,
+            lastStopName,
         };
         return stopNames;
     };
@@ -206,33 +213,6 @@ const _findRoutePathLink = (
             rpLink.endNode.internalId === routePathLink.endNode.internalId
         );
     });
-};
-
-const _getFirstStopName = (nodes: IExternalRoutePathLink[]) => {
-    for (let i = 0; i < nodes.length; i += 1) {
-        const stopName = _getValidStopName(nodes[i].solmuByLnkalkusolmu);
-        if (stopName) {
-            return stopName;
-        }
-    }
-    return '';
-};
-
-const _getLastStopName = (nodes: IExternalRoutePathLink[]) => {
-    for (let i = nodes.length - 1; i > 0; i -= 1) {
-        const stopName = _getValidStopName(nodes[i].solmuByLnkloppusolmu);
-        if (stopName) {
-            return stopName;
-        }
-    }
-    return '';
-};
-
-const _getValidStopName = (node: IExternalNode): string | null => {
-    if (node.soltyyppi === NodeType.STOP && node.pysakkiBySoltunnus?.pysnimi) {
-        return node.pysakkiBySoltunnus.pysnimi;
-    }
-    return null;
 };
 
 export default RoutePathService;

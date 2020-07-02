@@ -109,6 +109,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                         ? 'Vain tulevaisuudessa olevia reitinsuuntia voi poistaa.'
                         : ''
                 }
+                data-cy='removeRoutePathButton'
             >
                 Poista reitinsuunta
             </SaveButton>

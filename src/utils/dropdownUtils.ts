@@ -4,7 +4,7 @@ const createDropdownItemsFromList = (itemList: string[]): IDropdownItem[] => {
     return itemList.map((item: string) => {
         const dropdownItem: IDropdownItem = {
             value: item,
-            label: item
+            label: item,
         };
         return dropdownItem;
     });

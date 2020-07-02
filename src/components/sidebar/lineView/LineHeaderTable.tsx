@@ -91,11 +91,11 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     };
 
     private createNewLineHeader = () => {
-        const lastLineHeader = this.props.lineHeaderMassEditStore!.getLastLineHeader();
+        const firstLineHeader = this.props.lineHeaderMassEditStore!.getFirstLineHeader();
         let defaultDate: Date = new Date();
 
-        if (lastLineHeader) {
-            defaultDate = new Date(lastLineHeader.endDate);
+        if (firstLineHeader) {
+            defaultDate = new Date(firstLineHeader.endDate);
             defaultDate.setDate(defaultDate.getDate() + 1);
         }
         const newLineHeader = LineHeaderFactory.createNewLineHeader({

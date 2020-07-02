@@ -125,6 +125,7 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
         stop: {
             municipality: () => codeListStore.getCodeListLabel('Kunta (KELA)', value),
             roof: () => codeListStore.getCodeListLabel('Pysäkkityyppi', value),
+            tariffi: () => codeListStore.getCodeListLabel('Tariffialue', value),
         },
         stopArea: {
             transitType: () => (value ? TransitTypeUtils.getTransitTypeLabel(value) : ''),

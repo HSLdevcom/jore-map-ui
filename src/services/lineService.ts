@@ -5,9 +5,8 @@ import LineFactory from '~/factories/lineFactory';
 import RouteFactory from '~/factories/routeFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { ILine, IRoute } from '~/models';
-import { ILinePrimaryKey } from '~/models/ILine';
+import { ILinePrimaryKey, ISearchLine } from '~/models/ILine';
 import IExternalRoute from '~/models/externals/IExternalRoute';
-import ISearchLine from '~/models/searchModels/ISearchLine';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
@@ -63,15 +62,6 @@ class LineService {
         return queryResult.data.allLinjas.nodes.map((linja: any) => {
             return LineFactory.createSearchLine(linja);
         });
-    };
-
-    public static fetchSearchLine = async (lintunnus: string): Promise<ISearchLine> => {
-        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getSearchLineQuery(),
-            variables: { lineId: lintunnus },
-        });
-
-        return LineFactory.createSearchLine(queryResult.data.linjaByLintunnus);
     };
 
     public static updateLine = async (line: ILine) => {

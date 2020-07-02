@@ -41,6 +41,8 @@ interface IMassEditRoutePath {
     oldRoutePath?: IRoutePath;
     validationResult: IValidationResult;
     isNew: boolean;
+    isStartDateSet: boolean;
+    isEndDateSet: boolean;
 }
 
 interface IRoutePathSegment extends IRoutePathPrimaryKey {
@@ -57,6 +59,7 @@ interface IRoutePathSaveModel {
 }
 
 interface IMultipleRoutePathSaveModel {
+    routeId: string;
     added: IRoutePathSaveModel[];
     modified: IRoutePathSaveModel[];
     originals: IRoutePathSaveModel[];

@@ -48,7 +48,7 @@ const commonConstants = {
     SMALL_INT_MAX_VALUE: 32767, // Max value at PostgreSQL (2 bytes)
     MAP_LAYERS_MIN_ZOOM_LEVEL: 13,
     MIN_YEAR: 1970,
-    MAX_YEAR: 2100,
+    MAX_YEAR: 2099,
     NEW_OBJECT_TAG: 'new-',
     GEOCODING_URL: 'https://api.digitransit.fi/geocoding/v1/search',
     OSM_REVERSE_GEOCODING_URL: 'https://nominatim.openstreetmap.org/reverse',

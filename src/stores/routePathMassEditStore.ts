@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import Moment from 'moment';
-import { IRoutePath, IRoutePathLink } from '~/models';
+import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
 import RouteListStore from '~/stores/routeListStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
@@ -98,6 +98,8 @@ class RoutePathMassEditStore {
                 routePath: rp,
                 oldRoutePath: _.cloneDeep(rp),
                 validationResult: { isValid: true },
+                isStartDateSet: true,
+                isEndDateSet: true,
                 isNew: false,
             });
         });
@@ -108,28 +110,25 @@ class RoutePathMassEditStore {
 
     @action
     public updateRoutePathStartDate = (id: string, newStartDate: Date) => {
-        const routePathToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!.routePath;
+        const massEditRpToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!
+        const routePathToUpdate = massEditRpToUpdate.routePath;
         routePathToUpdate.startDate = newStartDate;
         // Update routePath's endDate as the same as startDate if endDate is not set
         if (routePathToUpdate.endDate.getTime() > getMaxDate().getTime()) {
             routePathToUpdate.endDate = _.cloneDeep(newStartDate);
         }
+        massEditRpToUpdate.isStartDateSet = true;
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
     };
 
     @action
     public updateRoutePathEndDate = (id: string, newEndDate: Date) => {
-        this._massEditRoutePaths?.find((m) => m.id === id)!.routePath.endDate = newEndDate;
+        const massEditRpToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!;
+        massEditRpToUpdate.routePath.endDate = newEndDate;
+        massEditRpToUpdate.isEndDateSet = true;
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
         this.validateMassEditRoutePaths();
-    };
-
-    @action
-    public setRoutePathLinksToRoutePath = (id: string, routePathLinks: IRoutePathLink[]) => {
-        this._massEditRoutePaths?.find(
-            (m) => m.id === id
-        )!.routePath.routePathLinks = routePathLinks;
     };
 
     @action
@@ -152,7 +151,7 @@ class RoutePathMassEditStore {
     };
 
     @action
-    public addCopiedRoutePaths = (routePathsToCopy: IRoutePathToCopy[]) => {
+    public addRoutePathsToCopy = (routePathsToCopy: IRoutePathToCopy[]) => {
         let idCounter = this._newRoutePathIdCounter;
         const routePathsWithNewId: IRoutePath[] = [];
         const newMassEditRoutePaths: IMassEditRoutePath[] = [];
@@ -171,10 +170,9 @@ class RoutePathMassEditStore {
             newRoutePath.internalId = newRoutePathId;
             newRoutePath.routeId = this._routeId!;
 
-            const maxDatePlusOne = getMaxDate();
-            maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
-            newRoutePath.startDate = _.cloneDeep(maxDatePlusOne);
-            newRoutePath.endDate = _.cloneDeep(maxDatePlusOne);
+            const maxDate = getMaxDate();
+            newRoutePath.startDate = _.cloneDeep(maxDate);
+            newRoutePath.endDate = _.cloneDeep(maxDate);
             newMassEditRoutePaths.push({
                 oldRoutePath,
                 id: newRoutePathId,
@@ -182,6 +180,8 @@ class RoutePathMassEditStore {
                 validationResult: {
                     isValid: true,
                 },
+                isStartDateSet: false,
+                isEndDateSet: false,
                 isNew: true,
             });
             idCounter += 1;
@@ -197,14 +197,14 @@ class RoutePathMassEditStore {
     @action
     public validateMassEditRoutePaths = () => {
         this._massEditRoutePaths!.map((currMassEditRp: IMassEditRoutePath, index: number) => {
-            if (currMassEditRp.routePath.startDate.getTime() > getMaxDate().getTime()) {
+            if (!currMassEditRp.isStartDateSet) {
                 currMassEditRp.validationResult = {
                     isValid: false,
                     errorMessage: 'Aseta alkupäivämäärä',
                 };
                 return currMassEditRp;
             }
-            if (currMassEditRp.routePath.endDate.getTime() > getMaxDate().getTime()) {
+            if (!currMassEditRp.isEndDateSet) {
                 currMassEditRp.validationResult = {
                     isValid: false,
                     errorMessage: 'Aseta loppupäivämäärä',
@@ -288,12 +288,16 @@ class RoutePathMassEditStore {
         const massEditRp2 = this._massEditRoutePaths!.find(
             (massEditRp) => massEditRp.id === routePathId2
         );
-        const maxDatePlusOne = getMaxDate();
-        maxDatePlusOne.setDate(maxDatePlusOne.getDate() + 1);
-        massEditRp1!.routePath.startDate = _.cloneDeep(maxDatePlusOne);
-        massEditRp1!.routePath.endDate = _.cloneDeep(maxDatePlusOne);
-        massEditRp2!.routePath.startDate = _.cloneDeep(maxDatePlusOne);
-        massEditRp2!.routePath.endDate = _.cloneDeep(maxDatePlusOne);
+        const maxDate = getMaxDate();
+        maxDate.setDate(maxDate.getDate() + 1);
+        massEditRp1!.routePath.startDate = _.cloneDeep(maxDate);
+        massEditRp1!.routePath.endDate = _.cloneDeep(maxDate);
+        massEditRp1!.isStartDateSet = false;
+        massEditRp1!.isEndDateSet = false;
+        massEditRp2!.routePath.startDate = _.cloneDeep(maxDate);
+        massEditRp2!.routePath.endDate = _.cloneDeep(maxDate);
+        massEditRp2!.isStartDateSet = false;
+        massEditRp2!.isEndDateSet = false;
 
         // Add a new selectedRoutePathPair
         this._selectedRoutePathIdPairs = this._selectedRoutePathIdPairs.concat([

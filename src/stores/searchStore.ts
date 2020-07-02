@@ -6,7 +6,9 @@ class SearchStore {
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
     @observable private _isSearchingForNodes: boolean;
+    @observable private _areInactiveLinesHidden: boolean;
     @observable private _isSearchDisabled: boolean;
+    @observable private _isLoading: boolean;
 
     constructor() {
         this._searchInput = '';
@@ -15,11 +17,13 @@ class SearchStore {
             TransitType.FERRY,
             TransitType.SUBWAY,
             TransitType.TRAIN,
-            TransitType.TRAM
+            TransitType.TRAM,
         ];
         this._isSearchingForLines = true;
         this._isSearchingForNodes = false;
+        this._areInactiveLinesHidden = true;
         this._isSearchDisabled = false;
+        this._isLoading = false;
     }
 
     @computed
@@ -48,8 +52,18 @@ class SearchStore {
     }
 
     @computed
+    get areInactiveLinesHidden(): boolean {
+        return this._areInactiveLinesHidden;
+    }
+
+    @computed
     get isSearchDisabled() {
         return this._isSearchDisabled;
+    }
+
+    @computed
+    get isLoading() {
+        return this._isLoading;
     }
 
     @action
@@ -65,9 +79,14 @@ class SearchStore {
     }
 
     @action
+    public toggleAreInactiveLinesHidden() {
+        this._areInactiveLinesHidden = !this._areInactiveLinesHidden;
+    }
+
+    @action
     public toggleTransitType = (type: TransitType) => {
         if (this._selectedTransitTypes.includes(type)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== type);
+            this._selectedTransitTypes = this._selectedTransitTypes.filter((t) => t !== type);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
             this._selectedTransitTypes = this._selectedTransitTypes.concat(type);
@@ -77,6 +96,11 @@ class SearchStore {
     @action
     public setIsSearchDisabled(isSearchDisabled: boolean) {
         this._isSearchDisabled = isSearchDisabled;
+    }
+
+    @action
+    public setIsLoading(isLoading: boolean) {
+        this._isLoading = isLoading;
     }
 }
 

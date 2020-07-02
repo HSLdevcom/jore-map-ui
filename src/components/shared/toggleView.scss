@@ -2,7 +2,6 @@
 
 .toggleView {
     display: flex;
-    border-bottom: 1px solid black;
 
     .buttonContainer {
         display: flex;
@@ -12,12 +11,12 @@
         .button {
             display: flex;
             width: 100%;
-            color: #eef1f3;
+            color: $fontColorDefault;
             font-size: 15px;
             text-align: center;
             align-items: center;
             cursor: pointer;
-            background-color: #575757;
+            background-color: $lightGrey;
             padding: 5px 10px 5px 10px;
             transition: 0.5s;
             line-height: 30px;
@@ -33,14 +32,19 @@
         }
 
         .active {
+            color: #eef1f3;
             background-color: #027ac9;
             opacity: 1;
         }
     }
 
-    .buttonContainer:first-child {
-        .button {
-            border-right: 1px solid black;
-        }
+    .toggleItem {
+        display: flex;
+        width: 100%;
+        border-right: 1px solid #bebebe;
+    }
+
+    .toggleItem:last-child {
+        border-right: none;
     }
 }

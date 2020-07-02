@@ -364,16 +364,19 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this._setState({ isLoading: true });
 
         try {
-            await RoutePathMassEditService.massEditRoutePaths(
-                this.props.routePathMassEditStore!.massEditRoutePaths!
-            );
-            this.props.routePathMassEditStore!.clear();
-            // TODO: instead of this call, force routeItem.route.routePaths to be fetched again
-            this.updateGroupedRoutePathsToDisplay();
-            this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+            this.props.alertStore!.setLoaderMessage('Tallennetaan reitinsuuntia...');
+            await RoutePathMassEditService.massEditRoutePaths({
+                routeId: this.props.routeId,
+                massEditRoutePaths: this.props.routePathMassEditStore!.massEditRoutePaths!,
+            });
+            this.props.routeListStore!.removeFromRouteItems(this.props.routeId);
+            await this.props.routeListStore!.fetchRoutes({ forceUpdate: true });
+            await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
+            this.props.alertStore!.close();
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
+        this.props.routePathMassEditStore!.clear();
         this.props.routeListStore!.setRouteIdToEdit(null);
     };
 
@@ -395,6 +398,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     type={ButtonType.SQUARE}
                     disabled={this.props.routeId !== this.props.routeListStore!.routeIdToEdit}
                     isWide={true}
+                    data-cy='copyRoutePathButton'
                 >
                     {`Kopioi reitinsuunta`}
                 </Button>
