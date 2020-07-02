@@ -19,8 +19,8 @@ class ScheduleService {
             .map((extSchedule: IExternalSchedule) => {
                 return {
                     routeId: extSchedule.reitunnus,
-                    startDate: extSchedule.lavoimast,
-                    endDate: extSchedule.laviimvoi,
+                    startDate: toMidnightDate(new Date(extSchedule.lavoimast)),
+                    endDate: toMidnightDate(new Date(extSchedule.laviimvoi)),
                     modifiedBy: extSchedule.lakuka,
                     modifiedOn: extSchedule.laviimpvm,
                 };

@@ -65,6 +65,7 @@ class RoutePathStore {
         this._extendedListItemId = null;
         this._highlightedListItemId = null;
         this._toolHighlightedNodeIds = [];
+        this._existingRoutePaths = [];
         this._isEditingDisabled = true;
         this._selectedTabIndex = 0;
         this._geometryUndoStore = new GeometryUndoStore();
@@ -94,6 +95,10 @@ class RoutePathStore {
 
     get isNewRoutePath(): boolean {
         return this._isNewRoutePath;
+    }
+
+    get existingRoutePaths(): IRoutePath[] {
+        return this._existingRoutePaths;
     }
 
     @computed

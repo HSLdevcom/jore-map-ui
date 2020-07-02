@@ -95,17 +95,6 @@ class RoutePathFactory {
             startNodeBookScheduleColumnNumber: undefined,
         };
     }
-
-    // TODO: remove (this is deprecated)
-    public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
-        const startDate = routePath.startDate;
-        startDate.setDate(startDate.getDate() + 1);
-        return {
-            ...routePath,
-            // TODO: this is only temporary, but required since startDate is part of ID
-            startDate,
-        };
-    }
 }
 
 export default RoutePathFactory;

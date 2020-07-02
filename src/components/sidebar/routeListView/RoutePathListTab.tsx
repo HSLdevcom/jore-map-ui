@@ -352,6 +352,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     <div className={s.sectionDivider} />
                     <div className={s.routeActiveSchedulesWrapper}>
                         <RouteActiveSchedules
+                            routePaths={this.props.routePathMassEditStore!.routePaths}
                             activeSchedules={activeSchedules}
                             confirmMessage={`Haluatko varmasti tallentaa tehdyt reitin ${routeId} reitinsuuntien muutokset?`}
                         />
