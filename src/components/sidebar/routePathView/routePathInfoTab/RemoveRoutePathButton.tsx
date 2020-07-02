@@ -68,13 +68,20 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             routePath.endDate
         )}?`;
 
-        const routeId = this.props.routePathStore!.routePath?.routeId!;
+        const routeId = routePath.routeId;
+        const routePathsAfterRemove = this.props.routePathStore!.existingRoutePaths.filter((rp) => {
+            const isRpToRemove =
+                rp.startDate.getTime() === routePath.startDate.getTime() &&
+                rp.direction === routePath.direction &&
+                rp.routeId === routePath.routeId;
+            return !isRpToRemove;
+        });
         return (
             <div>
                 <div className={s.routeActiveSchedulesWrapper}>
                     <RouteActiveSchedules
                         header={routeId}
-                        routePaths={this.props.routePathStore!.existingRoutePaths}
+                        routePaths={routePathsAfterRemove}
                         activeSchedules={activeSchedules}
                         confirmMessage={confirmMessage}
                     />

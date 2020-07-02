@@ -125,7 +125,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private initialize = async () => {
         if (this.props.isNewRoutePath) {
-            await this.fetchExistingRoutePaths();
             await this.createNewRoutePath();
         } else {
             await this.initExistingRoutePath();
@@ -133,47 +132,38 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         await this.initializeMap();
     };
 
-    private fetchExistingRoutePaths = async () => {
+    private createNewRoutePath = async () => {
+        this._setState({ isLoading: true });
+        this.props.mapStore!.initCoordinates();
         const queryParams = navigator.getQueryParamValues();
         const routeId = queryParams[QueryParams.routeId];
+        const lineId = queryParams[QueryParams.lineId];
+        try {
+            const line = await LineService.fetchLine(lineId);
+            const routePath = RoutePathFactory.createNewRoutePath(
+                lineId,
+                routeId,
+                line.transitType!
+            );
+            this.props.routePathStore!.init({
+                routePath,
+                isNewRoutePath: this.props.isNewRoutePath,
+            });
+            this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
+        } catch (e) {
+            this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
+        }
+        await this.fetchExistingRoutePaths({ routeId });
+
+        this._setState({ isLoading: false });
+    };
+
+    private fetchExistingRoutePaths = async ({ routeId }: { routeId: string }) => {
         const route = await RouteService.fetchRoute({
             routeId,
             areRoutePathLinksExcluded: true,
         });
         this.props.routePathStore!.setExistingRoutePaths(route!.routePaths);
-    };
-
-    private createNewRoutePath = async () => {
-        this._setState({ isLoading: true });
-        this.props.mapStore!.initCoordinates();
-        try {
-            if (!this.props.routePathStore!.routePath) {
-                const queryParams = navigator.getQueryParamValues();
-                const routeId = queryParams[QueryParams.routeId];
-                const lineId = queryParams[QueryParams.lineId];
-                const line = await LineService.fetchLine(lineId);
-                const routePath = RoutePathFactory.createNewRoutePath(
-                    lineId,
-                    routeId,
-                    line.transitType!
-                );
-                this.props.routePathStore!.init({
-                    routePath,
-                    isNewRoutePath: this.props.isNewRoutePath,
-                });
-            } else {
-                this.props.routePathStore!.init({
-                    routePath: RoutePathFactory.createNewRoutePathFromOld(
-                        this.props.routePathStore!.routePath!
-                    ),
-                    isNewRoutePath: this.props.isNewRoutePath,
-                });
-            }
-            this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
-        } catch (e) {
-            this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
-        }
-        this._setState({ isLoading: false });
     };
 
     private initializeMap = async () => {
@@ -226,6 +216,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             return;
         }
         await this.fetchViaNames(routePath);
+        await this.fetchExistingRoutePaths({ routeId });
         this.centerMapToRoutePath(routePath);
         this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
     };
