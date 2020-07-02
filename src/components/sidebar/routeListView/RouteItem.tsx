@@ -7,6 +7,7 @@ import TransitType from '~/enums/transitType';
 import { IRoute } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import { RouteListStore } from '~/stores/routeListStore';
+import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import RoutePathListTab from './RoutePathListTab';
 import RouteTab from './RouteTab';
 import * as s from './routeListView.scss';
@@ -20,9 +21,10 @@ interface IRouteItemProps {
     areSchedulesVisible: boolean;
     activeSchedules: ISchedule[];
     routeListStore?: RouteListStore;
+    routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-@inject('routeListStore', 'mapStore')
+@inject('mapStore', 'routeListStore', 'routePathMassEditStore')
 @observer
 class RouteItem extends React.Component<IRouteItemProps> {
     private setSelectedTabIndex = (index: number) => {
@@ -45,11 +47,17 @@ class RouteItem extends React.Component<IRouteItemProps> {
         } = this.props;
         const isEditingRoutePaths = selectedTabIndex === 0 && route.id === routeIdToEdit;
         const isEditingRoute = selectedTabIndex === 1 && route.id === routeIdToEdit;
+        const routePaths = isEditingRoutePaths
+            ? this.props.routePathMassEditStore!.routePaths
+            : route.routePaths;
         return (
             <div>
                 {areSchedulesVisible && (
                     <div className={s.routeActiveSchedulesWrapper}>
-                        <RouteActiveSchedules activeSchedules={activeSchedules} />
+                        <RouteActiveSchedules
+                            routePaths={routePaths}
+                            activeSchedules={activeSchedules}
+                        />
                     </div>
                 )}
                 <Tabs>

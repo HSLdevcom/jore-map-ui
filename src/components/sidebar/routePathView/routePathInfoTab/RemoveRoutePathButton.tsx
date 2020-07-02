@@ -74,6 +74,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                 <div className={s.routeActiveSchedulesWrapper}>
                     <RouteActiveSchedules
                         header={routeId}
+                        routePaths={this.props.routePathStore!.existingRoutePaths}
                         activeSchedules={activeSchedules}
                         confirmMessage={confirmMessage}
                     />

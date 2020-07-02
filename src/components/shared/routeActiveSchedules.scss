@@ -1,4 +1,5 @@
 @import './styles/form';
+@import './styles/common';
 
 .routeActiveSchedules {
     .header {
@@ -6,12 +7,38 @@
         font-weight: normal;
     }
 
+    .scheduleRow {
+        display: flex;
+        align-items: center;
+        padding: 5px 0px 5px 0px;
+
+        .coveredSchedule {
+            color: $successGreen;
+            font-weight: bold;
+        }
+        .uncoveredSchedule {
+            color: $errorRed;
+            font-weight: bold;
+        }
+
+        .textContainer {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .indicator {
+            display: flex;
+            font-size: 22px;
+            padding-right: 7px;
+        }
+    }
+
+    .futureScheduleRow:not(:last-of-type) {
+        border-bottom: 1px solid $borderLightGrey;
+    }
+
     .subSection {
         padding-top: 10px;
-
-        div {
-            padding-top: 5px;
-        }
     }
     .subSection:first-of-type {
         padding-top: 0px;
