@@ -119,7 +119,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                             <TransitToggleButtonBar
                                 selectedTransitTypes={selectedTransitTypes}
                                 toggleSelectedTransitType={this.selectTransitType}
-                                disabled={!lineStore.isNewLine}
+                                disabled={isEditingDisabled}
                                 errorMessage={
                                     invalidPropertiesMap['transitType'] &&
                                     !invalidPropertiesMap['transitType'].isValid

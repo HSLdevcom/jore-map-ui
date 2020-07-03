@@ -154,6 +154,13 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             onConfirm: () => {
                 this.saveLine();
             },
+            doubleConfirmText:
+                !this.props.isNewLine &&
+                oldLine &&
+                currentLine &&
+                oldLine.transitType !== currentLine.transitType
+                    ? 'Linjan verkkoa muutettu. Oletko täysin varma, että haluat tallentaa?'
+                    : undefined,
         });
     };
 
