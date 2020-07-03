@@ -68,6 +68,7 @@ class RoutePathFactory {
     ): IRoutePath {
         const defaultDate = new Date();
         defaultDate.setHours(0, 0, 0, 0);
+        defaultDate.setDate(defaultDate.getDate() + 1);
 
         return {
             lineId,
