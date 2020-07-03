@@ -9,6 +9,21 @@
         font-size: $mediumFontSize;
     }
 
+    .filtersContainer {
+        display: flex;
+        margin-top: 10px;
+
+        .filterContainer {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .filterContainer:first-of-type {
+            max-width: 155px;
+            margin-right: 5px;
+        }
+    }
+
     .routePathRow {
         display: flex;
         align-items: center;
