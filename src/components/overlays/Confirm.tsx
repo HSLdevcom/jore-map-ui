@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import ButtonType from '~/enums/buttonType';
@@ -14,6 +15,14 @@ interface IConfirmProps {
 @inject('confirmStore')
 @observer
 class Confirm extends React.Component<IConfirmProps> {
+    private displayDoubleConfirm = () => {
+        const confirmStore = this.props.confirmStore!;
+        const isOk = confirm(confirmStore.doubleConfirmText!);
+        if (isOk) {
+            confirmStore!.confirm();
+        }
+    };
+
     render() {
         const confirmStore = this.props.confirmStore!;
         if (!confirmStore.isOpen) return null;
@@ -27,6 +36,9 @@ class Confirm extends React.Component<IConfirmProps> {
                 : confirmType === 'delete'
                 ? s.deleteButton
                 : undefined;
+
+        const doubleConfirmText = this.props.confirmStore!.doubleConfirmText;
+        const shouldShowDoubleConfirm = !_.isEmpty(doubleConfirmText);
 
         return (
             <ModalContainer>
@@ -57,7 +69,11 @@ class Confirm extends React.Component<IConfirmProps> {
                                 className={confirmButtonClassName}
                                 disabled={isConfirmButtonDisabled}
                                 type={ButtonType.SQUARE}
-                                onClick={confirmStore!.confirm}
+                                onClick={
+                                    shouldShowDoubleConfirm
+                                        ? this.displayDoubleConfirm
+                                        : confirmStore!.confirm
+                                }
                                 isWide={true}
                                 data-cy='confirmButton'
                             >
