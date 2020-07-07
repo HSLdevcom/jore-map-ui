@@ -56,7 +56,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private renderPopup = (node: INode) => (popupId: number) => {
         return (
             <div className={s.popupContainer}>
-                <div onClick={this.openNode(node, popupId)}>Avaa kohde</div>
+                <div onClick={this.openNode(node, popupId)} className={s.popupOption}>
+                    Avaa solmunäkymässä
+                </div>
             </div>
         );
     };
