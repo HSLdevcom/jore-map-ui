@@ -152,7 +152,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
             this.lastMarker.off('click', this.finishMeasurementClick);
         }
         this.lastMarker = L.circleMarker(latLng, { className: s.circleMarker })
-            .bindPopup(`${this.distance.toFixed(2)} meters`, {
+            .bindPopup(`${this.distance.toFixed(2)} m`, {
                 autoClose: false,
                 closeOnClick: false,
                 className: s.markerPopup,
