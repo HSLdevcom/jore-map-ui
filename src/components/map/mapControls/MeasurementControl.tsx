@@ -19,7 +19,7 @@ enum Tools {
     DRAGGING,
     MEASURE = 'Aloita mittaus',
     DELETE = 'Poista mittaus',
-    CLEAR = 'Poista kaikki mittaukset'
+    CLEAR = 'Poista kaikki mittaukset',
 }
 
 class MeasurementControl extends Component<IMeasurementControlProps, IMeasurementControlState> {
@@ -37,7 +37,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         super(props);
         this.state = {
             activeTool: Tools.NONE,
-            measurements: 0
+            measurements: 0,
         };
         this.points = Array<L.LatLng>();
         this.distance = 0;
@@ -73,7 +73,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         this.getLayerContainer().on('click', this.measurementClicked);
         this.getLayerContainer().doubleClickZoom.disable();
         this.setState({
-            activeTool: Tools.MEASURE
+            activeTool: Tools.MEASURE,
         });
     };
 
@@ -86,7 +86,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
             this.finishMeasurement();
         }
         this.setState({
-            activeTool: Tools.NONE
+            activeTool: Tools.NONE,
         });
     };
 
@@ -100,7 +100,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
 
         this.measurementLayer.on('click', this.removeMeasurement(this.measurementLayer));
         this.setState({
-            activeTool: Tools.DRAGGING
+            activeTool: Tools.DRAGGING,
         });
     };
 
@@ -112,14 +112,14 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
 
     private finishMeasurement = () => {
         this.setState({
-            activeTool: Tools.MEASURE
+            activeTool: Tools.MEASURE,
         });
         this.tmpLine.clearLayers();
         if (this.distance === 0) {
             this.measurementsLayer.removeLayer(this.measurementLayer);
         } else {
             this.setState({
-                measurements: this.state.measurements + 1
+                measurements: this.state.measurements + 1,
             });
             this.lastMarker.off('click', this.finishMeasurementClick).openPopup();
         }
@@ -154,7 +154,8 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         this.lastMarker = L.circleMarker(latLng, { className: s.circleMarker })
             .bindPopup(`${this.distance.toFixed(2)} meters`, {
                 autoClose: false,
-                closeOnClick: false
+                closeOnClick: false,
+                className: s.markerPopup,
             })
             .on('click', this.finishMeasurementClick)
             .addTo(this.pointLayer);
@@ -167,11 +168,11 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         const prevPoint = this.points[this.points.length - 1];
         L.polyline([prevPoint, movingLatLng], {
             className: classnames(s.movingPolyline, s.polyline),
-            interactive: false
+            interactive: false,
         }).addTo(this.tmpLine);
         L.circleMarker(movingLatLng, {
             className: classnames(s.noEvents, s.measurementCursor, s.circleMarker),
-            interactive: false
+            interactive: false,
         })
             .bindTooltip(prevPoint.distanceTo(movingLatLng).toFixed(2))
             .addTo(this.tmpLine)
@@ -189,13 +190,13 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
     private enableRemove = () => {
         this.disableMeasure();
         this.setState({
-            activeTool: Tools.DELETE
+            activeTool: Tools.DELETE,
         });
     };
 
     private disableRemove = () => {
         this.setState({
-            activeTool: Tools.NONE
+            activeTool: Tools.NONE,
         });
     };
 
@@ -203,7 +204,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
         if (this.state.activeTool === Tools.DELETE) {
             this.measurementsLayer.removeLayer(measurement);
             this.setState({
-                measurements: this.state.measurements - 1
+                measurements: this.state.measurements - 1,
             });
         }
         if (this.state.measurements === 0) {
@@ -216,7 +217,7 @@ class MeasurementControl extends Component<IMeasurementControlProps, IMeasuremen
             this.measurementsLayer.clearLayers();
             this.disableMeasure();
             this.setState({
-                measurements: 0
+                measurements: 0,
             });
         }
     };
