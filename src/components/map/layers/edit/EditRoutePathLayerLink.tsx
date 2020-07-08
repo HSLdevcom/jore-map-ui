@@ -13,30 +13,17 @@ import DashedLine from '../utils/DashedLine';
 const ROUTE_COLOR = '#000';
 
 interface IRoutePathLayerProps {
+    rpLink: IRoutePathLink;
+    setExtendedListItem: (id: string) => void;
     routePathStore?: RoutePathStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    setExtendedListItem: (id: string) => void;
 }
 
 @inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
 @observer
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
-    private renderRoutePathLinks = () => {
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length < 1) return;
-
-        return routePathLinks.map((rpLink, index) => {
-            return (
-                <div key={index}>
-                    {this.renderLink(rpLink)}
-                    {this.renderDashedLines(rpLink)}
-                </div>
-            );
-        });
-    };
-
     private renderLink = (routePathLink: IRoutePathLink) => {
         const routePathStore = this.props.routePathStore;
         let isLinkHighlighted;
@@ -110,9 +97,11 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     render() {
+        const rpLink = this.props.rpLink;
         return (
             <>
-                {this.renderRoutePathLinks()}
+                {this.renderLink(rpLink)}
+                {this.renderDashedLines(rpLink)}
                 {this.renderLinkDecorator()}
             </>
         );

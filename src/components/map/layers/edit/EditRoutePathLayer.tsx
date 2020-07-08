@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
+import { IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -30,10 +31,34 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
         const isRoutePathCopySegmentLayerVisible =
             this.props.routePathCopySegmentStore!.startNode ||
             this.props.routePathCopySegmentStore!.endNode;
+        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
+        if (!routePathLinks || routePathLinks.length < 1) return;
         return (
             <div>
-                <EditRoutePathLayerNode setExtendedListItem={this.setExtendedListItem} />
-                <EditRoutePathLayerLink setExtendedListItem={this.setExtendedListItem} />
+                {routePathLinks &&
+                    routePathLinks.length > 0 &&
+                    routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
+                        const nextRpLink =
+                            index < routePathLinks.length - 1
+                                ? routePathLinks[index + 1]
+                                : undefined;
+                        const isEndNodeRendered =
+                            !nextRpLink ||
+                            (nextRpLink && nextRpLink.startNode.id !== rpLink.endNode.id);
+                        return (
+                            <div key={`rpLink-${index}`}>
+                                <EditRoutePathLayerNode
+                                    rpLink={rpLink}
+                                    isEndNodeRendered={isEndNodeRendered}
+                                    setExtendedListItem={this.setExtendedListItem}
+                                />
+                                <EditRoutePathLayerLink
+                                    rpLink={rpLink}
+                                    setExtendedListItem={this.setExtendedListItem}
+                                />
+                            </div>
+                        );
+                    })}
                 {neighborLinks && <RoutePathNeighborLinkLayer />}
                 {isRoutePathCopySegmentLayerVisible && <RoutePathCopySegmentLayer />}
             </div>
