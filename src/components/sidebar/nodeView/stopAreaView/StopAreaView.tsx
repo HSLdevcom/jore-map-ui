@@ -167,6 +167,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.setState({ isLoading: false });
         }
     };
 

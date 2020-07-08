@@ -94,7 +94,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            return;
+            this.setState({ isLoading: false });
         }
         this.redirectToLineView();
     };

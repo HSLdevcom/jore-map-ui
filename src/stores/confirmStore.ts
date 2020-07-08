@@ -10,7 +10,7 @@ const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
 type confirmType = 'default' | 'save' | 'delete';
 
 class ConfirmStore {
-    @observable private _content: React.ReactNode;
+    private _content: React.ReactNode;
     @observable private _isOpen: boolean;
     @observable private _isConfirmButtonDisabled: boolean;
     @observable private _confirmButtonText: string | null;

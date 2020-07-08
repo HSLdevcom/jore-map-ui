@@ -259,6 +259,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this._setState({ isLoading: false });
         }
     };
 
