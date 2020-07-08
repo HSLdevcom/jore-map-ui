@@ -37,7 +37,7 @@ describe('errorStore.addError', () => {
         const errorMessage = 'This is a test error';
         const exception: Error = {
             message: 'This is a test exception message',
-            name: 'Test exception'
+            name: 'Test exception',
         };
 
         errorStore.addError(errorMessage, exception);
@@ -63,7 +63,7 @@ describe('errorStore.addError', () => {
         const errorException: IError = {
             message: exceptionMessage,
             name: 'Test exception',
-            errorCode: 409
+            errorCode: undefined,
         };
 
         errorStore.addError(errorMessage, errorException);
@@ -72,7 +72,7 @@ describe('errorStore.addError', () => {
 
         const error = errorStore.pop();
 
-        expect(error).toContain(httpStatusDescriptionCodeList[409]);
+        expect(error).toContain('This is a test exception message');
         expect(errorStore.errors.length).toEqual(0);
         expect(console.error).toBeCalled();
         // Clean up console.error to be back to normal
