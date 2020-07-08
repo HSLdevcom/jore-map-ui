@@ -13,13 +13,13 @@ class ConfirmStore {
     private _content: React.ReactNode;
     @observable private _isOpen: boolean;
     @observable private _isConfirmButtonDisabled: boolean;
+    @observable private _confirmButtonText: string | null;
+    @observable private _cancelButtonText: string | null;
+    @observable private _confirmNotification: string | null;
+    @observable private _confirmType: confirmType;
+    @observable private _doubleConfirmText: string | null;
     private _onConfirm: null | (() => void);
     private _onCancel: null | (() => void);
-    private _confirmButtonText: string | null;
-    private _cancelButtonText: string | null;
-    private _confirmNotification: string | null;
-    private _confirmType: confirmType;
-    private _doubleConfirmText: string | null;
 
     constructor() {
         this._content = null;

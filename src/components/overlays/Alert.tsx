@@ -41,7 +41,7 @@ class Alert extends React.Component<IAlertProps> {
                             onClick={this.closeAlert}
                             data-cy='closeAlertButton'
                         >
-                            OK
+                            {alertStore.closeButtonText}
                         </Button>
                     )}
                 </div>

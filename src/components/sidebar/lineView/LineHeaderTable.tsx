@@ -143,7 +143,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            return;
+            this._setState({ isLoading: false });
         }
     };
 

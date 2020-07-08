@@ -171,6 +171,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.setState({ isLoading: false });
         }
     };
 
