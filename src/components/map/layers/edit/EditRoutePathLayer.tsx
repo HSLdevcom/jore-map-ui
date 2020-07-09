@@ -32,11 +32,9 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
             this.props.routePathCopySegmentStore!.startNode ||
             this.props.routePathCopySegmentStore!.endNode;
         const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length < 1) return;
         return (
             <div>
-                {routePathLinks &&
-                    routePathLinks.length > 0 &&
+                {routePathLinks && routePathLinks.length > 0 ? (
                     routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
                         const nextRpLink =
                             index < routePathLinks.length - 1
@@ -58,7 +56,10 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                 />
                             </div>
                         );
-                    })}
+                    })
+                ) : (
+                    <div />
+                )}
                 {neighborLinks && <RoutePathNeighborLinkLayer />}
                 {isRoutePathCopySegmentLayerVisible && <RoutePathCopySegmentLayer />}
             </div>
