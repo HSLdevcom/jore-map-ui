@@ -9,7 +9,7 @@ import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
 import { NodeLabel } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
+import { NeighborToAddType, RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from '../markers/NodeMarker';
 import { INodeUsagePopupData } from '../popups/NodeUsagePopup';
@@ -21,7 +21,7 @@ const UNUSED_NEIGHBOR_COLOR = '#fc383a';
 const UNUSED_NEIGHBOR_COLOR_HIGHLIGHT = '#c40608';
 
 interface IRoutePathLayerProps {
-    routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     popupStore?: PopupStore;
 }
 
@@ -34,7 +34,7 @@ interface PolylineRefs {
     [key: string]: any;
 }
 
-@inject('routePathStore', 'popupStore')
+@inject('routePathLayerStore', 'popupStore')
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     private linkListener: IReactionDisposer;
@@ -45,7 +45,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             polylineRefs: {},
         };
         this.linkListener = reaction(
-            () => this.props.routePathStore!.neighborLinks,
+            () => this.props.routePathLayerStore!.neighborLinks,
             () => this.initializePolylineRefs()
         );
     }
@@ -56,7 +56,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
 
     private initializePolylineRefs = () => {
         const polylineRefs = {};
-        this.props.routePathStore!.neighborLinks.forEach((neighborLink) => {
+        this.props.routePathLayerStore!.neighborLinks.forEach((neighborLink) => {
             polylineRefs[neighborLink.routePathLink.id] = React.createRef<any>();
         });
         this.setState({
@@ -199,9 +199,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
     };
 
     render() {
-        const neighborLinks = this.props.routePathStore!.neighborLinks;
+        const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
         return neighborLinks.map((neighborLink, index) => {
-            const neighborToAddType = this.props.routePathStore!.neighborToAddType;
+            const neighborToAddType = this.props.routePathLayerStore!.neighborToAddType;
             const nodeToRender =
                 neighborToAddType === NeighborToAddType.AfterNode
                     ? neighborLink.routePathLink.endNode

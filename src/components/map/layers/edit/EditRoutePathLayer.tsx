@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import EditRoutePathLayerLink from './EditRoutePathLayerLink';
 import EditRoutePathLayerNode from './EditRoutePathLayerNode';
@@ -11,11 +12,12 @@ import RoutePathCopySegmentLayer from './routePathCopySegmentLayer';
 
 interface IEditRoutePathLayerProps {
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'routePathCopySegmentStore', 'mapStore')
+@inject('routePathStore', 'routePathLayerStore', 'routePathCopySegmentStore', 'mapStore')
 @observer
 class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     private setExtendedListItem = (id: string) => {
@@ -27,7 +29,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     render() {
         if (!this.props.routePathStore!.routePath) return null;
 
-        const neighborLinks = this.props.routePathStore!.neighborLinks;
+        const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
         const isRoutePathCopySegmentLayerVisible =
             this.props.routePathCopySegmentStore!.startNode ||
             this.props.routePathCopySegmentStore!.endNode;
