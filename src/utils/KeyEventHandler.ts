@@ -6,6 +6,7 @@ const KEYCODES = {
     arrowDown: 'ArrowDown',
     Y: 'KeyY',
     Z: 'KeyZ',
+    escape: 'Escape',
 };
 
 class KeyEventHandler {
@@ -25,6 +26,10 @@ class KeyEventHandler {
             }
             case KEYCODES.arrowDown: {
                 EventHelper.trigger('arrowDown');
+                break;
+            }
+            case KEYCODES.escape: {
+                EventHelper.trigger('escape');
                 break;
             }
         }

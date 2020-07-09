@@ -30,6 +30,7 @@ class ExtendRoutePathTool implements BaseTool {
         RoutePathStore.setIsEditingDisabled(false);
         EventHelper.on('undo', this.highlightClickableNodes);
         EventHelper.on('redo', this.highlightClickableNodes);
+        EventHelper.on('escape', this.onEscapePress);
     }
     public deactivate() {
         this.reset();
@@ -38,6 +39,7 @@ class ExtendRoutePathTool implements BaseTool {
         EventHelper.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         EventHelper.off('undo', this.highlightClickableNodes);
         EventHelper.off('redo', this.highlightClickableNodes);
+        EventHelper.off('escape', this.onEscapePress);
     }
 
     private reset() {
@@ -58,6 +60,11 @@ class ExtendRoutePathTool implements BaseTool {
         if (params.nodeType !== NodeType.STOP) return;
 
         this.fetchNeighborRoutePathLinks(params.nodeId, 1);
+    };
+
+    private onEscapePress = () => {
+        RoutePathStore.setNeighborRoutePathLinks([]);
+        this.highlightClickableNodes();
     };
 
     private isNetworkNodesInteractive() {
