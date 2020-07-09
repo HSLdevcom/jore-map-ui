@@ -14,7 +14,7 @@ import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import { IRoutePathToCopy, RoutePathCopyStore } from '~/stores/routePathCopyStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
@@ -22,7 +22,7 @@ import * as s from './copyRoutePathView.scss';
 
 interface ICopyRoutePathViewProps {
     routePathCopyStore?: RoutePathCopyStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
 }
 
 interface ICopyRoutePathState {
@@ -38,7 +38,7 @@ interface ICopyRoutePathState {
     areInactiveLinesHidden: boolean;
 }
 
-@inject('routePathCopyStore', 'routePathLayerStore')
+@inject('routePathCopyStore', 'routePathLayerListStore')
 @observer
 class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRoutePathState> {
     private areInactiveLinesHiddenListener: IReactionDisposer;
@@ -150,7 +150,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                 (rp) => rp.internalId === routePath.internalId
             );
             selectedRoutePaths.splice(removeIndex, 1);
-            this.props.routePathLayerStore!.removeRoutePath(routePath.internalId);
+            this.props.routePathLayerListStore!.removeRoutePath(routePath.internalId);
             this._setState({
                 selectedRoutePaths,
             });
@@ -176,7 +176,9 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             routePathWithLinks!.isVisible = true;
             routePathWithLinks!.internalId = _.cloneDeep(routePath).internalId;
             selectedRoutePaths = selectedRoutePaths.concat(routePathWithLinks!);
-            this.props.routePathLayerStore!.addRoutePaths({ routePaths: [routePathWithLinks!] });
+            this.props.routePathLayerListStore!.addRoutePaths({
+                routePaths: [routePathWithLinks!],
+            });
             this._setState({
                 selectedRoutePaths,
             });
@@ -256,7 +258,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                 </tr>
                                 {routePathsToCopy.map(
                                     (rpToCopy: IRoutePathToCopy, index: number) => {
-                                        const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                                        const rpFromRpLayerStore = this.props.routePathLayerListStore!.getRoutePath(
                                             rpToCopy.id
                                         );
                                         const isVisible = rpFromRpLayerStore
@@ -267,7 +269,10 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                 ? rpFromRpLayerStore.color
                                                 : '#898989';
                                         return (
-                                            <tr key={`rpToCopyRow-${index}`} data-cy={`rpToCopyRow-${index}`}>
+                                            <tr
+                                                key={`rpToCopyRow-${index}`}
+                                                data-cy={`rpToCopyRow-${index}`}
+                                            >
                                                 <td>
                                                     <Dropdown
                                                         selected={rpToCopy.direction}
@@ -310,7 +315,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                 <td>
                                                     <ToggleSwitch
                                                         onClick={() =>
-                                                            this.props.routePathLayerStore!.toggleRoutePathVisibility(
+                                                            this.props.routePathLayerListStore!.toggleRoutePathVisibility(
                                                                 rpToCopy.id
                                                             )
                                                         }
@@ -393,7 +398,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                             );
                                                             let color;
                                                             if (isSelected) {
-                                                                color = this.props.routePathLayerStore!.getRoutePath(
+                                                                color = this.props.routePathLayerListStore!.getRoutePath(
                                                                     routePath.internalId
                                                                 )!.color!;
                                                             }
@@ -446,7 +451,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                                     ? selectedBackgroundColorStyle
                                                                                     : undefined
                                                                             }
-                                                                            data-cy={isSelected ? 'selectedRp' : ''}
+                                                                            data-cy={
+                                                                                isSelected
+                                                                                    ? 'selectedRp'
+                                                                                    : ''
+                                                                            }
                                                                         ></div>
                                                                     </td>
                                                                 </tr>

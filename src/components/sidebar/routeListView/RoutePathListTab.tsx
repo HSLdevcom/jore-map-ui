@@ -25,7 +25,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
@@ -45,7 +45,7 @@ interface IRoutePathListTabProps {
     areAllRoutePathsVisible: boolean;
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
     loginStore?: LoginStore;
@@ -67,7 +67,7 @@ const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routeListStore',
-    'routePathLayerStore',
+    'routePathLayerListStore',
     'mapStore',
     'confirmStore',
     'loginStore',
@@ -311,7 +311,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
                     if (isCurrentDateWithinTimeSpan(routePath.startDate, routePath.endDate)) {
-                        this.props.routePathLayerStore!.setRoutePathVisibility({
+                        this.props.routePathLayerListStore!.setRoutePathVisibility({
                             id: routePath.internalId,
                             isVisible: true,
                         });

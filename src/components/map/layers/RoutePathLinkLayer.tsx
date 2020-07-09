@@ -7,7 +7,7 @@ import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { INode, IRoutePath } from '~/models';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
@@ -24,7 +24,7 @@ interface RoutePathLinkLayerProps {
     onMouseOut: (target: any, id: string) => void;
     popupStore?: PopupStore;
     mapStore?: MapStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
 }
 
 const OPACITY_HIGHLIGHTED = 1;
@@ -32,7 +32,7 @@ const OPACITY_UNHIGHLIGHTED = 0.6;
 const WEIGHT_HIGHLIGHTED = 8;
 const WEIGHT_UNHIGHLIGHTED = 6;
 
-@inject('popupStore', 'mapStore', 'routePathLayerStore')
+@inject('popupStore', 'mapStore', 'routePathLayerListStore')
 @observer
 class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private layerRef: React.Ref<any>;
@@ -189,9 +189,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const routePath = this.props.routePath;
         if (!routePath.isVisible || routePath.routePathLinks.length === 0) return null;
         const isSelected =
-            this.props.routePathLayerStore!.selectedRoutePathId === routePath.internalId;
+            this.props.routePathLayerListStore!.selectedRoutePathId === routePath.internalId;
         const isHighlighted =
-            this.props.routePathLayerStore!.highlightedRoutePathId === routePath.internalId;
+            this.props.routePathLayerListStore!.highlightedRoutePathId === routePath.internalId;
         return (
             <>
                 <FeatureGroup

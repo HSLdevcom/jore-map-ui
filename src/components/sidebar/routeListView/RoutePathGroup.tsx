@@ -13,7 +13,7 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
 import { isCurrentDateWithinTimeSpan, toDateString, toMidnightDate } from '~/utils/dateUtils';
@@ -30,11 +30,11 @@ interface IRoutePathGroupProps {
     index: number;
     stopNameMap: Map<string, IRoutePathStopNames>;
     userStore?: UserStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
     routePathMassEditStore?: RoutePathMassEditStore;
 }
 
-@inject('userStore', 'routePathLayerStore', 'routePathMassEditStore')
+@inject('userStore', 'routePathLayerListStore', 'routePathMassEditStore')
 @observer
 class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     private updateStartDates = (routePaths: IRoutePath[]) => async (value: Date) => {
@@ -219,7 +219,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             this.props.routePathMassEditStore!.selectedRoutePath?.internalId ===
                             routePath.internalId;
                         const oldRoutePath = massEditRp && massEditRp.oldRoutePath;
-                        const rpFromRpLayerStore = this.props.routePathLayerStore!.getRoutePath(
+                        const rpFromRpLayerStore = this.props.routePathLayerListStore!.getRoutePath(
                             routePath.internalId
                         );
                         const isVisible = rpFromRpLayerStore
@@ -318,7 +318,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     )}
                                     <ToggleSwitch
                                         onClick={() =>
-                                            this.props.routePathLayerStore!.toggleRoutePathVisibility(
+                                            this.props.routePathLayerListStore!.toggleRoutePathVisibility(
                                                 routePath.internalId
                                             )
                                         }

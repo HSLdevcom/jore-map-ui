@@ -6,7 +6,7 @@ import { IRoutePath, IRoutePathLink } from '~/models';
 import RoutePathService from '~/services/routePathService';
 import MapStore from './mapStore';
 
-class RoutePathLayerStore {
+class RoutePathLayerListStore {
     @observable private _routePaths: IRoutePath[];
     @observable private _highlightedRoutePathId: string | null;
     @observable private _selectedRoutePathId: string | null;
@@ -156,6 +156,6 @@ class RoutePathLayerStore {
     };
 }
 
-export default new RoutePathLayerStore();
+export default new RoutePathLayerListStore();
 
-export { RoutePathLayerStore };
+export { RoutePathLayerListStore };
