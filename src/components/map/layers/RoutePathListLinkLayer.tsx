@@ -16,7 +16,7 @@ import NodeMarker from './markers/NodeMarker';
 import * as s from './routePathLinkLayer.scss';
 import ArrowDecorator from './utils/ArrowDecorator';
 
-interface RoutePathLinkLayerProps {
+interface RoutePathListLinkLayerProps {
     internalId: string;
     routePath: IRoutePath;
     onClick: (target: any, id: string) => void;
@@ -34,10 +34,10 @@ const WEIGHT_UNHIGHLIGHTED = 6;
 
 @inject('popupStore', 'mapStore', 'routePathLayerListStore')
 @observer
-class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
     private layerRef: React.Ref<any>;
 
-    constructor(props: RoutePathLinkLayerProps) {
+    constructor(props: RoutePathListLinkLayerProps) {
         super(props);
         this.layerRef = React.createRef<any>();
     }
@@ -209,4 +209,4 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default RoutePathLinkLayer;
+export default RoutePathListLinkLayer;

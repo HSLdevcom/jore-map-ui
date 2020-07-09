@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { LeafletContext } from '../Map';
-import RoutePathLinkLayer from './RoutePathLinkLayer';
+import RoutePathListLinkLayer from './RoutePathListLinkLayer';
 
 interface IRoutePathListLayerProps {
     leaflet: LeafletContext;
@@ -50,7 +50,7 @@ class RoutePathListLayer extends Component<IRoutePathListLayerProps> {
         return routePaths.map((routePath, index) => {
             const internalId = routePath.internalId;
             return (
-                <RoutePathLinkLayer
+                <RoutePathListLinkLayer
                     key={routePath.internalId}
                     internalId={internalId}
                     onClick={this.toggleSelectedRoutePath}
