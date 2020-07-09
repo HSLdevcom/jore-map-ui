@@ -6,6 +6,7 @@ type eventName =
     | 'enter'
     | 'arrowUp'
     | 'arrowDown'
+    | 'escape'
     | 'undo'
     | 'redo'
     | 'mapClick'

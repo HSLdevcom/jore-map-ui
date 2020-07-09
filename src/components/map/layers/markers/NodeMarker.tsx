@@ -206,7 +206,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 icon={this.renderNodeMarkerIcon({ nodeLocationType })}
                 position={coordinates}
                 onDragEnd={onMoveMarker && this.onMoveMarker()}
-                interactive={!isClickDisabled}
+                interactive={!Boolean(isClickDisabled)}
                 zIndexOffset={hasHighZIndex ? 1000 : 0}
             >
                 {this.renderStopRadiusCircle()}

@@ -6,6 +6,7 @@ import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams,
 } from '~/helpers/EventHelper';
+import { IRoutePathLink } from '~/models';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
@@ -18,39 +19,41 @@ import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
 const START_MARKER_COLOR = '#00df0b';
 
 interface IRoutePathLayerProps {
+    rpLink: IRoutePathLink;
+    setExtendedListItem: (id: string) => void;
+    isEndNodeRendered: boolean;
     routePathStore?: RoutePathStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    setExtendedListItem: (id: string) => void;
 }
 
 @inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
 @observer
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
-    private renderRoutePathNodes = () => {
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length < 1) return;
-        const res: ReactNode[] = routePathLinks.map((rpLink, index) => {
-            const isDisabled = rpLink.startNodeType === StartNodeType.DISABLED;
-            return this.renderNode({
+    private renderRoutePathLinkNodes = () => {
+        const res: ReactNode[] = [];
+        const rpLink = this.props.rpLink;
+        const isDisabled = rpLink.startNodeType === StartNodeType.DISABLED;
+
+        res.push(
+            this.renderNode({
                 isDisabled,
                 node: rpLink.startNode,
                 linkOrderNumber: rpLink.orderNumber,
-                key: `node-${index}`,
-            });
-        });
-
-        const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
-        res.push(
-            this.renderNode({
-                isDisabled: false, // Last routePath node can't be disabled
-                node: lastRoutePathLink.endNode,
-                linkOrderNumber: lastRoutePathLink.orderNumber,
-                key: 'lastNode',
+                key: `startNode-${rpLink.startNode.id}`,
             })
         );
-
+        if (this.props.isEndNodeRendered) {
+            res.push(
+                this.renderNode({
+                    isDisabled: false, // End node has no disabled information
+                    node: rpLink.endNode,
+                    linkOrderNumber: rpLink.orderNumber,
+                    key: `endNode-${rpLink.endNode.id}`,
+                })
+            );
+        }
         return res;
     };
 
@@ -147,7 +150,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     render() {
         return (
             <>
-                {this.renderRoutePathNodes()}
+                {this.renderRoutePathLinkNodes()}
                 {this.renderStartMarker()}
             </>
         );
