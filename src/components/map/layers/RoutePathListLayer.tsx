@@ -5,15 +5,15 @@ import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { LeafletContext } from '../Map';
 import RoutePathLinkLayer from './RoutePathLinkLayer';
 
-interface IRoutePathLayerProps {
+interface IRoutePathListLayerProps {
     leaflet: LeafletContext;
     routePathLayerListStore?: RoutePathLayerListStore;
 }
 
 @inject('routePathLayerListStore')
 @observer
-class RoutePathLayer extends Component<IRoutePathLayerProps> {
-    constructor(props: IRoutePathLayerProps) {
+class RoutePathListLayer extends Component<IRoutePathListLayerProps> {
+    constructor(props: IRoutePathListLayerProps) {
         super(props);
     }
     private toggleSelectedRoutePath = (target: any, id: string) => (e: any) => {
@@ -63,4 +63,4 @@ class RoutePathLayer extends Component<IRoutePathLayerProps> {
     }
 }
 
-export default withLeaflet(RoutePathLayer);
+export default withLeaflet(RoutePathListLayer);
