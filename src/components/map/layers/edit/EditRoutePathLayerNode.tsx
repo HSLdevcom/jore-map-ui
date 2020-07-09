@@ -41,7 +41,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 isDisabled,
                 node: rpLink.startNode,
                 linkOrderNumber: rpLink.orderNumber,
-                key: `startNode`,
+                key: `startNode-${rpLink.startNode.id}`,
             })
         );
         if (this.props.isEndNodeRendered) {
@@ -50,7 +50,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                     isDisabled: false, // End node has no disabled information
                     node: rpLink.endNode,
                     linkOrderNumber: rpLink.orderNumber,
-                    key: 'endNode',
+                    key: `endNode-${rpLink.endNode.id}`,
                 })
             );
         }

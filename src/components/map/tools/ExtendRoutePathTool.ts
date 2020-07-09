@@ -109,12 +109,9 @@ class ExtendRoutePathTool implements BaseTool {
         const routePath = RoutePathStore!.routePath!;
 
         const clickableNodeIds: string[] = [];
-        const unclickableNodeIds: string[] = [];
         loopRoutePathNodes(routePath, (node: INode) => {
             if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
                 clickableNodeIds.push(node.id);
-            } else {
-                unclickableNodeIds.push(node.id);
             }
         });
         RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
