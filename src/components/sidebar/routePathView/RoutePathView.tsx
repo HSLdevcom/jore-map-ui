@@ -30,6 +30,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -45,6 +46,7 @@ interface IRoutePathViewProps {
     match?: match<any>;
     alertStore?: AlertStore;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
@@ -62,6 +64,7 @@ const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routePathStore',
+    'routePathLayerStore',
     'routePathCopySegmentStore',
     'networkStore',
     'toolbarStore',
@@ -194,7 +197,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
         if (itemToShow) {
             this.props.routePathStore!.setSelectedTabIndex(1);
-            this.props.routePathStore!.setExtendedListItemId(itemToShow);
+            this.props.routePathLayerStore!.setExtendedListItemId(itemToShow);
             this.props.routePathStore!.removeListFilter(ListFilter.link);
         }
         this._setState({ isLoading: false });

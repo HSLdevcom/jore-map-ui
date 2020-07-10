@@ -115,11 +115,11 @@ class ExtendRoutePathTool implements BaseTool {
                 clickableNodeIds.push(node.id);
             }
         });
-        RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
+        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
-        RoutePathStore!.setToolHighlightedNodeIds([]);
+        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 

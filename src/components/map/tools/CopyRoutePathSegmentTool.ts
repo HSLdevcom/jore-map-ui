@@ -6,6 +6,7 @@ import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
+import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
 import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
@@ -105,12 +106,12 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     private isStartNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
-        return routePathLinks.some(link => link.endNode.id === nodeId);
+        return routePathLinks.some((link) => link.endNode.id === nodeId);
     }
 
     private isEndNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
-        return routePathLinks.some(link => link.startNode.id === nodeId);
+        return routePathLinks.some((link) => link.startNode.id === nodeId);
     }
 
     private highlightClickableNodes() {
@@ -125,11 +126,11 @@ class CopyRoutePathSegmentTool implements BaseTool {
                 unclickableNodeIds.push(node.id);
             }
         });
-        RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
+        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
-        RoutePathStore!.setToolHighlightedNodeIds([]);
+        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 

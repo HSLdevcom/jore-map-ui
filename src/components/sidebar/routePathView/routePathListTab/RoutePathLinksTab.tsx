@@ -6,6 +6,7 @@ import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
@@ -17,10 +18,11 @@ interface IRoutePathLinksTabProps {
     routePath: IRoutePath;
     isEditingDisabled: boolean;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
 }
 
-@inject('routePathStore', 'routePathLinkMassEditStore')
+@inject('routePathStore', 'routePathLayerStore', 'routePathLinkMassEditStore')
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     private extendedItemListener: IReactionDisposer;
@@ -30,7 +32,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         super(props);
         this.listObjectReferences = {};
         this.extendedItemListener = reaction(
-            () => this.props.routePathStore!.extendedListItemId,
+            () => this.props.routePathLayerStore!.extendedListItemId,
             this.onListItemExtend
         );
     }
@@ -116,7 +118,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     };
 
     private onListItemExtend = () => {
-        const extendedListItemId = this.props.routePathStore!.extendedListItemId;
+        const extendedListItemId = this.props.routePathLayerStore!.extendedListItemId;
         if (extendedListItemId) {
             this.scrollIntoListItem(extendedListItemId);
         }

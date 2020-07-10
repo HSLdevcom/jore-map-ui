@@ -38,9 +38,6 @@ class RoutePathStore {
     @observable private _existingRoutePaths: IRoutePath[];
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _extendedListItemId: string | null;
-    @observable private _highlightedListItemId: string | null;
-    @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
@@ -53,9 +50,6 @@ class RoutePathStore {
     constructor() {
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
-        this._extendedListItemId = null;
-        this._highlightedListItemId = null;
-        this._toolHighlightedNodeIds = [];
         this._existingRoutePaths = [];
         this._isEditingDisabled = true;
         this._selectedTabIndex = 0;
@@ -110,21 +104,6 @@ class RoutePathStore {
     @computed
     get invalidLinkOrderNumbers() {
         return this._invalidLinkOrderNumbers;
-    }
-
-    @computed
-    get extendedListItemId() {
-        return this._extendedListItemId;
-    }
-
-    @computed
-    get highlightedListItemId() {
-        return this._highlightedListItemId;
-    }
-
-    @computed
-    get toolHighlightedNodeIds() {
-        return this._toolHighlightedNodeIds;
     }
 
     @computed
@@ -337,22 +316,6 @@ class RoutePathStore {
             this.restoreBookScheduleProperties(previousUndoState);
             this.setRoutePathLinks(newRoutePathLinks);
         });
-    };
-
-    @action
-    public setExtendedListItemId = (id: string | null) => {
-        this._extendedListItemId = id;
-    };
-
-    @action
-    public setHighlightedListItemId = (id: string | null) => {
-        this._highlightedListItemId = id;
-    };
-
-    // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
-    @action
-    public setToolHighlightedNodeIds = (nodeIds: string[]) => {
-        return (this._toolHighlightedNodeIds = nodeIds);
     };
 
     @action

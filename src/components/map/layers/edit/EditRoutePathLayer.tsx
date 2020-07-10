@@ -23,7 +23,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     private setExtendedListItem = (id: string) => {
         // Switch to info tab
         this.props.routePathStore!.setSelectedTabIndex(1);
-        this.props.routePathStore!.setExtendedListItemId(id);
+        this.props.routePathLayerStore!.setExtendedListItemId(id);
     };
 
     render() {
