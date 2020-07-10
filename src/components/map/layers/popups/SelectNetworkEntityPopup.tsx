@@ -38,13 +38,10 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
     private redirectToNode = (nodeId: string, popupId: number) => {
         this.props.popupStore!.closePopup(popupId);
         this.props.highlightEntityStore!.setNodes([]);
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
+        const nodeViewLink = routeBuilder.to(SubSites.node).toTarget(':id', nodeId).toLink();
         navigator.goTo({
             link: nodeViewLink,
-            unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${nodeId}? Tallentamattomat muutokset kumotaan.`
+            unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${nodeId}? Tallentamattomat muutokset kumotaan.`,
         });
     };
 
@@ -62,7 +59,7 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
             .toLink();
         navigator.goTo({
             link: linkViewLink,
-            unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`
+            unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`,
         });
     };
 
@@ -79,11 +76,15 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             onClick={() => this.redirectToNode(node.id, this.props.popupId)}
                             data-cy='node'
                         >
-                            <TransitTypeNodeIcon
-                                nodeType={node.type}
-                                transitTypes={node.transitTypes}
-                            />
-                            <div className={s.linkText}>Solmu {node.id}</div>
+                            <div className={s.nodeContainer}>
+                                <div className={s.linkNode}>
+                                    <TransitTypeNodeIcon
+                                        nodeType={node.type}
+                                        transitTypes={node.transitTypes}
+                                    />
+                                </div>
+                                <div>{node.id}</div>
+                            </div>
                         </div>
                     );
                 })}
@@ -98,9 +99,27 @@ class SelectNetworkEntityPopup extends Component<ISelectNetworkEntityPopupProps>
                             data-cy='link'
                         >
                             <TransitIcon transitType={link.transitType} isWithoutBox={false} />
-                            <div className={s.linkText}>{`${link.startNodeId} - ${
-                                link.endNodeId
-                            }`}</div>
+                            <div className={s.linkText}>
+                                <div className={s.nodeContainer}>
+                                    <div className={s.linkNode}>
+                                        <TransitTypeNodeIcon
+                                            nodeType={link.startNodeType}
+                                            transitTypes={link.startNodeTransitTypes}
+                                        />
+                                    </div>
+                                    {link.startNodeId}
+                                </div>
+                                <div className={s.divider}>-</div>
+                                <div className={s.nodeContainer}>
+                                    <div className={s.linkNode}>
+                                        <TransitTypeNodeIcon
+                                            nodeType={link.endNodeType}
+                                            transitTypes={link.endNodeTransitTypes}
+                                        />
+                                    </div>
+                                    {link.endNodeId}
+                                </div>
+                            </div>
                         </div>
                     );
                 })}

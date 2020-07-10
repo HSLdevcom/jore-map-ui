@@ -1,7 +1,8 @@
 import * as L from 'leaflet';
+import TransitType from '~/enums/transitType';
 import { ILink, INode } from '~/models';
 import { ILinkMapHighlight } from '~/models/ILink';
-import IExternalLink from '~/models/externals/IExternalLink';
+import IExternalLink, { IExternalNetworkSelectLink } from '~/models/externals/IExternalLink';
 import { roundLatLngs } from '~/utils/geomUtils';
 import NodeFactory from './nodeFactory';
 
@@ -19,19 +20,29 @@ class LinkFactory {
             measuredLength: externalLink.lnkmitpituus,
             speed: externalLink.speed ? Math.round(externalLink.speed) : 0,
             modifiedBy: externalLink.lnkkuka,
-            modifiedOn: externalLink.lnkviimpvm ? new Date(externalLink.lnkviimpvm) : undefined
+            modifiedOn: externalLink.lnkviimpvm ? new Date(externalLink.lnkviimpvm) : undefined,
         };
     };
 
-    public static createLinkMapHighlight = (externalLink: IExternalLink): ILinkMapHighlight => {
+    public static createLinkMapHighlight = (
+        externalLink: IExternalNetworkSelectLink
+    ): ILinkMapHighlight => {
         const geojson = JSON.parse(externalLink.geojson);
         const latLngs: L.LatLng[] = L.GeoJSON.coordsToLatLngs(geojson.coordinates);
         return {
             transitType: externalLink.lnkverkko,
+            geometry: roundLatLngs(latLngs),
             startNodeId: externalLink.lnkalkusolmu!,
             endNodeId: externalLink.lnkloppusolmu!,
-            geometry: roundLatLngs(latLngs),
-            dateRanges: externalLink.dateRanges!
+            dateRanges: externalLink.dateRanges!,
+            startNodeTransitTypes: externalLink.startNodeTransitTypes
+                ? (externalLink.startNodeTransitTypes.split(',') as TransitType[])
+                : [],
+            startNodeType: externalLink.startNodeType,
+            endNodeTransitTypes: externalLink.endNodeTransitTypes
+                ? (externalLink.endNodeTransitTypes.split(',') as TransitType[])
+                : [],
+            endNodeType: externalLink.endNodeType,
         };
     };
 
@@ -45,7 +56,7 @@ class LinkFactory {
             measuredLength: 0,
             speed: 0,
             modifiedBy: '',
-            modifiedOn: new Date()
+            modifiedOn: new Date(),
         };
     };
 }

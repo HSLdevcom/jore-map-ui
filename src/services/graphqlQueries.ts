@@ -181,19 +181,22 @@ const getNetworkNodesFromPointQuery = () => {
 
 const getNetworkLinksFromPointQuery = () => {
     return gql`
-        query getNetworkLinksFromPoint($lon: Float, $lat: Float, $bufferSize: Float) {
+        query getNetworkLinksFromPoint($lat: Float, $lon: Float, $bufferSize: Float) {
             get_network_links_from_point: getNetworkLinksFromPoint(
-                lon: $lon
                 lat: $lat
+                lon: $lon
                 buffersize: $bufferSize
             ) {
                 nodes {
-                    geojson
                     lnkverkko
+                    geojson
                     lnkalkusolmu
                     lnkloppusolmu
-                    lnkverkko
                     dateRanges
+                    startNodeTransitTypes
+                    startNodeType
+                    endNodeTransitTypes
+                    endNodeType
                 }
             }
         }
