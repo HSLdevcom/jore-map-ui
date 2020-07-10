@@ -40,26 +40,27 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         } else {
             isLinkHighlighted = routePathLayerStore!.extendedListItemId === routePathLink.id;
         }
-        return [
+        return (
             <Polyline
                 positions={routePathLink.geometry}
                 key={routePathLink.id}
                 color={ROUTE_COLOR}
-                weight={5}
-                opacity={0.8}
+                weight={isLinkHighlighted ? 25 : 5}
+                opacity={isLinkHighlighted ? 0.5 : 0.8}
                 onClick={this.handleLinkClick(routePathLink)}
-            />,
-            isLinkHighlighted && (
-                <Polyline
-                    positions={routePathLink.geometry}
-                    key={`${routePathLink.id}-highlight`}
-                    color={ROUTE_COLOR}
-                    weight={25}
-                    opacity={0.5}
-                    onClick={this.handleLinkClick(routePathLink)}
-                />
-            ),
-        ];
+                onMouseOver={() => this.onMouseOver(routePathLink.id)}
+                onMouseOut={this.onMouseOut}
+                interactive={true}
+            />
+        );
+    };
+
+    private onMouseOver = (id: string) => {
+        this.props.routePathLayerStore!.setHoveredItemId(id);
+    };
+
+    private onMouseOut = () => {
+        this.props.routePathLayerStore!.setHoveredItemId(null);
     };
 
     private handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
