@@ -63,7 +63,7 @@ class RoutePathLayerStore {
     };
 
     @action
-    public setHighlightedListItemId = (id: string | null) => {
+    public setHoveredItemId = (id: string | null) => {
         this._hoveredItemId = id;
     };
 
