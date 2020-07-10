@@ -80,8 +80,8 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         const toolHighlightedNodeIds = routePathLayerStore!.toolHighlightedNodeIds;
         const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
         let isNodeHighlighted;
-        if (routePathLayerStore!.highlightedListItemId) {
-            isNodeHighlighted = routePathLayerStore!.highlightedListItemId === node.internalId;
+        if (routePathLayerStore!.hoveredItemId) {
+            isNodeHighlighted = routePathLayerStore!.hoveredItemId === node.internalId;
         } else {
             isNodeHighlighted = routePathLayerStore!.extendedListItemId === node.internalId;
         }

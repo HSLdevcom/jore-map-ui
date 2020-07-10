@@ -35,8 +35,8 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderLink = (routePathLink: IRoutePathLink) => {
         const routePathLayerStore = this.props.routePathLayerStore;
         let isLinkHighlighted;
-        if (routePathLayerStore!.highlightedListItemId) {
-            isLinkHighlighted = routePathLayerStore!.highlightedListItemId === routePathLink.id;
+        if (routePathLayerStore!.hoveredItemId) {
+            isLinkHighlighted = routePathLayerStore!.hoveredItemId === routePathLink.id;
         } else {
             isLinkHighlighted = routePathLayerStore!.extendedListItemId === routePathLink.id;
         }

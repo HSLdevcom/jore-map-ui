@@ -27,7 +27,7 @@ class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     };
 
     private onMouseLeave = () => {
-        if (this.props.routePathLayerStore!.highlightedListItemId === this.props.id) {
+        if (this.props.routePathLayerStore!.hoveredItemId === this.props.id) {
             this.props.routePathLayerStore!.setHighlightedListItemId(null);
         }
     };
