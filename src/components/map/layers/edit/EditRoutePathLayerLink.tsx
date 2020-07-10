@@ -15,7 +15,7 @@ const ROUTE_COLOR = '#000';
 
 interface IRoutePathLayerProps {
     rpLink: IRoutePathLink;
-    setExtendedListItem: (id: string) => void;
+    setExtendedListItem: (id: string | null) => void;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
@@ -70,7 +70,9 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         ) {
             this.props.toolbarStore!.selectedTool.onRoutePathLinkClick(routePathLink.id)(e);
         } else {
-            this.props.setExtendedListItem(routePathLink.id);
+            this.props.routePathLayerStore!.extendedListItemId === routePathLink.id
+                ? this.props.setExtendedListItem(null)
+                : this.props.setExtendedListItem(routePathLink.id);
         }
     };
 

@@ -21,7 +21,7 @@ const START_MARKER_COLOR = '#00df0b';
 
 interface IRoutePathLayerProps {
     rpLink: IRoutePathLink;
-    setExtendedListItem: (id: string) => void;
+    setExtendedListItem: (id: string | null) => void;
     isEndNodeRendered: boolean;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
@@ -100,7 +100,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             };
         } else {
             onNodeClick = () => {
-                this.props.setExtendedListItem(node.internalId);
+                routePathLayerStore?.extendedListItemId === node.internalId
+                    ? this.props.setExtendedListItem(null)
+                    : this.props.setExtendedListItem(node.internalId);
+
                 const clickParams: INodeClickParams = { node };
                 EventHelper.trigger('nodeClick', clickParams);
             };
