@@ -4,6 +4,7 @@ import { Polyline } from 'react-leaflet';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
@@ -16,21 +17,28 @@ interface IRoutePathLayerProps {
     rpLink: IRoutePathLink;
     setExtendedListItem: (id: string) => void;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
+@inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'toolbarStore',
+    'mapStore',
+    'routePathCopySegmentStore'
+)
 @observer
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderLink = (routePathLink: IRoutePathLink) => {
-        const routePathStore = this.props.routePathStore;
+        const routePathLayerStore = this.props.routePathLayerStore;
         let isLinkHighlighted;
-        if (routePathStore!.highlightedListItemId) {
-            isLinkHighlighted = routePathStore!.highlightedListItemId === routePathLink.id;
+        if (routePathLayerStore!.highlightedListItemId) {
+            isLinkHighlighted = routePathLayerStore!.highlightedListItemId === routePathLink.id;
         } else {
-            isLinkHighlighted = routePathStore!.extendedListItemId === routePathLink.id;
+            isLinkHighlighted = routePathLayerStore!.extendedListItemId === routePathLink.id;
         }
         return [
             <Polyline

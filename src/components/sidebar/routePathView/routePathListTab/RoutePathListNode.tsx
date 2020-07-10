@@ -16,6 +16,7 @@ import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -33,6 +34,7 @@ interface IRoutePathListNodeProps {
     isLastNode?: boolean;
     isFirstNode?: boolean;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathStore?: RoutePathStore;
     codeListStore?: CodeListStore;
     mapStore?: MapStore;
@@ -42,6 +44,7 @@ interface IRoutePathListNodeProps {
 
 @inject(
     'routePathStore',
+    'routePathLayerStore',
     'codeListStore',
     'mapStore',
     'routePathLinkMassEditStore',
@@ -54,7 +57,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const isExtended = this.props.routePathStore!.extendedListItemId === node.internalId;
+        const isExtended = this.props.routePathLayerStore!.extendedListItemId === node.internalId;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
@@ -117,6 +120,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private toggleExtendedListItemId = (event: React.MouseEvent) => {
         const currentListItemId = this.props.node.internalId;
         const routePathStore = this.props.routePathStore;
+        const routePathLayerStore = this.props.routePathLayerStore;
         const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
         // Mass edit routePathLinks toggle
         if (
@@ -137,10 +141,10 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             );
             // List item toggle
         } else {
-            if (currentListItemId === routePathStore!.extendedListItemId) {
-                this.props.routePathStore!.setExtendedListItemId(null);
+            if (currentListItemId === routePathLayerStore!.extendedListItemId) {
+                this.props.routePathLayerStore!.setExtendedListItemId(null);
             } else {
-                this.props.routePathStore!.setExtendedListItemId(currentListItemId);
+                this.props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
                 this.props.mapStore!.setMapBounds(this.getBounds());
             }
         }

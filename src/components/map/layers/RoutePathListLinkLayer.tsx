@@ -7,7 +7,7 @@ import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { INode, IRoutePath } from '~/models';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
@@ -16,7 +16,7 @@ import NodeMarker from './markers/NodeMarker';
 import * as s from './routePathLinkLayer.scss';
 import ArrowDecorator from './utils/ArrowDecorator';
 
-interface RoutePathLinkLayerProps {
+interface RoutePathListLinkLayerProps {
     internalId: string;
     routePath: IRoutePath;
     onClick: (target: any, id: string) => void;
@@ -24,7 +24,7 @@ interface RoutePathLinkLayerProps {
     onMouseOut: (target: any, id: string) => void;
     popupStore?: PopupStore;
     mapStore?: MapStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
 }
 
 const OPACITY_HIGHLIGHTED = 1;
@@ -32,12 +32,12 @@ const OPACITY_UNHIGHLIGHTED = 0.6;
 const WEIGHT_HIGHLIGHTED = 8;
 const WEIGHT_UNHIGHLIGHTED = 6;
 
-@inject('popupStore', 'mapStore', 'routePathLayerStore')
+@inject('popupStore', 'mapStore', 'routePathLayerListStore')
 @observer
-class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
     private layerRef: React.Ref<any>;
 
-    constructor(props: RoutePathLinkLayerProps) {
+    constructor(props: RoutePathListLinkLayerProps) {
         super(props);
         this.layerRef = React.createRef<any>();
     }
@@ -189,9 +189,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const routePath = this.props.routePath;
         if (!routePath.isVisible || routePath.routePathLinks.length === 0) return null;
         const isSelected =
-            this.props.routePathLayerStore!.selectedRoutePathId === routePath.internalId;
+            this.props.routePathLayerListStore!.selectedRoutePathId === routePath.internalId;
         const isHighlighted =
-            this.props.routePathLayerStore!.highlightedRoutePathId === routePath.internalId;
+            this.props.routePathLayerListStore!.highlightedRoutePathId === routePath.internalId;
         return (
             <>
                 <FeatureGroup
@@ -209,4 +209,4 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default RoutePathLinkLayer;
+export default RoutePathListLinkLayer;

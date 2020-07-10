@@ -4,7 +4,7 @@ import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
 import RouteListStore from '~/stores/routeListStore';
-import RoutePathLayerStore from '~/stores/routePathLayerStore';
+import RoutePathLayerListStore from '~/stores/routePathLayerListStore';
 import { getMaxDate, toDateString } from '~/utils/dateUtils';
 import NavigationStore from './navigationStore';
 import { IRoutePathToCopy } from './routePathCopyStore';
@@ -110,7 +110,7 @@ class RoutePathMassEditStore {
 
     @action
     public updateRoutePathStartDate = (id: string, newStartDate: Date) => {
-        const massEditRpToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!
+        const massEditRpToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!;
         const routePathToUpdate = massEditRpToUpdate.routePath;
         routePathToUpdate.startDate = newStartDate;
         // Update routePath's endDate as the same as startDate if endDate is not set
@@ -147,7 +147,7 @@ class RoutePathMassEditStore {
             this._selectedRoutePath = null;
         }
         this.validateMassEditRoutePaths();
-        RoutePathLayerStore.removeRoutePath(id);
+        RoutePathLayerListStore.removeRoutePath(id);
     };
 
     @action
@@ -186,7 +186,7 @@ class RoutePathMassEditStore {
             });
             idCounter += 1;
         });
-        RoutePathLayerStore.addRoutePaths({ routePaths: routePathsWithNewId });
+        RoutePathLayerListStore.addRoutePaths({ routePaths: routePathsWithNewId });
 
         this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
         this._newRoutePathIdCounter = idCounter;
@@ -312,11 +312,11 @@ class RoutePathMassEditStore {
     public clear = () => {
         this.setNavigationAction(false);
 
-        // To clear unsaved routePaths, need to remove them from RoutePathLayerStore
+        // To clear unsaved routePaths, need to remove them from RoutePathLayerListStore
         const routePathsToRemove = this._massEditRoutePaths!.filter((mEditRp) => mEditRp.isNew).map(
             (mEditRp) => mEditRp.routePath
         );
-        routePathsToRemove.forEach((rp) => RoutePathLayerStore.removeRoutePath(rp.internalId));
+        routePathsToRemove.forEach((rp) => RoutePathLayerListStore.removeRoutePath(rp.internalId));
 
         this._routeId = null;
         this._massEditRoutePaths = null;

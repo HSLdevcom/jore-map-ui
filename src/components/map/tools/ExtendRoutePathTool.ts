@@ -8,7 +8,8 @@ import EventHelper, {
 import { INode } from '~/models';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
+import RoutePathLayerStore, { NeighborToAddType } from '~/stores/routePathLayerStore';
+import RoutePathStore from '~/stores/routePathStore';
 import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
@@ -43,7 +44,7 @@ class ExtendRoutePathTool implements BaseTool {
     }
 
     private reset() {
-        RoutePathStore.setNeighborRoutePathLinks([]);
+        RoutePathLayerStore.setNeighborLinks([]);
         this.unhighlightClickableNodes();
     }
 
@@ -63,7 +64,7 @@ class ExtendRoutePathTool implements BaseTool {
     };
 
     private onEscapePress = () => {
-        RoutePathStore.setNeighborRoutePathLinks([]);
+        RoutePathLayerStore.setNeighborLinks([]);
         this.highlightClickableNodes();
     };
 
@@ -77,7 +78,7 @@ class ExtendRoutePathTool implements BaseTool {
         const routePathLink = params.neighborLink.routePathLink;
 
         RoutePathStore!.addLink(routePathLink);
-        const neighborToAddType = RoutePathStore!.neighborToAddType;
+        const neighborToAddType = RoutePathLayerStore!.neighborToAddType;
         const nodeToFetch =
             neighborToAddType === NeighborToAddType.AfterNode
                 ? routePathLink.endNode
@@ -97,8 +98,8 @@ class ExtendRoutePathTool implements BaseTool {
             linkOrderNumber
         );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
-            RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+            RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
+            RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
             this.unhighlightClickableNodes();
         } else {
             this.highlightClickableNodes();
@@ -114,11 +115,11 @@ class ExtendRoutePathTool implements BaseTool {
                 clickableNodeIds.push(node.id);
             }
         });
-        RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
+        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
-        RoutePathStore!.setToolHighlightedNodeIds([]);
+        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 

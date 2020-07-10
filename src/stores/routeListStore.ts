@@ -9,7 +9,7 @@ import RouteService from '~/services/routeService';
 import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import ErrorStore from './errorStore';
 import MapStore from './mapStore';
-import RoutePathLayerStore from './routePathLayerStore';
+import RoutePathLayerListStore from './routePathLayerListStore';
 import SearchStore from './searchStore';
 
 interface IRouteItem {
@@ -82,7 +82,7 @@ class RouteListStore {
         );
         this._routeItems = this._routeItems.concat(routeItems);
         routes.forEach((route) => {
-            RoutePathLayerStore.addRoutePaths({ routePaths: route.routePaths });
+            RoutePathLayerListStore.addRoutePaths({ routePaths: route.routePaths });
         });
     };
 
@@ -96,7 +96,7 @@ class RouteListStore {
         for (let i = 0; i < this._routeItems.length; i += 1) {
             if (this._routeItems[i].route.id === routeId) {
                 this._routeItems[i].route.routePaths.forEach((routePath) =>
-                    RoutePathLayerStore.removeRoutePath(routePath.internalId)
+                    RoutePathLayerListStore.removeRoutePath(routePath.internalId)
                 );
                 this._routeItems.splice(i, 1);
             }
@@ -134,7 +134,7 @@ class RouteListStore {
         this._routeIdToEdit = null;
         this._loadedRouteIds = [];
         this._areRoutesLoading = false;
-        RoutePathLayerStore.clear();
+        RoutePathLayerListStore.clear();
     };
 
     @action

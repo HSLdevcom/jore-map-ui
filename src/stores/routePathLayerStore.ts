@@ -1,161 +1,87 @@
-import L from 'leaflet';
-import _ from 'lodash';
-import { action, autorun, computed, observable } from 'mobx';
-import ColorScale from '~/helpers/ColorScale';
-import { IRoutePath, IRoutePathLink } from '~/models';
-import RoutePathService from '~/services/routePathService';
-import MapStore from './mapStore';
+import { INeighborLink } from '~/models';
+
+import { action, computed, observable } from 'mobx';
+
+// Is the neighbor to add either startNode or endNode
+enum NeighborToAddType {
+    AfterNode,
+    BeforeNode,
+}
 
 class RoutePathLayerStore {
-    @observable private _routePaths: IRoutePath[];
-    @observable private _highlightedRoutePathId: string | null;
-    @observable private _selectedRoutePathId: string | null;
-    private colorScale: ColorScale;
+    @observable private _neighborLinks: INeighborLink[];
+    @observable private _neighborToAddType: NeighborToAddType;
+    @observable private _extendedListItemId: string | null;
+    @observable private _highlightedListItemId: string | null;
+    @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
 
     constructor() {
-        this._routePaths = [];
-        this._highlightedRoutePathId = null;
-        this._selectedRoutePathId = null;
-        this.colorScale = new ColorScale();
-        autorun(() => this.centerMapToRoutePaths());
+        this._neighborLinks = [];
+        this._extendedListItemId = null;
+        this._highlightedListItemId = null;
+        this._toolHighlightedNodeIds = [];
     }
 
     @computed
-    get routePaths(): IRoutePath[] {
-        return this._routePaths;
+    get neighborLinks(): INeighborLink[] {
+        return this._neighborLinks;
     }
 
     @computed
-    get selectedRoutePathId(): string | null {
-        return this._selectedRoutePathId;
+    get neighborToAddType(): NeighborToAddType {
+        return this._neighborToAddType;
     }
 
     @computed
-    get highlightedRoutePathId(): string | null {
-        return this._highlightedRoutePathId;
+    get extendedListItemId() {
+        return this._extendedListItemId;
+    }
+
+    @computed
+    get highlightedListItemId() {
+        return this._highlightedListItemId;
+    }
+
+    @computed
+    get toolHighlightedNodeIds() {
+        return this._toolHighlightedNodeIds;
     }
 
     @action
-    public init = ({ routePaths }: { routePaths: IRoutePath[] }) => {
-        this.addRoutePaths({ routePaths });
+    public setNeighborLinks = (neighborLinks: INeighborLink[]) => {
+        this._neighborLinks = neighborLinks;
     };
 
     @action
-    public addRoutePaths = ({ routePaths }: { routePaths: IRoutePath[] }) => {
-        const routePathsWithColor = _.cloneDeep(routePaths).map((rp) => {
-            if (rp.isVisible && !rp.color) {
-                rp.color = this.colorScale.reserveColor();
-            } else if (rp.isVisible && rp.color) {
-                this.colorScale.reserveColor(rp.color);
-            }
-            return rp;
-        });
-        this._routePaths = this._routePaths.concat(routePathsWithColor);
+    public setNeighborToAddType = (neighborToAddType: NeighborToAddType) => {
+        this._neighborToAddType = neighborToAddType;
     };
 
     @action
-    public setRoutePathVisibility = async ({
-        isVisible,
-        id,
-    }: {
-        isVisible: boolean;
-        id: string;
-    }) => {
-        const routePath = this._routePaths.find((rp) => rp.internalId === id)!;
-        if (isVisible === routePath.isVisible) return;
-
-        routePath.isVisible = isVisible;
-        routePath.color = routePath.isVisible
-            ? this.colorScale.reserveColor()
-            : this.colorScale.releaseColor(routePath.color!);
-        if (routePath.isVisible && routePath.routePathLinks.length === 0) {
-            const routePathWithGeometry = await RoutePathService.fetchRoutePath(
-                routePath.routeId,
-                routePath.startDate,
-                routePath.direction
-            );
-            this.setRoutePathLinksToRoutePath(routePathWithGeometry!.routePathLinks, id);
-        }
+    public setExtendedListItemId = (id: string | null) => {
+        this._extendedListItemId = id;
     };
 
     @action
-    public setRoutePathLinksToRoutePath = (routePathLinks: IRoutePathLink[], id: string) => {
-        const routePath = this._routePaths.find((rp) => rp.internalId === id);
-        // If component is unmounted, routePath won't be found
-        if (routePath) {
-            routePath.routePathLinks = routePathLinks;
-        }
+    public setHighlightedListItemId = (id: string | null) => {
+        this._highlightedListItemId = id;
     };
 
+    // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
     @action
-    public toggleRoutePathVisibility = async (id: string) => {
-        const routePath = this._routePaths.find((rp) => rp.internalId === id);
-        this.setRoutePathVisibility({ id, isVisible: !routePath!.isVisible });
-    };
-
-    @action
-    public removeRoutePath = (id: string) => {
-        let index: number;
-        let routePath: IRoutePath;
-        this._routePaths.find((rp: IRoutePath, i: number) => {
-            if (rp.internalId === id) {
-                index = i;
-                routePath = rp;
-                return true;
-            }
-            return false;
-        });
-        this._routePaths.splice(index!, 1);
-        this.colorScale.releaseColor(routePath!.color!);
-    };
-
-    @action
-    public toggleSelectedRoutePath = (id: string) => {
-        if (this._selectedRoutePathId === id) {
-            this._selectedRoutePathId = null;
-        } else {
-            this._selectedRoutePathId = id;
-        }
-    };
-
-    @action
-    public setRoutePathHighlight = (id: string | null) => {
-        this._highlightedRoutePathId = id;
+    public setToolHighlightedNodeIds = (nodeIds: string[]) => {
+        return (this._toolHighlightedNodeIds = nodeIds);
     };
 
     @action
     public clear = () => {
-        this._routePaths.forEach((rp) => {
-            this.colorScale.releaseColor(rp.color!);
-        });
-        this._routePaths = [];
-        this._highlightedRoutePathId = null;
-        this._selectedRoutePathId = null;
-        this.colorScale = new ColorScale();
-    };
-
-    public getRoutePath = (id: string): IRoutePath | undefined => {
-        return this._routePaths.find((rp) => rp.internalId === id);
-    };
-
-    private centerMapToRoutePaths = () => {
-        if (this._routePaths.length === 0) return;
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-        this._routePaths.forEach((routePath) => {
-            if (routePath.isVisible) {
-                routePath.routePathLinks.forEach((routePathLink) => {
-                    routePathLink.geometry.forEach((pos) => {
-                        bounds.extend(pos);
-                    });
-                });
-            }
-        });
-        if (bounds.isValid()) {
-            MapStore!.setMapBounds(bounds);
-        }
+        this._neighborLinks = [];
+        this._extendedListItemId = null;
+        this._highlightedListItemId = null;
+        this._toolHighlightedNodeIds = [];
     };
 }
 
 export default new RoutePathLayerStore();
 
-export { RoutePathLayerStore };
+export { RoutePathLayerStore, NeighborToAddType };

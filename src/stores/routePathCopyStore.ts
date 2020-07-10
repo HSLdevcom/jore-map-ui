@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { action, computed, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
-import RoutePathLayerStore from './routePathLayerStore';
+import RoutePathLayerListStore from './routePathLayerListStore';
 import RoutePathMassEditStore from './routePathMassEditStore';
 
 interface IRoutePathToCopy {
@@ -61,8 +61,8 @@ class RoutePathCopyStore {
         this._routeId = routeId;
         this._transitType = transitType;
 
-        this._storedRouteListRoutePaths = _.cloneDeep(RoutePathLayerStore.routePaths);
-        RoutePathLayerStore.clear();
+        this._storedRouteListRoutePaths = _.cloneDeep(RoutePathLayerListStore.routePaths);
+        RoutePathLayerListStore.clear();
     };
 
     @action
@@ -89,7 +89,7 @@ class RoutePathCopyStore {
         const removeIndex = this._routePathsToCopy.findIndex((rpToCopy) => rpToCopy.id === id);
         this._routePathsToCopy.splice(removeIndex, 1);
 
-        RoutePathLayerStore.removeRoutePath(id);
+        RoutePathLayerListStore.removeRoutePath(id);
     };
 
     @action
@@ -101,8 +101,8 @@ class RoutePathCopyStore {
 
     @action
     public restoreRouteListRoutePaths = () => {
-        RoutePathLayerStore.clear();
-        RoutePathLayerStore.addRoutePaths({ routePaths: this._storedRouteListRoutePaths! });
+        RoutePathLayerListStore.clear();
+        RoutePathLayerListStore.addRoutePaths({ routePaths: this._storedRouteListRoutePaths! });
     };
 
     @action

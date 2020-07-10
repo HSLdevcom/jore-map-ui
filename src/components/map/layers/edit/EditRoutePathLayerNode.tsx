@@ -10,6 +10,7 @@ import { IRoutePathLink } from '~/models';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
@@ -23,12 +24,19 @@ interface IRoutePathLayerProps {
     setExtendedListItem: (id: string) => void;
     isEndNodeRendered: boolean;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
+@inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'toolbarStore',
+    'mapStore',
+    'routePathCopySegmentStore'
+)
 @observer
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderRoutePathLinkNodes = () => {
@@ -68,14 +76,14 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         isDisabled: boolean;
         key: string;
     }) => {
-        const routePathStore = this.props.routePathStore;
-        const toolHighlightedNodeIds = routePathStore!.toolHighlightedNodeIds;
+        const routePathLayerStore = this.props.routePathLayerStore;
+        const toolHighlightedNodeIds = routePathLayerStore!.toolHighlightedNodeIds;
         const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
         let isNodeHighlighted;
-        if (routePathStore!.highlightedListItemId) {
-            isNodeHighlighted = routePathStore!.highlightedListItemId === node.internalId;
+        if (routePathLayerStore!.highlightedListItemId) {
+            isNodeHighlighted = routePathLayerStore!.highlightedListItemId === node.internalId;
         } else {
-            isNodeHighlighted = routePathStore!.extendedListItemId === node.internalId;
+            isNodeHighlighted = routePathLayerStore!.extendedListItemId === node.internalId;
         }
 
         // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted

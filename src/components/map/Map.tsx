@@ -15,7 +15,7 @@ import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
-import RoutePathLayer from './layers/RoutePathLayer';
+import RoutePathListLayer from './layers/RoutePathListLayer';
 import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
@@ -173,7 +173,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <NetworkLayers />
                     <EditNodeLayer />
                     <EditLinkLayer />
-                    <RoutePathLayer />
+                    <RoutePathListLayer />
                     <EditRoutePathLayer />
                     <PopupLayer />
                     <StopAreaLayer />

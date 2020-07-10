@@ -10,6 +10,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { MapStore } from '~/stores/mapStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TextContainer from '../../../controls/TextContainer';
 import RoutePathListItem from './RoutePathListItem';
@@ -18,18 +19,19 @@ import * as s from './routePathListItem.scss';
 interface IRoutePathListLinkProps {
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
-    mapStore?: MapStore;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     codeListStore?: CodeListStore;
+    mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'codeListStore', 'mapStore')
+@inject('routePathStore', 'routePathLayerStore', 'codeListStore', 'mapStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
         const orderNumber = this.props.routePathLink.orderNumber;
-        const isExtended = this.props.routePathStore!.extendedListItemId === id;
+        const isExtended = this.props.routePathLayerStore!.extendedListItemId === id;
         return (
             <div
                 className={s.itemHeader}
@@ -49,11 +51,11 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
 
     private toggleExtendedListItemId = () => {
         const currentListItemId = this.props.routePathLink.id;
-        const routePathStore = this.props.routePathStore;
-        if (currentListItemId === routePathStore!.extendedListItemId) {
-            this.props.routePathStore!.setExtendedListItemId(null);
+        const routePathLayerStore = this.props.routePathLayerStore;
+        if (currentListItemId === routePathLayerStore!.extendedListItemId) {
+            routePathLayerStore!.setExtendedListItemId(null);
         } else {
-            this.props.routePathStore!.setExtendedListItemId(currentListItemId);
+            routePathLayerStore!.setExtendedListItemId(currentListItemId);
             this.props.mapStore!.setMapBounds(this.getBounds());
         }
     };

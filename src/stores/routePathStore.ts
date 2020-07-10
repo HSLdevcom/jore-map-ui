@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePath, IRoutePathLink } from '~/models';
-import INeighborLink from '~/models/INeighborLink';
 import routePathLinkValidationModel, {
     IRoutePathLinkValidationModel,
 } from '~/models/validationModels/routePathLinkValidationModel';
@@ -16,14 +15,9 @@ import { getText } from '~/utils/textUtils';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import RoutePathCopySegmentStore from './routePathCopySegmentStore';
+import RoutePathLayerStore from './routePathLayerStore';
 import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
-
-// Is the neighbor to add either startNode or endNode
-enum NeighborToAddType {
-    AfterNode,
-    BeforeNode,
-}
 
 interface UndoState {
     routePathLinks: IRoutePathLink[];
@@ -42,13 +36,8 @@ class RoutePathStore {
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _isNewRoutePath: boolean;
     @observable private _existingRoutePaths: IRoutePath[];
-    @observable private _neighborRoutePathLinks: INeighborLink[];
-    @observable private _neighborToAddType: NeighborToAddType;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _extendedListItemId: string | null;
-    @observable private _highlightedListItemId: string | null;
-    @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
@@ -59,12 +48,8 @@ class RoutePathStore {
     >;
 
     constructor() {
-        this._neighborRoutePathLinks = [];
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
-        this._extendedListItemId = null;
-        this._highlightedListItemId = null;
-        this._toolHighlightedNodeIds = [];
         this._existingRoutePaths = [];
         this._isEditingDisabled = true;
         this._selectedTabIndex = 0;
@@ -102,16 +87,6 @@ class RoutePathStore {
     }
 
     @computed
-    get neighborLinks(): INeighborLink[] {
-        return this._neighborRoutePathLinks;
-    }
-
-    @computed
-    get neighborToAddType(): NeighborToAddType {
-        return this._neighborToAddType;
-    }
-
-    @computed
     get isDirty() {
         return !_.isEqual(this._routePath, this._oldRoutePath);
     }
@@ -129,21 +104,6 @@ class RoutePathStore {
     @computed
     get invalidLinkOrderNumbers() {
         return this._invalidLinkOrderNumbers;
-    }
-
-    @computed
-    get extendedListItemId() {
-        return this._extendedListItemId;
-    }
-
-    @computed
-    get highlightedListItemId() {
-        return this._highlightedListItemId;
-    }
-
-    @computed
-    get toolHighlightedNodeIds() {
-        return this._toolHighlightedNodeIds;
     }
 
     @computed
@@ -315,7 +275,7 @@ class RoutePathStore {
     @action
     public undo = () => {
         this._geometryUndoStore.undo((nextUndoState: UndoState) => {
-            this._neighborRoutePathLinks = [];
+            RoutePathLayerStore.setNeighborLinks([]);
 
             const undoRoutePathLinks = nextUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
@@ -338,7 +298,7 @@ class RoutePathStore {
     @action
     public redo = () => {
         this._geometryUndoStore.redo((previousUndoState: UndoState) => {
-            this._neighborRoutePathLinks = [];
+            RoutePathLayerStore.setNeighborLinks([]);
 
             const redoRoutePathLinks = previousUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
@@ -356,22 +316,6 @@ class RoutePathStore {
             this.restoreBookScheduleProperties(previousUndoState);
             this.setRoutePathLinks(newRoutePathLinks);
         });
-    };
-
-    @action
-    public setExtendedListItemId = (id: string | null) => {
-        this._extendedListItemId = id;
-    };
-
-    @action
-    public setHighlightedListItemId = (id: string | null) => {
-        this._highlightedListItemId = id;
-    };
-
-    // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
-    @action
-    public setToolHighlightedNodeIds = (nodeIds: string[]) => {
-        return (this._toolHighlightedNodeIds = nodeIds);
     };
 
     @action
@@ -418,16 +362,6 @@ class RoutePathStore {
         this._routePathLinkValidationStoreMap
             .get(rpLinkToUpdate!.id)
             ?.updateProperty(property, value);
-    };
-
-    @action
-    public setNeighborRoutePathLinks = (neighborLinks: INeighborLink[]) => {
-        this._neighborRoutePathLinks = neighborLinks;
-    };
-
-    @action
-    public setNeighborToAddType = (neighborToAddType: NeighborToAddType) => {
-        this._neighborToAddType = neighborToAddType;
     };
 
     /**
@@ -496,7 +430,7 @@ class RoutePathStore {
 
     @action
     public addCurrentStateToUndoStore() {
-        this._neighborRoutePathLinks = [];
+        RoutePathLayerStore.setNeighborLinks([]);
 
         const routePathLinks =
             this._routePath && this._routePath.routePathLinks ? this._routePath.routePathLinks : [];
@@ -529,12 +463,12 @@ class RoutePathStore {
     public clear = () => {
         this._routePath = null;
         this._oldRoutePath = null;
-        this._neighborRoutePathLinks = [];
         this._invalidLinkOrderNumbers = [];
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
         this._validationStore.clear();
         this._routePathLinkValidationStoreMap = new Map();
+        RoutePathLayerStore.clear();
     };
 
     @action
@@ -659,7 +593,7 @@ class RoutePathStore {
     };
 
     private onChangeIsEditingDisabled = () => {
-        this.setNeighborRoutePathLinks([]);
+        RoutePathLayerStore.setNeighborLinks([]);
         if (this._isEditingDisabled) {
             this.resetChanges();
             const selectedTool = ToolbarStore.selectedTool;
@@ -707,4 +641,4 @@ const _areDateRangesOverlapping = ({
 
 export default new RoutePathStore();
 
-export { RoutePathStore, NeighborToAddType, UndoState, ListFilter };
+export { RoutePathStore, UndoState, ListFilter };
