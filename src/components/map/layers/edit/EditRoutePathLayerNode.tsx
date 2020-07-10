@@ -77,8 +77,8 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         key: string;
     }) => {
         const routePathLayerStore = this.props.routePathLayerStore;
-        const toolHighlightedNodeIds = routePathLayerStore!.toolHighlightedNodeIds;
-        const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
+        const highlightedExtendToolNodeIds = routePathLayerStore!.highlightedExtendToolNodeIds;
+        const isNodeHighlightedByTool = highlightedExtendToolNodeIds.includes(node.id);
         let isNodeHighlighted;
         if (routePathLayerStore!.hoveredItemId) {
             isNodeHighlighted = routePathLayerStore!.hoveredItemId === node.internalId;
@@ -87,7 +87,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         }
 
         // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
-        const isClickDisabled = toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
+        const isClickDisabled = highlightedExtendToolNodeIds.length > 0 && !isNodeHighlightedByTool;
 
         let onNodeClick;
         if (isNodeHighlightedByTool) {

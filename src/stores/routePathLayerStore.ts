@@ -13,13 +13,13 @@ class RoutePathLayerStore {
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _extendedListItemId: string | null;
     @observable private _hoveredItemId: string | null;
-    @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
+    @observable private _highlightedExtendToolNodeIds: string[];
 
     constructor() {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
-        this._toolHighlightedNodeIds = [];
+        this._highlightedExtendToolNodeIds = [];
     }
 
     @computed
@@ -43,8 +43,8 @@ class RoutePathLayerStore {
     }
 
     @computed
-    get toolHighlightedNodeIds() {
-        return this._toolHighlightedNodeIds;
+    get highlightedExtendToolNodeIds() {
+        return this._highlightedExtendToolNodeIds;
     }
 
     @action
@@ -70,7 +70,7 @@ class RoutePathLayerStore {
     // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
     @action
     public setToolHighlightedNodeIds = (nodeIds: string[]) => {
-        return (this._toolHighlightedNodeIds = nodeIds);
+        return (this._highlightedExtendToolNodeIds = nodeIds);
     };
 
     @action
@@ -78,7 +78,7 @@ class RoutePathLayerStore {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
-        this._toolHighlightedNodeIds = [];
+        this._highlightedExtendToolNodeIds = [];
     };
 }
 
