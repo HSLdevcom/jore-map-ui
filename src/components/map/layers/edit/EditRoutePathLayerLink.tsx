@@ -8,11 +8,12 @@ import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
-const ROUTE_COLOR = '#000';
+const DEFAULT_LINK_COLOR = '#000';
+const HOVERED_LINK_COLOR = '#cfc400';
+const EXTENDED_LINK_COLOR = '#007ac9';
 
 interface IRoutePathLayerProps {
     enableMapClickListener: () => void;
@@ -37,25 +38,35 @@ interface IRoutePathLayerProps {
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     private renderLink = (routePathLink: IRoutePathLink) => {
         const routePathLayerStore = this.props.routePathLayerStore;
-        let isLinkHighlighted;
-        if (routePathLayerStore!.hoveredItemId) {
-            isLinkHighlighted = routePathLayerStore!.hoveredItemId === routePathLink.id;
-        } else {
-            isLinkHighlighted = routePathLayerStore!.extendedListItemId === routePathLink.id;
-        }
-        return (
+        const isLinkHovered = routePathLayerStore!.hoveredItemId === routePathLink.id;
+        const isLinkExtended = routePathLayerStore!.extendedListItemId === routePathLink.id;
+        return [
             <Polyline
                 positions={routePathLink.geometry}
-                key={routePathLink.id}
-                color={ROUTE_COLOR}
-                weight={isLinkHighlighted ? 25 : 5}
-                opacity={isLinkHighlighted ? 0.5 : 0.8}
+                key={`rpLink-overlay-${routePathLink.id}`}
+                color={
+                    isLinkHovered
+                        ? HOVERED_LINK_COLOR
+                        : isLinkExtended
+                        ? EXTENDED_LINK_COLOR
+                        : DEFAULT_LINK_COLOR
+                }
+                weight={15}
+                opacity={isLinkHovered || isLinkExtended ? 0.6 : 0}
                 onClick={this.handleLinkClick(routePathLink)}
                 onMouseOver={() => this.onMouseOver(routePathLink.id)}
                 onMouseOut={this.onMouseOut}
                 interactive={true}
-            />
-        );
+            />,
+            <Polyline
+                positions={routePathLink.geometry}
+                key={`rpLink-${routePathLink.id}`}
+                color={DEFAULT_LINK_COLOR}
+                weight={5}
+                opacity={0.8}
+                interactive={false}
+            />,
+        ];
     };
 
     private onMouseOver = (id: string) => {
@@ -85,6 +96,22 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         }
     };
 
+    private renderLinkDecorator = (routePathLink: IRoutePathLink) => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
+            return null;
+        }
+
+        return (
+            <ArrowDecorator
+                color={DEFAULT_LINK_COLOR}
+                geometry={routePathLink.geometry}
+                onClick={this.handleLinkClick(routePathLink)}
+                onMouseOver={() => this.onMouseOver(routePathLink.id)}
+                onMouseOut={this.onMouseOut}
+            />
+        );
+    };
+
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
         return [
             <DashedLine
@@ -102,27 +129,13 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         ];
     };
 
-    private renderLinkDecorator = () => {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
-            return null;
-        }
-
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        const coherentPolylines = createCoherentLinesFromPolylines(
-            routePathLinks.map((rpLink) => rpLink.geometry)
-        );
-        return coherentPolylines.map((polyline, index) => (
-            <ArrowDecorator key={index} color={ROUTE_COLOR} geometry={polyline} />
-        ));
-    };
-
     render() {
         const rpLink = this.props.rpLink;
         return (
             <>
                 {this.renderLink(rpLink)}
+                {this.renderLinkDecorator(rpLink)}
                 {this.renderDashedLines(rpLink)}
-                {this.renderLinkDecorator()}
             </>
         );
     }
