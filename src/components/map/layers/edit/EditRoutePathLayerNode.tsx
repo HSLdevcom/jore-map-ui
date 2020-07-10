@@ -21,7 +21,7 @@ const START_MARKER_COLOR = '#00df0b';
 
 interface IRoutePathLayerProps {
     rpLink: IRoutePathLink;
-    setExtendedListItem: (id: string) => void;
+    setExtendedListItem: (id: string | null) => void;
     isEndNodeRendered: boolean;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
@@ -77,17 +77,17 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         key: string;
     }) => {
         const routePathLayerStore = this.props.routePathLayerStore;
-        const toolHighlightedNodeIds = routePathLayerStore!.toolHighlightedNodeIds;
-        const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
+        const highlightedExtendToolNodeIds = routePathLayerStore!.highlightedExtendToolNodeIds;
+        const isNodeHighlightedByTool = highlightedExtendToolNodeIds.includes(node.id);
         let isNodeHighlighted;
-        if (routePathLayerStore!.highlightedListItemId) {
-            isNodeHighlighted = routePathLayerStore!.highlightedListItemId === node.internalId;
+        if (routePathLayerStore!.hoveredItemId) {
+            isNodeHighlighted = routePathLayerStore!.hoveredItemId === node.internalId;
         } else {
             isNodeHighlighted = routePathLayerStore!.extendedListItemId === node.internalId;
         }
 
         // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
-        const isClickDisabled = toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
+        const isClickDisabled = highlightedExtendToolNodeIds.length > 0 && !isNodeHighlightedByTool;
 
         let onNodeClick;
         if (isNodeHighlightedByTool) {
@@ -100,7 +100,10 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             };
         } else {
             onNodeClick = () => {
-                this.props.setExtendedListItem(node.internalId);
+                routePathLayerStore?.extendedListItemId === node.internalId
+                    ? this.props.setExtendedListItem(null)
+                    : this.props.setExtendedListItem(node.internalId);
+
                 const clickParams: INodeClickParams = { node };
                 EventHelper.trigger('nodeClick', clickParams);
             };

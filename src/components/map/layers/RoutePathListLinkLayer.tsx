@@ -172,6 +172,7 @@ class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
         const routePath = this.props.routePath;
         const routePathLinks = routePath.routePathLinks;
         const geoms = routePathLinks.map((routePathLink) => routePathLink.geometry);
+        // TODO: instead, call RoutePathListLinkLayer with routePathLink?
         return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
             <ArrowDecorator
                 key={index}

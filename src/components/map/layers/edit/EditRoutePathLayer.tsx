@@ -11,6 +11,8 @@ import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
 import RoutePathCopySegmentLayer from './routePathCopySegmentLayer';
 
 interface IEditRoutePathLayerProps {
+    enableMapClickListener: () => void;
+    disableMapClickListener: () => void;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
@@ -20,9 +22,11 @@ interface IEditRoutePathLayerProps {
 @inject('routePathStore', 'routePathLayerStore', 'routePathCopySegmentStore', 'mapStore')
 @observer
 class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
-    private setExtendedListItem = (id: string) => {
+    private setExtendedListItem = (id: string | null) => {
         // Switch to info tab
-        this.props.routePathStore!.setSelectedTabIndex(1);
+        if (id) {
+            this.props.routePathStore!.setSelectedTabIndex(1);
+        }
         this.props.routePathLayerStore!.setExtendedListItemId(id);
     };
 
@@ -53,6 +57,8 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                     setExtendedListItem={this.setExtendedListItem}
                                 />
                                 <EditRoutePathLayerLink
+                                    enableMapClickListener={this.props.enableMapClickListener}
+                                    disableMapClickListener={this.props.disableMapClickListener}
                                     rpLink={rpLink}
                                     setExtendedListItem={this.setExtendedListItem}
                                 />

@@ -23,12 +23,12 @@ interface IRoutePathListItemProps {
 @observer
 class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     private onMouseEnter = () => {
-        this.props.routePathLayerStore!.setHighlightedListItemId(this.props.id);
+        this.props.routePathLayerStore!.setHoveredItemId(this.props.id);
     };
 
     private onMouseLeave = () => {
-        if (this.props.routePathLayerStore!.highlightedListItemId === this.props.id) {
-            this.props.routePathLayerStore!.setHighlightedListItemId(null);
+        if (this.props.routePathLayerStore!.hoveredItemId === this.props.id) {
+            this.props.routePathLayerStore!.setHoveredItemId(null);
         }
     };
 

@@ -88,8 +88,20 @@ class LeafletMap extends React.Component<IMapProps> {
         if (coordinates) {
             map.setView(coordinates, mapStore!.zoom);
         }
-        map.on('click', (e: L.LeafletEvent) => EventHelper.trigger('mapClick', e));
+        this.enableMapClickListener();
     }
+
+    private enableMapClickListener = () => {
+        const map = this.getMap();
+        map!.on('click', (e: L.LeafletEvent) => {
+            EventHelper.trigger('mapClick', e);
+        });
+    };
+
+    private disableMapClickListener = () => {
+        const map = this.getMap();
+        map!.off('click');
+    };
 
     private getMap() {
         return this.mapReference.current ? this.mapReference.current.leafletElement : null;
@@ -174,7 +186,10 @@ class LeafletMap extends React.Component<IMapProps> {
                     <EditNodeLayer />
                     <EditLinkLayer />
                     <RoutePathListLayer />
-                    <EditRoutePathLayer />
+                    <EditRoutePathLayer
+                        enableMapClickListener={this.enableMapClickListener}
+                        disableMapClickListener={this.disableMapClickListener}
+                    />
                     <PopupLayer />
                     <StopAreaLayer />
                     <HighlightEntityLayer />
