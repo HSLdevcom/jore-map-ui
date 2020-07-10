@@ -1,3 +1,4 @@
+import L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
@@ -14,6 +15,8 @@ import DashedLine from '../utils/DashedLine';
 const ROUTE_COLOR = '#000';
 
 interface IRoutePathLayerProps {
+    enableMapClickListener: () => void;
+    disableMapClickListener: () => void;
     rpLink: IRoutePathLink;
     setExtendedListItem: (id: string | null) => void;
     routePathStore?: RoutePathStore;
@@ -73,6 +76,12 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
             this.props.routePathLayerStore!.extendedListItemId === routePathLink.id
                 ? this.props.setExtendedListItem(null)
                 : this.props.setExtendedListItem(routePathLink.id);
+
+            this.props.disableMapClickListener();
+            // Prevent current click event from triggering map click listener
+            setTimeout(() => {
+                this.props.enableMapClickListener();
+            }, 1);
         }
     };
 

@@ -35,7 +35,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             input: '',
             searchResults: [],
             searchIndex: -1,
-            selectedSearchResult: null
+            selectedSearchResult: null,
         };
         this.map = this.props.map.current.leafletElement;
     }
@@ -72,7 +72,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         this.setState({
             input: selectedSearchResult.properties.label,
             searchResults: [],
-            searchIndex: -1
+            searchIndex: -1,
         });
         this.map.setView(latLng, this.map.getZoom());
         const marker = LeafletUtils.createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR} />);
@@ -88,7 +88,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             input: '',
             searchResults: [],
             searchIndex: -1,
-            selectedSearchResult: null
+            selectedSearchResult: null,
         });
     };
 
@@ -100,7 +100,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             return;
         }
         this.setState({
-            searchIndex
+            searchIndex,
         });
     };
 
@@ -108,7 +108,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         const newValue = event.currentTarget.value;
         if (newValue) {
             this.setState({
-                input: newValue
+                input: newValue,
             });
             this.requestAddress(newValue);
         } else {
@@ -122,7 +122,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         );
         if (searchResultFeatures) {
             this.setState({
-                searchResults: searchResultFeatures
+                searchResults: searchResultFeatures,
             });
         }
     };
@@ -162,7 +162,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
 
         const selectedSearchResult = this.state.searchResults[searchIndex];
         this.setState({
-            selectedSearchResult
+            selectedSearchResult,
         });
     };
 

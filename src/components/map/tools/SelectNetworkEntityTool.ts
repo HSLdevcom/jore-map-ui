@@ -78,7 +78,7 @@ class SelectNetworkEntityTool implements BaseTool {
                 !isNetworkNodeHidden({
                     nodeId: node.id,
                     transitTypeCodes: node.transitTypes.join(','),
-                    dateRangesString: node.dateRanges
+                    dateRangesString: node.dateRanges,
                 })
         );
 
@@ -92,7 +92,7 @@ class SelectNetworkEntityTool implements BaseTool {
                     transitType: link.transitType,
                     startNodeId: link.startNodeId,
                     endNodeId: link.endNodeId,
-                    dateRangesString: link.dateRanges
+                    dateRangesString: link.dateRanges,
                 })
         );
 
@@ -108,7 +108,7 @@ class SelectNetworkEntityTool implements BaseTool {
 
         const popupData: ISelectNetworkEntityPopupData = {
             nodes,
-            links
+            links,
         };
         const popup: IPopupProps = {
             type: 'selectNetworkEntityPopup',
@@ -116,22 +116,17 @@ class SelectNetworkEntityTool implements BaseTool {
             coordinates: leafletLatLng,
             isCloseButtonVisible: true,
             isAutoCloseOn: false,
-            hasOpacity: true
+            hasOpacity: true,
         };
         PopupStore.showPopup(popup);
     };
 }
 
 const _redirectToNode = (node: INodeMapHighlight) => {
-    const nodeViewLink = routeBuilder
-        .to(SubSites.node)
-        .toTarget(':id', node.id)
-        .toLink();
+    const nodeViewLink = routeBuilder.to(SubSites.node).toTarget(':id', node.id).toLink();
     navigator.goTo({
         link: nodeViewLink,
-        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${
-            node.id
-        }? Tallentamattomat muutokset kumotaan.`
+        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${node.id}? Tallentamattomat muutokset kumotaan.`,
     });
 };
 
@@ -142,7 +137,7 @@ const _redirectToLink = (link: ILinkMapHighlight) => {
         .toLink();
     navigator.goTo({
         link: linkViewLink,
-        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`
+        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`,
     });
 };
 
