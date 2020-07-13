@@ -21,5 +21,5 @@ export {
     IRoutePath,
     IRoutePathLink,
     IViaName,
-    INeighborLink
+    INeighborLink,
 };

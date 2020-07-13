@@ -12,7 +12,7 @@ const stopAreaValidationModel: IStopAreaValidationModel = {
     terminalAreaId: 'min:1|max:10|string',
     modifiedBy: '',
     modifiedOn: '',
-    stopAreaGroupId: 'required|min:1|max:2|string'
+    stopAreaGroupId: 'required|min:1|max:2|string',
 };
 
 export default stopAreaValidationModel;

@@ -13,15 +13,15 @@ describe('StopService.fetchAvailableShortIds', () => {
                     nodes: [
                         {
                             soltunnus: '1',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '2',
-                            sollistunnus: '0002'
-                        }
-                    ]
-                }
-            }
+                            sollistunnus: '0002',
+                        },
+                    ],
+                },
+            },
         };
         ApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
         const currentNodeId = '3';
@@ -40,15 +40,15 @@ describe('StopService.fetchAvailableShortIds', () => {
                     nodes: [
                         {
                             soltunnus: '1',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '2',
-                            sollistunnus: '0002'
-                        }
-                    ]
-                }
-            }
+                            sollistunnus: '0002',
+                        },
+                    ],
+                },
+            },
         };
         ApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
         const currentNodeId = '1';
@@ -67,19 +67,19 @@ describe('StopService.fetchAvailableShortIds', () => {
                     nodes: [
                         {
                             soltunnus: '1',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '2',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '3',
-                            sollistunnus: '0002'
-                        }
-                    ]
-                }
-            }
+                            sollistunnus: '0002',
+                        },
+                    ],
+                },
+            },
         };
         ApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
         const currentNodeId = '1';

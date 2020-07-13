@@ -11,7 +11,7 @@ class StopAreaFactory {
             terminalAreaId: externalStopArea.termid,
             modifiedBy: externalStopArea.tallentaja,
             modifiedOn: externalStopArea.tallpvm ? new Date(externalStopArea.tallpvm) : undefined,
-            stopAreaGroupId: externalStopArea.pysakkialueryhma
+            stopAreaGroupId: externalStopArea.pysakkialueryhma,
         };
     };
 
@@ -24,7 +24,7 @@ class StopAreaFactory {
             terminalAreaId: undefined,
             modifiedBy: '',
             modifiedOn: new Date(),
-            stopAreaGroupId: undefined
+            stopAreaGroupId: undefined,
         };
     };
 }

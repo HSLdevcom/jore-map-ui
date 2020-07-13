@@ -8,7 +8,7 @@ class CodeListFactory {
         label: externalCodeListItem.kooselite,
         listId: externalCodeListItem.koolista,
         orderNumber: externalCodeListItem.koojarjestys,
-        value: externalCodeListItem.kookoodi
+        value: externalCodeListItem.kookoodi,
     });
 }
 

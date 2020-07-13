@@ -87,7 +87,8 @@
     "production": "forever start -c \"yarn run serve -s -l 5000\" build && forever logs -f 0",
     "cypress": "cypress",
     "cypress:run:dev": "cypress run --env configFile=dev",
-    "cypress:run:stage": "cypress run --env configFile=stage"
+    "cypress:run:stage": "cypress run --env configFile=stage",
+    "prettify-all-files": "npx prettier --write '**/*.ts'"
   },
   "devDependencies": {
     "@types/chroma-js": "^1.3.5",

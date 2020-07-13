@@ -29,7 +29,7 @@ const _isNetworkElementHidden = ({
     transitType,
     startNodeId,
     endNodeId,
-    dateRangesString
+    dateRangesString,
 }: {
     type: NetworkElementType;
     transitType: TransitType;
@@ -76,7 +76,7 @@ const _isNetworkElementHidden = ({
 const isNetworkNodeHidden = ({
     nodeId,
     transitTypeCodes,
-    dateRangesString
+    dateRangesString,
 }: {
     nodeId: string;
     transitTypeCodes: string;
@@ -95,7 +95,7 @@ const isNetworkNodeHidden = ({
             return true;
         }
         const nodeTransitTypes = transitTypeCodes.split(',');
-        if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
+        if (!selectedTransitTypes.some((type) => nodeTransitTypes.includes(type))) {
             return true;
         }
     } else {
@@ -113,11 +113,13 @@ const isNetworkNodeHidden = ({
 
 const _parseDateRangesString = (dateRangesString?: string) => {
     if (!dateRangesString) return undefined;
-    return dateRangesString.split(',').map((dr: string) => dr.split('/').map(date => Moment(date)));
+    return dateRangesString
+        .split(',')
+        .map((dr: string) => dr.split('/').map((date) => Moment(date)));
 };
 
 const _isDateInRanges = (selectedDate: Moment.Moment, dateRanges: Moment.Moment[][]): Boolean => {
-    return dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
+    return dateRanges.some((dr) => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
 };
 
 export { isNetworkLinkHidden, isNetworkNodeHidden, isNetworkLinkPointHidden };

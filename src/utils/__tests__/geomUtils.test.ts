@@ -3,7 +3,7 @@ import constants from '~/constants/constants';
 import {
     calculateLengthFromLatLngs,
     createCoherentLinesFromPolylines,
-    roundLatLng
+    roundLatLng,
 } from '../geomUtils';
 
 describe('geomUtils.createCoherentLinesFromPolylines', () => {
@@ -17,7 +17,7 @@ describe('geomUtils.createCoherentLinesFromPolylines', () => {
         const line1: LatLng[] = [new LatLng(1, 1), new LatLng(1, 2)];
         const line2: LatLng[] = [new LatLng(1, 2), new LatLng(2, 2), new LatLng(2, 3)];
         const expectedResult: LatLng[][] = [
-            [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 2), new LatLng(2, 3)]
+            [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 2), new LatLng(2, 3)],
         ];
         expect(createCoherentLinesFromPolylines([line1, line2])).toEqual(expectedResult);
     });
@@ -30,7 +30,7 @@ describe('geomUtils.createCoherentLinesFromPolylines', () => {
         const line5: LatLng[] = [new LatLng(3, 4), new LatLng(4, 5)];
         const expectedResult: LatLng[][] = [
             [new LatLng(1, 1), new LatLng(1, 2), new LatLng(2, 2), new LatLng(3, 2)],
-            [new LatLng(3, 3), new LatLng(3, 4), new LatLng(4, 5)]
+            [new LatLng(3, 3), new LatLng(3, 4), new LatLng(4, 5)],
         ];
         expect(createCoherentLinesFromPolylines([line1, line2, line3, line4, line5])).toEqual(
             expectedResult
@@ -56,7 +56,7 @@ describe('geomUtils.calculateLengthFromLatLngs', () => {
     it('Calculates length between two points - round down', () => {
         const positions: LatLng[] = [
             new LatLng(60.165958, 24.9436),
-            new LatLng(60.199303, 24.940759)
+            new LatLng(60.199303, 24.940759),
         ];
 
         // https://gps-coordinates.org/distance-between-coordinates.php
@@ -68,7 +68,7 @@ describe('geomUtils.calculateLengthFromLatLngs', () => {
     it('Calculates length between two points - round up', () => {
         const positions: LatLng[] = [
             new LatLng(60.17520298, 24.91285215),
-            new LatLng(60.1745068, 24.91877853)
+            new LatLng(60.1745068, 24.91877853),
         ];
 
         // https://gps-coordinates.org/distance-between-coordinates.php

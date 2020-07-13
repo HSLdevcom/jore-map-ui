@@ -31,10 +31,10 @@ class FormValidator {
     public static validate = (value: any, rule: string): IValidationResult => {
         const validator = new Validator(
             {
-                value
+                value,
             },
             {
-                value: rule
+                value: rule,
             },
             ruleTranslations
         );
@@ -44,7 +44,7 @@ class FormValidator {
 
         return {
             isValid,
-            errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : ''
+            errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : '',
         };
     };
 
@@ -74,7 +74,7 @@ class FormValidator {
 
     public static isInvalidPropertiesMapValid = (invalidPropertiesMap: object) => {
         return !Object.values(invalidPropertiesMap).some(
-            validatorResult => !validatorResult.isValid
+            (validatorResult) => !validatorResult.isValid
         );
     };
 }
