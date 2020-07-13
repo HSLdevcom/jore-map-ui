@@ -19,7 +19,7 @@ interface IArrowDecoratorProps extends PathProps {
 class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator> {
     public static defaultProps = {
         arrowGap: 120,
-        arrowSize: 12
+        arrowSize: 12,
     };
     createLeafletElement(props: IArrowDecoratorProps) {
         const decorator = new PolylineDecorator(this.props.geometry, {
@@ -35,11 +35,11 @@ class ArrowDecorator extends Path<IArrowDecoratorProps, PolylineDecorator> {
                             fillOpacity: 1,
                             fillColor: '#FFF',
                             opacity: 1,
-                            fill: true
-                        }
-                    })
-                }
-            ]
+                            fill: true,
+                        },
+                    }),
+                },
+            ],
         });
         if (this.props.onClick) {
             decorator.on('click', this.props.onClick);

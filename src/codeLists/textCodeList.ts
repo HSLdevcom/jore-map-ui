@@ -16,7 +16,7 @@ const textCodeList = {
     routePath_savePrevented_startNodeTheSameAsEndNode:
         'Tallennus estetty, reitinsuunnan alkusolmu on sama kuin sen loppusolmu.',
     routePath_savePrevented_checkRoutePathInfoTab:
-        'Tallennus estetty, tarkista reitinsuunnan tiedot -välilehti.'
+        'Tallennus estetty, tarkista reitinsuunnan tiedot -välilehti.',
 };
 
 export default textCodeList;

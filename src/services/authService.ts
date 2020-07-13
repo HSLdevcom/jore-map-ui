@@ -21,19 +21,19 @@ class AuthService {
         try {
             authorizationResponse = (await HttpUtils.authorizeUsingCode({
                 code,
-                isTesting
+                isTesting,
             })) as IAuthorizationResponse;
         } catch (error) {
             const errorResponse = JSON.parse(error.message) as IAuthorizationResponse;
             authorizationResponse = {
                 isOk: errorResponse.isOk,
-                hasWriteAccess: errorResponse.hasWriteAccess
+                hasWriteAccess: errorResponse.hasWriteAccess,
             };
             if (errorResponse.errorTextKey) {
                 let errorMessage;
                 if (errorResponse.email) {
                     errorMessage = getText(errorResponse.errorTextKey, {
-                        email: errorResponse.email
+                        email: errorResponse.email,
                     });
                 } else {
                     errorMessage = getText(errorResponse.errorTextKey);

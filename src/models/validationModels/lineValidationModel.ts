@@ -14,7 +14,7 @@ const lineValidationModel: ILineValidationModel = {
     modifiedOn: '',
     publicTransportDestination: 'min:1|max:6|string',
     exchangeTime: `min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
-    lineReplacementType: 'min:0|max:2|string'
+    lineReplacementType: 'min:0|max:2|string',
 };
 
 export default lineValidationModel;

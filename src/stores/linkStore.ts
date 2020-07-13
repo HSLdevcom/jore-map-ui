@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { ILink, INode } from '~/models';
 import linkValidationModel, {
-    ILinkValidationModel
+    ILinkValidationModel,
 } from '~/models/validationModels/linkValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
 import { calculateLengthFromLatLngs, roundLatLngs } from '~/utils/geomUtils';
@@ -91,7 +91,7 @@ class LinkStore {
     public init = ({
         link,
         nodes,
-        isNewLink
+        isNewLink,
     }: {
         link: ILink;
         nodes: INode[];
@@ -121,7 +121,7 @@ class LinkStore {
             // Add initial link to undoStore
             const currentLink = _.cloneDeep(this._link);
             const currentUndoState: UndoState = {
-                link: currentLink
+                link: currentLink,
             };
             this._geometryUndoStore.addItem(currentUndoState);
         }
@@ -132,7 +132,7 @@ class LinkStore {
         this.updateLinkLength();
         updatedLink.length = this._link.length;
         const newUndoState: UndoState = {
-            link: updatedLink
+            link: updatedLink,
         };
         this._geometryUndoStore.addItem(newUndoState);
     };

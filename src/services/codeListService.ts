@@ -7,7 +7,7 @@ import GraphqlQueries from './graphqlQueries';
 class CodeListService {
     public static fetchAllCodeLists = async (): Promise<ICodeListItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllCodeLists()
+            query: GraphqlQueries.getAllCodeLists(),
         });
 
         return queryResult.data.node.nodes.map((koodisto: any) => {

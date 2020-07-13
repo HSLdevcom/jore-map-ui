@@ -8,7 +8,7 @@ class RoutePathLinkService {
     public static fetchRoutePathLink = async (id: number): Promise<IRoutePathLink> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathLinkQuery(),
-            variables: { routeLinkId: id }
+            variables: { routeLinkId: id },
         });
         return RoutePathLinkFactory.mapExternalRoutePathLink(queryResult.data.routePathLink);
     };

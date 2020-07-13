@@ -6,30 +6,25 @@ import SubSites from '~/routing/subSites';
 
 class NavigationUtils {
     public static openLineView = ({ lineId }: { lineId: string }) => {
-        const lineViewLink = routeBuilder
-            .to(SubSites.line)
-            .toTarget(':id', lineId)
-            .toLink();
+        const lineViewLink = routeBuilder.to(SubSites.line).toTarget(':id', lineId).toLink();
         navigator.goTo({
-            link: lineViewLink
+            link: lineViewLink,
         });
     };
 
     public static openRouteView = ({
         routeId,
-        queryValues
+        queryValues,
     }: {
         routeId: string;
         queryValues?: any;
-        }) => {
+    }) => {
         const routes = queryValues?.routes;
         const isRouteIdAlreadyInQueryValues = routes && routes.includes(routeId);
 
         let routeViewLink;
         if (isRouteIdAlreadyInQueryValues) {
-            routeViewLink = routeBuilder
-                .to(SubSites.routes, queryValues)
-                .toLink();
+            routeViewLink = routeBuilder.to(SubSites.routes, queryValues).toLink();
         } else {
             routeViewLink = routeBuilder
                 .to(SubSites.routes, queryValues)
@@ -37,24 +32,21 @@ class NavigationUtils {
                 .toLink();
         }
         navigator.goTo({
-            link: routeViewLink
+            link: routeViewLink,
         });
     };
 
     public static openNodeView = ({ nodeId }: { nodeId: string }) => {
-        const nodeViewLink = routeBuilder
-            .to(SubSites.node)
-            .toTarget(':id', nodeId)
-            .toLink();
+        const nodeViewLink = routeBuilder.to(SubSites.node).toTarget(':id', nodeId).toLink();
         navigator.goTo({
-            link: nodeViewLink
+            link: nodeViewLink,
         });
     };
 
     public static openLinkView = ({
         startNodeId,
         endNodeId,
-        transitType
+        transitType,
     }: {
         startNodeId: string;
         endNodeId: string;
@@ -65,7 +57,7 @@ class NavigationUtils {
             .toTarget(':id', [startNodeId, endNodeId, transitType].join(','))
             .toLink();
         navigator.goTo({
-            link: linkViewLink
+            link: linkViewLink,
         });
     };
 }

@@ -13,7 +13,7 @@ class StopAreaService {
     public static fetchStopArea = async (stopAreaId: string): Promise<IStopArea | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getStopAreaQuery(),
-            variables: { stopAreaId }
+            variables: { stopAreaId },
         });
         const externalStopArea: IExternalStopArea = queryResult.data.stopArea;
         return externalStopArea ? StopAreaFactory.mapExternalStopArea(externalStopArea) : null;
@@ -21,10 +21,10 @@ class StopAreaService {
 
     public static fetchAllStopAreas = async (): Promise<IStopArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllStopAreas()
+            query: GraphqlQueries.getAllStopAreas(),
         });
         const externalStopAreas: IExternalStopArea[] = queryResult.data.node.nodes;
-        return externalStopAreas.map(externalStopArea =>
+        return externalStopAreas.map((externalStopArea) =>
             StopAreaFactory.mapExternalStopArea(externalStopArea)
         );
     };
@@ -40,14 +40,14 @@ class StopAreaService {
 
     public static fetchAllTerminalAreas = async (): Promise<ITerminalArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllTerminalAreas()
+            query: GraphqlQueries.getAllTerminalAreas(),
         });
 
         const terminalAreas: ITerminalArea[] = queryResult.data.node.nodes.map(
             (externalTerminalArea: IExternalTerminalArea) => {
                 return {
                     id: externalTerminalArea.termid,
-                    name: externalTerminalArea.nimi
+                    name: externalTerminalArea.nimi,
                 };
             }
         );

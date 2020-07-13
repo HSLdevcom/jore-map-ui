@@ -13,7 +13,7 @@ class RouteFactory {
             lineId: externalRoute.lintunnus,
             id: externalRoute.reitunnus,
             modifiedBy: externalRoute.reikuka,
-            modifiedOn: externalRoute.reiviimpvm ? new Date(externalRoute.reiviimpvm) : undefined
+            modifiedOn: externalRoute.reiviimpvm ? new Date(externalRoute.reiviimpvm) : undefined,
         };
     };
 
@@ -25,7 +25,7 @@ class RouteFactory {
             routeName: '',
             routeNameSw: '',
             modifiedBy: '',
-            modifiedOn: new Date()
+            modifiedOn: new Date(),
         };
     };
 }
