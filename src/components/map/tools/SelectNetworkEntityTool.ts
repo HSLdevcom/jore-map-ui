@@ -35,7 +35,7 @@ class SelectNetworkEntityTool implements BaseTool {
         }
 
         const leafletLatLng = clickEvent.detail.latlng as LatLng;
-        const latLng = new LatLng(leafletLatLng.lng, leafletLatLng.lat);
+        const latLng = new LatLng(leafletLatLng.lat, leafletLatLng.lng);
 
         // TODO: fix these hard coded values to use pixel count per meter (that depend on map's zoom level) instead
         let bufferSize;
