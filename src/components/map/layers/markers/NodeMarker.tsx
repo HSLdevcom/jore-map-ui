@@ -149,9 +149,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return <Circle className={s.stopCircle} center={coordinates} radius={radius} />;
     };
 
-    private onMarkerClick = () => {
+    private onMarkerClick = (e: L.LeafletMouseEvent) => {
         if (this.props.onClick) {
-            this.props.onClick();
+            this.props.onClick(e);
         }
     };
 

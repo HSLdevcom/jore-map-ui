@@ -78,14 +78,19 @@ class NodeFactory {
     }
 
     public static createSearchNode(externalNode: IExternalNode, stopName?: string): ISearchNode {
+        const coordinates = _getLatLng(
+            externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
+        );
         const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
         return {
             type,
             stopName,
+            coordinates,
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])
                 : [],
+            dateRanges: externalNode.dateRanges!,
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
         };

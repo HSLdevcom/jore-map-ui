@@ -182,7 +182,7 @@ class LeafletMap extends React.Component<IMapProps> {
                         tileSize={512}
                         zoomOffset={-1}
                     />
-                    <NetworkLayers />
+                    <NetworkLayers map={this.mapReference} />
                     <EditNodeLayer />
                     <EditLinkLayer />
                     <RoutePathListLayer />

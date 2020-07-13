@@ -256,7 +256,10 @@ const getAllNodesQuery = () => {
                     soltyyppi
                     sollistunnus
                     solkirjain
+                    geojson
+                    geojsonManual
                     transitTypes
+                    dateRanges
                     pysakkiBySoltunnus {
                         soltunnus
                         pysnimi
