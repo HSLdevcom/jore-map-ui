@@ -33,7 +33,7 @@
     "leaflet-editable": "^1.2.0",
     "leaflet-polylinedecorator": "^1.6.0",
     "leaflet.vectorgrid": "github:chriszrc/Leaflet.VectorGrid#6bdad6d07290db04ff02ebf44830b85bcfe6c020",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "mobx": "^5.0.3",
     "mobx-react": "^5.2.3",
     "mobx-react-router": "^4.0.4",
