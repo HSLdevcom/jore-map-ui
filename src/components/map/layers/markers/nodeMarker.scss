@@ -3,14 +3,24 @@
 .node {
     display: block;
     opacity: 1;
+    cursor: pointer;
 
     .nodeBase {
         border-radius: 100px;
         border-style: solid;
+        margin: -3px;
+    }
+
+    .smallSize {
+        height: 10px;
+        width: 10px;
+        border-width: 2px;
+    }
+
+    .normalSize {
         height: 12px;
         width: 12px;
         border-width: 3px;
-        margin: -3px;
     }
 
     .highlightBlue {

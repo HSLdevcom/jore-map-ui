@@ -12,6 +12,8 @@ import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './nodeMarker.scss';
 
+type NodeSize = 'small' | 'normal';
+
 enum NodeHighlightColor {
     BLUE, // default color
     GREEN,
@@ -28,6 +30,7 @@ interface INodeMarkerProps {
     hastusId?: string;
     radius?: number;
     color?: string;
+    size?: NodeSize;
     isDraggable?: boolean;
     isClickDisabled?: boolean;
     isDisabled?: boolean;
@@ -54,6 +57,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         forcedVisibleNodeLabels: [],
         markerClasses: [],
         highlightColor: NodeHighlightColor.BLUE,
+        size: 'normal',
     };
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
@@ -93,6 +97,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const {
             nodeType,
             nodeLocationType,
+            size,
             isDisabled,
             isTimeAlignmentStop,
             isHighlighted,
@@ -100,6 +105,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
+        res.push(size === 'normal' ? s.normalSize : s.smallSize);
         res.push(
             ...NodeUtils.getNodeTypeClasses(nodeType, {
                 nodeLocationType,
@@ -160,7 +166,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     }: {
         nodeLocationType: NodeLocationType;
     }) => {
-        const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
+        const nodeRootClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
 
         return LeafletUtils.createDivIcon(
             <div
@@ -178,7 +184,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.renderMarkerLabel()}
             </div>,
             {
-                className: nodeBaseClass,
+                className: nodeRootClass,
                 popupOffset: -15,
             }
         );
