@@ -6,7 +6,7 @@ import { Moment } from 'moment';
 import { withLeaflet, GridLayer, GridLayerProps } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
 import LinkStore from '~/stores/linkStore';
-import NetworkStore, { MapLayer, NodeSize } from '~/stores/networkStore';
+import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 
 declare module 'leaflet' {
@@ -19,7 +19,6 @@ interface IVectorGridLayerProps extends GridLayerProps {
     url: string;
     tms: boolean;
     vectorTileLayerStyles: any;
-    nodeSize?: NodeSize;
     onClick?: Function;
     onContextMenu?: Function;
     setVectorgridLayerReaction: (reaction: IReactionDisposer) => void;
@@ -30,15 +29,13 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         super(props);
         const reactionDisposer = reaction(
             () => [
-                NetworkStore.isMapLayerVisible(MapLayer.node),
-                NetworkStore.isMapLayerVisible(MapLayer.unusedNode),
                 NetworkStore.isMapLayerVisible(MapLayer.link),
                 NetworkStore.isMapLayerVisible(MapLayer.unusedLink),
                 NetworkStore.isMapLayerVisible(MapLayer.linkPoint),
                 NodeStore.node! && NodeStore.node!.id,
                 LinkStore.link! && LinkStore.link.startNode.id,
                 LinkStore.link! && LinkStore.link.endNode.id,
-                LinkStore.link! && LinkStore.link.transitType
+                LinkStore.link! && LinkStore.link.transitType,
             ],
             this.redrawLayers
         );
@@ -69,11 +66,10 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
         // redraw layers according to that variable
         if (
             !this.areArraysEqual(fromProps.selectedTransitTypes, toProps.selectedTransitTypes) ||
-            fromProps.nodeSize !== toProps.nodeSize ||
-            (!fromProps.selectedDate !== !toProps.selectedDate ||
-                (fromProps.selectedDate &&
-                    toProps.selectedDate &&
-                    !fromProps.selectedDate.isSame(toProps.selectedDate)))
+            !fromProps.selectedDate !== !toProps.selectedDate ||
+            (fromProps.selectedDate &&
+                toProps.selectedDate &&
+                !fromProps.selectedDate.isSame(toProps.selectedDate))
         ) {
             this.leafletElement.redraw();
         }

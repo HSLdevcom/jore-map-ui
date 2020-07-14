@@ -11,6 +11,7 @@ import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/share
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
+import NodeSize from '~/enums/nodeSize';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventHelper from '~/helpers/EventHelper';
@@ -28,7 +29,7 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
-import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
+import { MapLayer, NetworkStore } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
@@ -101,7 +102,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     componentWillUnmount() {
         this._isMounted = false;
         this.props.toolbarStore!.selectTool(null);
-        this.props.networkStore!.setNodeSize(NodeSize.normal);
+        this.props.networkStore!.setNodeSize(NodeSize.SMALL);
         this.props.routePathStore!.clear();
         EventHelper.off('undo', this.undo);
         EventHelper.off('redo', this.redo);
@@ -171,7 +172,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private initializeMap = async () => {
         if (this.props.isNewRoutePath) {
-            this.props.networkStore!.setNodeSize(NodeSize.large);
+            this.props.networkStore!.setNodeSize(NodeSize.NORMAL);
             this.props.networkStore!.showMapLayer(MapLayer.node);
             this.props.networkStore!.showMapLayer(MapLayer.link);
         }

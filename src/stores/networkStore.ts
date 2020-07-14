@@ -1,12 +1,8 @@
 import { action, computed, observable } from 'mobx';
 import Moment from 'moment';
+import NodeSize from '~/enums/nodeSize';
 import TransitType from '~/enums/transitType';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
-
-enum NodeSize {
-    normal,
-    large,
-}
 
 enum MapLayer {
     node = 'node',
@@ -26,7 +22,7 @@ class NetworkStore {
     constructor() {
         this._selectedTransitTypes = this.getInitialVisibleTransitTypes();
         this._visibleMapLayers = this.getInitialVisibleMapLayers();
-        this._nodeSize = NodeSize.normal;
+        this._nodeSize = NodeSize.SMALL;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
     }
@@ -218,4 +214,4 @@ const _setLocalStorageTransitTypeVisibility = ({
 
 export default new NetworkStore();
 
-export { NetworkStore, NodeSize, MapLayer };
+export { NetworkStore, MapLayer };

@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
+import { NetworkStore } from '~/stores/networkStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
 import { isNetworkNodeHidden } from '~/utils/networkUtils';
 import NodeMarker from './markers/NodeMarker';
@@ -12,9 +13,10 @@ interface INodeLayerProps {
     onContextMenu: Function;
     searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
+    networkStore?: NetworkStore;
 }
 
-@inject('searchResultStore', 'mapStore')
+@inject('searchResultStore', 'mapStore', 'networkStore')
 @observer
 class NodeLayer extends React.Component<INodeLayerProps> {
     private map: L.Map;
@@ -44,10 +46,6 @@ class NodeLayer extends React.Component<INodeLayerProps> {
                 });
             });
 
-        // TODO: use
-        // const nodeSize = this.props.networkStore!.nodeSize;
-
-        // const nodes = this.props.searchResultStore!.allNodes;
         return nodesToShow.map((node: ISearchNode, index: number) => {
             return (
                 <NodeMarker
@@ -58,6 +56,7 @@ class NodeLayer extends React.Component<INodeLayerProps> {
                     nodeId={node.id}
                     onClick={this.props.onClick}
                     onContextMenu={this.props.onContextMenu}
+                    size={this.props.networkStore!.nodeSize}
                 />
             );
         });

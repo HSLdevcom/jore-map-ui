@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Circle, Marker as LeafletMarker } from 'react-leaflet';
+import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { PopupStore } from '~/stores/popupStore';
@@ -11,8 +12,6 @@ import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './nodeMarker.scss';
-
-type NodeSize = 'small' | 'normal';
 
 enum NodeHighlightColor {
     BLUE, // default color
@@ -57,7 +56,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         forcedVisibleNodeLabels: [],
         markerClasses: [],
         highlightColor: NodeHighlightColor.BLUE,
-        size: 'normal',
+        size: NodeSize.NORMAL,
     };
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
@@ -105,7 +104,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         } = this.props;
         const res = [...this.props.markerClasses!];
         res.push(s.nodeBase);
-        res.push(size === 'normal' ? s.normalSize : s.smallSize);
+        res.push(size === NodeSize.NORMAL ? s.normalSize : s.smallSize);
         res.push(
             ...NodeUtils.getNodeTypeClasses(nodeType, {
                 nodeLocationType,
