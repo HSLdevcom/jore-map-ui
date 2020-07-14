@@ -1,5 +1,12 @@
 @import '../../../shared/styles/common';
 
+$iconBorderWidthSmall: 2px;
+$iconWidthSmall: 10px;
+$iconFullWidthSmall: 14; // $iconWidthSmall + 2 * $iconBorderWidthSmall
+$iconBorderWidthNormal: 3px;
+$iconWidthNormal: 14px;
+$iconFullWidthNormal: 20; // $iconWidthNormal + 2 * $iconBorderWidthNormal
+
 .node {
     display: block;
     opacity: 1;
@@ -8,19 +15,18 @@
     .nodeBase {
         border-radius: 100px;
         border-style: solid;
-        margin: -3px;
     }
 
     .smallSize {
-        height: 10px;
-        width: 10px;
-        border-width: 2px;
+        height: 10px; // if changed, change also $iconFullWidthSmall
+        width: 10px; // if changed, change also $iconFullWidthSmall
+        border-width: $iconBorderWidthSmall; // if changed, change also $iconFullWidthSmall
     }
 
     .normalSize {
-        height: 12px;
-        width: 12px;
-        border-width: 3px;
+        height: $iconWidthNormal; // if changed, change also $iconFullWidthNormal
+        width: $iconWidthNormal; // if changed, change also $iconFullWidthNormal
+        border-width: $iconBorderWidthNormal; // if changed, change also $iconFullWidthNormal
     }
 
     .highlightBlue {
@@ -59,4 +65,9 @@
 
 .leaflet-popup-tip-container {
     pointer-events: all;
+}
+
+:export {
+    iconFullWidthSmall: $iconFullWidthSmall;
+    iconFullWidthNormal: $iconFullWidthNormal;
 }

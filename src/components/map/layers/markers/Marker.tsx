@@ -47,7 +47,7 @@ class Marker extends Component<IMarkerProps> {
                 ref={this.initMarkerRef}
                 zIndexOffset={VERY_HIGH_Z_INDEX}
                 icon={LeafletUtils.createDivIcon(<PinIcon color={color} />, {
-                    className: iconBaseClass
+                    className: iconBaseClass,
                 })}
                 position={latLng}
                 clickable={!isClickDisabled}

@@ -183,6 +183,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 {this.renderMarkerLabel()}
             </div>,
             {
+                iconWidth:
+                    this.props.size === NodeSize.SMALL
+                        ? parseInt(s.iconFullWidthSmall, 10)
+                        : parseInt(s.iconFullWidthNormal, 10),
+                iconHeight:
+                    this.props.size === NodeSize.SMALL
+                        ? parseInt(s.iconFullWidthSmall, 10)
+                        : parseInt(s.iconFullWidthNormal, 10),
                 className: nodeRootClass,
                 popupOffset: -15,
             }
