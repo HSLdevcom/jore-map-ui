@@ -3,6 +3,8 @@
   "version": "0.8.0",
   "private": true,
   "dependencies": {
+    "@turf/helpers": "^6.1.4",
+    "@turf/points-within-polygon": "^5.1.5",
     "@types/graphql": "^14.5.0",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.4.1",

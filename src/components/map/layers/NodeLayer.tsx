@@ -1,3 +1,13 @@
+import {
+    featureCollection,
+    point,
+    polygon,
+    Feature,
+    FeatureCollection,
+    Point,
+    Properties,
+} from '@turf/helpers';
+import pointsWithinPolygon from '@turf/points-within-polygon';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -19,13 +29,20 @@ interface INodeLayerProps {
     routePathStore?: RoutePathStore;
 }
 
+interface INodeLayerState {
+    turfPointNodeFeatures: FeatureCollection<Point, Properties> | null;
+}
+
 @inject('searchResultStore', 'mapStore', 'networkStore', 'routePathStore')
 @observer
-class NodeLayer extends React.Component<INodeLayerProps> {
+class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
     private map: L.Map;
 
     constructor(props: INodeLayerProps) {
         super(props);
+        this.state = {
+            turfPointNodeFeatures: null,
+        };
         this.map = this.props.map.current.leafletElement;
         // Render always when map moves
         this.map.on('moveend', () => {
@@ -40,15 +57,61 @@ class NodeLayer extends React.Component<INodeLayerProps> {
         );
     }
 
+    componentWillUpdate(props: INodeLayerProps) {
+        if (this.shouldUpdateNodeFeatures()) {
+            this.updateNodeFeatures();
+        }
+    }
+
+    private shouldUpdateNodeFeatures = () => {
+        if (
+            this.props.networkStore!.selectedTransitTypes.length === 0 &&
+            !this.state.turfPointNodeFeatures
+        ) {
+            return false;
+        }
+        return !this.state.turfPointNodeFeatures;
+    };
+
+    private updateNodeFeatures = () => {
+        const nodeFeatures = this.props.searchResultStore!.allNodes.map((node: ISearchNode) => {
+            return point([node.coordinates.lat, node.coordinates.lng], node);
+        });
+        const turfPointNodeFeatures: FeatureCollection<Point, Properties> = featureCollection(
+            nodeFeatures
+        );
+
+        this.setState({
+            turfPointNodeFeatures,
+        });
+    };
+
     render() {
         if (this.props.mapStore!.areNetworkLayersHidden) return null;
+        if (!this.state.turfPointNodeFeatures) return null;
+
         const bounds = this.map.getBounds();
 
-        const nodesToShow = this.props
-            .searchResultStore!.allNodes.filter((node) => {
-                return bounds.contains(node.coordinates);
+        const ne = bounds.getNorthEast();
+        const se = bounds.getSouthEast();
+        const sw = bounds.getSouthWest();
+        const nw = bounds.getNorthWest();
+
+        const searchWithin = polygon([
+            [
+                [ne.lat, ne.lng],
+                [se.lat, se.lng],
+                [sw.lat, sw.lng],
+                [nw.lat, nw.lng],
+                [ne.lat, ne.lng],
+            ],
+        ]);
+
+        const featuresToShow = pointsWithinPolygon(this.state.turfPointNodeFeatures, searchWithin)
+            .features.map((nodeFeature: Feature<Point, Properties>) => {
+                return nodeFeature.properties as ISearchNode;
             })
-            .filter((node) => {
+            .filter((node: ISearchNode) => {
                 return !isNetworkNodeHidden({
                     nodeId: node.id,
                     transitTypeCodes: node.transitTypes.join(','),
@@ -56,7 +119,7 @@ class NodeLayer extends React.Component<INodeLayerProps> {
                 });
             });
 
-        return nodesToShow.map((node: ISearchNode, index: number) => {
+        return featuresToShow.map((node: ISearchNode, index: number) => {
             return (
                 <NodeMarker
                     key={`${node.id}-${index}`}
