@@ -57,7 +57,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (!map) return;
 
         // Remove (possible) previously drawn links from map
-        this.editableLinks.forEach(editableLink => {
+        this.editableLinks.forEach((editableLink) => {
             editableLink.remove();
         });
         this.editableLinks = [];
@@ -94,7 +94,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
         if (map) {
             const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
                 interactive: false,
-                color: '#000'
+                color: '#000',
             }).addTo(map);
 
             if (isEditable) {
@@ -135,7 +135,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
 
     private renderNodes = () => {
         const nodes = this.props.linkStore!.nodes;
-        return nodes.map(n => this.renderNode(n));
+        return nodes.map((n) => this.renderNode(n));
     };
 
     private renderNode = (node: INode) => {
@@ -182,16 +182,18 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
                 startPoint={link.geometry[link.geometry.length - 1]}
                 endPoint={link.endNode.coordinates}
                 color={'#efc210'}
-            />
+            />,
         ];
     };
     private renderLinkPointLabel = (latLng: L.LatLng) => {
-        return LeafletUtils.createDivIcon(
-            <div className={s.linkPointLabel}>
-                {latLng.lat}, {latLng.lng}
-            </div>,
-            {}
-        );
+        return LeafletUtils.createDivIcon({
+            html: (
+                <div className={s.linkPointLabel}>
+                    {latLng.lat}, {latLng.lng}
+                </div>
+            ),
+            options: { classNames: [] },
+        });
     };
 
     private renderLinkPointCoordinates = () => {

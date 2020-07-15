@@ -75,7 +75,10 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             searchIndex: -1,
         });
         this.map.setView(latLng, this.map.getZoom());
-        const marker = LeafletUtils.createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR} />);
+        const marker = LeafletUtils.createDivIcon({
+            html: <PinIcon color={SEARCH_RESULT_MARKER_COLOR} />,
+            options: { classNames: [] },
+        });
         this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(this.map);
     };
 

@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
@@ -92,7 +91,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return labels;
     }
 
-    private getMarkerClasses = () => {
+    private getMarkerClasses = (): string[] => {
         const {
             nodeType,
             nodeLocationType,
@@ -103,7 +102,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
             highlightColor,
         } = this.props;
         const res = [...this.props.markerClasses!];
-        res.push(s.nodeBase);
         res.push(size === NodeSize.NORMAL ? s.normalSize : s.smallSize);
         res.push(
             ...NodeUtils.getNodeTypeClasses(nodeType, {
@@ -134,7 +132,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
     private renderMarkerLabel = () => {
         const labels = this.getLabels();
-        if (!labels) return null;
+        if (!labels || labels.length === 0) return null;
         return (
             <div className={s.nodeLabel}>
                 {labels.map((label, index) => {
@@ -160,29 +158,19 @@ class NodeMarker extends Component<INodeMarkerProps> {
         }
     };
 
-    private renderNodeMarkerIcon = ({
-        nodeLocationType,
-    }: {
-        nodeLocationType: NodeLocationType;
-    }) => {
+    private renderNodeMarkerIcon = () => {
         const nodeRootClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
-
-        return LeafletUtils.createDivIcon(
-            <div
-                className={classnames(...this.getMarkerClasses())}
-                style={
-                    nodeLocationType === 'coordinates'
-                        ? {
-                              borderColor: this.props.color,
-                              backgroundColor: this.props.color,
-                          }
-                        : undefined
-                }
-            >
-                {this.props.children}
-                {this.renderMarkerLabel()}
-            </div>,
-            {
+        const markerLabel = this.renderMarkerLabel();
+        return LeafletUtils.createDivIcon({
+            html:
+                markerLabel || this.props.children ? (
+                    <div>
+                        {markerLabel}
+                        {this.props.children}
+                    </div>
+                ) : null,
+            options: {
+                classNames: [nodeRootClass, ...this.getMarkerClasses()],
                 iconWidth:
                     this.props.size === NodeSize.SMALL
                         ? parseInt(s.iconFullWidthSmall, 10)
@@ -191,16 +179,14 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     this.props.size === NodeSize.SMALL
                         ? parseInt(s.iconFullWidthSmall, 10)
                         : parseInt(s.iconFullWidthNormal, 10),
-                className: nodeRootClass,
                 popupOffset: -15,
-            }
-        );
+            },
+        });
     };
 
     render() {
         const {
             coordinates,
-            nodeLocationType,
             isDraggable,
             isClickDisabled,
             hasHighZIndex,
@@ -216,7 +202,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 onMouseOut={onMouseOut}
                 onClick={this.onMarkerClick}
                 draggable={isDraggable}
-                icon={this.renderNodeMarkerIcon({ nodeLocationType })}
+                icon={this.renderNodeMarkerIcon()}
                 position={coordinates}
                 onDragEnd={onMoveMarker && this.onMoveMarker()}
                 interactive={!Boolean(isClickDisabled)}
