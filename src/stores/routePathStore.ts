@@ -31,6 +31,10 @@ enum ListFilter {
     link,
 }
 
+interface IRoutePathNodes {
+    [nodeId: string]: string;
+}
+
 class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
@@ -40,6 +44,7 @@ class RoutePathStore {
     @observable private _invalidLinkOrderNumbers: number[];
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
+    private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
     private _routePathLinkValidationStoreMap: Map<
@@ -53,6 +58,7 @@ class RoutePathStore {
         this._existingRoutePaths = [];
         this._isEditingDisabled = true;
         this._selectedTabIndex = 0;
+        this._routePathNodes = null;
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
@@ -65,6 +71,10 @@ class RoutePathStore {
         reaction(
             () => this._routePath && this._routePath.routePathLinks.length,
             _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+        );
+        reaction(
+            () => this.routePath && this.routePath.routePathLinks.length,
+            () => this.updateRoutePathNodes()
         );
     }
 
@@ -464,6 +474,7 @@ class RoutePathStore {
         this._routePath = null;
         this._oldRoutePath = null;
         this._invalidLinkOrderNumbers = [];
+        this._routePathNodes = null;
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
         this._validationStore.clear();
@@ -490,6 +501,17 @@ class RoutePathStore {
             undoState.startNodeBookScheduleColumnNumber
         );
     }
+
+    @action
+    private updateRoutePathNodes = () => {
+        const routePathNodes: IRoutePathNodes = {};
+        if (!this.routePath) return;
+        this.routePath.routePathLinks.forEach((rpLink) => {
+            routePathNodes[rpLink.startNode.id] = rpLink.startNode.id;
+            routePathNodes[rpLink.endNode.id] = rpLink.endNode.id;
+        });
+        this._routePathNodes = routePathNodes;
+    };
 
     public getSavePreventedText = (): string => {
         const routePathLinks = this.routePath!.routePathLinks;
@@ -549,6 +571,12 @@ class RoutePathStore {
             return node.geometry;
         }
         return [];
+    };
+
+    // O(1) way to know fast is node is opened or not
+    public isNodeFound = (nodeId: string): Boolean => {
+        if (!this._routePathNodes) return false;
+        return Boolean(this._routePathNodes[nodeId] !== undefined);
     };
 
     public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
