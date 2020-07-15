@@ -164,10 +164,10 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return LeafletUtils.createDivIcon({
             html:
                 markerLabel || this.props.children ? (
-                    <div>
+                    <>
                         {markerLabel}
                         {this.props.children}
-                    </div>
+                    </>
                 ) : null,
             options: {
                 classNames: [nodeRootClass, ...this.getMarkerClasses()],

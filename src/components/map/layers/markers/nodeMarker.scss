@@ -14,15 +14,29 @@ $iconFullWidthNormal: 20; // $iconWidthNormal + 2 * $iconBorderWidthNormal
     border-radius: 100px;
     border-style: solid;
 
+    .nodeLabel {
+        position: absolute;
+        font-weight: 600;
+        text-shadow: 0 0 5px white, 0 0 5px white;
+    }
+
     &.smallSize {
         height: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
         width: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
         border-width: $iconBorderWidthSmall; // if changed, change also $iconFullWidthSmall
+
+        .nodeLabel {
+            left: 18px;
+        }
     }
     &.normalSize {
         height: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
         width: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
         border-width: $iconBorderWidthNormal; // if changed, change also $iconFullWidthNormal
+
+        .nodeLabel {
+            left: 25px;
+        }
     }
     &.highlightBlue {
         box-shadow: 0px 0px 15px 9px $busBlue;
@@ -49,13 +63,6 @@ $iconFullWidthNormal: 20; // $iconWidthNormal + 2 * $iconBorderWidthNormal
     fill: $busBlue;
     fill-opacity: 0.3;
     pointer-events: none !important;
-}
-
-.nodeLabel {
-    position: absolute;
-    left: 30px;
-    font-weight: 600;
-    text-shadow: 0 0 5px white, 0 0 5px white;
 }
 
 .leaflet-popup-tip-container {
