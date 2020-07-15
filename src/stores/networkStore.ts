@@ -79,6 +79,7 @@ class NetworkStore {
 
     @action
     public showMapLayer = (mapLayer: MapLayer) => {
+        if (this._visibleMapLayers.includes(mapLayer)) return;
         // Need to do concat (instead of push) to trigger observable reaction
         this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
     };

@@ -1,8 +1,10 @@
+import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
+import { RoutePathStore } from '~/stores/routePathStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
 import { isNetworkNodeHidden } from '~/utils/networkUtils';
 import NodeMarker from './markers/NodeMarker';
@@ -14,9 +16,10 @@ interface INodeLayerProps {
     searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
     networkStore?: NetworkStore;
+    routePathStore?: RoutePathStore;
 }
 
-@inject('searchResultStore', 'mapStore', 'networkStore')
+@inject('searchResultStore', 'mapStore', 'networkStore', 'routePathStore')
 @observer
 class NodeLayer extends React.Component<INodeLayerProps> {
     private map: L.Map;
@@ -28,6 +31,13 @@ class NodeLayer extends React.Component<INodeLayerProps> {
         this.map.on('moveend', () => {
             this.forceUpdate();
         });
+
+        reaction(
+            () =>
+                this.props.routePathStore!.routePath &&
+                this.props.routePathStore!.routePath.routePathLinks.length,
+            () => this.forceUpdate()
+        );
     }
 
     render() {
