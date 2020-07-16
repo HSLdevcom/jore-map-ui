@@ -38,6 +38,7 @@ interface INodeLayerState {
 @observer
 class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
     private map: L.Map;
+    private mounted: boolean;
 
     constructor(props: INodeLayerProps) {
         super(props);
@@ -62,12 +63,19 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
         }
     }
 
+    componentDidUpdate() {
+        this.mounted = true;
+    }
+
     componentWillUnmount() {
+        this.mounted = false;
         this.map.off('moveend', this.redrawNodeLayer);
     }
 
     private redrawNodeLayer = () => {
-        this.forceUpdate();
+        if (this.mounted) {
+            this.forceUpdate();
+        }
     };
 
     private shouldUpdateNodeFeatures = () => {
