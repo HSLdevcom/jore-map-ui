@@ -184,12 +184,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return <Circle className={s.stopCircle} center={coordinates} radius={radius} />;
     };
 
-    private onMarkerClick = (e: L.LeafletMouseEvent) => {
-        if (this.props.onClick) {
-            this.props.onClick(e);
-        }
-    };
-
     private renderNodeMarkerIcon = () => {
         const nodeRootClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
         const markerLabel = this.renderMarkerLabel();
@@ -231,6 +225,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             isClickDisabled,
             hasHighZIndex,
             onContextMenu,
+            onClick,
             onMouseOver,
             onMouseOut,
             onMoveMarker,
@@ -240,7 +235,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 onContextMenu={onContextMenu}
                 onMouseOver={onMouseOver}
                 onMouseOut={onMouseOut}
-                onClick={this.onMarkerClick}
+                onClick={onClick}
                 draggable={isDraggable}
                 icon={this.renderNodeMarkerIcon()}
                 position={coordinates}
