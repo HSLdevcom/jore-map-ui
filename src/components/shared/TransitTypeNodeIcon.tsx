@@ -47,7 +47,7 @@ class TransitTypeNodeIcon extends React.Component<ITransitTypeNodeIconProps> {
             nodeIcon = this.addBorder(nodeIcon, '#727272', opacity);
         } else {
             if (transitTypes && transitTypes.length > 0) {
-                transitTypes!.forEach(type => {
+                transitTypes!.forEach((type) => {
                     nodeIcon = this.addBorder(nodeIcon, TransitTypeUtils.getColor(type), opacity);
                 });
             } else {

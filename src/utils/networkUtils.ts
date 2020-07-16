@@ -4,6 +4,8 @@ import TransitType from '~/enums/transitType';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
+import RoutePathLayerListStore from '~/stores/routePathLayerListStore';
+import RoutePathStore from '~/stores/routePathStore';
 
 type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
 
@@ -85,8 +87,12 @@ const isNetworkNodeHidden = ({
     const dateRanges: Moment.Moment[][] | undefined = _parseDateRangesString(dateRangesString);
     const selectedTransitTypes = toJS(NetworkStore.selectedTransitTypes);
 
-    const node = NodeStore.node;
-    if (node && node.id === nodeId) {
+    if (
+        isNodeOpenInNodeView(nodeId) ||
+        isNodeOpenInLinkView(nodeId) ||
+        isNodeOpenInRoutePathView(nodeId) ||
+        isNodeOpenInRouteListView(nodeId)
+    ) {
         return true;
     }
 
@@ -103,12 +109,31 @@ const isNetworkNodeHidden = ({
             return true;
         }
     }
+
     const selectedDate = NetworkStore.selectedDate;
     if (!dateRanges || !selectedDate) {
         return false;
     }
 
     return !selectedDate || !_isDateInRanges(selectedDate, dateRanges);
+};
+
+const isNodeOpenInNodeView = (nodeId: string) => {
+    const node = NodeStore.node;
+    return node && node.id === nodeId;
+};
+
+const isNodeOpenInLinkView = (nodeId: string) => {
+    const link = LinkStore.link;
+    return link && (nodeId === link.startNode.id || nodeId === link.endNode.id);
+};
+
+const isNodeOpenInRoutePathView = (nodeId: string) => {
+    return RoutePathStore.isNodeFound(nodeId);
+};
+
+const isNodeOpenInRouteListView = (nodeId: string) => {
+    return RoutePathLayerListStore.isNodeFound(nodeId);
 };
 
 const _parseDateRangesString = (dateRangesString?: string) => {

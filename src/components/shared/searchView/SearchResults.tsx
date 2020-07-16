@@ -6,8 +6,6 @@ import { ISearchLine } from '~/models/ILine';
 import { ISearchNode } from '~/models/INode';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
-import NodeService from '~/services/nodeService';
-import { ErrorStore } from '~/stores/errorStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
 import { SearchStore } from '~/stores/searchStore';
 import Loader from '../loader/Loader';
@@ -18,7 +16,6 @@ import * as s from './searchResults.scss';
 interface ISearchResultsProps {
     searchResultStore?: SearchResultStore;
     searchStore?: SearchStore;
-    errorStore?: ErrorStore;
 }
 
 interface ISearchResultsState {
@@ -29,7 +26,7 @@ const SHOW_LIMIT_DEFAULT = 50;
 const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
-@inject('searchResultStore', 'searchStore', 'errorStore')
+@inject('searchResultStore', 'searchStore')
 @observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
@@ -54,26 +51,11 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
             ],
             this.scrollToBeginning
         );
-        // Lazy load nodes in the background
-        this.fetchAllNodes();
     }
 
     componentWillUnmount() {
         this.reactionDisposer();
     }
-
-    private fetchAllNodes = async () => {
-        if (this.props.searchResultStore!.allNodes.length > 0) return;
-
-        try {
-            await NodeService.fetchAllNodes().then((nodes: any) => {
-                this.props.searchResultStore!.setAllNodes(nodes);
-                this.props.searchResultStore!.search();
-            });
-        } catch (e) {
-            this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);
-        }
-    };
 
     private getFilteredLines = () => {
         return this.props.searchResultStore!.filteredLines.slice().splice(0, this.state.showLimit);

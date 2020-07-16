@@ -3,6 +3,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
+import NodeSize from '~/enums/nodeSize';
 import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventHelper';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
@@ -14,11 +15,6 @@ import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from '../markers/NodeMarker';
 import { INodeUsagePopupData } from '../popups/NodeUsagePopup';
 import * as s from './routePathNeighborLinkLayer.scss';
-
-const USED_NEIGHBOR_COLOR = '#0dce0a';
-const USED_NEIGHBOR_COLOR_HIGHLIGHT = '#048c01';
-const UNUSED_NEIGHBOR_COLOR = '#fc383a';
-const UNUSED_NEIGHBOR_COLOR_HIGHLIGHT = '#c40608';
 
 interface IRoutePathLayerProps {
     routePathLayerStore?: RoutePathLayerStore;
@@ -93,13 +89,13 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 key={`${key}-${node.id}`}
                 coordinates={node.coordinates}
                 nodeType={node.type}
+                transitTypes={[]}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                markerClasses={[s.neighborMarker]}
+                classNames={[this.getNeighborLinkClassName(neighborLink)]}
                 forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                color={this.getNeighborLinkColor(neighborLink)}
                 onClick={onNeighborLinkClick}
                 onContextMenu={() => this.showNodePopup(node, neighborLink.nodeUsageRoutePaths)}
                 onMouseOver={() =>
@@ -115,6 +111,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                     })
                 }
                 hasHighZIndex={this.isNeighborLinkHighlighted(neighborLink)}
+                size={NodeSize.LARGE}
             >
                 <div className={s.usageCount}>
                     {neighborLink.nodeUsageRoutePaths.length > 9
@@ -125,18 +122,18 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         );
     };
 
-    private getNeighborLinkColor = (neighborLink: INeighborLink) => {
+    private getNeighborLinkClassName = (neighborLink: INeighborLink) => {
         const isNeighborLinkUsed = neighborLink.nodeUsageRoutePaths.length > 0;
         if (this.isNeighborLinkHighlighted(neighborLink)) {
             if (isNeighborLinkUsed) {
-                return USED_NEIGHBOR_COLOR_HIGHLIGHT;
+                return s.usedNeighborHighlight;
             }
-            return UNUSED_NEIGHBOR_COLOR_HIGHLIGHT;
+            return s.unusedNeighborHighlight;
         }
         if (isNeighborLinkUsed) {
-            return USED_NEIGHBOR_COLOR;
+            return s.usedNeighbor;
         }
-        return UNUSED_NEIGHBOR_COLOR;
+        return s.unusedNeighbor;
     };
 
     private isNeighborLinkHighlighted = (neighborLink: INeighborLink) => {
@@ -169,10 +166,24 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 key={neighborLink.routePathLink.id}
                 color={this.getNeighborLinkColor(neighborLink)}
                 weight={5}
-                opacity={this.isNeighborLinkHighlighted(neighborLink) ? 1 : 0.8}
+                opacity={this.isNeighborLinkHighlighted(neighborLink) ? 0.8 : 1}
                 onClick={onNeighborLinkClick}
             />
         );
+    };
+
+    private getNeighborLinkColor = (neighborLink: INeighborLink) => {
+        const isNeighborLinkUsed = neighborLink.nodeUsageRoutePaths.length > 0;
+        if (this.isNeighborLinkHighlighted(neighborLink)) {
+            if (isNeighborLinkUsed) {
+                return s.usedNeighborColorHighlight;
+            }
+            return s.unusedNeighborColorHighlight;
+        }
+        if (isNeighborLinkUsed) {
+            return s.usedNeighborColor;
+        }
+        return s.unusedNeighborColor;
     };
 
     private highlightRoutePathLink = ({

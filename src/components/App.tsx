@@ -12,6 +12,7 @@ import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
 import CodeListService from '~/services/codeListService';
 import LineService from '~/services/lineService';
+import NodeService from '~/services/nodeService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
@@ -87,6 +88,8 @@ class App extends React.Component<IAppProps, IAppState> {
                 isAppInitializationInProgress: false,
             });
         });
+        // Lazy load nodes in the background
+        this.fetchAllNodes();
     };
 
     private fetchAllLines = async () => {
@@ -113,6 +116,19 @@ class App extends React.Component<IAppProps, IAppState> {
     private fetchSaveLock = async () => {
         const isSaveLockEnabled = await AuthService.fetchIsSaveLockEnabled();
         this.props.loginStore!.setIsSaveLockEnabled(isSaveLockEnabled);
+    };
+
+    private fetchAllNodes = async () => {
+        if (this.props.searchResultStore!.allNodes.length > 0) return;
+
+        try {
+            await NodeService.fetchAllNodes().then((nodes: any) => {
+                this.props.searchResultStore!.setAllNodes(nodes);
+                this.props.searchResultStore!.search();
+            });
+        } catch (e) {
+            this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);
+        }
     };
 
     private renderAfterLogin = () => {

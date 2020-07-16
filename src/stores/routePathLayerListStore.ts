@@ -17,7 +17,7 @@ class RoutePathLayerListStore {
         this._highlightedRoutePathId = null;
         this._selectedRoutePathId = null;
         this.colorScale = new ColorScale();
-        autorun(() => this.centerMapToRoutePaths());
+        autorun(() => this.centerMapToRoutePaths(), { delay: 100 });
     }
 
     @computed
@@ -136,6 +136,18 @@ class RoutePathLayerListStore {
 
     public getRoutePath = (id: string): IRoutePath | undefined => {
         return this._routePaths.find((rp) => rp.internalId === id);
+    };
+
+    public isNodeFound = (nodeId: string): Boolean => {
+        if (!this._selectedRoutePathId) return false;
+
+        const selectedRoutePath = this._routePaths.find(
+            (rp) => rp.internalId === this._selectedRoutePathId
+        );
+
+        return selectedRoutePath!.routePathLinks.some((rpLink) => {
+            return rpLink.startNode.id === nodeId || rpLink.endNode.id === nodeId;
+        });
     };
 
     private centerMapToRoutePaths = () => {

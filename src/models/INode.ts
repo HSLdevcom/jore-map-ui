@@ -38,7 +38,9 @@ interface INode extends INodeBase {
 interface ISearchNode {
     id: string;
     type: NodeType;
+    coordinates: L.LatLng;
     transitTypes: TransitType[];
+    dateRanges: string;
     shortIdLetter?: string;
     shortIdString?: string;
     stopName?: string;
