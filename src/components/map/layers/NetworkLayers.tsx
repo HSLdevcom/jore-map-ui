@@ -3,10 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import constants from '~/constants/constants';
 import TransitType from '~/enums/transitType';
-import EventHelper, {
-    INetworkLinkClickParams,
-    INetworkNodeClickParams,
-} from '~/helpers/EventHelper';
+import EventHelper, { INetworkLinkClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -117,8 +114,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         return { className: s.hidden };
     };
 
-    private onNetworkNodeRightClick = (clickEvent: any) => {
-        const nodeId = clickEvent.sourceTarget.properties.soltunnus;
+    private onNetworkNodeRightClick = (nodeId: string) => {
         this.showNodePopup(nodeId);
     };
 
@@ -137,11 +133,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         this.props.popupStore!.showPopup(nodePopup);
     };
 
-    private onNetworkNodeClick = (clickEvent: any) => {
-        const properties = clickEvent.sourceTarget.properties;
-        const clickParams: INetworkNodeClickParams = {
-            nodeId: properties.soltunnus,
-            nodeType: properties.soltyyppi,
+    private onNetworkNodeClick = (nodeId: string) => {
+        const clickParams: INodeClickParams = {
+            nodeId,
         };
         EventHelper.trigger('networkNodeClick', clickParams);
     };

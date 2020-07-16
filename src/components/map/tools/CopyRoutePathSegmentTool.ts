@@ -1,5 +1,5 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
+import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
@@ -38,13 +38,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: INodeClickParams = clickEvent.detail;
 
-        if (setNodeType === 'startNode') this.selectStartNode(params.node.id);
-        else this.selectEndNode(params.node.id);
+        if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
+        else this.selectEndNode(params.nodeId);
     };
 
     private onNetworkNodeClick = (clickEvent: CustomEvent) => {
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
-        const params: INetworkNodeClickParams = clickEvent.detail;
+        const params: INodeClickParams = clickEvent.detail;
 
         if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
         else this.selectEndNode(params.nodeId);

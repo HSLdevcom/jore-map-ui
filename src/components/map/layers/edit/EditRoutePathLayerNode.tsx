@@ -104,7 +104,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                     ? this.props.setExtendedListItem(null)
                     : this.props.setExtendedListItem(node.internalId);
 
-                const clickParams: INodeClickParams = { node };
+                const clickParams: INodeClickParams = { nodeId: node.id };
                 EventHelper.trigger('nodeClick', clickParams);
             };
         }

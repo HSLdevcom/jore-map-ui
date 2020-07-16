@@ -141,7 +141,7 @@ class EditLinkLayer extends Component<IEditLinkLayerProps> {
     private renderNode = (node: INode) => {
         if (!node) return null;
         const onNodeClick = () => {
-            const clickParams: INodeClickParams = { node };
+            const clickParams: INodeClickParams = { nodeId: node.id };
             EventHelper.trigger('nodeClick', clickParams);
         };
 

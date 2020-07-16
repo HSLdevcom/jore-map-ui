@@ -101,6 +101,14 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
         });
     };
 
+    private handleOnLeftClick = (nodeId: string) => () => {
+        this.props.onClick(nodeId);
+    };
+
+    private handleOnRightClick = (nodeId: string) => () => {
+        this.props.onContextMenu(nodeId);
+    };
+
     render() {
         if (this.props.mapStore!.areNetworkLayersHidden) return null;
         if (!this.state.turfPointNodeFeatures) return null;
@@ -143,8 +151,8 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
                     transitTypes={node.transitTypes}
                     nodeLocationType={'coordinates'}
                     nodeId={node.id}
-                    onClick={this.props.onClick}
-                    onContextMenu={this.props.onContextMenu}
+                    onClick={this.handleOnLeftClick(node.id)}
+                    onContextMenu={this.handleOnRightClick(node.id)}
                     size={this.props.networkStore!.nodeSize}
                 />
             );

@@ -35,12 +35,7 @@ class EventHelper {
 }
 
 interface INodeClickParams {
-    node: INode;
-}
-
-interface INetworkNodeClickParams {
     nodeId: string;
-    nodeType: NodeType;
 }
 
 interface INetworkLinkClickParams {
@@ -62,7 +57,6 @@ export default new EventHelper();
 
 export {
     INodeClickParams,
-    INetworkNodeClickParams,
     INetworkLinkClickParams,
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
