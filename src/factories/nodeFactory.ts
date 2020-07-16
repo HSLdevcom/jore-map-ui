@@ -4,7 +4,7 @@ import TransitType from '~/enums/transitType';
 import NumberIterator from '~/helpers/NumberIterator';
 import { INode } from '~/models';
 import { INodeBase, INodeMapHighlight, ISearchNode } from '~/models/INode';
-import IExternalNode from '~/models/externals/IExternalNode';
+import IExternalNode, { IExternalSearchNode } from '~/models/externals/IExternalNode';
 import { roundLatLng } from '~/utils/geomUtils';
 import NodeStopFactory from './nodeStopFactory';
 
@@ -77,14 +77,13 @@ class NodeFactory {
         };
     }
 
-    public static createSearchNode(externalNode: IExternalNode, stopName?: string): ISearchNode {
+    public static createSearchNode(externalNode: IExternalSearchNode): ISearchNode {
         const coordinates = _getLatLng(
             externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
         const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
         return {
             type,
-            stopName,
             coordinates,
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
@@ -93,6 +92,9 @@ class NodeFactory {
             dateRanges: externalNode.dateRanges!,
             shortIdLetter: externalNode.solkirjain,
             shortIdString: externalNode.sollistunnus,
+            stopName: externalNode.pysakkiBySoltunnus
+                ? externalNode.pysakkiBySoltunnus.pysnimi
+                : undefined,
         };
     }
 }
