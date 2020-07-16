@@ -38,7 +38,7 @@ interface INodeClickParams {
     nodeId: string;
 }
 
-interface INetworkLinkClickParams {
+interface ILinkClickParams {
     startNodeId: string;
     endNodeId: NodeType;
     transitType: TransitType;
@@ -57,7 +57,7 @@ export default new EventHelper();
 
 export {
     INodeClickParams,
-    INetworkLinkClickParams,
+    ILinkClickParams,
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
 };

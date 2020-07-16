@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import constants from '~/constants/constants';
 import TransitType from '~/enums/transitType';
-import EventHelper, { INetworkLinkClickParams, INodeClickParams } from '~/helpers/EventHelper';
+import EventHelper, { ILinkClickParams, INodeClickParams } from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -142,7 +142,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private onNetworkLinkClick = (clickEvent: any) => {
         const properties = clickEvent.sourceTarget.properties;
-        const clickParams: INetworkLinkClickParams = {
+        const clickParams: ILinkClickParams = {
             startNodeId: properties.lnkalkusolmu,
             endNodeId: properties.lnkloppusolmu,
             transitType: properties.lnkverkko,
