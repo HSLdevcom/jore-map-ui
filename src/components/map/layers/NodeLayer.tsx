@@ -8,6 +8,7 @@ import {
     Properties,
 } from '@turf/helpers';
 import pointsWithinPolygon from '@turf/points-within-polygon';
+import _ from 'lodash';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -45,15 +46,13 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
         };
         this.map = this.props.map.current.leafletElement;
         // Render always when map moves
-        this.map.on('moveend', () => {
-            this.forceUpdate();
-        });
+        this.map.on('moveend', this.redrawNodeLayer);
 
         reaction(
             () =>
                 this.props.routePathStore!.routePath &&
                 this.props.routePathStore!.routePath.routePathLinks.length,
-            () => this.forceUpdate()
+            () => this.redrawNodeLayer()
         );
     }
 
@@ -62,6 +61,14 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
             this.updateNodeFeatures();
         }
     }
+
+    componentWillUnmount() {
+        this.map.off('moveend', this.redrawNodeLayer);
+    }
+
+    private redrawNodeLayer = () => {
+        this.forceUpdate();
+    };
 
     private shouldUpdateNodeFeatures = () => {
         if (
