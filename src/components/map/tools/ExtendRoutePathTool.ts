@@ -3,9 +3,10 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
-    INetworkNodeClickParams,
+    INodeClickParams,
 } from '~/helpers/EventHelper';
 import { INode } from '~/models';
+import NodeService from '~/services/nodeService';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathLayerStore, { NeighborToAddType } from '~/stores/routePathLayerStore';
@@ -57,10 +58,12 @@ class ExtendRoutePathTool implements BaseTool {
     // Network node click
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
         if (!this.isNetworkNodesInteractive()) return;
-        const params: INetworkNodeClickParams = clickEvent.detail;
-        if (params.nodeType !== NodeType.STOP) return;
+        const params: INodeClickParams = clickEvent.detail;
+        const nodeId = params.nodeId;
+        const node = await NodeService.fetchNode(nodeId);
+        if (node!.type !== NodeType.STOP) return;
 
-        this.fetchNeighborRoutePathLinks(params.nodeId, 1);
+        this.fetchNeighborRoutePathLinks(nodeId, 1);
     };
 
     private onEscapePress = () => {

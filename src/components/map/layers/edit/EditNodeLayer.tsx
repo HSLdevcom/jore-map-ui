@@ -88,7 +88,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const node = this.props.nodeStore!.node;
 
         const onNodeClick = () => {
-            const clickParams: INodeClickParams = { node };
+            const clickParams: INodeClickParams = { nodeId: node.id };
             EventHelper.trigger('nodeClick', clickParams);
         };
         return (

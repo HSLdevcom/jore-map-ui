@@ -86,8 +86,8 @@ class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
     };
     private renderNodes = () => {
         const routePathLinks = this.props.routePath.routePathLinks;
-        const triggerNodeClick = (node: INode) => () => {
-            const clickParams: INodeClickParams = { node };
+        const triggerNodeClick = (nodeId: string) => () => {
+            const clickParams: INodeClickParams = { nodeId };
             EventHelper.trigger('nodeClick', clickParams);
         };
 
@@ -99,7 +99,7 @@ class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
                 isDisabled: routePathLink.startNodeType === StartNodeType.DISABLED,
                 isTimeAlignmentStop: routePathLink.startNodeTimeAlignmentStop !== '0',
                 openPopup: this.openPopup(routePathLink.startNode),
-                triggerNodeClick: triggerNodeClick(node),
+                triggerNodeClick: triggerNodeClick(node.id),
             });
         });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
@@ -111,7 +111,7 @@ class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
                 isDisabled: false, // Last node can't be disabled
                 isTimeAlignmentStop: false, // Last node can't be a time alignment stop
                 openPopup: this.openPopup(lastRoutePathLink.endNode),
-                triggerNodeClick: triggerNodeClick(node),
+                triggerNodeClick: triggerNodeClick(node.id),
             })
         );
         return nodes;

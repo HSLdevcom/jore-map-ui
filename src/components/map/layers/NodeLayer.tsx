@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import EventHelper from '~/helpers/EventHelper';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
@@ -101,6 +102,15 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
         });
     };
 
+    private handleOnLeftClick = (nodeId: string) => (e: L.LeafletEvent) => {
+        EventHelper.trigger('mapClick', e);
+        this.props.onClick(nodeId);
+    };
+
+    private handleOnRightClick = (nodeId: string) => () => {
+        this.props.onContextMenu(nodeId);
+    };
+
     render() {
         if (this.props.mapStore!.areNetworkLayersHidden) return null;
         if (!this.state.turfPointNodeFeatures) return null;
@@ -143,8 +153,8 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
                     transitTypes={node.transitTypes}
                     nodeLocationType={'coordinates'}
                     nodeId={node.id}
-                    onClick={this.props.onClick}
-                    onContextMenu={this.props.onContextMenu}
+                    onClick={this.handleOnLeftClick(node.id)}
+                    onContextMenu={this.handleOnRightClick(node.id)}
                     size={this.props.networkStore!.nodeSize}
                 />
             );
