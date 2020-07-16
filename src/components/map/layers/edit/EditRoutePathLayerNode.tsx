@@ -124,7 +124,7 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
                 key={key}
                 coordinates={node.coordinates}
                 nodeType={node.type}
-                transitTypes={[]}
+                transitTypes={node.transitTypes ? node.transitTypes : []}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
