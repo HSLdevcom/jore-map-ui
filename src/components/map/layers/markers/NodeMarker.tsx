@@ -132,7 +132,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
         if (nodeType === NodeType.STOP) {
             // TODO: render all transitTypes (need to a new div to render into for each transitType color)
-            const transitType = this.props.transitTypes[0];
+            const transitType =
+                this.props.transitTypes.length > 0 ? this.props.transitTypes[0] : undefined;
             if (transitType === TransitType.BUS) {
                 res.push(s.bus);
             } else if (transitType === TransitType.TRAM) {
@@ -143,6 +144,8 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 res.push(s.train);
             } else if (transitType === TransitType.FERRY) {
                 res.push(s.ferry);
+            } else {
+                res.push(s.unusedStop);
             }
         }
 
