@@ -573,7 +573,7 @@ class RoutePathStore {
         return [];
     };
 
-    // O(1) way to know fast is node is opened or not
+    // O(1) way to know if node is found or not
     public isNodeFound = (nodeId: string): Boolean => {
         if (!this._routePathNodes) return false;
         return Boolean(this._routePathNodes[nodeId] !== undefined);

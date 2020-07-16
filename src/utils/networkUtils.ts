@@ -4,6 +4,7 @@ import TransitType from '~/enums/transitType';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
+import RoutePathLayerListStore from '~/stores/routePathLayerListStore';
 import RoutePathStore from '~/stores/routePathStore';
 
 type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
@@ -89,7 +90,8 @@ const isNetworkNodeHidden = ({
     if (
         isNodeOpenInNodeView(nodeId) ||
         isNodeOpenInLinkView(nodeId) ||
-        isNodeOpenInRoutePathView(nodeId)
+        isNodeOpenInRoutePathView(nodeId) ||
+        isNodeOpenInRouteListView(nodeId)
     ) {
         return true;
     }
@@ -128,6 +130,10 @@ const isNodeOpenInLinkView = (nodeId: string) => {
 
 const isNodeOpenInRoutePathView = (nodeId: string) => {
     return RoutePathStore.isNodeFound(nodeId);
+};
+
+const isNodeOpenInRouteListView = (nodeId: string) => {
+    return RoutePathLayerListStore.isNodeFound(nodeId);
 };
 
 const _parseDateRangesString = (dateRangesString?: string) => {
