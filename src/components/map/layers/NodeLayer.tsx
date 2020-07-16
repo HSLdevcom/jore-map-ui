@@ -63,7 +63,7 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
         }
     }
 
-    componentDidUpdate() {
+    componentDidMount() {
         this.mounted = true;
     }
 

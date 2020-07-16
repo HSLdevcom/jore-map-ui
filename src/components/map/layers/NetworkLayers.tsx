@@ -208,21 +208,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         onClick={this.onNetworkNodeClick}
                         onContextMenu={this.onNetworkNodeRightClick}
                     />
-
-                    // <VectorGridLayer
-                    //     selectedTransitTypes={selectedTransitTypes}
-                    //     selectedDate={selectedDate}
-                    //     nodeSize={nodeSize}
-                    //     onClick={this.onNetworkNodeClick}
-                    //     onContextMenu={this.onNetworkNodeRightClick}
-                    //     key={GeoserverLayer.Node}
-                    //     setVectorgridLayerReaction={this.setVectorgridLayerReaction(
-                    //         GeoserverLayer.Node
-                    //     )}
-                    //     url={getGeoServerUrl(GeoserverLayer.Node)}
-                    //     interactive={true}
-                    //     vectorTileLayerStyles={this.getNodeStyle()}
-                    // />
                 )}
             </>
         );

@@ -37,7 +37,7 @@ interface INodeMarkerProps {
     isTimeAlignmentStop?: boolean;
     forcedVisibleNodeLabels?: NodeLabel[];
     hasHighZIndex?: boolean;
-    markerClasses?: string[];
+    classNames?: string[];
     onContextMenu?: Function;
     onMouseOver?: Function;
     onMouseOut?: Function;
@@ -55,7 +55,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
         forcedVisibleNodeLabels: [],
-        markerClasses: [],
+        classNames: [],
         highlightColor: NodeHighlightColor.BLUE,
         size: NodeSize.NORMAL,
     };
@@ -93,7 +93,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return labels;
     }
 
-    private getMarkerClasses = (): string[] => {
+    private getclassNames = (): string[] => {
         const {
             nodeType,
             nodeLocationType,
@@ -103,8 +103,18 @@ class NodeMarker extends Component<INodeMarkerProps> {
             isHighlighted,
             highlightColor,
         } = this.props;
-        const res = [...this.props.markerClasses!];
-        res.push(size === NodeSize.NORMAL ? s.normalSize : s.smallSize);
+        const res = [];
+        switch (size) {
+            case NodeSize.SMALL:
+                res.push(s.smallSize);
+                break;
+            case NodeSize.NORMAL:
+                res.push(s.normalSize);
+                break;
+            case NodeSize.LARGE:
+                res.push(s.largeSize);
+                break;
+        }
         res.push(
             ...NodeUtils.getNodeTypeClasses(nodeType, {
                 nodeLocationType,
@@ -149,7 +159,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
             }
         }
 
-        return res;
+        return [...res, ...this.props.classNames];
     };
 
     private renderMarkerLabel = () => {
@@ -183,6 +193,20 @@ class NodeMarker extends Component<INodeMarkerProps> {
     private renderNodeMarkerIcon = () => {
         const nodeRootClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
         const markerLabel = this.renderMarkerLabel();
+
+        let iconWidth;
+        switch (this.props.size) {
+            case NodeSize.SMALL:
+                iconWidth = parseInt(s.iconFullWidthSmall, 10);
+                break;
+            case NodeSize.NORMAL:
+                iconWidth = parseInt(s.iconFullWidthNormal, 10);
+                break;
+            case NodeSize.LARGE:
+                iconWidth = parseInt(s.iconFullWidthLarge, 10);
+                break;
+        }
+
         return LeafletUtils.createDivIcon({
             html:
                 markerLabel || this.props.children ? (
@@ -192,15 +216,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
                     </>
                 ) : null,
             options: {
-                classNames: [nodeRootClass, ...this.getMarkerClasses()],
-                iconWidth:
-                    this.props.size === NodeSize.SMALL
-                        ? parseInt(s.iconFullWidthSmall, 10)
-                        : parseInt(s.iconFullWidthNormal, 10),
-                iconHeight:
-                    this.props.size === NodeSize.SMALL
-                        ? parseInt(s.iconFullWidthSmall, 10)
-                        : parseInt(s.iconFullWidthNormal, 10),
+                iconWidth,
+                classNames: [nodeRootClass, ...this.getclassNames()],
+                iconHeight: iconWidth,
                 popupOffset: -15,
             },
         });

@@ -2,10 +2,13 @@
 
 $iconBorderWidthSmall: 2px;
 $iconWidthSmall: 10px;
-$iconFullWidthSmall: 14; // $iconWidthSmall + 2 * $iconBorderWidthSmall
 $iconBorderWidthNormal: 3px;
 $iconWidthNormal: 14px;
-$iconFullWidthNormal: 20; // $iconWidthNormal + 2 * $iconBorderWidthNormal
+$iconBorderWidthLarge: 3px;
+$iconWidthLarge: 21px;
+$iconFullWidthSmall: 14; // value: $iconWidthSmall + 2 * $iconBorderWidthSmall)
+$iconFullWidthNormal: 20; // value: $iconWidthNormal + 2 * $iconBorderWidthNormal)
+$iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
 
 .node {
     display: block;
@@ -19,55 +22,66 @@ $iconFullWidthNormal: 20; // $iconWidthNormal + 2 * $iconBorderWidthNormal
         font-weight: 600;
         text-shadow: 0 0 5px white, 0 0 5px white;
     }
+}
 
-    &.bus {
-        border-color: $busBlue;
-    }
+.bus {
+    border-color: $busBlue;
+}
 
-    &.tram {
-        border-color: $tramGreen;
-    }
+.tram {
+    border-color: $tramGreen;
+}
 
-    &.train {
-        border-color: $trainPurple;
-    }
+.train {
+    border-color: $trainPurple;
+}
 
-    &.subway {
-        border-color: $subwayOrange;
-    }
+.subway {
+    border-color: $subwayOrange;
+}
 
-    &.ferry {
-        border-color: $ferryBlue;
-    }
+.ferry {
+    border-color: $ferryBlue;
+}
 
-    &.unusedStop {
-        border-color: $unusedNodeColor;
-    }
+.unusedStop {
+    border-color: $unusedNodeColor;
+}
 
-    &.smallSize {
-        height: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
-        width: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
-        border-width: $iconBorderWidthSmall; // if changed, change also $iconFullWidthSmall
+.smallSize {
+    height: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
+    width: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
+    border-width: $iconBorderWidthSmall; // if changed, change also $iconFullWidthSmall
 
-        .nodeLabel {
-            left: 18px;
-        }
+    .nodeLabel {
+        left: 18px;
     }
-    &.normalSize {
-        height: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
-        width: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
-        border-width: $iconBorderWidthNormal; // if changed, change also $iconFullWidthNormal
+}
+.normalSize {
+    height: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
+    width: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
+    border-width: $iconBorderWidthNormal; // if changed, change also $iconFullWidthNormal
 
-        .nodeLabel {
-            left: 25px;
-        }
+    .nodeLabel {
+        left: 25px;
     }
-    &.highlightBlue {
-        box-shadow: 0px 0px 15px 9px $busBlue;
+}
+
+.largeSize {
+    height: $iconWidthLarge !important; // if changed, change also $iconFullWidthLarge
+    width: $iconWidthLarge !important; // if changed, change also $iconFullWidthLarge
+    border-width: $iconBorderWidthLarge; // if changed, change also $iconFullWidthLarge
+
+    .nodeLabel {
+        left: 31px;
     }
-    &.highlightGreen {
-        box-shadow: 0px 0px 15px 9px $tramGreen;
-    }
+}
+
+.highlightBlue {
+    box-shadow: 0px 0px 15px 9px $busBlue;
+}
+.highlightGreen {
+    box-shadow: 0px 0px 15px 9px $tramGreen;
 }
 
 .nodeNotClickable {
@@ -89,4 +103,5 @@ $iconFullWidthNormal: 20; // $iconWidthNormal + 2 * $iconBorderWidthNormal
 :export {
     iconFullWidthSmall: $iconFullWidthSmall;
     iconFullWidthNormal: $iconFullWidthNormal;
+    iconFullWidthLarge: $iconFullWidthLarge;
 }
