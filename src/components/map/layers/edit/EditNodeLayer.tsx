@@ -96,6 +96,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 key={`${node.id}-${nodeLocationType}`}
                 coordinates={coordinates}
                 nodeType={node.type}
+                transitTypes={[]}
                 nodeLocationType={nodeLocationType}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}

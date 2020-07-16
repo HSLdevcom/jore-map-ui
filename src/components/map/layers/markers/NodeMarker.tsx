@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Circle, Marker as LeafletMarker } from 'react-leaflet';
 import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { PopupStore } from '~/stores/popupStore';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -21,6 +22,7 @@ interface INodeMarkerProps {
     coordinates: L.LatLng;
     nodeType: NodeType;
     nodeLocationType: NodeLocationType;
+    transitTypes: TransitType[];
     isHighlighted?: boolean;
     highlightColor?: NodeHighlightColor;
     nodeId?: string;
@@ -127,6 +129,23 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 }
             }
         }
+
+        if (nodeType === NodeType.STOP) {
+            // TODO: render all transitTypes (need to a new div to render into for each transitType color)
+            const transitType = this.props.transitTypes[0];
+            if (transitType === TransitType.BUS) {
+                res.push(s.bus);
+            } else if (transitType === TransitType.TRAM) {
+                res.push(s.tram);
+            } else if (transitType === TransitType.SUBWAY) {
+                res.push(s.subway);
+            } else if (transitType === TransitType.TRAIN) {
+                res.push(s.train);
+            } else if (transitType === TransitType.FERRY) {
+                res.push(s.ferry);
+            }
+        }
+
         return res;
     };
 

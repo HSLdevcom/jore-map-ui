@@ -93,6 +93,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 key={`${key}-${node.id}`}
                 coordinates={node.coordinates}
                 nodeType={node.type}
+                transitTypes={[]}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}

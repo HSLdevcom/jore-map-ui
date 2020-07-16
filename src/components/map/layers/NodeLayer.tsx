@@ -132,6 +132,7 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
                     key={`${node.id}-${index}`}
                     coordinates={node.coordinates}
                     nodeType={node.type}
+                    transitTypes={node.transitTypes}
                     nodeLocationType={'coordinates'}
                     nodeId={node.id}
                     onClick={this.props.onClick}
