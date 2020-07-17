@@ -148,7 +148,7 @@ class NetworkStore {
     };
 
     private getInitialVisibleTransitTypes = () => {
-        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_transitTypes');
+        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_transit_types');
         const transitTypes: TransitType[] = [];
         if (!Array.isArray(localStorageVisibleLayers)) return [];
 
@@ -199,7 +199,7 @@ const _setLocalStorageTransitTypeVisibility = ({
     transitType: TransitType;
     isVisible: boolean;
 }) => {
-    const localStorageVisibleTransitTypes = LocalStorageHelper.getItem('visible_transitTypes');
+    const localStorageVisibleTransitTypes = LocalStorageHelper.getItem('visible_transit_types');
     let transitTypes: string[] = Array.isArray(localStorageVisibleTransitTypes)
         ? localStorageVisibleTransitTypes
         : [];
@@ -210,7 +210,7 @@ const _setLocalStorageTransitTypeVisibility = ({
     } else {
         transitTypes = transitTypes.filter((t) => t !== transitType);
     }
-    LocalStorageHelper.setItem('visible_transitTypes', transitTypes);
+    LocalStorageHelper.setItem('visible_transit_types', transitTypes);
 };
 
 export default new NetworkStore();

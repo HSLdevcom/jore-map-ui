@@ -3,6 +3,7 @@ import { action, computed, observable } from 'mobx';
 import constants from '~/constants/constants';
 import CoordinateSystem from '~/enums/coordinateSystem';
 import Environment from '~/enums/environment';
+import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
 let INITIAL_COORDINATES: L.LatLng;
 if (constants.ENVIRONMENT === Environment.LOCALHOST) {
@@ -47,7 +48,7 @@ class MapStore {
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._zoom = INITIAL_ZOOM;
         this._isMapFullscreen = false;
-        this._visibleNodeLabels = [NodeLabel.hastusId];
+        this._visibleNodeLabels = this.getInitialVisibleNodeLabels();
         this._visibleMapBaseLayer = MapBaseLayer.DIGITRANSIT;
         this._mapFilters = [MapFilter.arrowDecorator];
         this._mapCursor = '';
@@ -151,12 +152,15 @@ class MapStore {
 
     @action
     public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
+        let visibleNodeLabels;
         if (this._visibleNodeLabels.includes(nodeLabel)) {
-            this._visibleNodeLabels = this._visibleNodeLabels.filter((t) => t !== nodeLabel);
+            visibleNodeLabels = this._visibleNodeLabels.filter((t) => t !== nodeLabel);
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
-            this._visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
+            visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
         }
+        this._visibleNodeLabels = visibleNodeLabels;
+        LocalStorageHelper.setItem('visible_node_labels', visibleNodeLabels);
     };
 
     @action
@@ -181,6 +185,12 @@ class MapStore {
 
     public isNodeLabelVisible = (nodeLabel: NodeLabel) => {
         return this._visibleNodeLabels.includes(nodeLabel);
+    };
+
+    private getInitialVisibleNodeLabels = () => {
+        const localStorageVisibleNodeLabels = LocalStorageHelper.getItem('visible_node_labels');
+        if (!Array.isArray(localStorageVisibleNodeLabels)) return [];
+        return localStorageVisibleNodeLabels as NodeLabel[];
     };
 }
 
