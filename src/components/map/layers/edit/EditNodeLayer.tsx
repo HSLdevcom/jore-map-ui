@@ -74,6 +74,10 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                         coordinates: node.coordinatesProjection,
                         nodeLocationType: 'coordinatesProjection',
                     })}
+                <DashedLine
+                    startPoint={node.coordinates}
+                    endPoint={node.coordinatesProjection}
+                />
             </>
         );
     }
@@ -200,7 +204,6 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                     key={`${index}-startNodeDashedLine`}
                     startPoint={link.geometry[link.geometry.length - 1]}
                     endPoint={link.endNode.coordinates}
-                    color={'#efc210'}
                 />
             );
         }
@@ -209,7 +212,6 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 key={`${index}-endNodeDashedLine`}
                 startPoint={link.geometry[0]}
                 endPoint={link.startNode.coordinates}
-                color={'#efc210'}
             />
         );
     };
