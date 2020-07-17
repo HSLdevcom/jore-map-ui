@@ -64,7 +64,6 @@ class Marker extends Component<IMarkerProps> {
                 >
                     {this.props.popupContent}
                 </Popup> */}
-                }
             </LeafletMarker>
         );
     }

@@ -12,9 +12,9 @@ import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { isNetworkLinkHidden, isNetworkLinkPointHidden } from '~/utils/networkUtils';
-import * as s from './NetworkLayers.scss';
 import NodeLayer from './NodeLayer';
 import VectorGridLayer from './VectorGridLayer';
+import * as s from './networkLayers.scss';
 import { INodePopupData } from './popups/NodePopup';
 
 enum GeoserverLayer {

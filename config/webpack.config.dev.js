@@ -144,7 +144,8 @@ module.exports = {
                         include: paths.appSrc,
                         loader: require.resolve('babel-loader'),
                         options: {
-                            compact: true
+                            compact: true,
+                            presets: ['@babel/preset-env']
                         }
                     },
 

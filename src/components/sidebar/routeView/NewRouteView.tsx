@@ -72,7 +72,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         this.props.mapStore!.initCoordinates();
 
         try {
-            const lineId = navigator.getQueryParam(QueryParams.lineId);
+            const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
             const newRoute = RouteFactory.createNewRoute(lineId);
             this.props.routeStore!.init({ route: newRoute, isNewRoute: true });
         } catch (e) {
@@ -100,7 +100,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
     };
 
     private redirectToLineView = () => {
-        const lineId = navigator.getQueryParam(QueryParams.lineId);
+        const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
         const lineViewLink = routeBuilder.to(SubSites.line).toTarget(':id', lineId).toLink();
         navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
