@@ -58,7 +58,7 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
         );
     }
 
-    componentWillUpdate(props: INodeLayerProps) {
+    componentDidUpdate(props: INodeLayerProps) {
         if (this.shouldUpdateNodeFeatures()) {
             this.updateNodeFeatures();
         }

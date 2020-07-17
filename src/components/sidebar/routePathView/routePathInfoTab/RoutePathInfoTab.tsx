@@ -38,10 +38,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         };
     }
 
-    async componentWillMount() {
-        this.updateCalculatedLength();
-    }
-
     async componentDidMount() {
         this.mounted = true;
         this.isRoutePathLinksChangedListener = reaction(
@@ -51,6 +47,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
             this.updateCalculatedLength
         );
         autorun(() => this.updateCalculatedLength);
+        this.updateCalculatedLength();
     }
 
     componentWillUnmount() {
