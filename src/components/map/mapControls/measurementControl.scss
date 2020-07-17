@@ -26,6 +26,16 @@
     fill: $whiteOpaque;
 }
 
+.markerPopup :global(.leaflet-popup-content-wrapper) {
+    padding: 0px;
+    border-radius: 0px;
+    font-size: 16px;
+}
+.markerPopup :global(.leaflet-popup-content) {
+    padding: 10px 20px 10px 20px;
+    white-space: nowrap;
+}
+
 .no-events {
     pointer-events: none;
 }

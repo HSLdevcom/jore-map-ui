@@ -1,49 +1,5 @@
 @import '../../shared/styles/common.scss';
 
-.networkBase {
-    opacity: 1;
-    fill-opacity: 1;
-    stroke-width: 2;
-}
-
-.stop {
-    @extend .networkBase;
-    stroke: $unusedNodeColor;
-    fill: $white;
-
-    &.bus {
-        stroke: $busBlue;
-    }
-
-    &.tram {
-        stroke: $tramGreen;
-    }
-
-    &.train {
-        stroke: $trainPurple;
-    }
-
-    &.subway {
-        stroke: $subwayOrange;
-    }
-
-    &.ferry {
-        stroke: $ferryBlue;
-    }
-}
-
-.crossroad {
-    @extend .networkBase;
-    stroke: $crossroadBorder;
-    fill: $crossroadFill;
-}
-
-.border {
-    @extend .networkBase;
-    stroke: $municipalityBorder;
-    fill: $municipalityFill;
-}
-
 .hidden {
     display: none;
 }

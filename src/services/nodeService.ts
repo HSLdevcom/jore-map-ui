@@ -6,7 +6,7 @@ import NodeFactory from '~/factories/nodeFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { ILink, INode } from '~/models';
 import { INodeMapHighlight, INodePrimaryKey, ISearchNode } from '~/models/INode';
-import IExternalNode from '~/models/externals/IExternalNode';
+import IExternalNode, { IExternalSearchNode } from '~/models/externals/IExternalNode';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
@@ -42,12 +42,8 @@ class NodeService {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllNodesQuery(),
         });
-        return queryResult.data.allNodes.nodes.map((node: IExternalNode) => {
-            const searchNode: ISearchNode = NodeFactory.createSearchNode(
-                node,
-                node.pysakkiBySoltunnus ? node.pysakkiBySoltunnus.pysnimi : undefined
-            );
-            return searchNode;
+        return queryResult.data.allNodes.nodes.map((node: IExternalSearchNode) => {
+            return NodeFactory.createSearchNode(node);
         });
     };
 

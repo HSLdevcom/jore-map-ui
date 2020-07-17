@@ -56,8 +56,8 @@ class SplitLinkTool implements BaseTool {
                 itemList: [
                     { label: 'Lyhyt ID', value: NodeUtils.getShortId(node) },
                     { label: 'Nimi', value: node.stop!.nameFi },
-                    { label: 'Soltunnus', value: node.id }
-                ]
+                    { label: 'Soltunnus', value: node.id },
+                ],
             });
         } else {
             confirmContent = SplitConfirmContent({
@@ -65,10 +65,10 @@ class SplitLinkTool implements BaseTool {
                 itemList: [
                     {
                         label: 'Tyyppi',
-                        value: NodeUtils.getNodeTypeName(node.type)
+                        value: NodeUtils.getNodeTypeName(node.type),
                     },
-                    { label: 'Soltunnus', value: node.id }
-                ]
+                    { label: 'Soltunnus', value: node.id },
+                ],
             });
         }
         ConfirmStore.openConfirm({
@@ -76,7 +76,7 @@ class SplitLinkTool implements BaseTool {
             onConfirm: () => {
                 ToolbarStore.selectTool(null);
                 this.navigateToSplitLink(nodeId);
-            }
+            },
         });
     };
 }

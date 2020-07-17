@@ -3,12 +3,14 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, {
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
-    INetworkNodeClickParams,
+    INodeClickParams,
 } from '~/helpers/EventHelper';
 import { INode } from '~/models';
+import NodeService from '~/services/nodeService';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import RoutePathStore, { NeighborToAddType } from '~/stores/routePathStore';
+import RoutePathLayerStore, { NeighborToAddType } from '~/stores/routePathLayerStore';
+import RoutePathStore from '~/stores/routePathStore';
 import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
@@ -28,16 +30,22 @@ class ExtendRoutePathTool implements BaseTool {
         EventHelper.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         this.highlightClickableNodes();
         RoutePathStore.setIsEditingDisabled(false);
+        EventHelper.on('undo', this.highlightClickableNodes);
+        EventHelper.on('redo', this.highlightClickableNodes);
+        EventHelper.on('escape', this.onEscapePress);
     }
     public deactivate() {
         this.reset();
         EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
         EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
         EventHelper.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventHelper.off('undo', this.highlightClickableNodes);
+        EventHelper.off('redo', this.highlightClickableNodes);
+        EventHelper.off('escape', this.onEscapePress);
     }
 
     private reset() {
-        RoutePathStore.setNeighborRoutePathLinks([]);
+        RoutePathLayerStore.setNeighborLinks([]);
         this.unhighlightClickableNodes();
     }
 
@@ -50,10 +58,17 @@ class ExtendRoutePathTool implements BaseTool {
     // Network node click
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
         if (!this.isNetworkNodesInteractive()) return;
-        const params: INetworkNodeClickParams = clickEvent.detail;
-        if (params.nodeType !== NodeType.STOP) return;
+        const params: INodeClickParams = clickEvent.detail;
+        const nodeId = params.nodeId;
+        const node = await NodeService.fetchNode(nodeId);
+        if (node!.type !== NodeType.STOP) return;
 
-        this.fetchNeighborRoutePathLinks(params.nodeId, 1);
+        this.fetchNeighborRoutePathLinks(nodeId, 1);
+    };
+
+    private onEscapePress = () => {
+        RoutePathLayerStore.setNeighborLinks([]);
+        this.highlightClickableNodes();
     };
 
     private isNetworkNodesInteractive() {
@@ -66,7 +81,7 @@ class ExtendRoutePathTool implements BaseTool {
         const routePathLink = params.neighborLink.routePathLink;
 
         RoutePathStore!.addLink(routePathLink);
-        const neighborToAddType = RoutePathStore!.neighborToAddType;
+        const neighborToAddType = RoutePathLayerStore!.neighborToAddType;
         const nodeToFetch =
             neighborToAddType === NeighborToAddType.AfterNode
                 ? routePathLink.endNode
@@ -86,8 +101,8 @@ class ExtendRoutePathTool implements BaseTool {
             linkOrderNumber
         );
         if (queryResult) {
-            RoutePathStore!.setNeighborRoutePathLinks(queryResult.neighborLinks);
-            RoutePathStore!.setNeighborToAddType(queryResult.neighborToAddType);
+            RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
+            RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
             this.unhighlightClickableNodes();
         } else {
             this.highlightClickableNodes();
@@ -98,19 +113,16 @@ class ExtendRoutePathTool implements BaseTool {
         const routePath = RoutePathStore!.routePath!;
 
         const clickableNodeIds: string[] = [];
-        const unclickableNodeIds: string[] = [];
         loopRoutePathNodes(routePath, (node: INode) => {
             if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
                 clickableNodeIds.push(node.id);
-            } else {
-                unclickableNodeIds.push(node.id);
             }
         });
-        RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
+        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
-        RoutePathStore!.setToolHighlightedNodeIds([]);
+        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 

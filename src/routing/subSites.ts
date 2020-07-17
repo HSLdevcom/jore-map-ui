@@ -16,7 +16,7 @@ enum SubSites {
     stopArea = '/stopArea/:id',
     newStopArea = '/stopArea/new',
     login = '/login',
-    afterLogin = '/afterLogin'
+    afterLogin = '/afterLogin',
 }
 
 export default SubSites;

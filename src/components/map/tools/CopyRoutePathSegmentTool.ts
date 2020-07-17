@@ -1,11 +1,12 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
+import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
+import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
 import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
@@ -37,13 +38,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: INodeClickParams = clickEvent.detail;
 
-        if (setNodeType === 'startNode') this.selectStartNode(params.node.id);
-        else this.selectEndNode(params.node.id);
+        if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
+        else this.selectEndNode(params.nodeId);
     };
 
     private onNetworkNodeClick = (clickEvent: CustomEvent) => {
         const setNodeType = RoutePathCopySegmentStore.setNodeType;
-        const params: INetworkNodeClickParams = clickEvent.detail;
+        const params: INodeClickParams = clickEvent.detail;
 
         if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
         else this.selectEndNode(params.nodeId);
@@ -105,12 +106,12 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     private isStartNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
-        return routePathLinks.some(link => link.endNode.id === nodeId);
+        return routePathLinks.some((link) => link.endNode.id === nodeId);
     }
 
     private isEndNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
-        return routePathLinks.some(link => link.startNode.id === nodeId);
+        return routePathLinks.some((link) => link.startNode.id === nodeId);
     }
 
     private highlightClickableNodes() {
@@ -125,11 +126,11 @@ class CopyRoutePathSegmentTool implements BaseTool {
                 unclickableNodeIds.push(node.id);
             }
         });
-        RoutePathStore!.setToolHighlightedNodeIds(clickableNodeIds);
+        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
     }
 
     private unhighlightClickableNodes() {
-        RoutePathStore!.setToolHighlightedNodeIds([]);
+        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 

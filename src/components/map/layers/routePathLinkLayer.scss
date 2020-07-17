@@ -14,4 +14,8 @@
     > div:hover {
         background-color: darken($backgroundlightGrey, 10);
     }
+
+    .popupOption {
+        white-space: nowrap;
+    }
 }

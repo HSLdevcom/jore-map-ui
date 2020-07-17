@@ -11,6 +11,7 @@ import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/share
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
+import NodeSize from '~/enums/nodeSize';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventHelper from '~/helpers/EventHelper';
@@ -28,8 +29,9 @@ import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
-import { MapLayer, NetworkStore, NodeSize } from '~/stores/networkStore';
+import { MapLayer, NetworkStore } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -45,6 +47,7 @@ interface IRoutePathViewProps {
     match?: match<any>;
     alertStore?: AlertStore;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
@@ -62,6 +65,7 @@ const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routePathStore',
+    'routePathLayerStore',
     'routePathCopySegmentStore',
     'networkStore',
     'toolbarStore',
@@ -98,7 +102,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     componentWillUnmount() {
         this._isMounted = false;
         this.props.toolbarStore!.selectTool(null);
-        this.props.networkStore!.setNodeSize(NodeSize.normal);
+        this.props.networkStore!.setNodeSize(NodeSize.SMALL);
         this.props.routePathStore!.clear();
         EventHelper.off('undo', this.undo);
         EventHelper.off('redo', this.redo);
@@ -125,7 +129,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private initialize = async () => {
         if (this.props.isNewRoutePath) {
-            await this.fetchExistingRoutePaths();
             await this.createNewRoutePath();
         } else {
             await this.initExistingRoutePath();
@@ -133,9 +136,33 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         await this.initializeMap();
     };
 
-    private fetchExistingRoutePaths = async () => {
+    private createNewRoutePath = async () => {
+        this._setState({ isLoading: true });
+        this.props.mapStore!.initCoordinates();
         const queryParams = navigator.getQueryParamValues();
         const routeId = queryParams[QueryParams.routeId];
+        const lineId = queryParams[QueryParams.lineId];
+        try {
+            const line = await LineService.fetchLine(lineId);
+            const routePath = RoutePathFactory.createNewRoutePath(
+                lineId,
+                routeId,
+                line.transitType!
+            );
+            this.props.routePathStore!.init({
+                routePath,
+                isNewRoutePath: this.props.isNewRoutePath,
+            });
+            this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
+        } catch (e) {
+            this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
+        }
+        await this.fetchExistingRoutePaths({ routeId });
+
+        this._setState({ isLoading: false });
+    };
+
+    private fetchExistingRoutePaths = async ({ routeId }: { routeId: string }) => {
         const route = await RouteService.fetchRoute({
             routeId,
             areRoutePathLinksExcluded: true,
@@ -143,42 +170,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setExistingRoutePaths(route!.routePaths);
     };
 
-    private createNewRoutePath = async () => {
-        this._setState({ isLoading: true });
-        this.props.mapStore!.initCoordinates();
-        try {
-            if (!this.props.routePathStore!.routePath) {
-                const queryParams = navigator.getQueryParamValues();
-                const routeId = queryParams[QueryParams.routeId];
-                const lineId = queryParams[QueryParams.lineId];
-                const line = await LineService.fetchLine(lineId);
-                const routePath = RoutePathFactory.createNewRoutePath(
-                    lineId,
-                    routeId,
-                    line.transitType!
-                );
-                this.props.routePathStore!.init({
-                    routePath,
-                    isNewRoutePath: this.props.isNewRoutePath,
-                });
-            } else {
-                this.props.routePathStore!.init({
-                    routePath: RoutePathFactory.createNewRoutePathFromOld(
-                        this.props.routePathStore!.routePath!
-                    ),
-                    isNewRoutePath: this.props.isNewRoutePath,
-                });
-            }
-            this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
-        } catch (e) {
-            this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
-        }
-        this._setState({ isLoading: false });
-    };
-
     private initializeMap = async () => {
         if (this.props.isNewRoutePath) {
-            this.props.networkStore!.setNodeSize(NodeSize.large);
+            this.props.networkStore!.setNodeSize(NodeSize.NORMAL);
             this.props.networkStore!.showMapLayer(MapLayer.node);
             this.props.networkStore!.showMapLayer(MapLayer.link);
         }
@@ -204,7 +198,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
         if (itemToShow) {
             this.props.routePathStore!.setSelectedTabIndex(1);
-            this.props.routePathStore!.setExtendedListItemId(itemToShow);
+            this.props.routePathLayerStore!.setExtendedListItemId(itemToShow);
             this.props.routePathStore!.removeListFilter(ListFilter.link);
         }
         this._setState({ isLoading: false });
@@ -226,6 +220,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             return;
         }
         await this.fetchViaNames(routePath);
+        await this.fetchExistingRoutePaths({ routeId });
         this.centerMapToRoutePath(routePath);
         this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
     };
@@ -313,6 +308,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.setState({ isLoading: false });
         }
     };
 

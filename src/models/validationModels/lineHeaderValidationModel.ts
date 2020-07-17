@@ -17,7 +17,7 @@ const lineHeaderValidationModel: ILineHeaderValidationModel = {
     lineStartPlace2Fi: 'min:0|max:30|string',
     lineStartPlace2Sw: 'min:0|max:30|string',
     modifiedBy: '',
-    modifiedOn: ''
+    modifiedOn: '',
 };
 
 export default lineHeaderValidationModel;

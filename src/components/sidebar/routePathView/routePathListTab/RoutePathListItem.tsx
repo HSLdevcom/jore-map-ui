@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { MapStore } from '~/stores/mapStore';
-import { RoutePathStore } from '~/stores/routePathStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListItemProps {
@@ -16,24 +16,24 @@ interface IRoutePathListItemProps {
     isLastNode?: boolean;
     isFirstNode?: boolean;
     mapStore?: MapStore;
-    routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
 }
 
-@inject('routePathStore', 'mapStore')
+@inject('routePathStore', 'routePathLayerStore', 'mapStore')
 @observer
 class RoutePathListItem extends React.Component<IRoutePathListItemProps> {
     private onMouseEnter = () => {
-        this.props.routePathStore!.setHighlightedListItemId(this.props.id);
+        this.props.routePathLayerStore!.setHoveredItemId(this.props.id);
     };
 
     private onMouseLeave = () => {
-        if (this.props.routePathStore!.highlightedListItemId === this.props.id) {
-            this.props.routePathStore!.setHighlightedListItemId(null);
+        if (this.props.routePathLayerStore!.hoveredItemId === this.props.id) {
+            this.props.routePathLayerStore!.setHoveredItemId(null);
         }
     };
 
     render() {
-        const isExtended = this.props.routePathStore!.extendedListItemId === this.props.id;
+        const isExtended = this.props.routePathLayerStore!.extendedListItemId === this.props.id;
         const isFirstNode = this.props.isFirstNode;
         const isLastNode = this.props.isLastNode;
         const isItemHighlighted = this.props.isItemHighlighted;

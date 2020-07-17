@@ -1,4 +1,5 @@
 import * as L from 'leaflet';
+import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
 
@@ -10,10 +11,14 @@ interface ILinkPrimaryKey {
 
 interface ILinkMapHighlight {
     transitType: TransitType;
+    geometry: L.LatLng[];
     startNodeId: string;
     endNodeId: string;
-    geometry: L.LatLng[];
     dateRanges: string;
+    startNodeTransitTypes: TransitType[];
+    startNodeType: NodeType;
+    endNodeTransitTypes: TransitType[];
+    endNodeType: NodeType;
 }
 
 interface ILink extends ILinkPrimaryKey {

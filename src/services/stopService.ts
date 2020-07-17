@@ -28,7 +28,7 @@ class StopService {
     public static fetchAllStops = async (): Promise<IStop[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllStopsQuery(),
-            fetchPolicy: 'no-cache'
+            fetchPolicy: 'no-cache',
         });
         const externalStops: IExternalStop[] = queryResult.data.node.nodes;
         return externalStops.map(
@@ -40,7 +40,7 @@ class StopService {
 
     public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllStopSections()
+            query: GraphqlQueries.getAllStopSections(),
         });
 
         return queryResult.data.node.nodes;
@@ -54,17 +54,17 @@ class StopService {
             query: GraphqlQueries.getReservedShortIds(),
             variables: {
                 shortIdLetter,
-                fetchPolicy: 'no-cache' // no-cache is needed because otherwise nested data fetch does not always work
-            }
+                fetchPolicy: 'no-cache', // no-cache is needed because otherwise nested data fetch does not always work
+            },
         });
         const reservedShortIds: IReservedShortIdItem[] = _.chain(
             queryResult.data.getReservedShortIds.nodes
         )
-            .filter(node => node !== null)
+            .filter((node) => node !== null)
             .map((node: IExternalNode) => {
                 return {
                     nodeId: node.soltunnus,
-                    shortId: node.sollistunnus
+                    shortId: node.sollistunnus,
                 };
             })
             .value();
@@ -76,7 +76,7 @@ class StopService {
         stopAreaId: string
     ): Promise<IStopItem[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllStopItems()
+            query: GraphqlQueries.getAllStopItems(),
         });
 
         const map = new Map();
@@ -88,7 +88,7 @@ class StopService {
                     stopAreaId: iterator.pysalueid,
                     nodeId: iterator.soltunnus,
                     nameFi: iterator.pysnimi,
-                    nameSw: iterator.pysnimir
+                    nameSw: iterator.pysnimir,
                 };
             })
             .value();
@@ -106,7 +106,7 @@ class StopService {
         await Promise.all(promises);
 
         const result: IStopItem[] = [];
-        map.forEach(iterator => {
+        map.forEach((iterator) => {
             result.push(iterator);
         });
 
@@ -116,7 +116,7 @@ class StopService {
     public static fetchAllHastusAreas = async (): Promise<IHastusArea[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllHastusAreas(),
-            fetchPolicy: 'no-cache'
+            fetchPolicy: 'no-cache',
         });
         const externalHastusAreas: IExternalHastusArea[] = queryResult.data.node.nodes;
 
@@ -124,7 +124,7 @@ class StopService {
             (ha: IExternalHastusArea): IHastusArea => {
                 return {
                     id: ha.paitunnus,
-                    name: ha.nimi
+                    name: ha.nimi,
                 };
             }
         );
@@ -145,7 +145,7 @@ const _getAvailableShortIds = (
 ): string[] => {
     const allShortIdVariations = _generateAllShortIdVariations(SHORT_ID_LENGTH);
     return allShortIdVariations.filter(
-        shortIdVariation =>
+        (shortIdVariation) =>
             !reservedShortIdItems.find((reservedShortIdItem: IReservedShortIdItem) => {
                 return (
                     reservedShortIdItem.shortId === shortIdVariation &&

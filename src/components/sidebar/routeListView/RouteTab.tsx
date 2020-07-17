@@ -111,6 +111,7 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.setState({ isLoading: false });
         }
         this.props.routeListStore!.setRouteIdToEdit(null);
     };

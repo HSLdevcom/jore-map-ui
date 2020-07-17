@@ -8,7 +8,7 @@ import constants from '~/constants/constants';
 const createCoherentLinesFromPolylines = (polylines: LatLng[][]): LatLng[][] => {
     const result: LatLng[][] = [];
     let polylineBuilder: LatLng[] = [];
-    polylines.forEach(line => {
+    polylines.forEach((line) => {
         if (polylineBuilder.length === 0) {
             // Initially set the first line as the initial coherent line
             polylineBuilder = line;
@@ -29,7 +29,7 @@ const createCoherentLinesFromPolylines = (polylines: LatLng[][]): LatLng[][] => 
 };
 
 const roundLatLngs = (latLngs: LatLng[]) => {
-    return latLngs.map(latLng => roundLatLng(latLng));
+    return latLngs.map((latLng) => roundLatLng(latLng));
 };
 
 const roundLatLng = (latLng: LatLng) => {

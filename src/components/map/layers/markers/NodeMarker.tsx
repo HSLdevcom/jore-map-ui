@@ -1,10 +1,11 @@
-import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Circle, Marker as LeafletMarker } from 'react-leaflet';
+import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { PopupStore } from '~/stores/popupStore';
 import NodeLocationType from '~/types/NodeLocationType';
@@ -21,6 +22,7 @@ interface INodeMarkerProps {
     coordinates: L.LatLng;
     nodeType: NodeType;
     nodeLocationType: NodeLocationType;
+    transitTypes: TransitType[];
     isHighlighted?: boolean;
     highlightColor?: NodeHighlightColor;
     nodeId?: string;
@@ -28,13 +30,14 @@ interface INodeMarkerProps {
     hastusId?: string;
     radius?: number;
     color?: string;
+    size?: NodeSize;
     isDraggable?: boolean;
     isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
     forcedVisibleNodeLabels?: NodeLabel[];
     hasHighZIndex?: boolean;
-    markerClasses?: string[];
+    classNames?: string[];
     onContextMenu?: Function;
     onMouseOver?: Function;
     onMouseOut?: Function;
@@ -52,8 +55,9 @@ class NodeMarker extends Component<INodeMarkerProps> {
     static defaultProps = {
         isDraggable: false,
         forcedVisibleNodeLabels: [],
-        markerClasses: [],
+        classNames: [],
         highlightColor: NodeHighlightColor.BLUE,
+        size: NodeSize.NORMAL,
     };
 
     private onMoveMarker = () => (e: L.DragEndEvent) => {
@@ -89,17 +93,28 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return labels;
     }
 
-    private getMarkerClasses = () => {
+    private getclassNames = (): string[] => {
         const {
             nodeType,
             nodeLocationType,
+            size,
             isDisabled,
             isTimeAlignmentStop,
             isHighlighted,
             highlightColor,
         } = this.props;
-        const res = [...this.props.markerClasses!];
-        res.push(s.nodeBase);
+        const res = [];
+        switch (size) {
+            case NodeSize.SMALL:
+                res.push(s.smallSize);
+                break;
+            case NodeSize.NORMAL:
+                res.push(s.normalSize);
+                break;
+            case NodeSize.LARGE:
+                res.push(s.largeSize);
+                break;
+        }
         res.push(
             ...NodeUtils.getNodeTypeClasses(nodeType, {
                 nodeLocationType,
@@ -124,12 +139,32 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 }
             }
         }
-        return res;
+
+        if (nodeType === NodeType.STOP) {
+            // TODO: render all transitTypes (need to a new div to render into for each transitType color)
+            const transitType =
+                this.props.transitTypes.length > 0 ? this.props.transitTypes[0] : undefined;
+            if (transitType === TransitType.BUS) {
+                res.push(s.bus);
+            } else if (transitType === TransitType.TRAM) {
+                res.push(s.tram);
+            } else if (transitType === TransitType.SUBWAY) {
+                res.push(s.subway);
+            } else if (transitType === TransitType.TRAIN) {
+                res.push(s.train);
+            } else if (transitType === TransitType.FERRY) {
+                res.push(s.ferry);
+            } else {
+                res.push(s.unusedStop);
+            }
+        }
+
+        return [...res, ...this.props.classNames];
     };
 
     private renderMarkerLabel = () => {
         const labels = this.getLabels();
-        if (!labels) return null;
+        if (!labels || labels.length === 0) return null;
         return (
             <div className={s.nodeLabel}>
                 {labels.map((label, index) => {
@@ -149,49 +184,48 @@ class NodeMarker extends Component<INodeMarkerProps> {
         return <Circle className={s.stopCircle} center={coordinates} radius={radius} />;
     };
 
-    private onMarkerClick = () => {
-        if (this.props.onClick) {
-            this.props.onClick();
+    private renderNodeMarkerIcon = () => {
+        const nodeRootClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
+        const markerLabel = this.renderMarkerLabel();
+
+        let iconWidth;
+        switch (this.props.size) {
+            case NodeSize.SMALL:
+                iconWidth = parseInt(s.iconFullWidthSmall, 10);
+                break;
+            case NodeSize.NORMAL:
+                iconWidth = parseInt(s.iconFullWidthNormal, 10);
+                break;
+            case NodeSize.LARGE:
+                iconWidth = parseInt(s.iconFullWidthLarge, 10);
+                break;
         }
-    };
 
-    private renderNodeMarkerIcon = ({
-        nodeLocationType,
-    }: {
-        nodeLocationType: NodeLocationType;
-    }) => {
-        const nodeBaseClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
-
-        return LeafletUtils.createDivIcon(
-            <div
-                className={classnames(...this.getMarkerClasses())}
-                style={
-                    nodeLocationType === 'coordinates'
-                        ? {
-                              borderColor: this.props.color,
-                              backgroundColor: this.props.color,
-                          }
-                        : undefined
-                }
-            >
-                {this.props.children}
-                {this.renderMarkerLabel()}
-            </div>,
-            {
-                className: nodeBaseClass,
+        return LeafletUtils.createDivIcon({
+            html:
+                markerLabel || this.props.children ? (
+                    <>
+                        {markerLabel}
+                        {this.props.children}
+                    </>
+                ) : null,
+            options: {
+                iconWidth,
+                classNames: [nodeRootClass, ...this.getclassNames()],
+                iconHeight: iconWidth,
                 popupOffset: -15,
-            }
-        );
+            },
+        });
     };
 
     render() {
         const {
             coordinates,
-            nodeLocationType,
             isDraggable,
             isClickDisabled,
             hasHighZIndex,
             onContextMenu,
+            onClick,
             onMouseOver,
             onMouseOut,
             onMoveMarker,
@@ -201,12 +235,12 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 onContextMenu={onContextMenu}
                 onMouseOver={onMouseOver}
                 onMouseOut={onMouseOut}
-                onClick={this.onMarkerClick}
+                onClick={onClick}
                 draggable={isDraggable}
-                icon={this.renderNodeMarkerIcon({ nodeLocationType })}
+                icon={this.renderNodeMarkerIcon()}
                 position={coordinates}
                 onDragEnd={onMoveMarker && this.onMoveMarker()}
-                interactive={!isClickDisabled}
+                interactive={!Boolean(isClickDisabled)}
                 zIndexOffset={hasHighZIndex ? 1000 : 0}
             >
                 {this.renderStopRadiusCircle()}

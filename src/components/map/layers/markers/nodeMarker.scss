@@ -1,36 +1,92 @@
 @import '../../../shared/styles/common';
 
+$iconBorderWidthSmall: 2px;
+$iconWidthSmall: 10px;
+$iconBorderWidthNormal: 3px;
+$iconWidthNormal: 14px;
+$iconBorderWidthLarge: 3px;
+$iconWidthLarge: 21px;
+$iconFullWidthSmall: 14; // value: $iconWidthSmall + 2 * $iconBorderWidthSmall)
+$iconFullWidthNormal: 20; // value: $iconWidthNormal + 2 * $iconBorderWidthNormal)
+$iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
+
 .node {
     display: block;
     opacity: 1;
+    cursor: pointer;
+    border-radius: 100px;
+    border-style: solid;
 
-    .nodeBase {
-        border-radius: 100px;
-        border-style: solid;
-        height: 12px;
-        width: 12px;
-        border-width: 3px;
-        margin: -3px;
+    .nodeLabel {
+        position: absolute;
+        font-weight: 600;
+        text-shadow: 0 0 5px white, 0 0 5px white;
     }
+}
 
-    .highlightBlue {
-        box-shadow: 0px 0px 15px 9px $busBlue;
+.bus {
+    border-color: $busBlue;
+}
+
+.tram {
+    border-color: $tramGreen;
+}
+
+.train {
+    border-color: $trainPurple;
+}
+
+.subway {
+    border-color: $subwayOrange;
+}
+
+.ferry {
+    border-color: $ferryBlue;
+}
+
+.unusedStop {
+    border-color: $unusedNodeColor;
+}
+
+.smallSize {
+    height: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
+    width: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
+    border-width: $iconBorderWidthSmall; // if changed, change also $iconFullWidthSmall
+
+    .nodeLabel {
+        left: 18px;
     }
-    .highlightGreen {
-        box-shadow: 0px 0px 15px 9px $tramGreen;
+}
+.normalSize {
+    height: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
+    width: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
+    border-width: $iconBorderWidthNormal; // if changed, change also $iconFullWidthNormal
+
+    .nodeLabel {
+        left: 25px;
     }
+}
+
+.largeSize {
+    height: $iconWidthLarge !important; // if changed, change also $iconFullWidthLarge
+    width: $iconWidthLarge !important; // if changed, change also $iconFullWidthLarge
+    border-width: $iconBorderWidthLarge; // if changed, change also $iconFullWidthLarge
+
+    .nodeLabel {
+        left: 31px;
+    }
+}
+
+.highlightBlue {
+    box-shadow: 0px 0px 15px 9px $busBlue;
+}
+.highlightGreen {
+    box-shadow: 0px 0px 15px 9px $tramGreen;
 }
 
 .nodeNotClickable {
     @extend .node;
     pointer-events: none !important;
-}
-
-.crossroadCircle {
-    stroke: none;
-    fill: #727272;
-    fill-opacity: 0.3;
-    background-color: grey;
 }
 
 .stopCircle {
@@ -40,13 +96,12 @@
     pointer-events: none !important;
 }
 
-.nodeLabel {
-    position: absolute;
-    left: 30px;
-    font-weight: 600;
-    text-shadow: 0 0 5px white, 0 0 5px white;
-}
-
 .leaflet-popup-tip-container {
     pointer-events: all;
+}
+
+:export {
+    iconFullWidthSmall: $iconFullWidthSmall;
+    iconFullWidthNormal: $iconFullWidthNormal;
+    iconFullWidthLarge: $iconFullWidthLarge;
 }

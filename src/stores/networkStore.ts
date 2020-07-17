@@ -1,19 +1,15 @@
 import { action, computed, observable } from 'mobx';
 import Moment from 'moment';
+import NodeSize from '~/enums/nodeSize';
 import TransitType from '~/enums/transitType';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
-
-enum NodeSize {
-    normal,
-    large
-}
 
 enum MapLayer {
     node = 'node',
     link = 'link',
     linkPoint = 'linkPoint',
     unusedNode = 'unusedNode',
-    unusedLink = 'unusedLink'
+    unusedLink = 'unusedLink',
 }
 
 class NetworkStore {
@@ -26,7 +22,7 @@ class NetworkStore {
     constructor() {
         this._selectedTransitTypes = this.getInitialVisibleTransitTypes();
         this._visibleMapLayers = this.getInitialVisibleMapLayers();
-        this._nodeSize = NodeSize.normal;
+        this._nodeSize = NodeSize.SMALL;
         this._savedMapLayers = [];
         this._selectedDate = Moment();
     }
@@ -83,6 +79,7 @@ class NetworkStore {
 
     @action
     public showMapLayer = (mapLayer: MapLayer) => {
+        if (this._visibleMapLayers.includes(mapLayer)) return;
         // Need to do concat (instead of push) to trigger observable reaction
         this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
     };
@@ -94,7 +91,7 @@ class NetworkStore {
 
     @action
     public hideMapLayer = (mapLayer: MapLayer) => {
-        this._visibleMapLayers = this._visibleMapLayers.filter(mL => mL !== mapLayer);
+        this._visibleMapLayers = this._visibleMapLayers.filter((mL) => mL !== mapLayer);
     };
 
     @action
@@ -110,7 +107,9 @@ class NetworkStore {
     @action
     public toggleSelectedTransitType = (transitType: TransitType) => {
         if (this._selectedTransitTypes.includes(transitType)) {
-            this._selectedTransitTypes = this._selectedTransitTypes.filter(t => t !== transitType);
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(
+                (t) => t !== transitType
+            );
             _setLocalStorageTransitTypeVisibility({ transitType, isVisible: false });
         } else {
             // Need to do concat (instead of push) to trigger observable reaction
@@ -170,7 +169,7 @@ class NetworkStore {
 
 const _setLocalStorageLayerVisibility = ({
     mapLayer,
-    isVisible
+    isVisible,
 }: {
     mapLayer: MapLayer;
     isVisible: boolean;
@@ -188,14 +187,14 @@ const _setLocalStorageLayerVisibility = ({
             layers.push(mapLayer);
         }
     } else {
-        layers = layers.filter(l => l !== mapLayer);
+        layers = layers.filter((l) => l !== mapLayer);
     }
     LocalStorageHelper.setItem('visible_layers', layers);
 };
 
 const _setLocalStorageTransitTypeVisibility = ({
     transitType,
-    isVisible
+    isVisible,
 }: {
     transitType: TransitType;
     isVisible: boolean;
@@ -209,11 +208,11 @@ const _setLocalStorageTransitTypeVisibility = ({
             transitTypes.push(transitType);
         }
     } else {
-        transitTypes = transitTypes.filter(t => t !== transitType);
+        transitTypes = transitTypes.filter((t) => t !== transitType);
     }
     LocalStorageHelper.setItem('visible_transitTypes', transitTypes);
 };
 
 export default new NetworkStore();
 
-export { NetworkStore, NodeSize, MapLayer };
+export { NetworkStore, MapLayer };

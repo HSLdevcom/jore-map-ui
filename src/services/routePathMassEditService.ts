@@ -26,35 +26,17 @@ class RoutePathMassEditService {
             if (_.isEqual(massEditRp.routePath, massEditRp.oldRoutePath)) {
                 originalRpSaveModel.push({
                     routePath: currentRp,
-                    routePathLinkSaveModel: {
-                        added: [],
-                        modified: [],
-                        removed: [],
-                        originals: [],
-                    },
                     originalPrimaryKey: _getOriginalRpPrimaryKey(currentRp),
                 });
             } else {
                 if (massEditRp.isNew) {
                     addedRpSaveModel.push({
                         routePath: currentRp,
-                        routePathLinkSaveModel: {
-                            added: [],
-                            modified: [],
-                            removed: [],
-                            originals: [],
-                        },
                         originalPrimaryKey: _getOriginalRpPrimaryKey(oldRp!),
                     });
                 } else {
                     modifiedRpSaveModel.push({
                         routePath: currentRp,
-                        routePathLinkSaveModel: {
-                            added: [],
-                            modified: [],
-                            removed: [],
-                            originals: [],
-                        },
                         originalPrimaryKey: _getOriginalRpPrimaryKey(oldRp!),
                     });
                 }

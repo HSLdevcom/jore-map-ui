@@ -4,7 +4,7 @@ import TransitType from '~/enums/transitType';
 import { IStopArea } from '~/models';
 import { IStopItem } from '~/models/IStop';
 import stopAreaValidationModel, {
-    IStopAreaValidationModel
+    IStopAreaValidationModel,
 } from '~/models/validationModels/stopAreaValidationModel';
 import NavigationStore from './navigationStore';
 import ValidationStore from './validationStore';
@@ -73,7 +73,7 @@ class StopAreaStore {
     @action
     public init = ({
         stopArea,
-        isNewStopArea
+        isNewStopArea,
     }: {
         stopArea: IStopArea;
         isNewStopArea: boolean;

@@ -1,3 +1,4 @@
+import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import IExternalNode from './IExternalNode';
 
@@ -34,6 +35,18 @@ interface IExternalRoutePathSegmentLink {
     geom: string;
 }
 
+interface IExternalNetworkSelectLink {
+    lnkverkko: TransitType;
+    geojson: string;
+    lnkalkusolmu: string;
+    lnkloppusolmu: string;
+    dateRanges?: string;
+    startNodeTransitTypes: string;
+    startNodeType: NodeType;
+    endNodeTransitTypes: string;
+    endNodeType: NodeType;
+}
+
 export default IExternalLink;
 
-export { IExternalRoutePathSegmentLink };
+export { IExternalRoutePathSegmentLink, IExternalNetworkSelectLink };

@@ -3,7 +3,7 @@ enum TransitType {
     SUBWAY = '2',
     TRAM = '3',
     TRAIN = '4',
-    FERRY = '7'
+    FERRY = '7',
 }
 
 export default TransitType;

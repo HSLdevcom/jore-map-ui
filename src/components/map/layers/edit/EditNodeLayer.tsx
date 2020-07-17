@@ -88,7 +88,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
         const node = this.props.nodeStore!.node;
 
         const onNodeClick = () => {
-            const clickParams: INodeClickParams = { node };
+            const clickParams: INodeClickParams = { nodeId: node.id };
             EventHelper.trigger('nodeClick', clickParams);
         };
         return (
@@ -96,6 +96,7 @@ class EditNodeLayer extends Component<IEditNodeLayerProps> {
                 key={`${node.id}-${nodeLocationType}`}
                 coordinates={coordinates}
                 nodeType={node.type}
+                transitTypes={node.transitTypes ? node.transitTypes : []}
                 nodeLocationType={nodeLocationType}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}

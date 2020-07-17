@@ -25,7 +25,7 @@ import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
@@ -45,7 +45,7 @@ interface IRoutePathListTabProps {
     areAllRoutePathsVisible: boolean;
     toggleAllRoutePathsVisible: () => void;
     routeListStore?: RouteListStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
     loginStore?: LoginStore;
@@ -58,6 +58,7 @@ interface IRoutePathListTabProps {
 interface IRoutePathListTabState {
     stopNameMap: Map<string, IRoutePathStopNames>;
     areStopNamesLoading: boolean;
+    hasOldRoutePaths: boolean | null;
     allGroupedRoutePaths: IRoutePath[][];
     groupedRoutePathsToDisplay: IRoutePath[][];
 }
@@ -66,7 +67,7 @@ const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routeListStore',
-    'routePathLayerStore',
+    'routePathLayerListStore',
     'mapStore',
     'confirmStore',
     'loginStore',
@@ -85,6 +86,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.state = {
             stopNameMap: new Map(),
             areStopNamesLoading: true,
+            hasOldRoutePaths: null,
             allGroupedRoutePaths: [],
             groupedRoutePathsToDisplay: [],
         };
@@ -150,21 +152,25 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
         const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
         let groupedRoutePathsToDisplay = allGroupedRoutePaths;
+        let lastSeenNotOldRoutePathGroupIndex = 0;
+        allGroupedRoutePaths.forEach((groupedRp: IRoutePath[], index: number) => {
+            const isNotOldRoutePath =
+                groupedRp[0].startDate.getTime() >= toMidnightDate(new Date()).getTime() ||
+                groupedRp[0].endDate.getTime() >= toMidnightDate(new Date()).getTime();
+            if (isNotOldRoutePath) {
+                lastSeenNotOldRoutePathGroupIndex = index + 1;
+            }
+        });
+        const hasOldRoutePaths = lastSeenNotOldRoutePathGroupIndex < allGroupedRoutePaths.length;
         if (!this.props.areAllRoutePathsVisible) {
-            let notOldRoutePathCount = 0;
-            allGroupedRoutePaths.some((groupedRp: IRoutePath[], index: number) => {
-                const isNotOldRoutePath =
-                    groupedRp[0].startDate.getTime() >= toMidnightDate(new Date()).getTime() ||
-                    groupedRp[0].endDate.getTime() >= toMidnightDate(new Date()).getTime();
-                if (isNotOldRoutePath) {
-                    notOldRoutePathCount += 1;
-                }
-                return !isNotOldRoutePath;
-            });
-            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(0, notOldRoutePathCount);
+            groupedRoutePathsToDisplay = allGroupedRoutePaths.slice(
+                0,
+                lastSeenNotOldRoutePathGroupIndex
+            );
         }
         this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
+            hasOldRoutePaths,
             allGroupedRoutePaths,
             groupedRoutePathsToDisplay,
         });
@@ -305,7 +311,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             groupedRoutePathsToDisplay.forEach((groupedRoutePaths: IRoutePath[]) => {
                 groupedRoutePaths.forEach((routePath: IRoutePath) => {
                     if (isCurrentDateWithinTimeSpan(routePath.startDate, routePath.endDate)) {
-                        this.props.routePathLayerStore!.setRoutePathVisibility({
+                        this.props.routePathLayerListStore!.setRoutePathVisibility({
                             id: routePath.internalId,
                             isVisible: true,
                         });
@@ -346,6 +352,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     <div className={s.sectionDivider} />
                     <div className={s.routeActiveSchedulesWrapper}>
                         <RouteActiveSchedules
+                            routePaths={this.props.routePathMassEditStore!.routePaths}
                             activeSchedules={activeSchedules}
                             confirmMessage={`Haluatko varmasti tallentaa tehdyt reitin ${routeId} reitinsuuntien muutokset?`}
                         />
@@ -478,24 +485,21 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                         Reitillä ei ole voimassaolevia tai voimaan astuvia reitinsuuntia.
                     </div>
                 )}
-                {!this.props.isEditing &&
-                    (this.props.areAllRoutePathsVisible ||
-                        this.state.groupedRoutePathsToDisplay.length <
-                            this.state.allGroupedRoutePaths.length) && (
-                        <div
-                            className={s.toggleAllRoutePathsVisibleButton}
-                            onClick={this.props.toggleAllRoutePathsVisible}
-                        >
-                            {!this.props.areAllRoutePathsVisible && (
-                                <div className={s.threeDots}>...</div>
-                            )}
-                            <div className={s.toggleAllRoutePathsVisibleText}>
-                                {this.props.areAllRoutePathsVisible
-                                    ? `Piilota vanhentuneet reitinsuunnat`
-                                    : `Näytä kaikki reitinsuunnat (${routePaths.length})`}
-                            </div>
+                {this.state.hasOldRoutePaths && (
+                    <div
+                        className={s.toggleAllRoutePathsVisibleButton}
+                        onClick={this.props.toggleAllRoutePathsVisible}
+                    >
+                        {!this.props.areAllRoutePathsVisible && (
+                            <div className={s.threeDots}>...</div>
+                        )}
+                        <div className={s.toggleAllRoutePathsVisibleText}>
+                            {this.props.areAllRoutePathsVisible
+                                ? `Piilota vanhentuneet reitinsuunnat`
+                                : `Näytä kaikki reitinsuunnat (${routePaths.length})`}
                         </div>
-                    )}
+                    </div>
+                )}
                 {this.renderBottomBarButtons()}
                 {this.props.loginStore!.hasWriteAccess && isEditing && (
                     <SaveButton

@@ -68,6 +68,7 @@ class RoutePathFactory {
     ): IRoutePath {
         const defaultDate = new Date();
         defaultDate.setHours(0, 0, 0, 0);
+        defaultDate.setDate(defaultDate.getDate() + 1);
 
         return {
             lineId,
@@ -93,17 +94,6 @@ class RoutePathFactory {
             exceptionPath: '0',
             isStartNodeUsingBookSchedule: false,
             startNodeBookScheduleColumnNumber: undefined,
-        };
-    }
-
-    // TODO: remove (this is deprecated)
-    public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
-        const startDate = routePath.startDate;
-        startDate.setDate(startDate.getDate() + 1);
-        return {
-            ...routePath,
-            // TODO: this is only temporary, but required since startDate is part of ID
-            startDate,
         };
     }
 }

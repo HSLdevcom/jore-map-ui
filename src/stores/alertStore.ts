@@ -7,14 +7,19 @@ enum AlertType {
     Loader,
 }
 
+const DEFAULT_CLOSE_BUTTON_TEXT = 'OK';
+
 class AlertStore {
     @observable private _message: string | null;
     @observable private _type: AlertType | null;
     @observable private _isCancelButtonVisible: boolean;
+    @observable private _closeButtonText: string;
+    private _onClose: null | (() => void);
 
     constructor() {
         this._message = null;
         this._isCancelButtonVisible = false;
+        this._closeButtonText = DEFAULT_CLOSE_BUTTON_TEXT;
     }
 
     @computed
@@ -37,10 +42,28 @@ class AlertStore {
         return this._message !== null;
     }
 
+    @computed
+    get closeButtonText(): string {
+        return this._closeButtonText;
+    }
+
     @action
-    public setNotificationMessage = ({ message }: { message: string }) => {
+    public setNotificationMessage = ({
+        message,
+        onClose,
+        closeButtonText,
+        type = AlertType.Success,
+    }: {
+        message: string;
+        onClose?: () => void;
+        closeButtonText?: string;
+        type?: AlertType;
+    }) => {
         this._message = message;
         this._isCancelButtonVisible = true;
+        this._onClose = onClose ? onClose : null;
+        this._closeButtonText = closeButtonText ? closeButtonText : DEFAULT_CLOSE_BUTTON_TEXT;
+        this._type = type;
     };
 
     @action
@@ -70,9 +93,14 @@ class AlertStore {
 
     @action
     public close = () => {
+        if (this._onClose) {
+            this._onClose();
+        }
         this._message = null;
         this._type = null;
         this._isCancelButtonVisible = false;
+        this._onClose = null;
+        this._closeButtonText = DEFAULT_CLOSE_BUTTON_TEXT;
     };
 }
 

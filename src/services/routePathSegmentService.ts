@@ -12,7 +12,7 @@ class RoutePathSegmentService {
     ): Promise<IRoutePathSegment[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathSegmentQuery(),
-            variables: { startNodeId, endNodeId, transitType }
+            variables: { startNodeId, endNodeId, transitType },
         });
         return RoutePathCopySegmentFactory.mapExternalLinksWithRoutePathInfo(
             queryResult.data.links_with_route_path_info.nodes

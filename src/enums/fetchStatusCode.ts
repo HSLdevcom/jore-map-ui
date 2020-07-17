@@ -4,7 +4,7 @@ enum FetchStatusCode {
     NOT_FOUND = 404,
     OBJECT_IS_OUTDATED = 409,
     INTERNAL_SERVER_ERROR = 500,
-    CONNECTION_ERROR = 0
+    CONNECTION_ERROR = 0,
 }
 
 export default FetchStatusCode;

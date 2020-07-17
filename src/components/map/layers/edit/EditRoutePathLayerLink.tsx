@@ -1,70 +1,80 @@
+import L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
-const ROUTE_COLOR = '#000';
+const DEFAULT_LINK_COLOR = '#000';
+const HOVERED_LINK_COLOR = '#cfc400';
+const EXTENDED_LINK_COLOR = '#007ac9';
 
 interface IRoutePathLayerProps {
+    enableMapClickListener: () => void;
+    disableMapClickListener: () => void;
+    rpLink: IRoutePathLink;
+    setExtendedListItem: (id: string | null) => void;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
-    setExtendedListItem: (id: string) => void;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
+@inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'toolbarStore',
+    'mapStore',
+    'routePathCopySegmentStore'
+)
 @observer
 class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
-    private renderRoutePathLinks = () => {
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length < 1) return;
-
-        return routePathLinks.map((rpLink, index) => {
-            return (
-                <div key={index}>
-                    {this.renderLink(rpLink)}
-                    {this.renderDashedLines(rpLink)}
-                </div>
-            );
-        });
-    };
-
     private renderLink = (routePathLink: IRoutePathLink) => {
-        const routePathStore = this.props.routePathStore;
-        let isLinkHighlighted;
-        if (routePathStore!.highlightedListItemId) {
-            isLinkHighlighted = routePathStore!.highlightedListItemId === routePathLink.id;
-        } else {
-            isLinkHighlighted = routePathStore!.extendedListItemId === routePathLink.id;
-        }
+        const routePathLayerStore = this.props.routePathLayerStore;
+        const isLinkHovered = routePathLayerStore!.hoveredItemId === routePathLink.id;
+        const isLinkExtended = routePathLayerStore!.extendedListItemId === routePathLink.id;
         return [
             <Polyline
                 positions={routePathLink.geometry}
-                key={routePathLink.id}
-                color={ROUTE_COLOR}
+                key={`rpLink-overlay-${routePathLink.id}`}
+                color={
+                    isLinkHovered
+                        ? HOVERED_LINK_COLOR
+                        : isLinkExtended
+                        ? EXTENDED_LINK_COLOR
+                        : DEFAULT_LINK_COLOR
+                }
+                weight={15}
+                opacity={isLinkHovered || isLinkExtended ? 0.6 : 0}
+                onClick={this.handleLinkClick(routePathLink)}
+                onMouseOver={() => this.onMouseOver(routePathLink.id)}
+                onMouseOut={this.onMouseOut}
+                interactive={true}
+            />,
+            <Polyline
+                positions={routePathLink.geometry}
+                key={`rpLink-${routePathLink.id}`}
+                color={DEFAULT_LINK_COLOR}
                 weight={5}
                 opacity={0.8}
-                onClick={this.handleLinkClick(routePathLink)}
+                interactive={false}
             />,
-            isLinkHighlighted && (
-                <Polyline
-                    positions={routePathLink.geometry}
-                    key={`${routePathLink.id}-highlight`}
-                    color={ROUTE_COLOR}
-                    weight={25}
-                    opacity={0.5}
-                    onClick={this.handleLinkClick(routePathLink)}
-                />
-            ),
         ];
+    };
+
+    private onMouseOver = (id: string) => {
+        this.props.routePathLayerStore!.setHoveredItemId(id);
+    };
+
+    private onMouseOut = () => {
+        this.props.routePathLayerStore!.setHoveredItemId(null);
     };
 
     private handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
@@ -74,8 +84,32 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         ) {
             this.props.toolbarStore!.selectedTool.onRoutePathLinkClick(routePathLink.id)(e);
         } else {
-            this.props.setExtendedListItem(routePathLink.id);
+            this.props.routePathLayerStore!.extendedListItemId === routePathLink.id
+                ? this.props.setExtendedListItem(null)
+                : this.props.setExtendedListItem(routePathLink.id);
+
+            this.props.disableMapClickListener();
+            // Prevent current click event from triggering map click listener
+            setTimeout(() => {
+                this.props.enableMapClickListener();
+            }, 1);
         }
+    };
+
+    private renderLinkDecorator = (routePathLink: IRoutePathLink) => {
+        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
+            return null;
+        }
+
+        return (
+            <ArrowDecorator
+                color={DEFAULT_LINK_COLOR}
+                geometry={routePathLink.geometry}
+                onClick={this.handleLinkClick(routePathLink)}
+                onMouseOver={() => this.onMouseOver(routePathLink.id)}
+                onMouseOut={this.onMouseOut}
+            />
+        );
     };
 
     private renderDashedLines = (routePathLink: IRoutePathLink) => {
@@ -95,25 +129,13 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
         ];
     };
 
-    private renderLinkDecorator = () => {
-        if (!this.props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
-            return null;
-        }
-
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        const coherentPolylines = createCoherentLinesFromPolylines(
-            routePathLinks.map((rpLink) => rpLink.geometry)
-        );
-        return coherentPolylines.map((polyline, index) => (
-            <ArrowDecorator key={index} color={ROUTE_COLOR} geometry={polyline} />
-        ));
-    };
-
     render() {
+        const rpLink = this.props.rpLink;
         return (
             <>
-                {this.renderRoutePathLinks()}
-                {this.renderLinkDecorator()}
+                {this.renderLink(rpLink)}
+                {this.renderLinkDecorator(rpLink)}
+                {this.renderDashedLines(rpLink)}
             </>
         );
     }

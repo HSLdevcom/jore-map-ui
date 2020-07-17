@@ -6,6 +6,7 @@ type eventName =
     | 'enter'
     | 'arrowUp'
     | 'arrowDown'
+    | 'escape'
     | 'undo'
     | 'redo'
     | 'mapClick'
@@ -34,15 +35,10 @@ class EventHelper {
 }
 
 interface INodeClickParams {
-    node: INode;
-}
-
-interface INetworkNodeClickParams {
     nodeId: string;
-    nodeType: NodeType;
 }
 
-interface INetworkLinkClickParams {
+interface ILinkClickParams {
     startNodeId: string;
     endNodeId: NodeType;
     transitType: TransitType;
@@ -61,8 +57,7 @@ export default new EventHelper();
 
 export {
     INodeClickParams,
-    INetworkNodeClickParams,
-    INetworkLinkClickParams,
+    ILinkClickParams,
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
 };
