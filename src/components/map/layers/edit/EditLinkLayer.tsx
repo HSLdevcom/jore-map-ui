@@ -44,10 +44,10 @@ const EditLinkLayer = inject(
             const map = props.leaflet.map;
             if (!map) return;
             map.on('editable:vertex:dragend', () => {
-                updateLinkGeometry(editableLinks);
+                updateLinkGeometry();
             });
             map.on('editable:vertex:deleted', () => {
-                updateLinkGeometry(editableLinks);
+                updateLinkGeometry();
             });
             EventHelper.on('undo', props.linkStore!.undo);
             EventHelper.on('redo', props.linkStore!.redo);
@@ -59,6 +59,11 @@ const EditLinkLayer = inject(
             };
         });
 
+        const updateLinkGeometry = () => {
+            const latLngs = editableLinks[0].getLatLngs()[0] as L.LatLng[];
+            props.linkStore!.updateLinkGeometry(latLngs);
+        };
+
         const drawEditableLink = () => {
             const link = props.linkStore!.link;
             const map = props.leaflet.map;
@@ -67,11 +72,6 @@ const EditLinkLayer = inject(
             const isEditable =
                 props.loginStore!.hasWriteAccess && props.linkStore!.isLinkGeometryEditable;
             drawLinkToMap(link, isEditable);
-        };
-
-        const updateLinkGeometry = (data: any) => {
-            const latLngs = editableLinks[0].getLatLngs()[0] as L.LatLng[];
-            props.linkStore!.updateLinkGeometry(latLngs);
         };
 
         const drawLinkToMap = (link: ILink, isEditable: boolean) => {
@@ -105,7 +105,6 @@ const EditLinkLayer = inject(
             if (!props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
                 return null;
             }
-
             const link = props.linkStore!.link;
             return (
                 <ArrowDecorator
