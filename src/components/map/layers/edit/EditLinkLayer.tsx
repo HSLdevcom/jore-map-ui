@@ -1,7 +1,7 @@
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withLeaflet, Marker as LeafletMarker } from 'react-leaflet';
 import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
 import { ILink, INode } from '~/models';
@@ -40,6 +40,11 @@ const EditLinkLayer = inject(
             drawEditableLink();
         }, [props.linkStore!.link?.geometry]);
 
+        const updateLinkGeometry = useCallback(() => {
+            const latLngs = editableLinks[0].getLatLngs()[0] as L.LatLng[];
+            props.linkStore!.updateLinkGeometry(latLngs);
+        }, [editableLinks]);
+
         useEffect(() => {
             const map = props.leaflet.map;
             if (!map) return;
@@ -57,12 +62,7 @@ const EditLinkLayer = inject(
                 EventHelper.off('undo', props.linkStore!.undo);
                 EventHelper.off('redo', props.linkStore!.redo);
             };
-        });
-
-        const updateLinkGeometry = () => {
-            const latLngs = editableLinks[0].getLatLngs()[0] as L.LatLng[];
-            props.linkStore!.updateLinkGeometry(latLngs);
-        };
+        }, [updateLinkGeometry, props.leaflet.map]);
 
         const drawEditableLink = () => {
             const link = props.linkStore!.link;
@@ -116,12 +116,12 @@ const EditLinkLayer = inject(
             );
         };
 
-        const renderNodes = () => {
+        const renderNodes = useCallback(() => {
             const nodes = props.linkStore!.nodes;
-            return nodes.map((n) => renderNode(n));
-        };
+            return nodes.map((n, index) => <Node node={n} key={index} />);
+        }, [props.linkStore!.nodes]);
 
-        const renderNode = (node: INode) => {
+        const Node = React.memo(({ node }: { node: INode }) => {
             if (!node) return null;
             const onNodeClick = () => {
                 const clickParams: INodeClickParams = { nodeId: node.id };
@@ -143,7 +143,7 @@ const EditLinkLayer = inject(
                     onClick={onNodeClick}
                 />
             );
-        };
+        });
 
         const renderDashedLines = () => {
             const link = props.linkStore!.link;
