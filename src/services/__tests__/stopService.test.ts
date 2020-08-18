@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'ts-jest/utils';
 import ApolloClient from '~/helpers/ApolloClient';
 import StopService from '../stopService';
 
