@@ -24,7 +24,7 @@ class RouteForm extends React.Component<IRouteFormProps> {
             onChangeRouteProperty
         } = this.props;
         const onChange = onChangeRouteProperty;
-        const queryParamLineId = navigator.getQueryParam(QueryParams.lineId);
+        const queryParamLineId = navigator.getQueryParam(QueryParams.lineId) as string;
         const isEditingDisabled = !isEditing;
         return (
             <div className={s.formSection}>

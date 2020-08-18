@@ -140,8 +140,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this._setState({ isLoading: true });
         this.props.mapStore!.initCoordinates();
         const queryParams = navigator.getQueryParamValues();
-        const routeId = queryParams[QueryParams.routeId];
-        const lineId = queryParams[QueryParams.lineId];
+        const routeId = queryParams[QueryParams.routeId] as string;
+        const lineId = queryParams[QueryParams.lineId] as string;
         try {
             const line = await LineService.fetchLine(lineId);
             const routePath = RoutePathFactory.createNewRoutePath(
@@ -195,7 +195,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private initExistingRoutePath = async () => {
         this._setState({ isLoading: true });
         await this.fetchRoutePath();
-        const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem];
+        const itemToShow = navigator.getQueryParamValues()[QueryParams.showItem] as string;
         if (itemToShow) {
             this.props.routePathStore!.setSelectedTabIndex(1);
             this.props.routePathLayerStore!.setExtendedListItemId(itemToShow);
@@ -373,7 +373,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                     }
                                     hoverText={`Avaa linja ${routePath.lineId!}`}
                                 />
-                                <div className={s.lineLinkGreaterThanSign}>&nbsp;>&nbsp;</div>
+                                <div className={s.lineLinkGreaterThanSign}>&gt;</div>
                                 <TransitTypeLink
                                     transitType={routePath.transitType!}
                                     shouldShowTransitTypeIcon={false}

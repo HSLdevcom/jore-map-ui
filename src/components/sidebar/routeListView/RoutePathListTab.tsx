@@ -99,6 +99,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     };
 
     componentDidMount() {
+        this._isMounted = true;
         this.selectedGroupsListener = reaction(
             () =>
                 this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
@@ -111,10 +112,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 this.props.routePathMassEditStore!.routePaths,
             () => this.updateGroupedRoutePathsToDisplay()
         );
-    }
-
-    componentWillMount() {
-        this._isMounted = true;
         this.updateGroupedRoutePathsToDisplay();
     }
 
