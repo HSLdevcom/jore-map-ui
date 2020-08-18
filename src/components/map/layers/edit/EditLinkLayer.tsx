@@ -19,12 +19,12 @@ import * as s from './editLinkLayer.scss';
 
 const START_MARKER_COLOR = '#00df0b';
 
-type IEditLinkLayerProps = {
+interface IEditLinkLayerProps {
     linkStore?: LinkStore;
     mapStore?: MapStore;
     leaflet: LeafletContext;
     loginStore?: LoginStore;
-};
+}
 const EditLinkLayer = inject(
     'linkStore',
     'mapStore',
