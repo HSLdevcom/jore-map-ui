@@ -1,5 +1,6 @@
 import { configure } from 'mobx';
 import { Provider } from 'mobx-react';
+import 'mobx-react-lite/batchingForReactDom'
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
