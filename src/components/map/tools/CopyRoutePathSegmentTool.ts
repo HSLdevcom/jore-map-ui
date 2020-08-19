@@ -1,5 +1,8 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
+import EventHelper, {
+    IEditRoutePathLayerNodeClickParams,
+    INodeClickParams,
+} from '~/helpers/EventHelper';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
@@ -19,30 +22,35 @@ class CopyRoutePathSegmentTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.link);
         EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
         EventHelper.on('nodeClick', this.onNodeClick);
-        EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventHelper.on('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
     }
     public deactivate() {
         EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
         EventHelper.off('nodeClick', this.onNodeClick);
-        EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventHelper.off('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathCopySegmentStore.clear();
     }
 
     private onNodeClick = (clickEvent: CustomEvent) => {
-        const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: INodeClickParams = clickEvent.detail;
+        this.selectNode(params.nodeId);
+    };
 
-        if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
-        else this.selectEndNode(params.nodeId);
+    private onEditRoutePathLayerNodeClick = (clickEvent: CustomEvent) => {
+        const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
+        this.selectNode(params.node.id);
     };
 
     private onNetworkNodeClick = (clickEvent: CustomEvent) => {
-        const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: INodeClickParams = clickEvent.detail;
+        this.selectNode(params.nodeId);
+    };
 
-        if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
-        else this.selectEndNode(params.nodeId);
+    private selectNode = (nodeId: string) => {
+        const setNodeType = RoutePathCopySegmentStore.setNodeType;
+        if (setNodeType === 'startNode') this.selectStartNode(nodeId);
+        else this.selectEndNode(nodeId);
     };
 
     private selectStartNode = async (nodeId: string) => {
