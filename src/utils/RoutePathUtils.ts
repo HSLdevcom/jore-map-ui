@@ -9,6 +9,28 @@ class RoutePathUtils {
         );
     };
 
+    // Split routePathLinks into sub lists with coherent routePathLinks
+    public static getCoherentRoutePathLinksList = (routePathLinks: IRoutePathLink[]) => {
+        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
+        let index = 0;
+        routePathLinks.forEach((currentRpLink) => {
+            const currentList = coherentRoutePathLinksList[index];
+            if (!currentList && index === 0) {
+                coherentRoutePathLinksList[index] = [currentRpLink];
+                return;
+            }
+            const lastRpLink = currentList[currentList.length - 1];
+            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
+                currentList.push(currentRpLink);
+            } else {
+                const newList = [currentRpLink];
+                coherentRoutePathLinksList.push(newList);
+                index += 1;
+            }
+        });
+        return coherentRoutePathLinksList;
+    };
+
     // validate that stop can't appear twice (at least one must be set as disabled)
     public static getStopIdThatAppearsTwice = (routePathLinks: IRoutePathLink[]): string | null => {
         interface IActiveStopMap {

@@ -6,6 +6,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import EditRoutePathLayerLink from './EditRoutePathLayerLink';
 import EditRoutePathLayerNode from './EditRoutePathLayerNode';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
@@ -31,28 +32,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
         this.props.routePathLayerStore!.setExtendedListItemId(id);
     };
 
-    // Split routePathLinks into sub lists with coherent routePathLinks
-    private getCoherentRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
-        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
-        let index = 0;
-        routePathLinks.forEach((currentRpLink) => {
-            const currentList = coherentRoutePathLinksList[index];
-            if (!currentList && index === 0) {
-                coherentRoutePathLinksList[index] = [currentRpLink];
-                return;
-            }
-            const lastRpLink = currentList[currentList.length - 1];
-            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
-                currentList.push(currentRpLink);
-            } else {
-                const newList = [currentRpLink];
-                coherentRoutePathLinksList.push(newList);
-                index += 1;
-            }
-        });
-        return coherentRoutePathLinksList;
-    };
-
     render() {
         if (!this.props.routePathStore!.routePath) return null;
 
@@ -60,13 +39,13 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
         const isRoutePathCopySegmentLayerVisible =
             this.props.routePathCopySegmentStore!.startNode ||
             this.props.routePathCopySegmentStore!.endNode;
-        const coherentRoutePathLinks = this.getCoherentRoutePathLinks(
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
             this.props.routePathStore!.routePath!.routePathLinks
         );
         return (
             <div>
-                {coherentRoutePathLinks.length > 0 ? (
-                    coherentRoutePathLinks.map((routePathLinks) => {
+                {coherentRoutePathLinksList.length > 0 ? (
+                    coherentRoutePathLinksList.map((routePathLinks) => {
                         return routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
                             const isStartNodeDisabled =
                                 rpLink.startNodeType === StartNodeType.DISABLED;
