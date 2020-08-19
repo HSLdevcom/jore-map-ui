@@ -21,7 +21,7 @@ interface IRoutePathLayerNodeProps {
     node: INode;
     isDisabled: boolean;
     linkOrderNumber: number;
-    isHighlightedByExtendRpTool: boolean;
+    isAtCoherentRoutePathEdge: boolean;
     setExtendedListItem: (id: string | null) => void;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
@@ -43,12 +43,12 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
         node,
         linkOrderNumber,
         isDisabled,
-        isHighlightedByExtendRpTool,
+        isAtCoherentRoutePathEdge,
     }: {
         node: INode;
         linkOrderNumber: number;
         isDisabled: boolean;
-        isHighlightedByExtendRpTool: boolean;
+        isAtCoherentRoutePathEdge: boolean;
     }) => {
         const routePathLayerStore = this.props.routePathLayerStore;
         let isNodeHighlighted;
@@ -57,9 +57,15 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
         } else {
             isNodeHighlighted = routePathLayerStore!.extendedListItemId === node.internalId;
         }
-
+        const isExtendRpToolActive =
+            this.props.toolbarStore!.selectedTool!.toolType === ToolbarToolType.AddNewRoutePathLink;
+        const isCopyRpSegmentToolActive =
+            this.props.toolbarStore!.selectedTool!.toolType ===
+            ToolbarToolType.CopyRoutePathSegmentTool;
+        const isHighlightedByRpTool =
+            isAtCoherentRoutePathEdge && (isExtendRpToolActive || isCopyRpSegmentToolActive);
         let onNodeClick;
-        if (isHighlightedByExtendRpTool) {
+        if (isHighlightedByRpTool) {
             onNodeClick = () => {
                 const clickParams: IEditRoutePathLayerNodeClickParams = {
                     node,
@@ -80,7 +86,7 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
 
         let isHighlighted = false;
         let highlightColor;
-        if (isHighlightedByExtendRpTool) {
+        if (isHighlightedByRpTool) {
             isHighlighted = true;
             highlightColor = NodeHighlightColor.GREEN;
         } else if (isNodeHighlighted) {
@@ -127,14 +133,14 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
     };
 
     render() {
-        const { node, linkOrderNumber, isDisabled, isHighlightedByExtendRpTool } = this.props;
+        const { node, linkOrderNumber, isDisabled, isAtCoherentRoutePathEdge } = this.props;
         return (
             <>
                 {this.renderNode({
                     node,
                     linkOrderNumber,
                     isDisabled,
-                    isHighlightedByExtendRpTool,
+                    isAtCoherentRoutePathEdge,
                 })}
                 {this.renderStartMarker()}
             </>

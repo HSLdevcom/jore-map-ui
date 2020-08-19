@@ -1,13 +1,11 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import StartNodeType from '~/enums/startNodeType';
-import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import EditRoutePathLayerLink from './EditRoutePathLayerLink';
 import EditRoutePathLayerNode from './EditRoutePathLayerNode';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
@@ -20,16 +18,9 @@ interface IEditRoutePathLayerProps {
     routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;
     mapStore?: MapStore;
-    toolbarStore?: ToolbarStore;
 }
 
-@inject(
-    'routePathStore',
-    'routePathLayerStore',
-    'routePathCopySegmentStore',
-    'mapStore',
-    'toolbarStore'
-)
+@inject('routePathStore', 'routePathLayerStore', 'routePathCopySegmentStore', 'mapStore')
 @observer
 class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     private setExtendedListItem = (id: string | null) => {
@@ -81,9 +72,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                 rpLink.startNodeType === StartNodeType.DISABLED;
                             const isFirstNode = index === 0;
                             const isLastNode = index === routePathLinks.length - 1;
-                            const isExtendRpToolActive = this.props.toolbarStore!.isSelected(
-                                ToolbarToolType.AddNewRoutePathLink
-                            );
                             return (
                                 <div key={`rpLink-${index}`}>
                                     <EditRoutePathLayerNode
@@ -92,9 +80,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                         isDisabled={isStartNodeDisabled}
                                         linkOrderNumber={rpLink.orderNumber}
                                         setExtendedListItem={this.setExtendedListItem}
-                                        isHighlightedByExtendRpTool={
-                                            isExtendRpToolActive && isFirstNode
-                                        }
+                                        isAtCoherentRoutePathEdge={isFirstNode}
                                     />
                                     <EditRoutePathLayerLink
                                         enableMapClickListener={this.props.enableMapClickListener}
@@ -109,7 +95,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                             isDisabled={false} // endNode has no disabled information
                                             linkOrderNumber={rpLink.orderNumber}
                                             setExtendedListItem={this.setExtendedListItem}
-                                            isHighlightedByExtendRpTool={isExtendRpToolActive}
+                                            isAtCoherentRoutePathEdge={true}
                                         />
                                     )}
                                 </div>

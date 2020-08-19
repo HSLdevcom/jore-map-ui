@@ -1,14 +1,11 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
-import { INode } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
-import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
-import { loopRoutePathNodes } from '~/utils/modelUtils';
 import BaseTool from './BaseTool';
 
 class CopyRoutePathSegmentTool implements BaseTool {
@@ -23,7 +20,6 @@ class CopyRoutePathSegmentTool implements BaseTool {
         EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
         EventHelper.on('nodeClick', this.onNodeClick);
         EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        this.highlightClickableNodes();
         RoutePathStore.setIsEditingDisabled(false);
     }
     public deactivate() {
@@ -31,7 +27,6 @@ class CopyRoutePathSegmentTool implements BaseTool {
         EventHelper.off('nodeClick', this.onNodeClick);
         EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
         RoutePathCopySegmentStore.clear();
-        this.unhighlightClickableNodes();
     }
 
     private onNodeClick = (clickEvent: CustomEvent) => {
@@ -112,25 +107,6 @@ class CopyRoutePathSegmentTool implements BaseTool {
     private isEndNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
         return routePathLinks.some((link) => link.startNode.id === nodeId);
-    }
-
-    private highlightClickableNodes() {
-        const routePath = RoutePathStore!.routePath!;
-
-        const clickableNodeIds: string[] = [];
-        const unclickableNodeIds: string[] = [];
-        loopRoutePathNodes(routePath, (node: INode) => {
-            if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
-                clickableNodeIds.push(node.id);
-            } else {
-                unclickableNodeIds.push(node.id);
-            }
-        });
-        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
-    }
-
-    private unhighlightClickableNodes() {
-        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 
