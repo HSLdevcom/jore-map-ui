@@ -1,10 +1,12 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
+import StartNodeType from '~/enums/startNodeType';
 import { IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import EditRoutePathLayerLink from './EditRoutePathLayerLink';
 import EditRoutePathLayerNode from './EditRoutePathLayerNode';
 import RoutePathNeighborLinkLayer from './RoutePathNeighborLinkLayer';
@@ -37,33 +39,47 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
         const isRoutePathCopySegmentLayerVisible =
             this.props.routePathCopySegmentStore!.startNode ||
             this.props.routePathCopySegmentStore!.endNode;
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+            this.props.routePathStore!.routePath!.routePathLinks
+        );
         return (
             <div>
-                {routePathLinks && routePathLinks.length > 0 ? (
-                    routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
-                        const nextRpLink =
-                            index < routePathLinks.length - 1
-                                ? routePathLinks[index + 1]
-                                : undefined;
-                        const isEndNodeRendered =
-                            !nextRpLink ||
-                            (nextRpLink && nextRpLink.startNode.id !== rpLink.endNode.id);
-                        return (
-                            <div key={`rpLink-${index}`}>
-                                <EditRoutePathLayerNode
-                                    rpLink={rpLink}
-                                    isEndNodeRendered={isEndNodeRendered}
-                                    setExtendedListItem={this.setExtendedListItem}
-                                />
-                                <EditRoutePathLayerLink
-                                    enableMapClickListener={this.props.enableMapClickListener}
-                                    disableMapClickListener={this.props.disableMapClickListener}
-                                    rpLink={rpLink}
-                                    setExtendedListItem={this.setExtendedListItem}
-                                />
-                            </div>
-                        );
+                {coherentRoutePathLinksList.length > 0 ? (
+                    coherentRoutePathLinksList.map((routePathLinks) => {
+                        return routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
+                            const isStartNodeDisabled =
+                                rpLink.startNodeType === StartNodeType.DISABLED;
+                            const isFirstNode = index === 0;
+                            const isLastNode = index === routePathLinks.length - 1;
+                            return (
+                                <div key={`rpLink-${index}`}>
+                                    <EditRoutePathLayerNode
+                                        key={'startNode'}
+                                        node={rpLink.startNode}
+                                        isDisabled={isStartNodeDisabled}
+                                        linkOrderNumber={rpLink.orderNumber}
+                                        setExtendedListItem={this.setExtendedListItem}
+                                        isAtCoherentRoutePathEdge={isFirstNode}
+                                    />
+                                    <EditRoutePathLayerLink
+                                        enableMapClickListener={this.props.enableMapClickListener}
+                                        disableMapClickListener={this.props.disableMapClickListener}
+                                        rpLink={rpLink}
+                                        setExtendedListItem={this.setExtendedListItem}
+                                    />
+                                    {isLastNode && (
+                                        <EditRoutePathLayerNode
+                                            key={'endNode'}
+                                            node={rpLink.endNode}
+                                            isDisabled={false} // endNode has no disabled information
+                                            linkOrderNumber={rpLink.orderNumber}
+                                            setExtendedListItem={this.setExtendedListItem}
+                                            isAtCoherentRoutePathEdge={true}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        });
                     })
                 ) : (
                     <div />

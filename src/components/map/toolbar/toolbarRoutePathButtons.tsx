@@ -16,9 +16,9 @@ class ToolbarLineButtons extends React.Component {
         return (
             <>
                 <MapControlButton
-                    onClick={this.selectTool(ToolbarToolType.AddNewRoutePathLink)}
-                    isActive={ToolbarStore.isSelected(ToolbarToolType.AddNewRoutePathLink)}
-                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.AddNewRoutePathLink)}
+                    onClick={this.selectTool(ToolbarToolType.ExtendRoutePath)}
+                    isActive={ToolbarStore.isSelected(ToolbarToolType.ExtendRoutePath)}
+                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.ExtendRoutePath)}
                     label='Laajenna reitinsuuntaa'
                 >
                     <IoMdGitCommit />
@@ -32,9 +32,9 @@ class ToolbarLineButtons extends React.Component {
                     <FiDelete />
                 </MapControlButton>
                 <MapControlButton
-                    onClick={this.selectTool(ToolbarToolType.CopyRoutePathSegmentTool)}
-                    isActive={ToolbarStore.isSelected(ToolbarToolType.CopyRoutePathSegmentTool)}
-                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.CopyRoutePathSegmentTool)}
+                    onClick={this.selectTool(ToolbarToolType.CopyRoutePathSegment)}
+                    isActive={ToolbarStore.isSelected(ToolbarToolType.CopyRoutePathSegment)}
+                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.CopyRoutePathSegment)}
                     label='Kopioi reitinsuunnan segmentti toiselta reitinsuunnalta'
                 >
                     <FiCopy />

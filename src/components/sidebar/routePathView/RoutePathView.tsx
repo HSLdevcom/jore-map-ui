@@ -153,7 +153,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 routePath,
                 isNewRoutePath: this.props.isNewRoutePath,
             });
-            this.props.toolbarStore!.selectTool(ToolbarToolType.AddNewRoutePathLink);
+            this.props.toolbarStore!.selectTool(ToolbarToolType.ExtendRoutePath);
         } catch (e) {
             this.props.errorStore!.addError('Uuden reitinsuunnan luonti epäonnistui', e);
         }

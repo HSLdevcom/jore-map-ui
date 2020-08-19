@@ -9,6 +9,7 @@ import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNode from './RoutePathListNode';
@@ -45,24 +46,9 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
      * @param {IRoutePathLink[]} routePathLinks - list of routePathLinks sorted by orderNumber
      */
     private renderList = (routePathLinks: IRoutePathLink[]) => {
-        // Split routePathLinks into sub lists with coherent routePathLinks
-        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
-        let index = 0;
-        routePathLinks.forEach((currentRpLink) => {
-            const currentList = coherentRoutePathLinksList[index];
-            if (!currentList && index === 0) {
-                coherentRoutePathLinksList[index] = [currentRpLink];
-                return;
-            }
-            const lastRpLink = currentList[currentList.length - 1];
-            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
-                currentList.push(currentRpLink);
-            } else {
-                const newList = [currentRpLink];
-                coherentRoutePathLinksList.push(newList);
-                index += 1;
-            }
-        });
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+            routePathLinks
+        );
 
         return coherentRoutePathLinksList.map((routePathLinks) =>
             routePathLinks.map((routePathLink, index) => {
