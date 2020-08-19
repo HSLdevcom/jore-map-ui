@@ -32,7 +32,6 @@ interface INodeMarkerProps {
     color?: string;
     size?: NodeSize;
     isDraggable?: boolean;
-    isClickDisabled?: boolean;
     isDisabled?: boolean;
     isTimeAlignmentStop?: boolean;
     forcedVisibleNodeLabels?: NodeLabel[];
@@ -185,7 +184,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
     };
 
     private renderNodeMarkerIcon = () => {
-        const nodeRootClass = this.props.isClickDisabled ? s.nodeNotClickable : s.node;
+        const nodeRootClass = Boolean(this.props.onClick) ? s.node : s.nodeNotClickable;
         const markerLabel = this.renderMarkerLabel();
 
         let iconWidth;
@@ -222,7 +221,6 @@ class NodeMarker extends Component<INodeMarkerProps> {
         const {
             coordinates,
             isDraggable,
-            isClickDisabled,
             hasHighZIndex,
             onContextMenu,
             onClick,
@@ -240,7 +238,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
                 icon={this.renderNodeMarkerIcon()}
                 position={coordinates}
                 onDragEnd={onMoveMarker && this.onMoveMarker()}
-                interactive={!Boolean(isClickDisabled)}
+                interactive={Boolean(onClick)}
                 zIndexOffset={hasHighZIndex ? 1000 : 0}
             >
                 {this.renderStopRadiusCircle()}

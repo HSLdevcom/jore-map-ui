@@ -45,8 +45,6 @@ class RoutePathValidator {
 
         return firstNode.id === lastNode.id;
     };
-
-    // routePath can't have the same start / end node
 }
 
 export default RoutePathValidator;
