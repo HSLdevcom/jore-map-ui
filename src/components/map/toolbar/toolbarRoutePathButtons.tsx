@@ -16,9 +16,9 @@ class ToolbarLineButtons extends React.Component {
         return (
             <>
                 <MapControlButton
-                    onClick={this.selectTool(ToolbarToolType.AddNewRoutePathLink)}
-                    isActive={ToolbarStore.isSelected(ToolbarToolType.AddNewRoutePathLink)}
-                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.AddNewRoutePathLink)}
+                    onClick={this.selectTool(ToolbarToolType.ExtendRoutePath)}
+                    isActive={ToolbarStore.isSelected(ToolbarToolType.ExtendRoutePath)}
+                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.ExtendRoutePath)}
                     label='Laajenna reitinsuuntaa'
                 >
                     <IoMdGitCommit />

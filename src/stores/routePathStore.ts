@@ -627,7 +627,7 @@ class RoutePathStore {
             const selectedTool = ToolbarStore.selectedTool;
             if (
                 selectedTool &&
-                (selectedTool.toolType === ToolbarToolType.AddNewRoutePathLink ||
+                (selectedTool.toolType === ToolbarToolType.ExtendRoutePath ||
                     selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink ||
                     selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)
             ) {

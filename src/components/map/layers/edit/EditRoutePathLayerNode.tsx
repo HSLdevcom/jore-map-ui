@@ -58,7 +58,7 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
             isNodeHighlighted = routePathLayerStore!.extendedListItemId === node.internalId;
         }
         const isExtendRpToolActive =
-            this.props.toolbarStore!.selectedTool!.toolType === ToolbarToolType.AddNewRoutePathLink;
+            this.props.toolbarStore!.selectedTool!.toolType === ToolbarToolType.ExtendRoutePath;
         const isCopyRpSegmentToolActive =
             this.props.toolbarStore!.selectedTool!.toolType ===
             ToolbarToolType.CopyRoutePathSegmentTool;
@@ -112,7 +112,7 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
     };
 
     private renderStartMarker = () => {
-        if (this.props.toolbarStore!.isSelected(ToolbarToolType.AddNewRoutePathLink)) {
+        if (this.props.toolbarStore!.isSelected(ToolbarToolType.ExtendRoutePath)) {
             // Hiding start marker if we set target node adding new links.
             // Due to the UI otherwise getting messy
             return null;

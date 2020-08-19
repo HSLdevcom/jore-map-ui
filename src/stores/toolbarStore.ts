@@ -131,7 +131,7 @@ class ToolbarStore {
             disabledTools.splice(toolToRemoveIndex, 1);
         };
 
-        const isAddNewRoutePathLinkToolDisabled =
+        const isExtendRoutePathToolDisabled =
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
         const isRemoveRoutePathLinkToolDisabled =
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
@@ -139,9 +139,9 @@ class ToolbarStore {
             (RoutePathStore.routePath && RoutePathStore.routePath.routePathLinks.length === 0) ||
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
 
-        isAddNewRoutePathLinkToolDisabled
-            ? addTool(ToolbarToolType.AddNewRoutePathLink)
-            : removeTool(ToolbarToolType.AddNewRoutePathLink);
+        isExtendRoutePathToolDisabled
+            ? addTool(ToolbarToolType.ExtendRoutePath)
+            : removeTool(ToolbarToolType.ExtendRoutePath);
         isRemoveRoutePathLinkToolDisabled
             ? addTool(ToolbarToolType.RemoveRoutePathLink)
             : removeTool(ToolbarToolType.RemoveRoutePathLink);
