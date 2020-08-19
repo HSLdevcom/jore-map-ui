@@ -629,7 +629,7 @@ class RoutePathStore {
                 selectedTool &&
                 (selectedTool.toolType === ToolbarToolType.ExtendRoutePath ||
                     selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink ||
-                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)
+                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegment)
             ) {
                 ToolbarStore.selectDefaultTool();
             }

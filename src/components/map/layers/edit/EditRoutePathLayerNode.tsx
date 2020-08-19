@@ -61,7 +61,7 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
             this.props.toolbarStore!.selectedTool!.toolType === ToolbarToolType.ExtendRoutePath;
         const isCopyRpSegmentToolActive =
             this.props.toolbarStore!.selectedTool!.toolType ===
-            ToolbarToolType.CopyRoutePathSegmentTool;
+            ToolbarToolType.CopyRoutePathSegment;
         const isHighlightedByRpTool =
             isAtCoherentRoutePathEdge && (isExtendRpToolActive || isCopyRpSegmentToolActive);
         let onNodeClick;

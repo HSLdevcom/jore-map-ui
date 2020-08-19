@@ -32,9 +32,9 @@ class ToolbarLineButtons extends React.Component {
                     <FiDelete />
                 </MapControlButton>
                 <MapControlButton
-                    onClick={this.selectTool(ToolbarToolType.CopyRoutePathSegmentTool)}
-                    isActive={ToolbarStore.isSelected(ToolbarToolType.CopyRoutePathSegmentTool)}
-                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.CopyRoutePathSegmentTool)}
+                    onClick={this.selectTool(ToolbarToolType.CopyRoutePathSegment)}
+                    isActive={ToolbarStore.isSelected(ToolbarToolType.CopyRoutePathSegment)}
+                    isDisabled={ToolbarStore.isDisabled(ToolbarToolType.CopyRoutePathSegment)}
                     label='Kopioi reitinsuunnan segmentti toiselta reitinsuunnalta'
                 >
                     <FiCopy />

@@ -43,7 +43,7 @@ class ToolbarHelp extends Component {
             <div className={s.toolbarHelp}>
                 <div className={s.toolbarHelpHeader}>{selectedTool.toolHelpHeader}</div>
                 {selectedTool.toolHelpText}
-                {selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool &&
+                {selectedTool.toolType === ToolbarToolType.CopyRoutePathSegment &&
                     this.renderCopyRoutePathToolToolHelpContent()}
             </div>
         );

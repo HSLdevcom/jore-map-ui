@@ -146,8 +146,8 @@ class ToolbarStore {
             ? addTool(ToolbarToolType.RemoveRoutePathLink)
             : removeTool(ToolbarToolType.RemoveRoutePathLink);
         isCopyRoutePathSegmentToolDisabled
-            ? addTool(ToolbarToolType.CopyRoutePathSegmentTool)
-            : removeTool(ToolbarToolType.CopyRoutePathSegmentTool);
+            ? addTool(ToolbarToolType.CopyRoutePathSegment)
+            : removeTool(ToolbarToolType.CopyRoutePathSegment);
 
         this._disabledTools = disabledTools;
 

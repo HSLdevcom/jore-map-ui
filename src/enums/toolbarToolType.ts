@@ -2,7 +2,7 @@ enum ToolbarToolType {
     AddNetworkNode = 1,
     AddNetworkLink,
     ExtendRoutePath,
-    CopyRoutePathSegmentTool,
+    CopyRoutePathSegment,
     RemoveRoutePathLink,
     EditNetworkNode,
     Print,
