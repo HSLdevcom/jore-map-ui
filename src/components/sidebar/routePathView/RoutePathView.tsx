@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
-import ReactMoment from 'react-moment';
 import { match } from 'react-router';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
@@ -389,8 +388,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         )}
                     </SidebarHeader>
                     <div className={s.subTopic}>
-                        <ReactMoment date={routePath.startDate} format='DD.MM.YYYY' /> -{' '}
-                        <ReactMoment date={routePath.endDate} format='DD.MM.YYYY' />
+                        {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
+                        {Moment(routePath.endDate).format('DD.MM.YYYY')}
                         <br />
                         Suunta {routePath.direction}: {routePath.originFi} -{' '}
                         {routePath.destinationFi}
