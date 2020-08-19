@@ -1,7 +1,7 @@
 import NodeType from '~/enums/nodeType';
 import { IRoutePathLink } from '~/models';
 
-class RoutePathValidator {
+class RoutePathUtils {
     public static validateRoutePathLinkCoherency = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.every(
             (rpLink, index) =>
@@ -47,4 +47,4 @@ class RoutePathValidator {
     };
 }
 
-export default RoutePathValidator;
+export default RoutePathUtils;
