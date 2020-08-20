@@ -50,11 +50,12 @@ class PopupLayer extends Component<PopupLayerProps> {
             return (
                 <Popup
                     key={`popup-${popup.id}`}
-                    ref={ref => (this.popupRefs[popup.id!] = ref)}
+                    ref={(ref) => (this.popupRefs[popup.id!] = ref)}
                     autoClose={Boolean(popup.isAutoCloseOn)}
                     position={popup.coordinates}
                     className={classnames(
                         s.leafletPopup,
+                        s.fadeAnimation,
                         Boolean(popup.hasOpacity) ? s.hasOpacity : undefined
                     )}
                     closeButton={popup.isCloseButtonVisible}
