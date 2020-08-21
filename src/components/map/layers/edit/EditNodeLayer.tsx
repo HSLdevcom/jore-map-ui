@@ -117,9 +117,15 @@ const EditNodeLayer = inject(
                     nodeType={node.type}
                     transitTypes={node.transitTypes ? node.transitTypes : []}
                     nodeLocationType={nodeLocationType}
-                    nodeId={node.id}
-                    shortId={NodeUtils.getShortId(node)}
-                    hastusId={node.stop ? node.stop.hastusId : undefined}
+                    nodeId={nodeLocationType === 'coordinates' ? node.id : undefined}
+                    shortId={
+                        nodeLocationType === 'coordinates' ? NodeUtils.getShortId(node) : undefined
+                    }
+                    hastusId={
+                        nodeLocationType === 'coordinates' && node.stop
+                            ? node.stop.hastusId
+                            : undefined
+                    }
                     isDraggable={props.loginStore!.hasWriteAccess}
                     isDisabled={false}
                     radius={

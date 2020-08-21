@@ -185,8 +185,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             oldData: oldLink,
             model: 'link',
         };
+        const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt models={[saveModel]} />,
+            content: <SavePrompt savePromptSections={[savePromptSection]} />,
             onConfirm: () => {
                 this.save();
             },

@@ -147,7 +147,7 @@ class RouteActiveSchedules extends React.Component<IRouteActiveSchedulesProps> {
         });
         return (
             <div className={s.routeActiveSchedules}>
-                {confirmMessage && <div>{confirmMessage}</div>}
+                {confirmMessage && <div className={s.confirmMessage}>{confirmMessage}</div>}
                 {header && (
                     <div className={s.subSection}>
                         <div className={s.header}>Reitti {header}</div>
@@ -183,7 +183,9 @@ class RouteActiveSchedules extends React.Component<IRouteActiveSchedulesProps> {
                     </div>
                 )}
                 {activeSchedules.length === 0 && (
-                    <div>Reitille ei löytynyt voimassa olevia tai voimaanastuvia aikatauluja.</div>
+                    <div className={s.noActiveSchedulesMessage}>
+                        Reitille ei löytynyt voimassa olevia tai voimaanastuvia aikatauluja.
+                    </div>
                 )}
             </div>
         );

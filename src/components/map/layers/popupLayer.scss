@@ -18,5 +18,20 @@
 }
 
 .hasOpacity {
-    opacity: 0.85 !important;
+    :global(.leaflet-popup-content-wrapper) {
+        opacity: 0.8;
+    }
+    :global(.leaflet-popup-tip-container) {
+        opacity: 0.8;
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+}
+
+.fadeAnimation {
+    animation: fade 0.3s;
 }

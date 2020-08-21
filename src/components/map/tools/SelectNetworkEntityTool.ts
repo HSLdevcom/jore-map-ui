@@ -4,9 +4,6 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import EventHelper from '~/helpers/EventHelper';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
@@ -97,15 +94,6 @@ class SelectNetworkEntityTool implements BaseTool {
         );
 
         if (nodes.length === 0 && links.length === 0) return;
-        if (nodes.length === 1 && links.length === 0) {
-            _redirectToNode(nodes[0]);
-            return;
-        }
-        if (links.length === 1 && nodes.length === 0) {
-            _redirectToLink(links[0]);
-            return;
-        }
-
         const popupData: ISelectNetworkEntityPopupData = {
             nodes,
             links,
@@ -121,24 +109,5 @@ class SelectNetworkEntityTool implements BaseTool {
         PopupStore.showPopup(popup);
     };
 }
-
-const _redirectToNode = (node: INodeMapHighlight) => {
-    const nodeViewLink = routeBuilder.to(SubSites.node).toTarget(':id', node.id).toLink();
-    navigator.goTo({
-        link: nodeViewLink,
-        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${node.id}? Tallentamattomat muutokset kumotaan.`,
-    });
-};
-
-const _redirectToLink = (link: ILinkMapHighlight) => {
-    const linkViewLink = routeBuilder
-        .to(SubSites.link)
-        .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
-        .toLink();
-    navigator.goTo({
-        link: linkViewLink,
-        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`,
-    });
-};
 
 export default SelectNetworkEntityTool;
