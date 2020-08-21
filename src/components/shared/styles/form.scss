@@ -32,7 +32,7 @@ $textFieldLineHeight: 25px;
 
 .inputLabel {
     color: $labelColor;
-    font-weight: bold;
+    font-weight: 500;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
@@ -41,7 +41,7 @@ $textFieldLineHeight: 25px;
 
 .darkerInputLabel {
     color: $darkLabelColor;
-    font-weight: bold;
+    font-weight: 500;
     font-size: $smallFontSize;
     white-space: nowrap;
     width: 100%;
