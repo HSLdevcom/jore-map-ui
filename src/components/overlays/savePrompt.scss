@@ -10,18 +10,17 @@
 
     .topic {
         color: $fontColorDefault;
-        font-weight: bold;
-        font-size: 1.1rem;
+        font-size: $largeFontSize;
+        font-weight: 500;
         white-space: nowrap;
         padding: 10px;
-        border-bottom: 1px solid $borderLightGrey;
         text-align: center;
     }
 
     .subTopic {
         color: $fontColorDefault;
-        font-weight: bold;
         font-size: 1rem;
+        font-weight: 500;
         white-space: normal;
         padding-bottom: 5px;
         text-align: center;
@@ -41,20 +40,25 @@
         max-height: 500px;
         overflow-y: auto;
         padding: 5px 15px 5px 15px;
+        font-size: $smallFontSize;
+
+        .sectionTopic {
+            font-size: $mediumFontSize;
+            font-weight: 500;
+            padding: 5px 0px 5px 0px;
+        }
     }
 
     .savePromptRow {
-        padding: 2px 0px 2px 0px;
+        padding: 4px 0px 4px 0px;
 
         .inputLabel {
-            text-align: center;
+            font-weight: 500;
+            color: $fontColorDefault;
         }
 
         .attributeWrapper {
             display: flex;
-            flex-grow: 1;
-            width: 50%;
-            align-items: center;
 
             .oldAttribute {
                 display: inline-block;
@@ -72,9 +76,10 @@
         }
 
         .arrowRightWrapper {
-            padding-right: 10px;
+            display: flex;
             margin-top: auto;
             margin-bottom: auto;
+            padding: 0px 3px 0px 3px;
         }
     }
     .removedItemWrapper {

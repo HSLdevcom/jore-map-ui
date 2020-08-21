@@ -321,8 +321,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             oldData: oldRoutePath,
             model: 'routePath',
         };
+        const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt models={[saveModel]} />,
+            content: <SavePrompt savePromptSections={[savePromptSection]} />,
             onConfirm: () => {
                 this.save();
             },

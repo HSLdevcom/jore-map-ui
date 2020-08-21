@@ -322,7 +322,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const confirmStore = this.props.confirmStore;
         const routeId = this.props.routeId;
         const activeSchedules: ISchedule[] = await ScheduleService.fetchActiveSchedules(routeId);
-        const saveModels: ISaveModel[] = [];
+        const modifiedSaveModels: ISaveModel[] = [];
+        const copiedSaveModels: ISaveModel[] = [];
         this.props.routePathMassEditStore!.massEditRoutePaths!.forEach((massEditRp) => {
             const newRoutePath = _.cloneDeep(massEditRp.routePath);
             delete newRoutePath.internalId;
@@ -334,18 +335,36 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     delete oldRoutePath['endDate'];
                 }
             }
-            saveModels.push({
+            const saveModel: ISaveModel = {
                 type: 'saveModel',
                 newData: newRoutePath,
                 oldData: oldRoutePath ? oldRoutePath : {},
                 subTopic: `${newRoutePath.originFi} - ${newRoutePath.destinationFi}`,
                 model: 'routePath',
-            });
+            };
+            if (massEditRp.isNew) {
+                copiedSaveModels.push(saveModel);
+            } else {
+                modifiedSaveModels.push(saveModel);
+            }
         });
+        const savePromptSections = [];
+        if (modifiedSaveModels.length > 0) {
+            savePromptSections.push({
+                models: modifiedSaveModels,
+                sectionTopic: 'Muokatut reitinsuunnat',
+            });
+        }
+        if (copiedSaveModels.length > 0) {
+            savePromptSections.push({
+                models: copiedSaveModels,
+                sectionTopic: 'Kopioidut reitinsuunnat',
+            });
+        }
         confirmStore!.openConfirm({
             content: (
                 <div>
-                    <SavePrompt models={saveModels} />
+                    <SavePrompt savePromptSections={savePromptSections} />
                     <div className={s.sectionDivider} />
                     <div className={s.routeActiveSchedulesWrapper}>
                         <RouteActiveSchedules
