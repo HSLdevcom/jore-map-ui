@@ -1,4 +1,4 @@
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 
 const KEYCODES = {
     enter: 'Enter',
@@ -17,19 +17,19 @@ class KeyEventHandler {
     handleKeyDownEvent = (event: KeyboardEvent) => {
         switch (event.code) {
             case KEYCODES.enter: {
-                EventHelper.trigger('enter');
+                EventListener.trigger('enter');
                 break;
             }
             case KEYCODES.arrowUp: {
-                EventHelper.trigger('arrowUp');
+                EventListener.trigger('arrowUp');
                 break;
             }
             case KEYCODES.arrowDown: {
-                EventHelper.trigger('arrowDown');
+                EventListener.trigger('arrowDown');
                 break;
             }
             case KEYCODES.escape: {
-                EventHelper.trigger('escape');
+                EventListener.trigger('escape');
                 break;
             }
         }
@@ -38,12 +38,12 @@ class KeyEventHandler {
         if (event.ctrlKey) {
             switch (event.code) {
                 case KEYCODES.Z: {
-                    EventHelper.trigger('undo');
+                    EventListener.trigger('undo');
                     event.preventDefault(); // to disable native undo event
                     break;
                 }
                 case KEYCODES.Y: {
-                    EventHelper.trigger('redo');
+                    EventListener.trigger('redo');
                     event.preventDefault(); // to disable native undo event
                     break;
                 }
@@ -52,10 +52,10 @@ class KeyEventHandler {
         // Macbook
         else if (event.metaKey && event.code === KEYCODES.Z) {
             if (event.shiftKey) {
-                EventHelper.trigger('redo');
+                EventListener.trigger('redo');
                 event.preventDefault(); // to disable native undo event
             } else {
-                EventHelper.trigger('undo');
+                EventListener.trigger('undo');
                 event.preventDefault(); // to disable native undo event
             }
         }

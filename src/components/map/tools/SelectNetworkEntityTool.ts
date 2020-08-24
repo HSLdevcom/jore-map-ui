@@ -1,7 +1,7 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 import LinkService from '~/services/linkService';
@@ -16,10 +16,10 @@ import BaseTool from './BaseTool';
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarToolType.SelectNetworkEntity;
     public activate() {
-        EventHelper.on('mapClick', this.onMapClick);
+        EventListener.on('mapClick', this.onMapClick);
     }
     public deactivate() {
-        EventHelper.off('mapClick', this.onMapClick);
+        EventListener.off('mapClick', this.onMapClick);
     }
 
     private onMapClick = async (clickEvent: any) => {

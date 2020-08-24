@@ -1,10 +1,10 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, {
+import EventListener, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams,
-} from '~/helpers/EventHelper';
+} from '~/helpers/EventListener';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
@@ -71,7 +71,7 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
                     node,
                     linkOrderNumber,
                 };
-                EventHelper.trigger('editRoutePathLayerNodeClick', clickParams);
+                EventListener.trigger('editRoutePathLayerNodeClick', clickParams);
             };
         } else {
             onNodeClick = () => {
@@ -80,7 +80,7 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
                     : this.props.setExtendedListItem(node.internalId);
 
                 const clickParams: INodeClickParams = { nodeId: node.id };
-                EventHelper.trigger('nodeClick', clickParams);
+                EventListener.trigger('nodeClick', clickParams);
             };
         }
 

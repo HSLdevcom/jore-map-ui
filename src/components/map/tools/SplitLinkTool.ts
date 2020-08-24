@@ -1,7 +1,7 @@
 import SplitConfirmContent from '~/components/sidebar/splitLinkView/SplitConfirmContent';
 import NodeType from '~/enums/nodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -22,11 +22,11 @@ class SplitLinkTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.unusedNode);
-        EventHelper.on('networkNodeClick', this.openNodeConfirm);
+        EventListener.on('networkNodeClick', this.openNodeConfirm);
     }
 
     public deactivate() {
-        EventHelper.off('networkNodeClick', this.openNodeConfirm);
+        EventListener.off('networkNodeClick', this.openNodeConfirm);
     }
 
     navigateToSplitLink = (nodeId: string) => {

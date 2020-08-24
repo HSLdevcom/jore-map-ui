@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import NodeType from '~/enums/nodeType';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
@@ -66,13 +66,13 @@ const EditNodeLayer = inject(
             map.on('editable:vertex:deleted', (data: any) => {
                 updateLinkGeometry(data.layer._leaflet_id);
             });
-            EventHelper.on('undo', props.nodeStore!.undo);
-            EventHelper.on('redo', props.nodeStore!.redo);
+            EventListener.on('undo', props.nodeStore!.undo);
+            EventListener.on('redo', props.nodeStore!.redo);
             return () => {
                 map.off('editable:vertex:dragend');
                 map.off('editable:vertex:deleted');
-                EventHelper.off('undo', props.nodeStore!.undo);
-                EventHelper.off('redo', props.nodeStore!.redo);
+                EventListener.off('undo', props.nodeStore!.undo);
+                EventListener.off('redo', props.nodeStore!.redo);
             };
         }, [updateLinkGeometry, props.leaflet.map]);
 
@@ -108,7 +108,7 @@ const EditNodeLayer = inject(
 
             const onNodeClick = () => {
                 const clickParams: INodeClickParams = { nodeId: node.id };
-                EventHelper.trigger('nodeClick', clickParams);
+                EventListener.trigger('nodeClick', clickParams);
             };
             return (
                 <NodeMarker

@@ -1,8 +1,8 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, {
+import EventListener, {
     IEditRoutePathLayerNodeClickParams,
     INodeClickParams,
-} from '~/helpers/EventHelper';
+} from '~/helpers/EventListener';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
@@ -20,15 +20,15 @@ class CopyRoutePathSegmentTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.on('nodeClick', this.onNodeClick);
-        EventHelper.on('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
+        EventListener.on('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.on('nodeClick', this.onNodeClick);
+        EventListener.on('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
     }
     public deactivate() {
-        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.off('nodeClick', this.onNodeClick);
-        EventHelper.off('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
+        EventListener.off('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.off('nodeClick', this.onNodeClick);
+        EventListener.off('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathCopySegmentStore.clear();
     }
 

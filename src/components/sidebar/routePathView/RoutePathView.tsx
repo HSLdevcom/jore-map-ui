@@ -13,7 +13,7 @@ import constants from '~/constants/constants';
 import NodeSize from '~/enums/nodeSize';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import IViaShieldName from '~/models/IViaShieldName';
 import navigator from '~/routing/navigator';
@@ -92,8 +92,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     componentDidMount() {
         this._isMounted = true;
-        EventHelper.on('undo', this.undo);
-        EventHelper.on('redo', this.redo);
+        EventListener.on('undo', this.undo);
+        EventListener.on('redo', this.redo);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -103,8 +103,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.toolbarStore!.selectTool(null);
         this.props.networkStore!.setNodeSize(NodeSize.SMALL);
         this.props.routePathStore!.clear();
-        EventHelper.off('undo', this.undo);
-        EventHelper.off('redo', this.redo);
+        EventListener.off('undo', this.undo);
+        EventListener.off('redo', this.redo);
     }
 
     private undo = () => {

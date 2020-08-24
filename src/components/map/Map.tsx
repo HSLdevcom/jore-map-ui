@@ -6,7 +6,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
@@ -94,7 +94,7 @@ class LeafletMap extends React.Component<IMapProps> {
     private enableMapClickListener = () => {
         const map = this.getMap();
         map!.on('click', (e: L.LeafletEvent) => {
-            EventHelper.trigger('mapClick', e);
+            EventListener.trigger('mapClick', e);
         });
     };
 

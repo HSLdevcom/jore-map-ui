@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
@@ -103,7 +103,7 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
     };
 
     private handleOnLeftClick = (nodeId: string) => (e: L.LeafletEvent) => {
-        EventHelper.trigger('mapClick', e);
+        EventListener.trigger('mapClick', e);
         this.props.onClick(nodeId);
     };
 

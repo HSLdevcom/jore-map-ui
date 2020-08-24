@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import NodeSize from '~/enums/nodeSize';
-import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventHelper';
+import EventListener, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventListener';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
@@ -81,7 +81,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink,
             };
-            EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
+            EventListener.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
 
         return (
@@ -145,7 +145,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink,
             };
-            EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
+            EventListener.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
         return (
             <Polyline

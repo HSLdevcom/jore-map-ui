@@ -17,7 +17,7 @@ type eventName =
     | 'editRoutePathLayerNodeClick'
     | 'editRoutePathNeighborLinkClick';
 
-class EventHelper {
+class EventListener {
     public trigger(eventName: eventName, data?: any) {
         const event = new CustomEvent(eventName, {
             bubbles: true,
@@ -53,7 +53,7 @@ interface IEditRoutePathNeighborLinkClickParams {
     neighborLink: INeighborLink;
 }
 
-export default new EventHelper();
+export default new EventListener();
 
 export {
     INodeClickParams,

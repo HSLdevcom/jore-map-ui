@@ -1,10 +1,10 @@
 import NodeType from '~/enums/nodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, {
+import EventListener, {
     IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
     INodeClickParams,
-} from '~/helpers/EventHelper';
+} from '~/helpers/EventListener';
 import NodeService from '~/services/nodeService';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
@@ -23,18 +23,18 @@ class ExtendRoutePathTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventHelper.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventListener.on('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.on('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventListener.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         RoutePathStore.setIsEditingDisabled(false);
-        EventHelper.on('escape', this.onEscapePress);
+        EventListener.on('escape', this.onEscapePress);
     }
     public deactivate() {
         this.reset();
-        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventHelper.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
-        EventHelper.off('escape', this.onEscapePress);
+        EventListener.off('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.off('editRoutePathLayerNodeClick', this.onNodeClick);
+        EventListener.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventListener.off('escape', this.onEscapePress);
     }
 
     private reset() {

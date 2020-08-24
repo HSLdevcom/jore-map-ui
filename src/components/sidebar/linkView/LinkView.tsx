@@ -10,7 +10,7 @@ import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import LinkFactory from '~/factories/linkFactory';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { ILink, INode } from '~/models';
 import IRoutePath from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
@@ -67,7 +67,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             await this.initExistingLink();
         }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
-        EventHelper.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
+        EventListener.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     async componentDidUpdate(prevProps: ILinkViewProps) {
@@ -82,7 +82,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     componentWillUnmount() {
         this.props.linkStore!.clear();
-        EventHelper.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
+        EventListener.off('geometryChange', () =>
+            this.props.linkStore!.setIsEditingDisabled(false)
+        );
     }
 
     private initExistingLink = async () => {
