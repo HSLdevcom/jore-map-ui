@@ -1,5 +1,5 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -22,13 +22,13 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.unusedNode);
         NetworkStore.showMapLayer(MapLayer.link);
         NetworkStore.showMapLayer(MapLayer.unusedLink);
-        EventHelper.on('nodeClick', this.onNodeClick);
-        EventHelper.on('networkNodeClick', this.onNodeClick);
+        EventListener.on('nodeClick', this.onNodeClick);
+        EventListener.on('networkNodeClick', this.onNodeClick);
     }
     public deactivate() {
         this.resetTool();
-        EventHelper.off('nodeClick', this.onNodeClick);
-        EventHelper.off('networkNodeClick', this.onNodeClick);
+        EventListener.off('nodeClick', this.onNodeClick);
+        EventListener.off('networkNodeClick', this.onNodeClick);
     }
     private onNodeClick = async (clickEvent: CustomEvent) => {
         const params: INodeClickParams = clickEvent.detail;

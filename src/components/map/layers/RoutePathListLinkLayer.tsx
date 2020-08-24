@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import { INode, IRoutePath } from '~/models';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
@@ -88,7 +88,7 @@ class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
         const routePathLinks = this.props.routePath.routePathLinks;
         const triggerNodeClick = (nodeId: string) => () => {
             const clickParams: INodeClickParams = { nodeId };
-            EventHelper.trigger('nodeClick', clickParams);
+            EventListener.trigger('nodeClick', clickParams);
         };
 
         const nodes = routePathLinks.map((routePathLink, index) => {

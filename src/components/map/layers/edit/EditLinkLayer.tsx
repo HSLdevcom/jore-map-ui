@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { useCallback, useEffect, useState } from 'react';
 import { withLeaflet, Marker as LeafletMarker } from 'react-leaflet';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import { ILink, INode } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { LoginStore } from '~/stores/loginStore';
@@ -54,13 +54,13 @@ const EditLinkLayer = inject(
             map.on('editable:vertex:deleted', () => {
                 updateLinkGeometry();
             });
-            EventHelper.on('undo', props.linkStore!.undo);
-            EventHelper.on('redo', props.linkStore!.redo);
+            EventListener.on('undo', props.linkStore!.undo);
+            EventListener.on('redo', props.linkStore!.redo);
             return () => {
                 map.off('editable:vertex:dragend');
                 map.off('editable:vertex:deleted');
-                EventHelper.off('undo', props.linkStore!.undo);
-                EventHelper.off('redo', props.linkStore!.redo);
+                EventListener.off('undo', props.linkStore!.undo);
+                EventListener.off('redo', props.linkStore!.redo);
             };
         }, [updateLinkGeometry, props.leaflet.map]);
 
@@ -125,7 +125,7 @@ const EditLinkLayer = inject(
             if (!node) return null;
             const onNodeClick = () => {
                 const clickParams: INodeClickParams = { nodeId: node.id };
-                EventHelper.trigger('nodeClick', clickParams);
+                EventListener.trigger('nodeClick', clickParams);
             };
 
             return (

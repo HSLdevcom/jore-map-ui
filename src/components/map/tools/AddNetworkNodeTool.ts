@@ -1,5 +1,5 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -17,12 +17,12 @@ class AddNetworkNodeTool implements BaseTool {
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventHelper.on('mapClick', this.onMapClick);
+        EventListener.on('mapClick', this.onMapClick);
         MapStore.setMapCursor('crosshair');
     }
 
     public deactivate() {
-        EventHelper.off('mapClick', this.onMapClick);
+        EventListener.off('mapClick', this.onMapClick);
         MapStore.setMapCursor('');
     }
 
