@@ -50,6 +50,7 @@ interface ILinkViewState {
 @inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
+    private _isMounted: boolean;
     private existingTransitTypes: TransitType[] = [];
 
     constructor(props: ILinkViewProps) {
@@ -60,7 +61,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         };
     }
 
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
     async componentDidMount() {
+        this._isMounted = true;
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
@@ -85,10 +93,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         EventListener.off('geometryChange', () =>
             this.props.linkStore!.setIsEditingDisabled(false)
         );
+        this._isMounted = false;
     }
 
     private initExistingLink = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
@@ -117,13 +126,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 link.endNode.id,
                 link.transitType!
             );
-            this.setState({ routePathsUsingLink: routePaths });
+            this._setState({ routePathsUsingLink: routePaths });
         }
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
     };
 
     private initNewLink = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId] = this.props.match!.params.id.split(',');
@@ -144,7 +153,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             this.existingTransitTypes = existingLinks.map((link) => link.transitType!);
         }
 
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
     };
 
     private createNewLink = (startNode: INode, endNode: INode) => {
@@ -159,7 +168,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     };
 
     private save = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
@@ -173,7 +182,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            this.setState({ isLoading: false });
+            this._setState({ isLoading: false });
         }
     };
 
