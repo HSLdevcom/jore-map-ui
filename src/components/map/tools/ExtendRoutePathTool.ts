@@ -89,8 +89,16 @@ class ExtendRoutePathTool implements BaseTool {
             linkOrderNumber
         );
         if (queryResult) {
-            RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
-            RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
+            // Node id to fetch neighborLinks from might not exist (if user has quickly done undo for example)
+            const isNodeIdFound = Boolean(
+                RoutePathStore.routePath!.routePathLinks.find(
+                    (rpLink) => rpLink.startNode.id === nodeId || rpLink.endNode.id === nodeId
+                )
+            );
+            if (isNodeIdFound) {
+                RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
+                RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
+            }
         }
     };
 }
