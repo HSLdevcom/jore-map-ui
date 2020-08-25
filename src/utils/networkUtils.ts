@@ -1,10 +1,12 @@
 import { toJS } from 'mobx';
 import Moment from 'moment';
 import TransitType from '~/enums/transitType';
+import { INeighborLink } from '~/models';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 import RoutePathLayerListStore from '~/stores/routePathLayerListStore';
+import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
 
 type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
@@ -91,7 +93,8 @@ const isNetworkNodeHidden = ({
         isNodeOpenInNodeView(nodeId) ||
         isNodeOpenInLinkView(nodeId) ||
         isNodeOpenInRoutePathView(nodeId) ||
-        isNodeOpenInRouteListView(nodeId)
+        isNodeOpenInRouteListView(nodeId) ||
+        isNodeOpenInNeighborLinkLayer(nodeId)
     ) {
         return true;
     }
@@ -134,6 +137,16 @@ const isNodeOpenInRoutePathView = (nodeId: string) => {
 
 const isNodeOpenInRouteListView = (nodeId: string) => {
     return RoutePathLayerListStore.isNodeFound(nodeId);
+};
+
+const isNodeOpenInNeighborLinkLayer = (nodeId: string) => {
+    return Boolean(
+        RoutePathLayerStore.neighborLinks.find(
+            (link: INeighborLink) =>
+                link.routePathLink.startNode.id === nodeId ||
+                link.routePathLink.endNode.id === nodeId
+        )
+    );
 };
 
 const _parseDateRangesString = (dateRangesString?: string) => {
