@@ -12,11 +12,14 @@ import RoutePathLayerStore, { NeighborToAddType } from '~/stores/routePathLayerS
 import RoutePathStore from '~/stores/routePathStore';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectFirstNode' | 'selectNodeToExtend' | 'selectNeighborLink';
+
 /**
  * Tool for creating new routePath
  */
 class ExtendRoutePathTool implements BaseTool {
     public toolType = ToolbarToolType.ExtendRoutePath;
+    public phase: toolPhase | null = null;
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
     public toolHelpText =
         'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista virheitä tai punaisia solmuja klikkailemalla. Solmun sisällä oleva numero kertoo, kuinka monta reitinsuuntaa tällä hetkellä käyttää kyseistä solmua.';

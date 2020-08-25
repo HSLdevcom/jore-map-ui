@@ -10,13 +10,16 @@ import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectStartNode' | 'selectEndNode';
+
 class AddNetworkLinkTool implements BaseTool {
-    private startNodeId: string | null = null;
-    private endNodeId: string | null = null;
     public toolType = ToolbarToolType.AddNetworkLink;
+    public phase: toolPhase | null = null;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
         'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
+    private startNodeId: string | null = null;
+    private endNodeId: string | null = null;
     public activate() {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.unusedNode);

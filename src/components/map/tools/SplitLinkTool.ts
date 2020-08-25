@@ -14,8 +14,11 @@ import ToolbarStore from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectNodeToSplitLinkWith';
+
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarToolType.SplitLink;
+    public phase: toolPhase | null = null;
     public toolHelpHeader = 'Jaa linkki solmulla';
     public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
 

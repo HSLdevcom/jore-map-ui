@@ -11,8 +11,11 @@ import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectStartNode' | 'selectEndNode' | 'selectRoutePathToCopy';
+
 class CopyRoutePathSegmentTool implements BaseTool {
     public toolType = ToolbarToolType.CopyRoutePathSegment;
+    public phase: toolPhase | null = null;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
     public toolHelpText =
         'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';

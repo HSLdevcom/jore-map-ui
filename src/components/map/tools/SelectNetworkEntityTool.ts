@@ -13,8 +13,11 @@ import { isNetworkLinkHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectNetworkEntity';
+
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarToolType.SelectNetworkEntity;
+    public phase: toolPhase | null = null;
     public activate() {
         EventListener.on('mapClick', this.onMapClick);
     }

@@ -9,8 +9,11 @@ import ToolbarStore from '~/stores/toolbarStore';
 import { roundLatLng } from '~/utils/geomUtils';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'setNodeLocation';
+
 class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarToolType.AddNetworkNode;
+    public phase: toolPhase | null = null;
     public toolHelpHeader = 'Luo uusi solmu';
     public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
 
