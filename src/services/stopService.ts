@@ -137,6 +137,16 @@ class StopService {
     public static updateHastusArea = async (hastusAreaSaveModel: IHastusAreaSaveModel) => {
         await HttpUtils.updateObject(EndpointPath.HASTUS_AREA, hastusAreaSaveModel);
     };
+
+    public static fetchRiseCount = async ({ nodeId }: { nodeId: string }): Promise<number> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getArmamentInfoQuery(),
+            variables: { nodeId },
+        });
+        return queryResult && queryResult.data && queryResult.data.node
+            ? queryResult.data.node.nousijat
+            : 0;
+    };
 }
 
 const _getAvailableShortIds = (
