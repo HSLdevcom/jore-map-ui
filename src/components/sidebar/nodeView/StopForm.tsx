@@ -7,6 +7,7 @@ import { match } from 'react-router';
 import { Button, Dropdown } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
+import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import { INode, IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
@@ -15,7 +16,7 @@ import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
-import { IStopSectionItem } from '~/services/stopService';
+import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ModalStore } from '~/stores/modalStore';
 import { NodeStore } from '~/stores/nodeStore';
@@ -44,6 +45,11 @@ interface IStopFormProps {
     modalStore?: ModalStore;
 }
 
+interface IStopFormState {
+    isRiseCountLoading: boolean;
+    riseCount: number;
+}
+
 // Key: node id beginning, value: short id options array
 const SHORT_ID_OPTIONS_MAP = {
     1: ['H', 'XH'],
@@ -65,7 +71,22 @@ const SHORT_ID_OPTIONS_MAP = {
 
 @inject('codeListStore', 'nodeStore', 'modalStore')
 @observer
-class StopForm extends Component<IStopFormProps> {
+class StopForm extends Component<IStopFormProps, IStopFormState> {
+    state = {
+        isRiseCountLoading: true,
+        riseCount: 0,
+    };
+    async componentDidMount() {
+        this.setState({
+            isRiseCountLoading: true,
+        });
+        const riseCount = await StopService.fetchRiseCount({ nodeId: this.props.node.id });
+        this.setState({
+            riseCount,
+            isRiseCountLoading: false,
+        });
+    }
+
     private createStopAreaDropdownItems = (stopAreas: IStopArea[]): IDropdownItem[] => {
         return stopAreas.map((stopArea: IStopArea) => {
             const item: IDropdownItem = {
@@ -483,6 +504,13 @@ class StopForm extends Component<IStopFormProps> {
                                 </Button>
                             </>
                         )}
+                    </div>
+                    <div className={s.flexRow}>
+                        <TextContainer
+                            isLoading={this.state.isRiseCountLoading}
+                            label='NOUSIJAMÄÄRÄ'
+                            value={this.state.riseCount}
+                        />
                     </div>
                 </div>
             </div>

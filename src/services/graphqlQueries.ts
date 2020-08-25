@@ -282,6 +282,16 @@ const getAllStopsQuery = () => {
     `;
 };
 
+const getArmamentInfoQuery = () => {
+    return gql`
+        query getArmamentInfoQuery($nodeId: String!) {
+            node: varustelutiedotUusiByTunnus(tunnus: $nodeId) {
+                nousijat
+            }
+        }
+    `;
+};
+
 const getAllCodeLists = () => {
     return gql`
         query getAllCodeLists {
@@ -786,6 +796,7 @@ export default {
     getNodeQuery,
     getAllNodesQuery,
     getAllStopsQuery,
+    getArmamentInfoQuery,
     getLinksByEndNodeQuery,
     getAllCodeLists,
     getRoutePathsUsingLinkFromDate,
