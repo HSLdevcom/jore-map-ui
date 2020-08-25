@@ -13,21 +13,25 @@ type toolPhase = 'setNodeLocation';
 
 class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarToolType.AddNetworkNode;
-    public phase: toolPhase | null = null;
+    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Luo uusi solmu';
     public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
 
-    public activate() {
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('mapClick', this.onMapClick);
         MapStore.setMapCursor('crosshair');
-    }
+    };
 
-    public deactivate() {
+    public deactivate = () => {
         EventListener.off('mapClick', this.onMapClick);
         MapStore.setMapCursor('');
-    }
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        this.toolPhase = toolPhase;
+    };
 
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);

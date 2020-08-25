@@ -19,11 +19,12 @@ type toolPhase = 'selectFirstNode' | 'selectNodeToExtend' | 'selectNeighborLink'
  */
 class ExtendRoutePathTool implements BaseTool {
     public toolType = ToolbarToolType.ExtendRoutePath;
-    public phase: toolPhase | null = null;
+    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
     public toolHelpText =
         'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista virheitä tai punaisia solmuja klikkailemalla. Solmun sisällä oleva numero kertoo, kuinka monta reitinsuuntaa tällä hetkellä käyttää kyseistä solmua.';
-    public activate() {
+
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
@@ -31,14 +32,19 @@ class ExtendRoutePathTool implements BaseTool {
         EventListener.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         RoutePathStore.setIsEditingDisabled(false);
         EventListener.on('escape', this.onEscapePress);
-    }
-    public deactivate() {
+    };
+
+    public deactivate = () => {
         this.reset();
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('editRoutePathLayerNodeClick', this.onNodeClick);
         EventListener.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
         EventListener.off('escape', this.onEscapePress);
-    }
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        this.toolPhase = toolPhase;
+    };
 
     private reset() {
         RoutePathLayerStore.setNeighborLinks([]);

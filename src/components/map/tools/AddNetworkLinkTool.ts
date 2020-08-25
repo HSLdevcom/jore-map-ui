@@ -14,25 +14,32 @@ type toolPhase = 'selectStartNode' | 'selectEndNode';
 
 class AddNetworkLinkTool implements BaseTool {
     public toolType = ToolbarToolType.AddNetworkLink;
-    public phase: toolPhase | null = null;
+    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
         'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
     private startNodeId: string | null = null;
     private endNodeId: string | null = null;
-    public activate() {
+
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.unusedNode);
         NetworkStore.showMapLayer(MapLayer.link);
         NetworkStore.showMapLayer(MapLayer.unusedLink);
         EventListener.on('nodeClick', this.onNodeClick);
         EventListener.on('networkNodeClick', this.onNodeClick);
-    }
-    public deactivate() {
+    };
+
+    public deactivate = () => {
         this.resetTool();
         EventListener.off('nodeClick', this.onNodeClick);
         EventListener.off('networkNodeClick', this.onNodeClick);
-    }
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        this.toolPhase = toolPhase;
+    };
+
     private onNodeClick = async (clickEvent: CustomEvent) => {
         const params: INodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(params.nodeId);

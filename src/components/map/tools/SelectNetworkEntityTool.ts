@@ -17,13 +17,19 @@ type toolPhase = 'selectNetworkEntity';
 
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarToolType.SelectNetworkEntity;
-    public phase: toolPhase | null = null;
-    public activate() {
+    public toolPhase: toolPhase | null = null;
+
+    public activate = () => {
         EventListener.on('mapClick', this.onMapClick);
-    }
-    public deactivate() {
+    };
+
+    public deactivate = () => {
         EventListener.off('mapClick', this.onMapClick);
-    }
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        this.toolPhase = toolPhase;
+    };
 
     private onMapClick = async (clickEvent: any) => {
         const zoomLevel = MapStore.zoom;

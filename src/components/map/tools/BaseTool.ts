@@ -2,10 +2,11 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 
 export default interface BaseTool {
     toolType: ToolbarToolType;
-    phase: string | null;
-    activate: Function;
-    deactivate: Function;
-    toolHelpHeader?: string;
-    toolHelpText?: string;
-    onRoutePathLinkClick?: Function;
+    toolPhase: string | null;
+    toolHelpHeader?: string; // TODO: remove
+    toolHelpText?: string; // TODO: remove
+    activate: () => void;
+    deactivate: () => void;
+    setToolPhase: (phase: string | null) => void;
+    onRoutePathLinkClick?: Function; // TODO: remove?
 }

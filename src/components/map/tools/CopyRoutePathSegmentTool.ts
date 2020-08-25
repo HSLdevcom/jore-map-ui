@@ -15,25 +15,30 @@ type toolPhase = 'selectStartNode' | 'selectEndNode' | 'selectRoutePathToCopy';
 
 class CopyRoutePathSegmentTool implements BaseTool {
     public toolType = ToolbarToolType.CopyRoutePathSegment;
-    public phase: toolPhase | null = null;
+    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
     public toolHelpText =
         'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';
 
-    public activate() {
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
         EventListener.on('nodeClick', this.onNodeClick);
         EventListener.on('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
-    }
-    public deactivate() {
+    };
+
+    public deactivate = () => {
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('nodeClick', this.onNodeClick);
         EventListener.off('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathCopySegmentStore.clear();
-    }
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        this.toolPhase = toolPhase;
+    };
 
     private onNodeClick = (clickEvent: CustomEvent) => {
         const params: INodeClickParams = clickEvent.detail;
