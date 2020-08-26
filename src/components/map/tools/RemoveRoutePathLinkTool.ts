@@ -11,13 +11,20 @@ type toolPhase = 'selectRoutePathLinkToRemove';
 class RemoveRoutePathLinkTool implements BaseTool {
     public toolType = ToolbarToolType.RemoveRoutePathLink;
     public toolHelpHeader = 'Poista reitin linkki';
-    public toolHelpText = 'Poista reitin linkki klikkaamalla sitä kartalta.';
+    public toolHelpPhasesMap = {
+        selectRoutePathLinkToRemove: {
+            phaseHelpText: 'Poista reitin linkki klikkaamalla sitä kartalta.',
+        },
+    };
 
     public activate = () => {
         RoutePathStore.setIsEditingDisabled(false);
+        this.setToolPhase('selectRoutePathLinkToRemove');
     };
 
-    public deactivate = () => {};
+    public deactivate = () => {
+        this.setToolPhase(null);
+    };
 
     public getToolPhase = () => {
         return ToolbarStore.toolPhase;

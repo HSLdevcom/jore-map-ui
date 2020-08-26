@@ -17,6 +17,16 @@ class AddNetworkLinkTool implements BaseTool {
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
         'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
+    public toolHelpPhasesMap = {
+        selectStartNode: {
+            phaseTopic: 'Alkusolmun valinta',
+            phaseHelpText: 'Aloita linkin luonti valitsemalla linkin alkusolmu kartalta.',
+        },
+        selectEndNode: {
+            phaseTopic: 'Loppusolmun valinta',
+            phaseHelpText: 'Muodosta linkki valitsemalla linkin loppusolmu kartalta.',
+        },
+    };
     private startNodeId: string | null = null;
     private endNodeId: string | null = null;
 
@@ -27,12 +37,14 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.unusedLink);
         EventListener.on('nodeClick', this.onNodeClick);
         EventListener.on('networkNodeClick', this.onNodeClick);
+        this.setToolPhase('selectStartNode');
     };
 
     public deactivate = () => {
         this.resetTool();
         EventListener.off('nodeClick', this.onNodeClick);
         EventListener.off('networkNodeClick', this.onNodeClick);
+        this.setToolPhase(null);
     };
 
     public getToolPhase = () => {
@@ -54,6 +66,7 @@ class AddNetworkLinkTool implements BaseTool {
             try {
                 const startNode = await NodeService.fetchNode(nodeId);
                 LinkStore.setMarkerCoordinates(startNode!.coordinates);
+                this.setToolPhase('selectEndNode');
             } catch (e) {
                 ErrorStore.addError(`Alkusolmun ${nodeId} haku epäonnistui`);
             }
