@@ -1,3 +1,4 @@
+import { reaction, IReactionDisposer } from 'mobx';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, {
     IEditRoutePathLayerNodeClickParams,
@@ -15,11 +16,26 @@ import BaseTool from './BaseTool';
 type toolPhase = 'selectStartNode' | 'selectEndNode' | 'selectRoutePathToCopy';
 
 class CopyRoutePathSegmentTool implements BaseTool {
+    private refreshToolPhaseListener: IReactionDisposer;
     public toolType = ToolbarToolType.CopyRoutePathSegment;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
     public toolHelpText =
         'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';
-
+    public toolHelpPhasesMap = {
+        selectStartNode: {
+            phaseTopic: 'Alkusolmun valitseminen',
+            phaseHelpText: 'Valitse kartalta kopioitavan reitinsuunnan segmentin aloitus-solmu.',
+        },
+        selectEndNode: {
+            phaseTopic: 'Loppusolmun valitseminen',
+            phaseHelpText: 'Valitse kartalta kopioitavan reitinsuunnan segmentin lopetus-solmu.',
+        },
+        selectRoutePathToCopy: {
+            phaseTopic: 'Reitinsuunnan valitseminen',
+            phaseHelpText:
+                'Valitse reitinsuunta sivupalkista, jolta segmentti kopioidaan. Voit myös muuttaa alku- tai loppusolmun valintaa alku- ja loppusolmu -painikkeiden avulla.',
+        },
+    };
     public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
@@ -27,13 +43,20 @@ class CopyRoutePathSegmentTool implements BaseTool {
         EventListener.on('nodeClick', this.onNodeClick);
         EventListener.on('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
+        this.refreshToolPhaseListener = reaction(
+            () => [RoutePathCopySegmentStore.setNodeType, RoutePathCopySegmentStore.routePaths],
+            this.refreshToolPhase
+        );
+        this.setToolPhase('selectStartNode');
     };
 
     public deactivate = () => {
+        this.setToolPhase(null);
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('nodeClick', this.onNodeClick);
         EventListener.off('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
         RoutePathCopySegmentStore.clear();
+        this.refreshToolPhaseListener();
     };
 
     public getToolPhase = () => {
@@ -42,6 +65,16 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     public setToolPhase = (toolPhase: toolPhase | null) => {
         ToolbarStore.setToolPhase(toolPhase);
+    };
+
+    private refreshToolPhase = () => {
+        if (RoutePathCopySegmentStore.routePaths.length > 0) {
+            this.setToolPhase('selectRoutePathToCopy');
+        } else if (RoutePathCopySegmentStore.setNodeType === 'startNode') {
+            this.setToolPhase('selectStartNode');
+        } else {
+            this.setToolPhase('selectEndNode');
+        }
     };
 
     private onNodeClick = (clickEvent: CustomEvent) => {
@@ -73,6 +106,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         if (!RoutePathCopySegmentStore.endNode) {
             RoutePathCopySegmentStore.setSetNodeType('endNode');
+            this.refreshToolPhase();
         }
     };
 
@@ -84,6 +118,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         if (!RoutePathCopySegmentStore.startNode) {
             RoutePathCopySegmentStore.setSetNodeType('startNode');
+            this.refreshToolPhase();
         }
     };
 
