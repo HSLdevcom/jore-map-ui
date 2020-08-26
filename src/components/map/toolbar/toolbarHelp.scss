@@ -20,6 +20,14 @@ $copyRoutePathToolButtonBorderWidth: 2px;
         font-weight: bold;
     }
 
+    .phaseTopic {
+        font-size: 0.9em;
+    }
+
+    .phaseHelpText {
+        font-size: $smallFontSize;
+    }
+
     .copyRoutePathToolButtons  {
         display: flex;
         padding: 10px;

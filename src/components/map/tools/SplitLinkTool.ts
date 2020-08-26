@@ -18,7 +18,6 @@ type toolPhase = 'selectNodeToSplitLinkWith';
 
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarToolType.SplitLink;
-    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Jaa linkki solmulla';
     public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
 
@@ -32,8 +31,12 @@ class SplitLinkTool implements BaseTool {
         EventListener.off('networkNodeClick', this.openNodeConfirm);
     };
 
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
     public setToolPhase = (toolPhase: toolPhase | null) => {
-        this.toolPhase = toolPhase;
+        ToolbarStore.setToolPhase(toolPhase);
     };
 
     navigateToSplitLink = (nodeId: string) => {

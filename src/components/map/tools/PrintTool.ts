@@ -4,9 +4,9 @@ import BaseTool from './BaseTool';
 // TODO: implement this tool
 class PrintTool implements BaseTool {
     public toolType = ToolbarToolType.Print;
-    public toolPhase: null = null;
     public activate = () => {};
     public deactivate = () => {};
+    public getToolPhase = () => {};
     public setToolPhase = () => {};
 }
 

@@ -14,7 +14,6 @@ type toolPhase = 'selectStartNode' | 'selectEndNode';
 
 class AddNetworkLinkTool implements BaseTool {
     public toolType = ToolbarToolType.AddNetworkLink;
-    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Luo uusi linkki';
     public toolHelpText =
         'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
@@ -36,8 +35,12 @@ class AddNetworkLinkTool implements BaseTool {
         EventListener.off('networkNodeClick', this.onNodeClick);
     };
 
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
     public setToolPhase = (toolPhase: toolPhase | null) => {
-        this.toolPhase = toolPhase;
+        ToolbarStore.setToolPhase(toolPhase);
     };
 
     private onNodeClick = async (clickEvent: CustomEvent) => {

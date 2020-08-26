@@ -9,13 +9,13 @@ import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
 import RoutePathStore from '~/stores/routePathStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import BaseTool from './BaseTool';
 
 type toolPhase = 'selectStartNode' | 'selectEndNode' | 'selectRoutePathToCopy';
 
 class CopyRoutePathSegmentTool implements BaseTool {
     public toolType = ToolbarToolType.CopyRoutePathSegment;
-    public toolPhase: toolPhase | null = null;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
     public toolHelpText =
         'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';
@@ -36,8 +36,12 @@ class CopyRoutePathSegmentTool implements BaseTool {
         RoutePathCopySegmentStore.clear();
     };
 
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
     public setToolPhase = (toolPhase: toolPhase | null) => {
-        this.toolPhase = toolPhase;
+        ToolbarStore.setToolPhase(toolPhase);
     };
 
     private onNodeClick = (clickEvent: CustomEvent) => {

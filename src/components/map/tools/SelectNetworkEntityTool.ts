@@ -9,6 +9,7 @@ import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
 import NetworkStore from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import { isNetworkLinkHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
@@ -17,7 +18,6 @@ type toolPhase = 'selectNetworkEntity';
 
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarToolType.SelectNetworkEntity;
-    public toolPhase: toolPhase | null = null;
 
     public activate = () => {
         EventListener.on('mapClick', this.onMapClick);
@@ -27,8 +27,12 @@ class SelectNetworkEntityTool implements BaseTool {
         EventListener.off('mapClick', this.onMapClick);
     };
 
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
     public setToolPhase = (toolPhase: toolPhase | null) => {
-        this.toolPhase = toolPhase;
+        ToolbarStore.setToolPhase(toolPhase);
     };
 
     private onMapClick = async (clickEvent: any) => {
