@@ -19,8 +19,6 @@ class CopyRoutePathSegmentTool implements BaseTool {
     private refreshToolPhaseListener: IReactionDisposer;
     public toolType = ToolbarToolType.CopyRoutePathSegment;
     public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
-    public toolHelpText =
-        'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';
     public toolHelpPhasesMap = {
         selectStartNode: {
             phaseTopic: 'Alkusolmun valitseminen',

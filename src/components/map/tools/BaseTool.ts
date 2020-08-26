@@ -11,7 +11,6 @@ export default interface BaseTool {
     toolType: ToolbarToolType;
     toolPhase?: string | null;
     toolHelpHeader?: string;
-    toolHelpText?: string; // TODO: remove
     toolHelpPhasesMap?: toolHelpPhasesMap;
     activate: () => void;
     deactivate: () => void;

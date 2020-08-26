@@ -15,8 +15,6 @@ type toolPhase = 'selectStartNode' | 'selectEndNode';
 class AddNetworkLinkTool implements BaseTool {
     public toolType = ToolbarToolType.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
-    public toolHelpText =
-        'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
     public toolHelpPhasesMap = {
         selectStartNode: {
             phaseTopic: 'Alkusolmun valinta',
