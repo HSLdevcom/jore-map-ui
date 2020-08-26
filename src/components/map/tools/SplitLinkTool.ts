@@ -14,20 +14,36 @@ import ToolbarStore from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectNodeToSplitLinkWith';
+
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarToolType.SplitLink;
     public toolHelpHeader = 'Jaa linkki solmulla';
-    public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
+    public toolHelpPhasesMap = {
+        selectNodeToSplitLinkWith: {
+            phaseHelpText: 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.',
+        },
+    };
 
-    public activate() {
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.unusedNode);
         EventListener.on('networkNodeClick', this.openNodeConfirm);
-    }
+        this.setToolPhase('selectNodeToSplitLinkWith');
+    };
 
-    public deactivate() {
+    public deactivate = () => {
+        this.setToolPhase(null);
         EventListener.off('networkNodeClick', this.openNodeConfirm);
-    }
+    };
+
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        ToolbarStore.setToolPhase(toolPhase);
+    };
 
     navigateToSplitLink = (nodeId: string) => {
         const link = LinkStore.link;

@@ -10,7 +10,6 @@ import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/share
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
-import NodeSize from '~/enums/nodeSize';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener from '~/helpers/EventListener';
@@ -101,7 +100,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     componentWillUnmount() {
         this._isMounted = false;
         this.props.toolbarStore!.selectTool(null);
-        this.props.networkStore!.setNodeSize(NodeSize.SMALL);
         this.props.routePathStore!.clear();
         EventListener.off('undo', this.undo);
         EventListener.off('redo', this.redo);
@@ -171,7 +169,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private initializeMap = async () => {
         if (this.props.isNewRoutePath) {
-            this.props.networkStore!.setNodeSize(NodeSize.NORMAL);
             this.props.networkStore!.showMapLayer(MapLayer.node);
             this.props.networkStore!.showMapLayer(MapLayer.link);
         }

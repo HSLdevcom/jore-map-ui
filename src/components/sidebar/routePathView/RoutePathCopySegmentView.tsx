@@ -163,8 +163,9 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             <div className={s.routePathList}>
                 {routePaths.length === 0 ? (
                     <div className={s.messageContainer}>
-                        Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta väliltä. Kokeile
-                        asettaa pienempi kopioitava väli.
+                        Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta alku- ja
+                        loppusolmun väliltä. Kokeile muuttaa kopioitavaa väliä, esimerkiksi asettaa
+                        pienempi kopioitava väli.
                     </div>
                 ) : (
                     <>

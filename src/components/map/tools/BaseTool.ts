@@ -1,10 +1,20 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
 
+interface IToolPhaseHelpObj {
+    phaseTopic?: string;
+    phaseHelpText?: string;
+}
+
+type toolHelpPhasesMap = Record<string, IToolPhaseHelpObj>;
+
 export default interface BaseTool {
     toolType: ToolbarToolType;
-    activate: Function;
-    deactivate: Function;
+    toolPhase?: string | null;
     toolHelpHeader?: string;
-    toolHelpText?: string;
+    toolHelpPhasesMap?: toolHelpPhasesMap;
+    activate: () => void;
+    deactivate: () => void;
+    getToolPhase: () => void;
+    setToolPhase: (phase: string | null) => void;
     onRoutePathLinkClick?: Function;
 }

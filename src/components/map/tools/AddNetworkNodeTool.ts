@@ -9,22 +9,38 @@ import ToolbarStore from '~/stores/toolbarStore';
 import { roundLatLng } from '~/utils/geomUtils';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'setNodeLocation';
+
 class AddNetworkNodeTool implements BaseTool {
     public toolType = ToolbarToolType.AddNetworkNode;
     public toolHelpHeader = 'Luo uusi solmu';
-    public toolHelpText = 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.';
+    public toolHelpPhasesMap = {
+        setNodeLocation: {
+            phaseHelpText: 'Aloita uuden solmun luonti valitsemalla solmulle sijainti kartalta.',
+        },
+    };
 
-    public activate() {
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('mapClick', this.onMapClick);
         MapStore.setMapCursor('crosshair');
-    }
+        this.setToolPhase('setNodeLocation');
+    };
 
-    public deactivate() {
+    public deactivate = () => {
+        this.setToolPhase(null);
         EventListener.off('mapClick', this.onMapClick);
         MapStore.setMapCursor('');
-    }
+    };
+
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        ToolbarStore.setToolPhase(toolPhase);
+    };
 
     private onMapClick = async (clickEvent: CustomEvent) => {
         ToolbarStore.selectTool(null);
