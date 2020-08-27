@@ -39,7 +39,9 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 onClick={this.toggleExtendedListItemId}
                 data-cy='itemHeader'
             >
-                <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
+                <div className={classnames(s.headerSubtopicContainer, s.smallFontSize)}>
+                    Reitinlinkki {orderNumber}
+                </div>
                 <div className={s.headerContent}>
                     <div className={s.itemToggle}>
                         {isExtended && <FaAngleDown />}
