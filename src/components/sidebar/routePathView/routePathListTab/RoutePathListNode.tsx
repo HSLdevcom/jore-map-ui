@@ -423,7 +423,19 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
 
     render() {
         const { node, routePathLink, isFirstNode, isLastNode } = this.props;
+        const isHighlightedByTool = this.props.routePathLayerStore!.toolHighlightedNodeIds.includes(
+            node.internalId
+        );
         const isExtended = this.props.routePathLayerStore!.extendedListItemId === node.internalId;
+        const isHovered = this.props.routePathLayerStore!.hoveredItemId === node.internalId;
+        const isHighlighted = isHighlightedByTool || isExtended || isHovered;
+        const highlightColor = isHovered
+            ? 'yellow'
+            : isHighlightedByTool
+            ? 'green'
+            : isExtended
+            ? 'blue'
+            : undefined;
         return (
             <div
                 ref={this.props.reference}
@@ -454,6 +466,8 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
                                 !isLastNode &&
                                 routePathLink.startNodeType === StartNodeType.DISABLED
                             }
+                            isHighlighted={isHighlighted}
+                            highlightColor={highlightColor}
                         />
                     </div>
                     <div className={s.borderContainer}>

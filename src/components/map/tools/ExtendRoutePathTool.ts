@@ -161,6 +161,9 @@ class ExtendRoutePathTool implements BaseTool {
                 linkOrderNumber: routePathLink.orderNumber,
                 isFirstNodeClick: false,
             });
+        } else {
+            this.isToolPhaseSwitchingPrevented = false;
+            this.refreshToolPhase();
         }
     };
 

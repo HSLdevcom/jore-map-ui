@@ -80,8 +80,13 @@ $iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
 .highlightBlue {
     box-shadow: 0px 0px 15px 9px $busBlue;
 }
+
 .highlightGreen {
     box-shadow: 0px 0px 15px 9px $tramGreen;
+}
+
+.highlightYellow {
+    box-shadow: 0px 0px 15px 9px #cfc400;
 }
 
 .nodeNotClickable {

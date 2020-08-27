@@ -1,3 +1,5 @@
+@import './styles/common.scss';
+
 .iconBorder {
     border-style: solid;
     border-radius: 30px;
@@ -12,9 +14,22 @@
         height: 10px;
         width: 10px;
     }
+
     &.normalSize {
         height: 14px;
         width: 14px;
+    }
+
+    &.highlightBlue {
+        box-shadow: 0px 0px 6px 6px $busBlue;
+    }
+
+    &.highlightGreen {
+        box-shadow: 0px 0px 6px 6px $tramGreen;
+    }
+
+    &.highlightYellow {
+        box-shadow: 0px 0px 6px 6px #cfc400;
     }
 }
 

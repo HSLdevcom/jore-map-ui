@@ -142,8 +142,8 @@
             height: 100%;
 
             .borderLeftContainer {
-                border-right: 3px solid #000; // border width
-                width: calc(50% - 1px); // needs to be half of the border width
+                border-right: 4px solid rgba(0, 0, 0, 0.7); // border width & color
+                width: calc(50% - 2px); // needs to be half of the border width
             }
         }
         .listIcon {
@@ -159,12 +159,12 @@
     .hoveredIconHighlight {
         @extend .hoveredIcon;
         background-color: rgba(223, 211, 0, 0.7);
-        box-shadow: 0px 0px 2px 0px #dfd300;
+        box-shadow: -2px 0px 2px 0px #dfd300;
     }
     .extendedIconHighlight {
         @extend .hoveredIcon;
         background-color: rgba(0, 122, 201, 0.7);
-        box-shadow: 0px 0px 2px 0px $busBlue;
+        box-shadow: -2px 0px 2px 0px $busBlue;
     }
 }
 

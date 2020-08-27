@@ -8,15 +8,11 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { PopupStore } from '~/stores/popupStore';
+import NodeHighlightColor from '~/types/NodeHighlightColor';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './nodeMarker.scss';
-
-enum NodeHighlightColor {
-    BLUE, // default color
-    GREEN,
-}
 
 interface INodeMarkerProps {
     coordinates: L.LatLng;
@@ -55,7 +51,7 @@ class NodeMarker extends Component<INodeMarkerProps> {
         isDraggable: false,
         forcedVisibleNodeLabels: [],
         classNames: [],
-        highlightColor: NodeHighlightColor.BLUE,
+        highlightColor: 'blue',
         size: NodeSize.NORMAL,
     };
 
@@ -125,13 +121,16 @@ class NodeMarker extends Component<INodeMarkerProps> {
 
         if (isHighlighted) {
             switch (highlightColor) {
-                case NodeHighlightColor.BLUE: {
+                case 'blue': {
                     res.push(s.highlightBlue);
                     break;
                 }
-                case NodeHighlightColor.GREEN: {
+                case 'green': {
                     res.push(s.highlightGreen);
                     break;
+                }
+                case 'yellow': {
+                    res.push(s.highlightYellow);
                 }
                 default: {
                     res.push(s.highlightBlue);
