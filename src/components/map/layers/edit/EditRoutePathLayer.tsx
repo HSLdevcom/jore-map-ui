@@ -59,7 +59,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                         return routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
                             const isStartNodeDisabled =
                                 rpLink.startNodeType === StartNodeType.DISABLED;
-                            const isFirstNode = index === 0;
                             const isLastNode = index === routePathLinks.length - 1;
                             return (
                                 <div key={`rpLink-${index}`}>
@@ -72,7 +71,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                             isDisabled={isStartNodeDisabled}
                                             linkOrderNumber={rpLink.orderNumber}
                                             setExtendedListItem={this.setExtendedListItem}
-                                            isAtCoherentRoutePathEdge={isFirstNode}
                                         />
                                     )}
                                     <EditRoutePathLayerLink
@@ -91,7 +89,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                                 isDisabled={false} // endNode has no disabled information
                                                 linkOrderNumber={rpLink.orderNumber}
                                                 setExtendedListItem={this.setExtendedListItem}
-                                                isAtCoherentRoutePathEdge={true}
                                             />
                                         )}
                                 </div>

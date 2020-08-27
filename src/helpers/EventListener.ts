@@ -14,7 +14,7 @@ type eventName =
     | 'networkNodeClick'
     | 'networkLinkClick'
     | 'geometryChange'
-    | 'editRoutePathLayerNodeClick'
+    | 'routePathLayerNodeClick'
     | 'editRoutePathNeighborLinkClick';
 
 class EventListener {
@@ -44,7 +44,7 @@ interface ILinkClickParams {
     transitType: TransitType;
 }
 
-interface IEditRoutePathLayerNodeClickParams {
+interface IRoutePathLayerNodeClickParams {
     node: INode;
     linkOrderNumber: number;
 }
@@ -58,6 +58,6 @@ export default new EventListener();
 export {
     INodeClickParams,
     ILinkClickParams,
-    IEditRoutePathLayerNodeClickParams,
+    IRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
 };

@@ -3,16 +3,18 @@ import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, {
-    IEditRoutePathLayerNodeClickParams,
     IEditRoutePathNeighborLinkClickParams,
     INodeClickParams,
+    IRoutePathLayerNodeClickParams,
 } from '~/helpers/EventListener';
+import { IRoutePathLink } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathLayerStore, { NeighborToAddType } from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
 import ToolbarStore from '~/stores/toolbarStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import BaseTool from './BaseTool';
 
 type toolPhase = 'selectFirstNode' | 'selectNodeToExtend' | 'selectNeighborLink';
@@ -47,8 +49,8 @@ class ExtendRoutePathTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
-        EventListener.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventListener.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventListener.on('routePathLayerNodeClick', this.onRoutePathLayerNodeClick);
+        EventListener.on('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
         RoutePathStore.setIsEditingDisabled(false);
         EventListener.on('escape', this.onEscapePress);
         this.refreshToolPhaseListener = reaction(
@@ -65,8 +67,8 @@ class ExtendRoutePathTool implements BaseTool {
         this.setToolPhase(null);
         RoutePathLayerStore.setNeighborLinks([]);
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
-        EventListener.off('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventListener.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
+        EventListener.off('routePathLayerNodeClick', this.onRoutePathLayerNodeClick);
+        EventListener.off('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
         EventListener.off('escape', this.onEscapePress);
         this.refreshToolPhaseListener();
     };
@@ -77,6 +79,9 @@ class ExtendRoutePathTool implements BaseTool {
 
     public setToolPhase = (toolPhase: toolPhase | null) => {
         if (this.isToolPhaseSwitchingPrevented) return;
+        const toolHighlightedNodeIds =
+            toolPhase === 'selectNodeToExtend' ? this.getHighlightedNodeIds() : [];
+        RoutePathLayerStore.setToolHighlightedNodeIds(toolHighlightedNodeIds);
 
         if (toolPhase === 'selectFirstNode') {
             NetworkStore.setNodeSize(NodeSize.NORMAL);
@@ -96,17 +101,34 @@ class ExtendRoutePathTool implements BaseTool {
         }
     };
 
-    // Node click
-    private onNodeClick = (clickEvent: CustomEvent) => {
-        const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
-        this.fetchNeighborRoutePathLinks({
-            nodeId: params.node.id,
-            linkOrderNumber: params.linkOrderNumber,
-            isFirstNodeClick: false,
+    private getHighlightedNodeIds = () => {
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+            RoutePathStore.routePath!.routePathLinks
+        );
+        const nodeIdsAtCoherentRpLinkEdge: string[] = [];
+        coherentRoutePathLinksList.forEach((rpLinks: IRoutePathLink[]) => {
+            nodeIdsAtCoherentRpLinkEdge.push(rpLinks[0].startNode.internalId);
+            nodeIdsAtCoherentRpLinkEdge.push(rpLinks[rpLinks.length - 1].endNode.internalId);
         });
+        return nodeIdsAtCoherentRpLinkEdge;
     };
 
-    // Network node click
+    private onRoutePathLayerNodeClick = (clickEvent: CustomEvent) => {
+        const params: IRoutePathLayerNodeClickParams = clickEvent.detail;
+        const nodeId = params.node.id;
+        const internalId = params.node.internalId;
+        if (RoutePathLayerStore.toolHighlightedNodeIds.includes(internalId)) {
+            this.fetchNeighborRoutePathLinks({
+                nodeId,
+                linkOrderNumber: params.linkOrderNumber,
+                isFirstNodeClick: false,
+            });
+        } else {
+            const clickParams: INodeClickParams = { nodeId };
+            EventListener.trigger('nodeClick', clickParams);
+        }
+    };
+
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
         if (this.getToolPhase() !== 'selectFirstNode') return;
 
@@ -122,8 +144,7 @@ class ExtendRoutePathTool implements BaseTool {
         RoutePathLayerStore.setNeighborLinks([]);
     };
 
-    // Neighbor link click
-    private addNeighborLinkToRoutePath = async (clickEvent: CustomEvent) => {
+    private onEditRoutePathNeighborLinkClick = async (clickEvent: CustomEvent) => {
         const params: IEditRoutePathNeighborLinkClickParams = clickEvent.detail;
         const routePathLink = params.neighborLink.routePathLink;
 

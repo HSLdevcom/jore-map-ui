@@ -11,13 +11,15 @@ enum NeighborToAddType {
 class RoutePathLayerStore {
     @observable private _neighborLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
-    @observable private _extendedListItemId: string | null;
-    @observable private _hoveredItemId: string | null;
+    @observable private _extendedListItemId: string | null; // node.internalId, link.id
+    @observable private _hoveredItemId: string | null; // node.internalId, link.id
+    @observable private _toolHighlightedNodeIds: string[]; // node.internalId
 
     constructor() {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
+        this._toolHighlightedNodeIds = [];
     }
 
     @computed
@@ -40,6 +42,11 @@ class RoutePathLayerStore {
         return this._hoveredItemId;
     }
 
+    @computed
+    get toolHighlightedNodeIds() {
+        return this._toolHighlightedNodeIds;
+    }
+
     @action
     public setNeighborLinks = (neighborLinks: INeighborLink[]) => {
         this._neighborLinks = neighborLinks;
@@ -58,6 +65,11 @@ class RoutePathLayerStore {
     @action
     public setHoveredItemId = (id: string | null) => {
         this._hoveredItemId = id;
+    };
+
+    @action
+    public setToolHighlightedNodeIds = (ids: string[]) => {
+        this._toolHighlightedNodeIds = ids;
     };
 
     @action

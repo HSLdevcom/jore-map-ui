@@ -10,7 +10,9 @@ class RoutePathUtils {
     };
 
     // Split routePathLinks into sub lists with coherent routePathLinks
-    public static getCoherentRoutePathLinksList = (routePathLinks: IRoutePathLink[]) => {
+    public static getCoherentRoutePathLinksList = (
+        routePathLinks: IRoutePathLink[]
+    ): IRoutePathLink[][] => {
         const coherentRoutePathLinksList: IRoutePathLink[][] = [];
         let index = 0;
         routePathLinks.forEach((currentRpLink) => {
