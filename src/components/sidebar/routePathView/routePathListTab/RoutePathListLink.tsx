@@ -136,10 +136,11 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         };
         EventListener.trigger('routePathLinkClick', clickParams);
     };
-
     render() {
         const isExtended =
             this.props.routePathLayerStore!.extendedListItemId === this.props.routePathLink.id;
+        const isHovered =
+            this.props.routePathLayerStore!.hoveredItemId === this.props.routePathLink.id;
         return (
             <div ref={this.props.reference} className={classnames(s.routePathListItem)}>
                 <div
@@ -148,11 +149,16 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     onMouseLeave={this.onMouseLeaveLinkIcon}
                     onClick={this.onClickLinkIcon}
                 >
-                    <div className={s.borderContainer}>
-                        <div className={s.borderLeftContainer} />
-                        <div />
-                    </div>
-                    <div className={s.borderContainer}>
+                    <div
+                        className={classnames(
+                            s.borderContainer,
+                            isHovered
+                                ? s.hoveredIconHighlight
+                                : isExtended
+                                ? s.extendedIconHighlight
+                                : undefined
+                        )}
+                    >
                         <div className={s.borderLeftContainer} />
                         <div />
                     </div>
