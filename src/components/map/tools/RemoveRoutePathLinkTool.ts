@@ -14,7 +14,7 @@ class RemoveRoutePathLinkTool implements BaseTool {
     public toolHelpHeader = 'Poista reitin linkki';
     public toolHelpPhasesMap = {
         selectRoutePathLinkToRemove: {
-            phaseHelpText: 'Poista reitin linkki klikkaamalla sitä kartalta.',
+            phaseHelpText: 'Poista reitin linkki klikkaamalla sitä kartalta tai sivupalkista.',
         },
     };
 

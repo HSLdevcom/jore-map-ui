@@ -35,7 +35,7 @@ class ExtendRoutePathTool implements BaseTool {
         selectNodeToExtend: {
             phaseTopic: 'Laajennettavan solmun valitseminen',
             phaseHelpText:
-                'Valitse reitinsuunnalta solmu, josta haluat jatkaa reitinsuunnan laajentamista. Valittavat solmut ovat korostettuina vihreällä.',
+                'Valitse reitinsuunnalta solmu, josta haluat jatkaa reitinsuunnan laajentamista. Valittavat solmut ovat korostettuina vihreällä kartalla ja sivupalkissa.',
         },
         selectNeighborLink: {
             phaseTopic: 'Naapurisolmun valitseminen',

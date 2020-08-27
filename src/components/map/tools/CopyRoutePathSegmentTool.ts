@@ -22,11 +22,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
     public toolHelpPhasesMap = {
         selectStartNode: {
             phaseTopic: 'Alkusolmun valitseminen',
-            phaseHelpText: 'Valitse kartalta kopioitavan reitinsuunnan segmentin aloitus-solmu.',
+            phaseHelpText:
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin aloitus-solmu.',
         },
         selectEndNode: {
             phaseTopic: 'Loppusolmun valitseminen',
-            phaseHelpText: 'Valitse kartalta kopioitavan reitinsuunnan segmentin lopetus-solmu.',
+            phaseHelpText:
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin lopetus-solmu.',
         },
         selectRoutePathToCopy: {
             phaseTopic: 'Reitinsuunnan valitseminen',
