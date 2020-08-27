@@ -18,7 +18,6 @@ interface IRoutePathLayerNodeProps {
     node: INode;
     isDisabled: boolean;
     linkOrderNumber: number;
-    setExtendedListItem: (id: string | null) => void;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathCopySegmentStore?: RoutePathCopySegmentStore;

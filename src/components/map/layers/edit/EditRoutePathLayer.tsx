@@ -70,7 +70,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                             node={rpLink.startNode}
                                             isDisabled={isStartNodeDisabled}
                                             linkOrderNumber={rpLink.orderNumber}
-                                            setExtendedListItem={this.setExtendedListItem}
                                         />
                                     )}
                                     <EditRoutePathLayerLink
@@ -88,7 +87,6 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                                 node={rpLink.endNode}
                                                 isDisabled={false} // endNode has no disabled information
                                                 linkOrderNumber={rpLink.orderNumber}
-                                                setExtendedListItem={this.setExtendedListItem}
                                             />
                                         )}
                                 </div>

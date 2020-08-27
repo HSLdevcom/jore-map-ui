@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -13,8 +14,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TextContainer from '../../../controls/TextContainer';
-import RoutePathListItem from './RoutePathListItem';
-import * as s from './routePathListItem.scss';
+import * as s from './routePathList.scss';
 
 interface IRoutePathListLinkProps {
     reference: React.RefObject<HTMLDivElement>;
@@ -119,14 +119,40 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     };
 
+    private onMouseEnterLinkIcon = () => {
+        this.props.routePathLayerStore!.setHoveredItemId(this.props.routePathLink.id);
+    };
+
+    private onMouseLeaveLinkIcon = () => {
+        if (this.props.routePathLayerStore!.hoveredItemId === this.props.routePathLink.id) {
+            this.props.routePathLayerStore!.setHoveredItemId(null);
+        }
+    };
+
     render() {
+        const isExtended =
+            this.props.routePathLayerStore!.extendedListItemId === this.props.routePathLink.id;
         return (
-            <RoutePathListItem
-                id={this.props.routePathLink.id}
-                reference={this.props.reference}
-                header={this.renderHeader()}
-                body={this.renderBody()}
-            />
+            <div ref={this.props.reference} className={classnames(s.routePathListItem)}>
+                <div
+                    className={s.listIconWrapper}
+                    onMouseEnter={this.onMouseEnterLinkIcon}
+                    onMouseLeave={this.onMouseLeaveLinkIcon}
+                >
+                    <div className={s.borderContainer}>
+                        <div className={s.borderLeftContainer} />
+                        <div />
+                    </div>
+                    <div className={s.borderContainer}>
+                        <div className={s.borderLeftContainer} />
+                        <div />
+                    </div>
+                </div>
+                <div className={s.contentWrapper}>
+                    {this.renderHeader()}
+                    {isExtended && <div className={s.itemContent}>{this.renderBody()}</div>}
+                </div>
+            </div>
         );
     }
 }

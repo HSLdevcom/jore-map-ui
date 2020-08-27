@@ -75,13 +75,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
         }
     };
 
-    private onNodeClick = (clickEvent: CustomEvent) => {
-        const params: INodeClickParams = clickEvent.detail;
+    private onNodeClick = (event: CustomEvent) => {
+        const params: INodeClickParams = event.detail;
         this.selectNode(params.nodeId);
     };
 
-    private onRoutePathNodeClick = (clickEvent: CustomEvent) => {
-        const params: IRoutePathNodeClickParams = clickEvent.detail;
+    private onRoutePathNodeClick = (event: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = event.detail;
         this.selectNode(params.node.id);
     };
 
