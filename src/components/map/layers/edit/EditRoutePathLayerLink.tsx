@@ -2,6 +2,7 @@ import L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
+import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
@@ -78,22 +79,15 @@ class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
     };
 
     private handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
-        if (
-            this.props.toolbarStore!.selectedTool &&
-            this.props.toolbarStore!.selectedTool.onRoutePathLinkClick
-        ) {
-            this.props.toolbarStore!.selectedTool.onRoutePathLinkClick(routePathLink.id)(e);
-        } else {
-            this.props.routePathLayerStore!.extendedListItemId === routePathLink.id
-                ? this.props.setExtendedListItem(null)
-                : this.props.setExtendedListItem(routePathLink.id);
-
-            this.props.disableMapClickListener();
-            // Prevent current click event from triggering map click listener
-            setTimeout(() => {
-                this.props.enableMapClickListener();
-            }, 1);
-        }
+        const clickParams: IRoutePathLinkClickParams = {
+            routePathLinkId: routePathLink.id,
+        };
+        EventListener.trigger('routePathLinkClick', clickParams);
+        // Prevent current click event from triggering map click listener
+        this.props.disableMapClickListener();
+        setTimeout(() => {
+            this.props.enableMapClickListener();
+        }, 1);
     };
 
     private renderLinkDecorator = (routePathLink: IRoutePathLink) => {

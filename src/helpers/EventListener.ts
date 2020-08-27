@@ -1,6 +1,6 @@
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
-import { ILink, INeighborLink, INode } from '~/models';
+import { INeighborLink, INode } from '~/models';
 
 type eventName =
     | 'enter'
@@ -51,7 +51,7 @@ interface IRoutePathNodeClickParams {
 }
 
 interface IRoutePathLinkClickParams {
-    link: ILink;
+    routePathLinkId: string;
 }
 
 interface IEditRoutePathNeighborLinkClickParams {

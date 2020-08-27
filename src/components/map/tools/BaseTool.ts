@@ -16,5 +16,4 @@ export default interface BaseTool {
     deactivate: () => void;
     getToolPhase: () => void;
     setToolPhase: (phase: string | null) => void;
-    onRoutePathLinkClick?: Function;
 }

@@ -6,6 +6,7 @@ import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -129,6 +130,13 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         }
     };
 
+    private onClickLinkIcon = () => {
+        const clickParams: IRoutePathLinkClickParams = {
+            routePathLinkId: this.props.routePathLink.id,
+        };
+        EventListener.trigger('routePathLinkClick', clickParams);
+    };
+
     render() {
         const isExtended =
             this.props.routePathLayerStore!.extendedListItemId === this.props.routePathLink.id;
@@ -138,6 +146,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                     className={s.listIconWrapper}
                     onMouseEnter={this.onMouseEnterLinkIcon}
                     onMouseLeave={this.onMouseLeaveLinkIcon}
+                    onClick={this.onClickLinkIcon}
                 >
                     <div className={s.borderContainer}>
                         <div className={s.borderLeftContainer} />
