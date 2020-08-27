@@ -5,7 +5,7 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, {
     IEditRoutePathNeighborLinkClickParams,
     INodeClickParams,
-    IRoutePathLayerNodeClickParams,
+    IRoutePathNodeClickParams,
 } from '~/helpers/EventListener';
 import { IRoutePathLink } from '~/models';
 import NodeService from '~/services/nodeService';
@@ -49,7 +49,7 @@ class ExtendRoutePathTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
-        EventListener.on('routePathLayerNodeClick', this.onRoutePathLayerNodeClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.on('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
         RoutePathStore.setIsEditingDisabled(false);
         EventListener.on('escape', this.onEscapePress);
@@ -67,7 +67,7 @@ class ExtendRoutePathTool implements BaseTool {
         this.setToolPhase(null);
         RoutePathLayerStore.setNeighborLinks([]);
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
-        EventListener.off('routePathLayerNodeClick', this.onRoutePathLayerNodeClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.off('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
         EventListener.off('escape', this.onEscapePress);
         this.refreshToolPhaseListener();
@@ -113,8 +113,8 @@ class ExtendRoutePathTool implements BaseTool {
         return nodeIdsAtCoherentRpLinkEdge;
     };
 
-    private onRoutePathLayerNodeClick = (clickEvent: CustomEvent) => {
-        const params: IRoutePathLayerNodeClickParams = clickEvent.detail;
+    private onRoutePathNodeClick = (clickEvent: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = clickEvent.detail;
         const nodeId = params.node.id;
         const internalId = params.node.internalId;
         if (RoutePathLayerStore.toolHighlightedNodeIds.includes(internalId)) {

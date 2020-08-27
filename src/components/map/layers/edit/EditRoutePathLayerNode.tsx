@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventListener, { IRoutePathLayerNodeClickParams } from '~/helpers/EventListener';
+import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
 import INode from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
@@ -53,11 +53,11 @@ class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
         }
 
         const onNodeClick = () => {
-            const clickParams: IRoutePathLayerNodeClickParams = {
+            const clickParams: IRoutePathNodeClickParams = {
                 node,
                 linkOrderNumber,
             };
-            EventListener.trigger('routePathLayerNodeClick', clickParams);
+            EventListener.trigger('routePathNodeClick', clickParams);
         };
         const isHighlightedByTool = this.props.routePathLayerStore!.toolHighlightedNodeIds.includes(
             node.internalId

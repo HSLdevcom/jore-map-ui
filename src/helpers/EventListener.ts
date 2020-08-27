@@ -1,6 +1,6 @@
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
-import { INeighborLink, INode } from '~/models';
+import { ILink, INeighborLink, INode } from '~/models';
 
 type eventName =
     | 'enter'
@@ -14,7 +14,8 @@ type eventName =
     | 'networkNodeClick'
     | 'networkLinkClick'
     | 'geometryChange'
-    | 'routePathLayerNodeClick'
+    | 'routePathNodeClick'
+    | 'routePathLinkClick'
     | 'editRoutePathNeighborLinkClick';
 
 class EventListener {
@@ -44,9 +45,13 @@ interface ILinkClickParams {
     transitType: TransitType;
 }
 
-interface IRoutePathLayerNodeClickParams {
+interface IRoutePathNodeClickParams {
     node: INode;
     linkOrderNumber: number;
+}
+
+interface IRoutePathLinkClickParams {
+    link: ILink;
 }
 
 interface IEditRoutePathNeighborLinkClickParams {
@@ -58,6 +63,7 @@ export default new EventListener();
 export {
     INodeClickParams,
     ILinkClickParams,
-    IRoutePathLayerNodeClickParams,
+    IRoutePathNodeClickParams,
+    IRoutePathLinkClickParams,
     IEditRoutePathNeighborLinkClickParams,
 };
