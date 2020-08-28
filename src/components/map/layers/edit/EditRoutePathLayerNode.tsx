@@ -36,18 +36,11 @@ interface IRoutePathLayerNodeProps {
 class EditRoutePathLayerNode extends Component<IRoutePathLayerNodeProps> {
     private renderNode = ({ node, isDisabled }: { node: INode; isDisabled: boolean }) => {
         const routePathLayerStore = this.props.routePathLayerStore;
-        let isNodeHighlighted;
-        if (routePathLayerStore!.hoveredItemId) {
-            isNodeHighlighted = routePathLayerStore!.hoveredItemId === node.internalId;
-        } else {
-            isNodeHighlighted = routePathLayerStore!.extendedListItemId === node.internalId;
-        }
-
-        const isHighlightedByTool = this.props.routePathLayerStore!.toolHighlightedNodeIds.includes(
+        const isHighlightedByTool = routePathLayerStore!.toolHighlightedNodeIds.includes(
             node.internalId
         );
-        const isExtended = this.props.routePathLayerStore!.extendedListItemId === node.internalId;
-        const isHovered = this.props.routePathLayerStore!.hoveredItemId === node.internalId;
+        const isExtended = routePathLayerStore!.extendedListItemId === node.internalId;
+        const isHovered = routePathLayerStore!.hoveredItemId === node.internalId;
         const isHighlighted = isHighlightedByTool || isExtended || isHovered;
         const highlightColor = isHovered
             ? 'yellow'
