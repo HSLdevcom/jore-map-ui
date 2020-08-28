@@ -4,8 +4,7 @@ import React from 'react';
 import { Polyline } from 'react-leaflet';
 import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
-import { MapFilter, MapStore } from '~/stores/mapStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { MapFilter } from '~/stores/mapStore';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
@@ -14,23 +13,21 @@ const HOVERED_LINK_COLOR = '#cfc400';
 const EXTENDED_LINK_COLOR = '#007ac9';
 
 interface IEditRoutePathLayerLinkProps {
+    rpLink: IRoutePathLink;
+    isLinkHovered: boolean;
+    isLinkExtended: boolean;
     enableMapClickListener: () => void;
     disableMapClickListener: () => void;
-    rpLink: IRoutePathLink;
     setExtendedListItem: (id: string | null) => void;
-    routePathLayerStore?: RoutePathLayerStore;
-    mapStore?: MapStore;
+    setHoveredItemId: (id: string | null) => void;
+    isMapFilterEnabled: (mapFilter: MapFilter) => boolean;
 }
 
-const EditRoutePathLayerLink = inject(
-    'routePathLayerStore',
-    'mapStore'
-)(
+const EditRoutePathLayerLink = inject()(
     observer((props: IEditRoutePathLayerLinkProps) => {
         const renderLink = (routePathLink: IRoutePathLink) => {
-            const routePathLayerStore = props.routePathLayerStore;
-            const isLinkHovered = routePathLayerStore!.hoveredItemId === routePathLink.id;
-            const isLinkExtended = routePathLayerStore!.extendedListItemId === routePathLink.id;
+            const isLinkHovered = props.isLinkHovered;
+            const isLinkExtended = props.isLinkExtended;
             return [
                 <Polyline
                     positions={routePathLink.geometry}
@@ -61,11 +58,11 @@ const EditRoutePathLayerLink = inject(
         };
 
         const onMouseOver = (id: string) => {
-            props.routePathLayerStore!.setHoveredItemId(id);
+            props.setHoveredItemId(id);
         };
 
         const onMouseOut = () => {
-            props.routePathLayerStore!.setHoveredItemId(null);
+            props.setHoveredItemId(null);
         };
 
         const handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
@@ -81,7 +78,7 @@ const EditRoutePathLayerLink = inject(
         };
 
         const renderLinkDecorator = (routePathLink: IRoutePathLink) => {
-            if (!props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator)) {
+            if (!props.isMapFilterEnabled(MapFilter.arrowDecorator)) {
                 return null;
             }
 
@@ -110,7 +107,6 @@ const EditRoutePathLayerLink = inject(
                 />,
             ];
         };
-
         const rpLink = props.rpLink;
         return (
             <>

@@ -43,14 +43,18 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     };
 
     render() {
-        if (!this.props.routePathStore!.routePath) return null;
+        const routePathStore = this.props.routePathStore!;
+        const routePathLayerStore = this.props.routePathLayerStore!;
+        const routePathCopySegmentStore = this.props.routePathCopySegmentStore!;
+        const mapStore = this.props.mapStore!;
+
+        if (!routePathStore.routePath) return null;
 
         const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
         const isRoutePathCopySegmentLayerVisible =
-            this.props.routePathCopySegmentStore!.startNode ||
-            this.props.routePathCopySegmentStore!.endNode;
+            routePathCopySegmentStore!.startNode || routePathCopySegmentStore!.endNode;
         const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
-            this.props.routePathStore!.routePath!.routePathLinks
+            routePathStore.routePath!.routePathLinks
         );
         return (
             <div>
@@ -73,10 +77,18 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                                         />
                                     )}
                                     <EditRoutePathLayerLink
+                                        rpLink={rpLink}
+                                        isLinkHovered={
+                                            routePathLayerStore.hoveredItemId === rpLink.id
+                                        }
+                                        isLinkExtended={
+                                            routePathLayerStore.extendedListItemId === rpLink.id
+                                        }
                                         enableMapClickListener={this.props.enableMapClickListener}
                                         disableMapClickListener={this.props.disableMapClickListener}
-                                        rpLink={rpLink}
                                         setExtendedListItem={this.setExtendedListItem}
+                                        setHoveredItemId={routePathLayerStore.setHoveredItemId}
+                                        isMapFilterEnabled={mapStore.isMapFilterEnabled}
                                     />
                                     {isLastNode &&
                                         !this.isNodeVisibleAtNeighborLinkLayer(
