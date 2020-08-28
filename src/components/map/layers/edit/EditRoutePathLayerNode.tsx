@@ -1,39 +1,26 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
 import INode from '~/models/INode';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
-import { RoutePathStore } from '~/stores/routePathStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
-import Marker from '../markers/Marker';
 import NodeMarker from '../markers/NodeMarker';
-
-const START_MARKER_COLOR = '#00df0b';
 
 interface IRoutePathLayerNodeProps {
     node: INode;
     isDisabled: boolean;
     linkOrderNumber: number;
-    routePathStore?: RoutePathStore;
-    routePathLayerStore?: RoutePathLayerStore;
-    toolbarStore?: ToolbarStore;
+    isHighlightedByTool: boolean;
+    isHovered: boolean;
+    isExtended: boolean;
+    setHoveredItemId: (id: string | null) => void;
 }
 
-const EditRoutePathLayerNode = inject(
-    'routePathStore',
-    'routePathLayerStore',
-    'toolbarStore'
-)(
+const EditRoutePathLayerNode = inject()(
     observer((props: IRoutePathLayerNodeProps) => {
         const renderNode = ({ node, isDisabled }: { node: INode; isDisabled: boolean }) => {
-            const routePathLayerStore = props.routePathLayerStore;
-            const isHighlightedByTool = routePathLayerStore!.toolHighlightedNodeIds.includes(
-                node.internalId
-            );
-            const isExtended = routePathLayerStore!.extendedListItemId === node.internalId;
-            const isHovered = routePathLayerStore!.hoveredItemId === node.internalId;
+            const isHighlightedByTool = props.isHighlightedByTool;
+            const isExtended = props.isExtended;
+            const isHovered = props.isHovered;
             const isHighlighted = isHighlightedByTool || isExtended || isHovered;
             const highlightColor = isHovered
                 ? 'yellow'
@@ -71,36 +58,14 @@ const EditRoutePathLayerNode = inject(
         };
 
         const onMouseEnterNode = () => {
-            props.routePathLayerStore!.setHoveredItemId(props.node.internalId);
+            props.setHoveredItemId(props.node.internalId);
         };
 
         const onMouseLeaveNode = () => {
-            if (props.routePathLayerStore!.hoveredItemId === props.node.internalId) {
-                props.routePathLayerStore!.setHoveredItemId(null);
+            if (props.isHovered) {
+                props.setHoveredItemId(null);
             }
         };
-
-        const renderStartMarker = () => {
-            if (props.toolbarStore!.isSelected(ToolbarToolType.ExtendRoutePath)) {
-                // Hiding start marker if we set target node adding new links.
-                // Due to the UI otherwise getting messy
-                return null;
-            }
-
-            const routePathLinks = props.routePathStore!.routePath!.routePathLinks;
-            if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
-                return null;
-            }
-
-            return (
-                <Marker
-                    latLng={routePathLinks[0].startNode.coordinates}
-                    color={START_MARKER_COLOR}
-                    isClickDisabled={true}
-                />
-            );
-        };
-
         const { node, isDisabled } = props;
         return (
             <>
@@ -108,7 +73,6 @@ const EditRoutePathLayerNode = inject(
                     node,
                     isDisabled,
                 })}
-                {renderStartMarker()}
             </>
         );
     })
