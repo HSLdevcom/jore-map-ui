@@ -5,10 +5,7 @@ import { Polyline } from 'react-leaflet';
 import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import { MapFilter, MapStore } from '~/stores/mapStore';
-import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
-import { RoutePathStore } from '~/stores/routePathStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
@@ -21,19 +18,13 @@ interface IEditRoutePathLayerLinkProps {
     disableMapClickListener: () => void;
     rpLink: IRoutePathLink;
     setExtendedListItem: (id: string | null) => void;
-    routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
-    routePathCopySegmentStore?: RoutePathCopySegmentStore;
-    toolbarStore?: ToolbarStore;
     mapStore?: MapStore;
 }
 
 const EditRoutePathLayerLink = inject(
-    'routePathStore',
     'routePathLayerStore',
-    'toolbarStore',
-    'mapStore',
-    'routePathCopySegmentStore'
+    'mapStore'
 )(
     observer((props: IEditRoutePathLayerLinkProps) => {
         const renderLink = (routePathLink: IRoutePathLink) => {

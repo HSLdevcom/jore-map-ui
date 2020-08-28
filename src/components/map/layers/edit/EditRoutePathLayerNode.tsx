@@ -3,8 +3,6 @@ import React from 'react';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
 import INode from '~/models/INode';
-import { MapStore } from '~/stores/mapStore';
-import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -20,17 +18,13 @@ interface IRoutePathLayerNodeProps {
     linkOrderNumber: number;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
-    routePathCopySegmentStore?: RoutePathCopySegmentStore;
     toolbarStore?: ToolbarStore;
-    mapStore?: MapStore;
 }
 
 const EditRoutePathLayerNode = inject(
     'routePathStore',
     'routePathLayerStore',
-    'toolbarStore',
-    'mapStore',
-    'routePathCopySegmentStore'
+    'toolbarStore'
 )(
     observer((props: IRoutePathLayerNodeProps) => {
         const renderNode = ({ node, isDisabled }: { node: INode; isDisabled: boolean }) => {
