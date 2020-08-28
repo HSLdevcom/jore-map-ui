@@ -36,6 +36,66 @@ interface IEditRoutePathLayerProps {
 )
 @observer
 class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
+    private renderRoutePathLink = (
+        rpLink: IRoutePathLink,
+        routePathLinks: IRoutePathLink[],
+        index: number
+    ) => {
+        const routePathLayerStore = this.props.routePathLayerStore!;
+        const mapStore = this.props.mapStore!;
+        const isStartNodeDisabled = rpLink.startNodeType === StartNodeType.DISABLED;
+        const isLastNode = index === routePathLinks.length - 1;
+
+        return (
+            <div key={`rpLink-${index}`}>
+                {!this.isNodeVisibleAtNeighborLinkLayer(rpLink.startNode.id) && (
+                    <EditRoutePathLayerNode
+                        key={'startNode'}
+                        node={rpLink.startNode}
+                        isDisabled={isStartNodeDisabled}
+                        linkOrderNumber={rpLink.orderNumber}
+                        isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
+                            rpLink.startNode.internalId
+                        )}
+                        isHovered={
+                            routePathLayerStore.hoveredItemId === rpLink.startNode.internalId
+                        }
+                        isExtended={
+                            routePathLayerStore.extendedListItemId === rpLink.startNode.internalId
+                        }
+                        setHoveredItemId={routePathLayerStore.setHoveredItemId}
+                    />
+                )}
+                <EditRoutePathLayerLink
+                    rpLink={rpLink}
+                    isLinkHovered={routePathLayerStore.hoveredItemId === rpLink.id}
+                    isLinkExtended={routePathLayerStore.extendedListItemId === rpLink.id}
+                    enableMapClickListener={this.props.enableMapClickListener}
+                    disableMapClickListener={this.props.disableMapClickListener}
+                    setExtendedListItem={this.setExtendedListItem}
+                    setHoveredItemId={routePathLayerStore.setHoveredItemId}
+                    isMapFilterEnabled={mapStore.isMapFilterEnabled}
+                />
+                {isLastNode && !this.isNodeVisibleAtNeighborLinkLayer(rpLink.endNode.id) && (
+                    <EditRoutePathLayerNode
+                        key={'endNode'}
+                        node={rpLink.endNode}
+                        isDisabled={false} // endNode has no disabled information
+                        linkOrderNumber={rpLink.orderNumber}
+                        isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
+                            rpLink.endNode.internalId
+                        )}
+                        isHovered={routePathLayerStore.hoveredItemId === rpLink.endNode.internalId}
+                        isExtended={
+                            routePathLayerStore.extendedListItemId === rpLink.endNode.internalId
+                        }
+                        setHoveredItemId={routePathLayerStore.setHoveredItemId}
+                    />
+                )}
+            </div>
+        );
+    };
+
     private setExtendedListItem = (id: string | null) => {
         // Switch to info tab
         if (id) {
@@ -77,9 +137,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
 
     render() {
         const routePathStore = this.props.routePathStore!;
-        const routePathLayerStore = this.props.routePathLayerStore!;
         const routePathCopySegmentStore = this.props.routePathCopySegmentStore!;
-        const mapStore = this.props.mapStore!;
 
         if (!routePathStore.routePath) return null;
 
@@ -95,80 +153,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                     <>
                         {coherentRoutePathLinksList.map((routePathLinks) => {
                             return routePathLinks.map((rpLink: IRoutePathLink, index: number) => {
-                                const isStartNodeDisabled =
-                                    rpLink.startNodeType === StartNodeType.DISABLED;
-                                const isLastNode = index === routePathLinks.length - 1;
-                                return (
-                                    <div key={`rpLink-${index}`}>
-                                        {!this.isNodeVisibleAtNeighborLinkLayer(
-                                            rpLink.startNode.id
-                                        ) && (
-                                            <EditRoutePathLayerNode
-                                                key={'startNode'}
-                                                node={rpLink.startNode}
-                                                isDisabled={isStartNodeDisabled}
-                                                linkOrderNumber={rpLink.orderNumber}
-                                                isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
-                                                    rpLink.startNode.internalId
-                                                )}
-                                                isHovered={
-                                                    routePathLayerStore.hoveredItemId ===
-                                                    rpLink.startNode.internalId
-                                                }
-                                                isExtended={
-                                                    routePathLayerStore.extendedListItemId ===
-                                                    rpLink.startNode.internalId
-                                                }
-                                                setHoveredItemId={
-                                                    routePathLayerStore.setHoveredItemId
-                                                }
-                                            />
-                                        )}
-                                        <EditRoutePathLayerLink
-                                            rpLink={rpLink}
-                                            isLinkHovered={
-                                                routePathLayerStore.hoveredItemId === rpLink.id
-                                            }
-                                            isLinkExtended={
-                                                routePathLayerStore.extendedListItemId === rpLink.id
-                                            }
-                                            enableMapClickListener={
-                                                this.props.enableMapClickListener
-                                            }
-                                            disableMapClickListener={
-                                                this.props.disableMapClickListener
-                                            }
-                                            setExtendedListItem={this.setExtendedListItem}
-                                            setHoveredItemId={routePathLayerStore.setHoveredItemId}
-                                            isMapFilterEnabled={mapStore.isMapFilterEnabled}
-                                        />
-                                        {isLastNode &&
-                                            !this.isNodeVisibleAtNeighborLinkLayer(
-                                                rpLink.endNode.id
-                                            ) && (
-                                                <EditRoutePathLayerNode
-                                                    key={'endNode'}
-                                                    node={rpLink.endNode}
-                                                    isDisabled={false} // endNode has no disabled information
-                                                    linkOrderNumber={rpLink.orderNumber}
-                                                    isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
-                                                        rpLink.endNode.internalId
-                                                    )}
-                                                    isHovered={
-                                                        routePathLayerStore.hoveredItemId ===
-                                                        rpLink.endNode.internalId
-                                                    }
-                                                    isExtended={
-                                                        routePathLayerStore.extendedListItemId ===
-                                                        rpLink.endNode.internalId
-                                                    }
-                                                    setHoveredItemId={
-                                                        routePathLayerStore.setHoveredItemId
-                                                    }
-                                                />
-                                            )}
-                                    </div>
-                                );
+                                return this.renderRoutePathLink(rpLink, routePathLinks, index);
                             });
                         })}
                         {this.renderStartMarker()}
