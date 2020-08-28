@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
@@ -10,6 +11,7 @@ import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
+import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
 import { INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -23,11 +25,11 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
-import RoutePathListItem from './RoutePathListItem';
-import * as s from './routePathListItem.scss';
+import * as s from './routePathList.scss';
 
 interface IRoutePathListNodeProps {
     node: INode;
+    linkOrderNumber: number;
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
     isEditingDisabled: boolean;
@@ -401,32 +403,83 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         return shadowClass;
     }
 
+    private onMouseEnterNodeIcon = () => {
+        this.props.routePathLayerStore!.setHoveredItemId(this.props.node.internalId);
+    };
+
+    private onMouseLeaveNodeIcon = () => {
+        if (this.props.routePathLayerStore!.hoveredItemId === this.props.node.internalId) {
+            this.props.routePathLayerStore!.setHoveredItemId(null);
+        }
+    };
+
+    private onClickNodeIcon = () => {
+        const clickParams: IRoutePathNodeClickParams = {
+            node: this.props.node,
+            linkOrderNumber: this.props.linkOrderNumber,
+        };
+        EventListener.trigger('routePathNodeClick', clickParams);
+    };
+
     render() {
         const { node, routePathLink, isFirstNode, isLastNode } = this.props;
+        const isHighlightedByTool = this.props.routePathLayerStore!.toolHighlightedNodeIds.includes(
+            node.internalId
+        );
+        const isExtended = this.props.routePathLayerStore!.extendedListItemId === node.internalId;
+        const isHovered = this.props.routePathLayerStore!.hoveredItemId === node.internalId;
+        const isHighlighted = isHighlightedByTool || isExtended || isHovered;
+        const highlightColor = isHovered
+            ? 'yellow'
+            : isHighlightedByTool
+            ? 'green'
+            : isExtended
+            ? 'blue'
+            : undefined;
         return (
-            <RoutePathListItem
-                // Use internalId as key instead of id because there might be duplicate nodes
-                id={node.internalId}
-                reference={this.props.reference}
-                shadowClass={this.getShadowClass()}
-                header={this.renderHeader()}
-                body={this.renderBody()}
-                listIcon={
-                    <TransitTypeNodeIcon
-                        nodeType={node.type}
-                        transitTypes={node.transitTypes}
-                        isTimeAlignmentStop={
-                            !isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
-                        }
-                        isDisabled={
-                            !isLastNode && routePathLink.startNodeType === StartNodeType.DISABLED
-                        }
-                    />
-                }
-                isFirstNode={isFirstNode}
-                isLastNode={isLastNode}
-                isItemHighlighted={this.isNodeSelected()}
-            />
+            <div
+                ref={this.props.reference}
+                className={classnames(
+                    s.routePathListItem,
+                    this.getShadowClass(),
+                    this.isNodeSelected() ? s.highlightedItem : undefined
+                )}
+            >
+                <div
+                    className={s.listIconWrapper}
+                    onMouseEnter={this.onMouseEnterNodeIcon}
+                    onMouseLeave={this.onMouseLeaveNodeIcon}
+                    onClick={this.onClickNodeIcon}
+                >
+                    <div className={s.borderContainer}>
+                        <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
+                        <div />
+                    </div>
+                    <div className={s.listIcon}>
+                        <TransitTypeNodeIcon
+                            nodeType={node.type}
+                            transitTypes={node.transitTypes}
+                            isTimeAlignmentStop={
+                                !isLastNode && routePathLink.startNodeTimeAlignmentStop !== '0'
+                            }
+                            isDisabled={
+                                !isLastNode &&
+                                routePathLink.startNodeType === StartNodeType.DISABLED
+                            }
+                            isHighlighted={isHighlighted}
+                            highlightColor={highlightColor}
+                        />
+                    </div>
+                    <div className={s.borderContainer}>
+                        <div className={!isLastNode ? s.borderLeftContainer : undefined} />
+                        <div />
+                    </div>
+                </div>
+                <div className={s.contentWrapper}>
+                    {this.renderHeader()}
+                    {isExtended && <div className={s.itemContent}>{this.renderBody()}</div>}
+                </div>
+            </div>
         );
     }
 }

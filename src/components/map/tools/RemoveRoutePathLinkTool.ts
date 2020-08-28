@@ -1,4 +1,5 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
+import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import RoutePathStore from '~/stores/routePathStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import BaseTool from './BaseTool';
@@ -13,17 +14,19 @@ class RemoveRoutePathLinkTool implements BaseTool {
     public toolHelpHeader = 'Poista reitin linkki';
     public toolHelpPhasesMap = {
         selectRoutePathLinkToRemove: {
-            phaseHelpText: 'Poista reitin linkki klikkaamalla sitä kartalta.',
+            phaseHelpText: 'Poista reitin linkki klikkaamalla sitä kartalta tai sivupalkista.',
         },
     };
 
     public activate = () => {
         RoutePathStore.setIsEditingDisabled(false);
+        EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
         this.setToolPhase('selectRoutePathLinkToRemove');
     };
 
     public deactivate = () => {
         this.setToolPhase(null);
+        EventListener.off('routePathLinkClick', this.onRoutePathLinkClick);
     };
 
     public getToolPhase = () => {
@@ -34,8 +37,9 @@ class RemoveRoutePathLinkTool implements BaseTool {
         ToolbarStore.setToolPhase(toolPhase);
     };
 
-    public onRoutePathLinkClick = (id: string) => (clickEvent: any) => {
-        RoutePathStore.removeLink(id);
+    private onRoutePathLinkClick = (clickEvent: CustomEvent) => {
+        const params: IRoutePathLinkClickParams = clickEvent.detail;
+        RoutePathStore.removeLink(params.routePathLinkId);
     };
 }
 

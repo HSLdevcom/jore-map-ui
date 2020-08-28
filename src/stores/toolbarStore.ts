@@ -13,7 +13,7 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathLinkMassEditStore from '~/stores/routePathLinkMassEditStore';
 import RoutePathStore from '~/stores/routePathStore';
 
-const defaultTool = new SelectNetworkEntityTool();
+const DEFAULT_TOOL_TYPE = ToolbarToolType.SelectNetworkEntity;
 
 const TOOL_LIST = [
     SelectNetworkEntityTool,
@@ -89,7 +89,8 @@ class ToolbarStore {
             tool === ToolbarToolType.SelectNetworkEntity ||
             (this._selectedTool && this._selectedTool.toolType === tool)
         ) {
-            this.selectDefaultTool();
+            this._selectedTool = TOOLS[DEFAULT_TOOL_TYPE];
+            this._selectedTool!.activate();
             return;
         }
         this._selectedTool = TOOLS[tool];
@@ -120,8 +121,7 @@ class ToolbarStore {
 
     @action
     public selectDefaultTool() {
-        this._selectedTool = defaultTool;
-        this._selectedTool.activate();
+        this.selectTool(DEFAULT_TOOL_TYPE);
     }
 
     @action

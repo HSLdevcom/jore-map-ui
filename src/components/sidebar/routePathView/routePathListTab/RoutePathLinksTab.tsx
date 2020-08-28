@@ -63,6 +63,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                 this.listObjectReferences[routePathLink.startNode.internalId]
                             }
                             node={routePathLink.startNode}
+                            linkOrderNumber={routePathLink.orderNumber}
                             routePathLink={routePathLink}
                             isEditingDisabled={this.props.isEditingDisabled}
                             isFirstNode={index === 0}
@@ -91,6 +92,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                     this.listObjectReferences[routePathLink.endNode.internalId]
                                 }
                                 node={routePathLink.endNode}
+                                linkOrderNumber={routePathLink.orderNumber}
                                 routePathLink={routePathLink}
                                 isLastNode={true}
                                 isEditingDisabled={this.props.isEditingDisabled}

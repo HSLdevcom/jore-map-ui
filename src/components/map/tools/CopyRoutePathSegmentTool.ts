@@ -1,8 +1,8 @@
 import { reaction, IReactionDisposer } from 'mobx';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, {
-    IEditRoutePathLayerNodeClickParams,
     INodeClickParams,
+    IRoutePathNodeClickParams,
 } from '~/helpers/EventListener';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
@@ -22,11 +22,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
     public toolHelpPhasesMap = {
         selectStartNode: {
             phaseTopic: 'Alkusolmun valitseminen',
-            phaseHelpText: 'Valitse kartalta kopioitavan reitinsuunnan segmentin aloitus-solmu.',
+            phaseHelpText:
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin aloitus-solmu.',
         },
         selectEndNode: {
             phaseTopic: 'Loppusolmun valitseminen',
-            phaseHelpText: 'Valitse kartalta kopioitavan reitinsuunnan segmentin lopetus-solmu.',
+            phaseHelpText:
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin lopetus-solmu.',
         },
         selectRoutePathToCopy: {
             phaseTopic: 'Reitinsuunnan valitseminen',
@@ -39,7 +41,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
         EventListener.on('nodeClick', this.onNodeClick);
-        EventListener.on('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
         this.refreshToolPhaseListener = reaction(
             () => [RoutePathCopySegmentStore.setNodeType, RoutePathCopySegmentStore.routePaths],
@@ -52,7 +54,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         this.setToolPhase(null);
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('nodeClick', this.onNodeClick);
-        EventListener.off('editRoutePathLayerNodeClick', this.onEditRoutePathLayerNodeClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         RoutePathCopySegmentStore.clear();
         this.refreshToolPhaseListener();
     };
@@ -75,13 +77,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
         }
     };
 
-    private onNodeClick = (clickEvent: CustomEvent) => {
-        const params: INodeClickParams = clickEvent.detail;
+    private onNodeClick = (event: CustomEvent) => {
+        const params: INodeClickParams = event.detail;
         this.selectNode(params.nodeId);
     };
 
-    private onEditRoutePathLayerNodeClick = (clickEvent: CustomEvent) => {
-        const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
+    private onRoutePathNodeClick = (event: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = event.detail;
         this.selectNode(params.node.id);
     };
 

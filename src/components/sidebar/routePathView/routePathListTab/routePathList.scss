@@ -31,7 +31,6 @@
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            margin-left: 10px;
             height: 40px; // To make items have equal height
             cursor: pointer;
 
@@ -40,8 +39,11 @@
                 text-overflow: ellipsis;
                 overflow: hidden;
                 cursor: pointer;
-                font-size: 0.9rem;
+                font-size: 0.9em;
                 width: 117px;
+                &.smallFontSize {
+                    font-size: 0.8em;
+                }
             }
 
             .headerContent {
@@ -104,7 +106,7 @@
         }
 
         .itemContent {
-            padding: 0px 10px 20px 20px;
+            padding: 0px 10px 20px 15px;
 
             .header {
                 font-size: 20px;
@@ -131,10 +133,12 @@
         }
     }
 
-    .contentBorder {
+    .listIconWrapper {
         display: flex;
         flex-direction: column;
         width: 30px;
+        padding-left: 5px;
+        padding-right: 5px;
         cursor: pointer;
 
         .borderContainer {
@@ -142,14 +146,29 @@
             height: 100%;
 
             .borderLeftContainer {
-                border-right: 2px solid $blue; // border width
-                width: calc(50% - 1px); // needs to be half of the border width
+                border-right: 4px solid rgba(0, 0, 0, 0.7); // border width & color
+                width: calc(50% - 2px); // needs to be half of the border width
             }
         }
         .listIcon {
             display: flex;
             justify-content: center;
         }
+    }
+    .hoveredIcon {
+        margin-left: 8px;
+        margin-right: 8px;
+        border-radius: 5px;
+    }
+    .hoveredIconHighlight {
+        @extend .hoveredIcon;
+        background-color: rgba(223, 211, 0, 0.7);
+        box-shadow: -1px 0px 2px 0px #dfd300; // -1 to center highlight
+    }
+    .extendedIconHighlight {
+        @extend .hoveredIcon;
+        background-color: rgba(0, 122, 201, 0.7);
+        box-shadow: -1px 0px 2px 0px $busBlue; // -1 to center highlight
     }
 }
 

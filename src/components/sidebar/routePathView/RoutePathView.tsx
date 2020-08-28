@@ -12,7 +12,10 @@ import Loader from '~/components/shared/loader/Loader';
 import constants from '~/constants/constants';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
-import EventListener from '~/helpers/EventListener';
+import EventListener, {
+    IRoutePathLinkClickParams,
+    IRoutePathNodeClickParams,
+} from '~/helpers/EventListener';
 import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
 import IViaShieldName from '~/models/IViaShieldName';
 import navigator from '~/routing/navigator';
@@ -93,6 +96,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this._isMounted = true;
         EventListener.on('undo', this.undo);
         EventListener.on('redo', this.redo);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
+        EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
     }
@@ -103,6 +108,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.clear();
         EventListener.off('undo', this.undo);
         EventListener.off('redo', this.redo);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
+        EventListener.off('routePathLinkClick', this.onRoutePathLinkClick);
     }
 
     private undo = () => {
@@ -111,6 +118,20 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private redo = () => {
         this.undoIfAllowed(this.props.routePathStore!.redo);
+    };
+
+    private onRoutePathNodeClick = (event: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = event.detail;
+        this.props.routePathLayerStore?.extendedListItemId === params.node.internalId
+            ? this.props.routePathLayerStore!.setExtendedListItemId(null)
+            : this.props.routePathLayerStore!.setExtendedListItemId(params.node.internalId);
+    };
+
+    private onRoutePathLinkClick = (event: CustomEvent) => {
+        const params: IRoutePathLinkClickParams = event.detail;
+        this.props.routePathLayerStore!.extendedListItemId === params.routePathLinkId
+            ? this.props.routePathLayerStore!.setExtendedListItemId(null)
+            : this.props.routePathLayerStore!.setExtendedListItemId(params.routePathLinkId);
     };
 
     private undoIfAllowed = (undo: () => void) => {
