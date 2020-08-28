@@ -68,8 +68,8 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                 )}
                 <EditRoutePathLayerLink
                     rpLink={rpLink}
-                    isLinkHovered={routePathLayerStore.hoveredItemId === rpLink.id}
-                    isLinkExtended={routePathLayerStore.extendedListItemId === rpLink.id}
+                    isHovered={routePathLayerStore.hoveredItemId === rpLink.id}
+                    isExtended={routePathLayerStore.extendedListItemId === rpLink.id}
                     enableMapClickListener={this.props.enableMapClickListener}
                     disableMapClickListener={this.props.disableMapClickListener}
                     setExtendedListItem={this.setExtendedListItem}

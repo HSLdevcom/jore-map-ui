@@ -14,8 +14,8 @@ const EXTENDED_LINK_COLOR = '#007ac9';
 
 interface IEditRoutePathLayerLinkProps {
     rpLink: IRoutePathLink;
-    isLinkHovered: boolean;
-    isLinkExtended: boolean;
+    isHovered: boolean;
+    isExtended: boolean;
     enableMapClickListener: () => void;
     disableMapClickListener: () => void;
     setExtendedListItem: (id: string | null) => void;
@@ -26,8 +26,8 @@ interface IEditRoutePathLayerLinkProps {
 const EditRoutePathLayerLink = inject()(
     observer((props: IEditRoutePathLayerLinkProps) => {
         const renderLink = (routePathLink: IRoutePathLink) => {
-            const isLinkHovered = props.isLinkHovered;
-            const isLinkExtended = props.isLinkExtended;
+            const isLinkHovered = props.isHovered;
+            const isLinkExtended = props.isExtended;
             return [
                 <Polyline
                     positions={routePathLink.geometry}
