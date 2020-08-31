@@ -5,7 +5,7 @@ import { IoIosRadioButtonOn } from 'react-icons/io';
 import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import NodeType from '~/enums/nodeType';
-import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { INode, IRoutePath } from '~/models';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
