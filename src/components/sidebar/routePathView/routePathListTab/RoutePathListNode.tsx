@@ -25,7 +25,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
-import * as s from './routePathList.scss';
+import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
     node: INode;

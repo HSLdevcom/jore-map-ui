@@ -15,7 +15,7 @@ import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TextContainer from '../../../controls/TextContainer';
-import * as s from './routePathList.scss';
+import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
     reference: React.RefObject<HTMLDivElement>;
