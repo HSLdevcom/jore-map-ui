@@ -18,7 +18,6 @@ import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
@@ -29,14 +28,17 @@ import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
     node: INode;
-    linkOrderNumber: number;
     reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
     isFirstNode?: boolean;
+    isHighlightedByTool: boolean;
+    isExtended: boolean;
+    isHovered: boolean;
+    setExtendedListItemId: (id: string | null) => void;
+    setHoveredItemId: (id: string | null) => void;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
-    routePathLayerStore?: RoutePathLayerStore;
     routePathStore?: RoutePathStore;
     codeListStore?: CodeListStore;
     mapStore?: MapStore;
@@ -46,7 +48,6 @@ interface IRoutePathListNodeProps {
 
 @inject(
     'routePathStore',
-    'routePathLayerStore',
     'codeListStore',
     'mapStore',
     'routePathLinkMassEditStore',
@@ -59,7 +60,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
         const node = this.props.node;
         const routePathLink = this.props.routePathLink;
         const stopName = node.stop ? node.stop.nameFi : '';
-        const isExtended = this.props.routePathLayerStore!.extendedListItemId === node.internalId;
+        const isExtended = this.props.isExtended;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         const shortId = NodeUtils.getShortId(node);
         const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
@@ -122,7 +123,6 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     private toggleExtendedListItemId = (event: React.MouseEvent) => {
         const currentListItemId = this.props.node.internalId;
         const routePathStore = this.props.routePathStore;
-        const routePathLayerStore = this.props.routePathLayerStore;
         const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
         // Mass edit routePathLinks toggle
         if (
@@ -143,10 +143,10 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             );
             // List item toggle
         } else {
-            if (currentListItemId === routePathLayerStore!.extendedListItemId) {
-                this.props.routePathLayerStore!.setExtendedListItemId(null);
+            if (this.props.isExtended) {
+                this.props.setExtendedListItemId(null);
             } else {
-                this.props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
+                this.props.setExtendedListItemId(currentListItemId);
                 this.props.mapStore!.setMapBounds(this.getBounds());
             }
         }
@@ -404,30 +404,28 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
     }
 
     private onMouseEnterNodeIcon = () => {
-        this.props.routePathLayerStore!.setHoveredItemId(this.props.node.internalId);
+        this.props.setHoveredItemId(this.props.node.internalId);
     };
 
     private onMouseLeaveNodeIcon = () => {
-        if (this.props.routePathLayerStore!.hoveredItemId === this.props.node.internalId) {
-            this.props.routePathLayerStore!.setHoveredItemId(null);
+        if (this.props.isHovered) {
+            this.props.setHoveredItemId(null);
         }
     };
 
     private onClickNodeIcon = () => {
         const clickParams: IRoutePathNodeClickParams = {
             node: this.props.node,
-            linkOrderNumber: this.props.linkOrderNumber,
+            linkOrderNumber: this.props.routePathLink.orderNumber,
         };
         EventListener.trigger('routePathNodeClick', clickParams);
     };
 
     render() {
         const { node, routePathLink, isFirstNode, isLastNode } = this.props;
-        const isHighlightedByTool = this.props.routePathLayerStore!.toolHighlightedNodeIds.includes(
-            node.internalId
-        );
-        const isExtended = this.props.routePathLayerStore!.extendedListItemId === node.internalId;
-        const isHovered = this.props.routePathLayerStore!.hoveredItemId === node.internalId;
+        const isHighlightedByTool = this.props.isHighlightedByTool;
+        const isExtended = this.props.isExtended;
+        const isHovered = this.props.isHovered;
         const isHighlighted = isHighlightedByTool || isExtended || isHovered;
         const highlightColor = isHovered
             ? 'yellow'
@@ -436,6 +434,7 @@ class RoutePathListNode extends React.Component<IRoutePathListNodeProps> {
             : isExtended
             ? 'blue'
             : undefined;
+
         return (
             <div
                 ref={this.props.reference}
