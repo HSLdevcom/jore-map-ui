@@ -1,12 +1,14 @@
 import classnames from 'classnames';
+import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
-import { Button, Checkbox, Dropdown } from '~/components/controls';
-import { IDropdownItem } from '~/components/controls/Dropdown';
-import BaseTool from '~/components/map/tools/BaseTool';
+import { Button, Checkbox } from '~/components/controls';
+import Dropdown from '~/components/controls/Dropdown';
+import InputContainer from '~/components/controls/InputContainer';
+import TextContainer from '~/components/controls/TextContainer';
 import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
@@ -16,38 +18,46 @@ import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListene
 import { INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
-import InputContainer from '../../../controls/InputContainer';
-import TextContainer from '../../../controls/TextContainer';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
     node: INode;
-    reference: React.RefObject<HTMLDivElement>;
     routePathLink: IRoutePathLink;
     isEditingDisabled: boolean;
     isLastNode?: boolean;
     isFirstNode?: boolean;
-    invalidPropertiesMap: Object;
     isHighlightedByTool: boolean;
     isExtended: boolean;
     isHovered: boolean;
     isStartNodeUsingBookSchedule?: boolean;
     startNodeBookScheduleColumnNumber?: number;
     selectedRoutePathLinkIndex: number;
-    selectedTool: BaseTool | null;
-    setExtendedListItemId: (id: string | null) => void;
-    setHoveredItemId: (id: string | null) => void;
-    setIsEditingDisabled: (isDisabled: boolean) => void;
-    updateRoutePathProperty: (property: string, value: any) => void;
-    updateRoutePathLinkProperty: (orderNumber: number, property: string, value: any) => void;
-    setMapBoundsToRpLink: () => void;
-    toggleSelectedRoutePathLink: (routePathLink: IRoutePathLink) => void;
-    getDropdownItemList: (codeList: string) => IDropdownItem[];
-    addErrorToErrorStore: (errorMessage: string) => void;
+    routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
+    routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
+    errorStore?: ErrorStore;
+    codeListStore?: CodeListStore;
 }
 
-const RoutePathListNode = inject()(
+const RoutePathListNode = inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'routePathLinkMassEditStore',
+    'errorStore',
+    'mapStore',
+    'toolbarStore',
+    'codeListStore'
+)(
     observer((props: IRoutePathListNodeProps) => {
         const renderHeader = () => {
             const node = props.node;
@@ -116,22 +126,25 @@ const RoutePathListNode = inject()(
             const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
             // Mass edit routePathLinks toggle
             if (!props.isLastNode && props.node.type === NodeType.STOP && isCtrlOrShiftPressed) {
-                const selectedTool = props.selectedTool;
+                const selectedTool = props.toolbarStore!.selectedTool;
                 if (selectedTool && selectedTool.toolType !== ToolbarToolType.SelectNetworkEntity) {
-                    props.addErrorToErrorStore(
+                    props.errorStore!.addError(
                         `Pysäkkien massa editointi editointi estetty, sulje ensin aktiivinen karttatyökalu.`
                     );
                     return;
                 }
-                props.setIsEditingDisabled(false);
-                props.toggleSelectedRoutePathLink(props.routePathLink);
+                props.routePathStore!.setIsEditingDisabled(false);
+                props.routePathLinkMassEditStore!.toggleSelectedRoutePathLink(props.routePathLink);
                 // List item toggle
             } else {
                 if (props.isExtended) {
-                    props.setExtendedListItemId(null);
+                    props.routePathLayerStore!.setExtendedListItemId(null);
                 } else {
-                    props.setExtendedListItemId(currentListItemId);
-                    props.setMapBoundsToRpLink();
+                    props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
+                    const geometry = props.routePathStore!.getLinkGeom(routePathLink.id);
+                    const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+                    geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+                    props.mapStore!.setMapBounds(bounds);
                 }
             }
         };
@@ -142,7 +155,7 @@ const RoutePathListNode = inject()(
 
         const onRoutePathLinkPropertyChange = (property: keyof IRoutePathLink) => (value: any) => {
             const orderNumber = props.routePathLink.orderNumber;
-            props.updateRoutePathLinkProperty(orderNumber, property, value);
+            props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value);
         };
 
         /**
@@ -156,9 +169,9 @@ const RoutePathListNode = inject()(
             const orderNumber = props.routePathLink.orderNumber;
 
             if (props.isLastNode) {
-                props.updateRoutePathProperty(property, value);
+                props.routePathStore!.updateRoutePathProperty(property, value);
             } else {
-                props.updateRoutePathLinkProperty(orderNumber, property, value);
+                props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value);
             }
         };
 
@@ -171,7 +184,9 @@ const RoutePathListNode = inject()(
             const routePathLink = props.routePathLink;
             const isStartNodeUsingBookSchedule = props.isStartNodeUsingBookSchedule;
             const startNodeBookScheduleColumnNumber = props.startNodeBookScheduleColumnNumber;
-            const invalidPropertiesMap = props.invalidPropertiesMap;
+            const invalidPropertiesMap = props.routePathStore!.getRoutePathLinkInvalidPropertiesMap(
+                routePathLink.id
+            );
             return (
                 <div>
                     <div className={s.flexRow}>
@@ -212,7 +227,9 @@ const RoutePathListNode = inject()(
                                     )}
                                     disabled={isEditingDisabled}
                                     selected={routePathLink.startNodeTimeAlignmentStop}
-                                    items={props.getDropdownItemList('Ajantasaus pysakki')}
+                                    items={props.codeListStore!.getDropdownItemList(
+                                        'Ajantasaus pysakki'
+                                    )}
                                     isInputLabelDarker={true}
                                 />
                                 <Dropdown
@@ -220,7 +237,9 @@ const RoutePathListNode = inject()(
                                     onChange={onRoutePathLinkPropertyChange('startNodeUsage')}
                                     disabled={isEditingDisabled}
                                     selected={routePathLink.startNodeUsage}
-                                    items={props.getDropdownItemList('Pysäkin käyttö')}
+                                    items={props.codeListStore!.getDropdownItemList(
+                                        'Pysäkin käyttö'
+                                    )}
                                     isInputLabelDarker={true}
                                 />
                             </div>
@@ -368,12 +387,12 @@ const RoutePathListNode = inject()(
         };
 
         const onMouseEnterNodeIcon = () => {
-            props.setHoveredItemId(props.node.internalId);
+            props.routePathLayerStore!.setHoveredItemId(props.node.internalId);
         };
 
         const onMouseLeaveNodeIcon = () => {
             if (props.isHovered) {
-                props.setHoveredItemId(null);
+                props.routePathLayerStore!.setHoveredItemId(null);
             }
         };
 
@@ -400,7 +419,6 @@ const RoutePathListNode = inject()(
 
         return (
             <div
-                ref={props.reference}
                 className={classnames(
                     s.routePathListItem,
                     getShadowClass(),

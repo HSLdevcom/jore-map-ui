@@ -1,4 +1,3 @@
-import * as L from 'leaflet';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -105,19 +104,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         key: string;
     }) => {
         const routePathLayerStore = this.props.routePathLayerStore!;
-        const routePathStore = this.props.routePathStore!;
         const routePathLinkMassEditStore = this.props.routePathLinkMassEditStore!;
-        const mapStore = this.props.mapStore!;
-        const codeListStore = this.props.codeListStore!;
-        const toolbarStore = this.props.toolbarStore!;
-        const errorStore = this.props.errorStore!;
-
-        const setMapBoundsToRpLink = () => {
-            const geometry = routePathStore.getLinkGeom(routePathLink.id);
-            const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-            geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
-            mapStore.setMapBounds(bounds);
-        };
 
         const routePath = this.props.routePathStore!.routePath;
         const isStartNodeUsingBookSchedule = isLastNode
@@ -126,40 +113,26 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const startNodeBookScheduleColumnNumber = isLastNode
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
-
         return (
-            <RoutePathListNode
-                key={key}
-                reference={this.listObjectReferences[node.internalId]}
-                node={node}
-                routePathLink={routePathLink}
-                isEditingDisabled={this.props.isEditingDisabled}
-                isFirstNode={isFirstNode}
-                isLastNode={isLastNode}
-                invalidPropertiesMap={routePathStore.getRoutePathLinkInvalidPropertiesMap(
-                    routePathLink.id
-                )}
-                isHighlightedByTool={routePathLayerStore.toolHighlightedNodeIds.includes(
-                    node.internalId
-                )}
-                isExtended={routePathLayerStore.extendedListItemId === node.internalId}
-                isHovered={routePathLayerStore.hoveredItemId === node.internalId}
-                isStartNodeUsingBookSchedule={isStartNodeUsingBookSchedule}
-                startNodeBookScheduleColumnNumber={startNodeBookScheduleColumnNumber}
-                selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
-                    routePathLink
-                )}
-                selectedTool={toolbarStore.selectedTool}
-                setExtendedListItemId={routePathLayerStore.setExtendedListItemId}
-                setHoveredItemId={routePathLayerStore.setHoveredItemId}
-                setIsEditingDisabled={routePathStore.setIsEditingDisabled}
-                updateRoutePathProperty={routePathStore.updateRoutePathProperty}
-                updateRoutePathLinkProperty={routePathStore.updateRoutePathLinkProperty}
-                setMapBoundsToRpLink={setMapBoundsToRpLink}
-                toggleSelectedRoutePathLink={routePathLinkMassEditStore.toggleSelectedRoutePathLink}
-                getDropdownItemList={codeListStore.getDropdownItemList}
-                addErrorToErrorStore={errorStore.addError}
-            />
+            <div key={key} ref={this.listObjectReferences[node.internalId]}>
+                <RoutePathListNode
+                    node={node}
+                    routePathLink={routePathLink}
+                    isEditingDisabled={this.props.isEditingDisabled}
+                    isFirstNode={isFirstNode}
+                    isLastNode={isLastNode}
+                    isHighlightedByTool={routePathLayerStore.toolHighlightedNodeIds.includes(
+                        node.internalId
+                    )}
+                    isExtended={routePathLayerStore.extendedListItemId === node.internalId}
+                    isHovered={routePathLayerStore.hoveredItemId === node.internalId}
+                    isStartNodeUsingBookSchedule={isStartNodeUsingBookSchedule}
+                    startNodeBookScheduleColumnNumber={startNodeBookScheduleColumnNumber}
+                    selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                        routePathLink
+                    )}
+                />
+            </div>
         );
     };
 
