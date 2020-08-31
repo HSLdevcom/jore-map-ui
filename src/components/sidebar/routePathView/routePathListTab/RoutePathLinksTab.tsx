@@ -1,3 +1,4 @@
+import * as L from 'leaflet';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -6,9 +7,13 @@ import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathUtils from '~/utils/RoutePathUtils';
 import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
@@ -21,9 +26,21 @@ interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    mapStore?: MapStore;
+    codeListStore?: CodeListStore;
+    toolbarStore?: ToolbarStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('routePathStore', 'routePathLayerStore', 'routePathLinkMassEditStore')
+@inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'routePathLinkMassEditStore',
+    'mapStore',
+    'codeListStore',
+    'toolbarStore',
+    'errorStore'
+)
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     private extendedItemListener: IReactionDisposer;
@@ -88,6 +105,27 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         key: string;
     }) => {
         const routePathLayerStore = this.props.routePathLayerStore!;
+        const routePathStore = this.props.routePathStore!;
+        const routePathLinkMassEditStore = this.props.routePathLinkMassEditStore!;
+        const mapStore = this.props.mapStore!;
+        const codeListStore = this.props.codeListStore!;
+        const toolbarStore = this.props.toolbarStore!;
+        const errorStore = this.props.errorStore!;
+
+        const setMapBoundsToRpLink = () => {
+            const geometry = routePathStore.getLinkGeom(routePathLink.id);
+            const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+            geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+            mapStore.setMapBounds(bounds);
+        };
+
+        const routePath = this.props.routePathStore!.routePath;
+        const isStartNodeUsingBookSchedule = isLastNode
+            ? routePath!.isStartNodeUsingBookSchedule
+            : routePathLink.isStartNodeUsingBookSchedule;
+        const startNodeBookScheduleColumnNumber = isLastNode
+            ? routePath!.startNodeBookScheduleColumnNumber
+            : routePathLink.startNodeBookScheduleColumnNumber;
 
         return (
             <RoutePathListNode
@@ -98,13 +136,29 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                 isEditingDisabled={this.props.isEditingDisabled}
                 isFirstNode={isFirstNode}
                 isLastNode={isLastNode}
+                invalidPropertiesMap={routePathStore.getRoutePathLinkInvalidPropertiesMap(
+                    routePathLink.id
+                )}
                 isHighlightedByTool={routePathLayerStore.toolHighlightedNodeIds.includes(
                     node.internalId
                 )}
                 isExtended={routePathLayerStore.extendedListItemId === node.internalId}
                 isHovered={routePathLayerStore.hoveredItemId === node.internalId}
+                isStartNodeUsingBookSchedule={isStartNodeUsingBookSchedule}
+                startNodeBookScheduleColumnNumber={startNodeBookScheduleColumnNumber}
+                selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                    routePathLink
+                )}
+                selectedTool={toolbarStore.selectedTool}
                 setExtendedListItemId={routePathLayerStore.setExtendedListItemId}
                 setHoveredItemId={routePathLayerStore.setHoveredItemId}
+                setIsEditingDisabled={routePathStore.setIsEditingDisabled}
+                updateRoutePathProperty={routePathStore.updateRoutePathProperty}
+                updateRoutePathLinkProperty={routePathStore.updateRoutePathLinkProperty}
+                setMapBoundsToRpLink={setMapBoundsToRpLink}
+                toggleSelectedRoutePathLink={routePathLinkMassEditStore.toggleSelectedRoutePathLink}
+                getDropdownItemList={codeListStore.getDropdownItemList}
+                addErrorToErrorStore={errorStore.addError}
             />
         );
     };
@@ -117,7 +171,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
             routePathLinks
         );
-
         return (
             <div className={s.routePathLinksTabView}>
                 <ToggleView>
