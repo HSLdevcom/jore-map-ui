@@ -18,7 +18,8 @@ import TextContainer from '../../../controls/TextContainer';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
-    reference: React.RefObject<HTMLDivElement>;
+    isExtended: boolean;
+    isHovered: boolean;
     routePathLink: IRoutePathLink;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
@@ -127,7 +128,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     };
 
     private onMouseLeaveLinkIcon = () => {
-        if (this.props.routePathLayerStore!.hoveredItemId === this.props.routePathLink.id) {
+        if (this.props.isHovered) {
             this.props.routePathLayerStore!.setHoveredItemId(null);
         }
     };
@@ -139,12 +140,10 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         EventListener.trigger('routePathLinkClick', clickParams);
     };
     render() {
-        const isExtended =
-            this.props.routePathLayerStore!.extendedListItemId === this.props.routePathLink.id;
-        const isHovered =
-            this.props.routePathLayerStore!.hoveredItemId === this.props.routePathLink.id;
+        const isExtended = this.props.isExtended;
+        const isHovered = this.props.isHovered;
         return (
-            <div ref={this.props.reference} className={classnames(s.routePathListItem)}>
+            <div className={classnames(s.routePathListItem)}>
                 <div
                     className={s.listIconWrapper}
                     onMouseEnter={this.onMouseEnterLinkIcon}

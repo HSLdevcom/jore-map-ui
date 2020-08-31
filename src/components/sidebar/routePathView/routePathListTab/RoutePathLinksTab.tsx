@@ -136,6 +136,25 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         );
     };
 
+    private renderRpListLink = ({
+        routePathLink,
+        key,
+    }: {
+        routePathLink: IRoutePathLink;
+        key: string;
+    }) => {
+        const routePathLayerStore = this.props.routePathLayerStore!;
+        return (
+            <div key={key} ref={this.listObjectReferences[routePathLink.id]}>
+                <RoutePathListLink
+                    routePathLink={routePathLink}
+                    isExtended={routePathLayerStore.extendedListItemId === routePathLink.id}
+                    isHovered={routePathLayerStore.hoveredItemId === routePathLink.id}
+                />
+            </div>
+        );
+    };
+
     render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
@@ -193,13 +212,12 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                               key: `${routePathLink.id}-${index}-startNode`,
                                           })
                                         : null,
-                                    this.areLinksVisible() ? (
-                                        <RoutePathListLink
-                                            key={`${routePathLink.id}-${index}-link`}
-                                            reference={this.listObjectReferences[routePathLink.id]}
-                                            routePathLink={routePathLink}
-                                        />
-                                    ) : null,
+                                    this.areLinksVisible()
+                                        ? this.renderRpListLink({
+                                              routePathLink,
+                                              key: `${routePathLink.id}-${index}-link`,
+                                          })
+                                        : null,
                                 ];
 
                                 if (index === routePathLinks.length - 1) {
