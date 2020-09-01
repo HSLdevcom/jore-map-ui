@@ -65,13 +65,6 @@ const NodeLayer = inject(
                 getMap().off('moveend', forceUpdate);
             };
         });
-        // TODO:
-        //     reaction(
-        //         () =>
-        //             this.props.routePathStore!.routePath &&
-        //             this.props.routePathStore!.routePath.routePathLinks.length,
-        //         () => this.redrawNodeLayer()
-        //     );
 
         if (props.mapStore!.areNetworkLayersHidden) return <div />;
         if (!turfPointNodeFeatures) return <div />;
