@@ -8,7 +8,7 @@ import EventListener, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
-import { NodeLabel } from '~/stores/mapStore';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import { NeighborToAddType, RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import NodeUtils from '~/utils/NodeUtils';
@@ -19,6 +19,7 @@ import * as s from './routePathNeighborLinkLayer.scss';
 interface IRoutePathLayerProps {
     routePathLayerStore?: RoutePathLayerStore;
     popupStore?: PopupStore;
+    mapStore?: MapStore;
 }
 
 interface IRoutePathLayerState {
@@ -30,7 +31,7 @@ interface PolylineRefs {
     [key: string]: any;
 }
 
-@inject('routePathLayerStore', 'popupStore')
+@inject('routePathLayerStore', 'popupStore', 'mapStore')
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     private linkListener: IReactionDisposer;
@@ -84,6 +85,10 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             EventListener.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
 
+        const visibleNodeLabels = _.union(this.props.mapStore!.visibleNodeLabels, [
+            NodeLabel.longNodeId,
+        ]);
+
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
@@ -95,7 +100,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
                 classNames={[this.getNeighborLinkClassName(neighborLink)]}
-                forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
+                visibleNodeLabels={visibleNodeLabels}
                 onClick={onNeighborLinkClick}
                 onContextMenu={() => this.showNodePopup(node, neighborLink.nodeUsageRoutePaths)}
                 onMouseOver={() =>

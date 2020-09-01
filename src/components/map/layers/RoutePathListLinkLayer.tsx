@@ -138,6 +138,7 @@ class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
                 coordinates={node.coordinates}
                 nodeType={node.type}
                 transitTypes={node.transitTypes ? node.transitTypes : []}
+                visibleNodeLabels={this.props.mapStore!.visibleNodeLabels}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}

@@ -12,6 +12,7 @@ if (constants.ENVIRONMENT === Environment.LOCALHOST) {
     INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
 }
 const INITIAL_ZOOM = 15;
+const NODE_LABEL_MIN_ZOOM = 14;
 
 enum NodeLabel {
     hastusId,
@@ -91,6 +92,7 @@ class MapStore {
 
     @computed
     get visibleNodeLabels() {
+        if (this.zoom < NODE_LABEL_MIN_ZOOM) return [];
         return this._visibleNodeLabels;
     }
 

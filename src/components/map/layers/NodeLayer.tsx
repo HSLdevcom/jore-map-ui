@@ -8,11 +8,10 @@ import {
     Properties,
 } from '@turf/helpers';
 import pointsWithinPolygon from '@turf/points-within-polygon';
+import L from 'leaflet';
 import _ from 'lodash';
-import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import React from 'react';
-import EventListener from '~/helpers/EventListener';
+import React, { useEffect, useState } from 'react';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
@@ -31,91 +30,53 @@ interface INodeLayerProps {
     routePathStore?: RoutePathStore;
 }
 
-interface INodeLayerState {
-    turfPointNodeFeatures: FeatureCollection<Point, Properties> | null;
-}
-
-@inject('searchResultStore', 'mapStore', 'networkStore', 'routePathStore')
-@observer
-class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
-    private map: L.Map;
-    private mounted: boolean;
-
-    constructor(props: INodeLayerProps) {
-        super(props);
-        this.state = {
-            turfPointNodeFeatures: null,
+const NodeLayer = inject(
+    'searchResultStore',
+    'mapStore',
+    'networkStore',
+    'routePathStore'
+)(
+    observer((props: INodeLayerProps) => {
+        const getMap = (): L.Map => {
+            return props.map.current.leafletElement;
         };
-        this.map = this.props.map.current.leafletElement;
-        // Render always when map moves
-        this.map.on('moveend', this.redrawNodeLayer);
+        const [turfPointNodeFeatures, setTurfPointNodeFeatures] = useState<FeatureCollection<
+            Point,
+            Properties
+        > | null>(null);
+        const [renderCount, updateRenderCount] = React.useState(1);
 
-        reaction(
-            () =>
-                this.props.routePathStore!.routePath &&
-                this.props.routePathStore!.routePath.routePathLinks.length,
-            () => this.redrawNodeLayer()
-        );
-    }
+        useEffect(() => {
+            const nodeFeatures = props.searchResultStore!.allNodes.map((node: ISearchNode) => {
+                return point([node.coordinates.lat, node.coordinates.lng], node);
+            });
+            const turfPointNodeFeatures: FeatureCollection<Point, Properties> = featureCollection(
+                nodeFeatures
+            );
+            setTurfPointNodeFeatures(turfPointNodeFeatures);
+        }, [props.networkStore!.selectedTransitTypes.length === 0 && !turfPointNodeFeatures]);
 
-    componentDidUpdate(props: INodeLayerProps) {
-        if (this.shouldUpdateNodeFeatures()) {
-            this.updateNodeFeatures();
-        }
-    }
-
-    componentDidMount() {
-        this.mounted = true;
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
-        this.map.off('moveend', this.redrawNodeLayer);
-    }
-
-    private redrawNodeLayer = () => {
-        if (this.mounted) {
-            this.forceUpdate();
-        }
-    };
-
-    private shouldUpdateNodeFeatures = () => {
-        if (
-            this.props.networkStore!.selectedTransitTypes.length === 0 &&
-            !this.state.turfPointNodeFeatures
-        ) {
-            return false;
-        }
-        return !this.state.turfPointNodeFeatures;
-    };
-
-    private updateNodeFeatures = () => {
-        const nodeFeatures = this.props.searchResultStore!.allNodes.map((node: ISearchNode) => {
-            return point([node.coordinates.lat, node.coordinates.lng], node);
+        const forceUpdate = () => {
+            updateRenderCount(renderCount + 1);
+        };
+        useEffect(() => {
+            getMap().on('moveend', forceUpdate);
+            return () => {
+                getMap().off('moveend', forceUpdate);
+            };
         });
-        const turfPointNodeFeatures: FeatureCollection<Point, Properties> = featureCollection(
-            nodeFeatures
-        );
+        // TODO:
+        //     reaction(
+        //         () =>
+        //             this.props.routePathStore!.routePath &&
+        //             this.props.routePathStore!.routePath.routePathLinks.length,
+        //         () => this.redrawNodeLayer()
+        //     );
 
-        this.setState({
-            turfPointNodeFeatures,
-        });
-    };
+        if (props.mapStore!.areNetworkLayersHidden) return <div />;
+        if (!turfPointNodeFeatures) return <div />;
 
-    private handleOnLeftClick = (nodeId: string) => (e: L.LeafletEvent) => {
-        EventListener.trigger('mapClick', e);
-        this.props.onClick(nodeId);
-    };
-
-    private handleOnRightClick = (nodeId: string) => () => {
-        this.props.onContextMenu(nodeId);
-    };
-
-    render() {
-        if (this.props.mapStore!.areNetworkLayersHidden) return null;
-        if (!this.state.turfPointNodeFeatures) return null;
-
-        const bounds = this.map.getBounds();
+        const bounds = getMap().getBounds();
 
         const ne = bounds.getNorthEast();
         const se = bounds.getSouthEast();
@@ -132,7 +93,7 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
             ],
         ]);
 
-        const featuresToShow = pointsWithinPolygon(this.state.turfPointNodeFeatures, searchWithin)
+        const featuresToShow = pointsWithinPolygon(turfPointNodeFeatures, searchWithin)
             .features.map((nodeFeature: Feature<Point, Properties>) => {
                 return nodeFeature.properties as ISearchNode;
             })
@@ -144,22 +105,27 @@ class NodeLayer extends React.Component<INodeLayerProps, INodeLayerState> {
                 });
             });
 
-        return featuresToShow.map((node: ISearchNode, index: number) => {
-            return (
-                <NodeMarker
-                    key={`${node.id}-${index}`}
-                    coordinates={node.coordinates}
-                    nodeType={node.type}
-                    transitTypes={node.transitTypes}
-                    nodeLocationType={'coordinates'}
-                    nodeId={node.id}
-                    onClick={this.handleOnLeftClick(node.id)}
-                    onContextMenu={this.handleOnRightClick(node.id)}
-                    size={this.props.networkStore!.nodeSize}
-                />
-            );
-        });
-    }
-}
+        return (
+            <>
+                {featuresToShow.map((node: ISearchNode, index: number) => {
+                    return (
+                        <NodeMarker
+                            key={`nodeMarker-${node.id}`}
+                            coordinates={node.coordinates}
+                            nodeType={node.type}
+                            transitTypes={node.transitTypes}
+                            visibleNodeLabels={props.mapStore!.visibleNodeLabels}
+                            nodeLocationType={'coordinates'}
+                            nodeId={node.id}
+                            onClick={props.onClick}
+                            onContextMenu={props.onContextMenu}
+                            size={props.networkStore!.nodeSize}
+                        />
+                    );
+                })}
+            </>
+        );
+    })
+);
 
 export default NodeLayer;

@@ -133,7 +133,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         this.props.popupStore!.showPopup(nodePopup);
     };
 
-    private onNetworkNodeClick = (nodeId: string) => {
+    private onNetworkNodeClick = (nodeId: string) => (e: any) => {
+        EventListener.trigger('mapClick', e);
+
         const clickParams: INodeClickParams = {
             nodeId,
         };
