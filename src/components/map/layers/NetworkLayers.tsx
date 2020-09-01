@@ -1,3 +1,4 @@
+import L from 'leaflet';
 import { IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
@@ -133,7 +134,9 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         this.props.popupStore!.showPopup(nodePopup);
     };
 
-    private onNetworkNodeClick = (nodeId: string) => {
+    private onNetworkNodeClick = (nodeId: string, e: L.LeafletEvent) => {
+        EventListener.trigger('mapClick', e);
+
         const clickParams: INodeClickParams = {
             nodeId,
         };

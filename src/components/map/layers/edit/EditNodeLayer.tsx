@@ -116,6 +116,7 @@ const EditNodeLayer = inject(
                     coordinates={coordinates}
                     nodeType={node.type}
                     transitTypes={node.transitTypes ? node.transitTypes : []}
+                    visibleNodeLabels={props.mapStore!.visibleNodeLabels}
                     nodeLocationType={nodeLocationType}
                     nodeId={nodeLocationType === 'coordinates' ? node.id : undefined}
                     shortId={

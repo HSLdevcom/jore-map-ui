@@ -134,6 +134,7 @@ const EditLinkLayer = inject(
                     coordinates={node.coordinates}
                     nodeType={node.type}
                     transitTypes={node.transitTypes ? node.transitTypes : []}
+                    visibleNodeLabels={props.mapStore!.visibleNodeLabels}
                     nodeLocationType={'coordinates'}
                     nodeId={node.id}
                     shortId={NodeUtils.getShortId(node)}
