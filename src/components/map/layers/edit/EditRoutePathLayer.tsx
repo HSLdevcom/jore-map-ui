@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import StartNodeType from '~/enums/startNodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import { INeighborLink, IRoutePathLink } from '~/models';
+import { INeighborLink, INode, IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
@@ -48,24 +48,13 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
 
         return (
             <div key={`rpLink-${index}`}>
-                {!this.isNodeVisibleAtNeighborLinkLayer(rpLink.startNode.id) && (
-                    <EditRoutePathLayerNode
-                        key={'startNode'}
-                        node={rpLink.startNode}
-                        isDisabled={isStartNodeDisabled}
-                        linkOrderNumber={rpLink.orderNumber}
-                        isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
-                            rpLink.startNode.internalId
-                        )}
-                        isHovered={
-                            routePathLayerStore.hoveredItemId === rpLink.startNode.internalId
-                        }
-                        isExtended={
-                            routePathLayerStore.extendedListItemId === rpLink.startNode.internalId
-                        }
-                        setHoveredItemId={routePathLayerStore.setHoveredItemId}
-                    />
-                )}
+                {!this.isNodeVisibleAtNeighborLinkLayer(rpLink.startNode.id) &&
+                    this.renderRpLayerNode({
+                        node: rpLink.startNode,
+                        orderNumber: rpLink.orderNumber,
+                        isDisabled: isStartNodeDisabled,
+                        key: 'startNode',
+                    })}
                 <EditRoutePathLayerLink
                     rpLink={rpLink}
                     isHovered={routePathLayerStore.hoveredItemId === rpLink.id}
@@ -76,23 +65,43 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                     setHoveredItemId={routePathLayerStore.setHoveredItemId}
                     isMapFilterEnabled={mapStore.isMapFilterEnabled}
                 />
-                {isLastNode && !this.isNodeVisibleAtNeighborLinkLayer(rpLink.endNode.id) && (
-                    <EditRoutePathLayerNode
-                        key={'endNode'}
-                        node={rpLink.endNode}
-                        isDisabled={false} // endNode has no disabled information
-                        linkOrderNumber={rpLink.orderNumber}
-                        isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
-                            rpLink.endNode.internalId
-                        )}
-                        isHovered={routePathLayerStore.hoveredItemId === rpLink.endNode.internalId}
-                        isExtended={
-                            routePathLayerStore.extendedListItemId === rpLink.endNode.internalId
-                        }
-                        setHoveredItemId={routePathLayerStore.setHoveredItemId}
-                    />
-                )}
+                {isLastNode &&
+                    !this.isNodeVisibleAtNeighborLinkLayer(rpLink.endNode.id) &&
+                    this.renderRpLayerNode({
+                        node: rpLink.endNode,
+                        orderNumber: rpLink.orderNumber,
+                        isDisabled: false, // endNode has no disabled information
+                        key: 'endNode',
+                    })}
             </div>
+        );
+    };
+
+    private renderRpLayerNode = ({
+        node,
+        orderNumber,
+        isDisabled,
+        key,
+    }: {
+        node: INode;
+        orderNumber: number;
+        isDisabled: boolean;
+        key: string;
+    }) => {
+        const routePathLayerStore = this.props.routePathLayerStore!;
+        return (
+            <EditRoutePathLayerNode
+                key={key}
+                node={node}
+                isDisabled={isDisabled}
+                linkOrderNumber={orderNumber}
+                isHighlightedByTool={routePathLayerStore!.toolHighlightedNodeIds.includes(
+                    node.internalId
+                )}
+                isHovered={routePathLayerStore.hoveredItemId === node.internalId}
+                isExtended={routePathLayerStore.extendedListItemId === node.internalId}
+                setHoveredItemId={routePathLayerStore.setHoveredItemId}
+            />
         );
     };
 

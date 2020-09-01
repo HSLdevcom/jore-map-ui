@@ -207,12 +207,19 @@ const NodeMarker = inject()(
             onMouseOut,
             onMoveMarker,
         } = props;
+
+        const onMarkerClick = (e: L.LeafletEvent) => {
+            if (onClick) {
+                onClick(props.nodeId, e);
+            }
+        };
+
         return (
             <LeafletMarker
                 onContextMenu={onContextMenu ? () => onContextMenu(props.nodeId) : undefined}
                 onMouseOver={onMouseOver}
                 onMouseOut={onMouseOut}
-                onClick={onClick ? onClick(props.nodeId) : undefined}
+                onClick={onMarkerClick}
                 draggable={isDraggable}
                 icon={renderNodeMarkerIcon()}
                 position={coordinates}
