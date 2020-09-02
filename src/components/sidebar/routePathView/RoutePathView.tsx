@@ -9,7 +9,6 @@ import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
 import Loader from '~/components/shared/loader/Loader';
-import constants from '~/constants/constants';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener, {
@@ -61,8 +60,6 @@ interface IRoutePathViewProps {
 interface IRoutePathViewState {
     isLoading: boolean;
 }
-
-const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routePathStore',
@@ -364,10 +361,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const routePathCopySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
             routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? routePathStore!.getSavePreventedText()
-            : 'Reitinsuunnan tallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
+        const savePreventedNotification = routePathStore!.getSavePreventedText();
         return (
             <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
@@ -451,9 +445,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         </Tabs>
                         <SaveButton
                             onClick={this.showSavePrompt}
-                            disabled={isSaveAllowed && savePreventedNotification.length > 0}
+                            disabled={savePreventedNotification.length > 0}
                             savePreventedNotification={savePreventedNotification}
-                            type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
+                            type={
+                                savePreventedNotification.length > 0
+                                    ? 'warningButton'
+                                    : 'saveButton'
+                            }
                             data-cy='routePathSaveButton'
                         >
                             {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
