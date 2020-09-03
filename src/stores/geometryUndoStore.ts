@@ -1,4 +1,4 @@
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 
 class GeometryUndoStore<UndoObject> {
     private _undoObjects: UndoObject[];
@@ -14,7 +14,7 @@ class GeometryUndoStore<UndoObject> {
 
     public addItem = (undoObject: UndoObject) => {
         if (this._undoObjects.length !== 0) {
-            EventHelper.trigger('geometryChange');
+            EventListener.trigger('geometryChange');
         }
 
         // Remove the history of undo's because current state is changed
@@ -31,7 +31,7 @@ class GeometryUndoStore<UndoObject> {
 
         const previousUndoObject = this._undoObjects[this._undoIndex];
         undoCallback(previousUndoObject);
-        EventHelper.trigger('geometryChange');
+        EventListener.trigger('geometryChange');
     };
 
     public redo = (undoCallback: (undoObject: UndoObject) => void): any => {
@@ -42,7 +42,7 @@ class GeometryUndoStore<UndoObject> {
 
         const nextUndoObject = this._undoObjects[this._undoIndex];
         undoCallback(nextUndoObject);
-        EventHelper.trigger('geometryChange');
+        EventListener.trigger('geometryChange');
     };
 
     public clear = () => {

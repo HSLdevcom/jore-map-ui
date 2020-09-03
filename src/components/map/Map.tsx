@@ -6,11 +6,10 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
@@ -34,7 +33,6 @@ interface IMapProps {
     mapStore?: MapStore;
     routeListStore?: RouteListStore;
     nodeStore?: NodeStore;
-    toolbarStore?: ToolbarStore;
 }
 
 interface IMapPropReference {
@@ -55,7 +53,7 @@ type LeafletContext = {
     popupContainer?: L.Layer;
 };
 
-@inject('mapStore', 'routeListStore', 'nodeStore', 'toolbarStore')
+@inject('mapStore', 'routeListStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -94,7 +92,7 @@ class LeafletMap extends React.Component<IMapProps> {
     private enableMapClickListener = () => {
         const map = this.getMap();
         map!.on('click', (e: L.LeafletEvent) => {
-            EventHelper.trigger('mapClick', e);
+            EventListener.trigger('mapClick', e);
         });
     };
 

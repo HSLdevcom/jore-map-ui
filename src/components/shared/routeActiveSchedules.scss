@@ -43,4 +43,12 @@
     .subSection:first-of-type {
         padding-top: 0px;
     }
+
+    .confirmMessage {
+        font-style: italic;
+    }
+
+    .noActiveSchedulesMessage  {
+        font-style: italic;
+    }
 }

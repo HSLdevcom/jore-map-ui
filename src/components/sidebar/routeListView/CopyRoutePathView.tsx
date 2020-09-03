@@ -125,7 +125,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
     private onRouteChange = async (routeId: string) => {
         const route = await RouteService.fetchRoute({ routeId, areRoutePathLinksExcluded: true });
         let newRoutePathCounter = this.state.newRoutePathCounter;
-        const routePathQueryResult = route?.routePaths!.map((rp) => {
+        const routePathQueryResult = route!.routePaths!.map((rp) => {
             const newId = `${newRoutePathCounter}-copy-${rp.internalId}`;
             newRoutePathCounter += 1;
             rp.internalId = newId;

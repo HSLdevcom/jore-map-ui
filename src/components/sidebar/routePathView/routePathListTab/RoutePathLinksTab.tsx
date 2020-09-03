@@ -6,9 +6,14 @@ import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import NodeType from '~/enums/nodeType';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { CodeListStore } from '~/stores/codeListStore';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNode from './RoutePathListNode';
@@ -20,9 +25,21 @@ interface IRoutePathLinksTabProps {
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
+    mapStore?: MapStore;
+    codeListStore?: CodeListStore;
+    toolbarStore?: ToolbarStore;
+    errorStore?: ErrorStore;
 }
 
-@inject('routePathStore', 'routePathLayerStore', 'routePathLinkMassEditStore')
+@inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'routePathLinkMassEditStore',
+    'mapStore',
+    'codeListStore',
+    'toolbarStore',
+    'errorStore'
+)
 @observer
 class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     private extendedItemListener: IReactionDisposer;
@@ -40,82 +57,6 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     componentWillUnmount() {
         this.extendedItemListener();
     }
-
-    /**
-     * @param {IRoutePathLink[]} routePathLinks - list of routePathLinks sorted by orderNumber
-     */
-    private renderList = (routePathLinks: IRoutePathLink[]) => {
-        // Split routePathLinks into sub lists with coherent routePathLinks
-        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
-        let index = 0;
-        routePathLinks.forEach((currentRpLink) => {
-            const currentList = coherentRoutePathLinksList[index];
-            if (!currentList && index === 0) {
-                coherentRoutePathLinksList[index] = [currentRpLink];
-                return;
-            }
-            const lastRpLink = currentList[currentList.length - 1];
-            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
-                currentList.push(currentRpLink);
-            } else {
-                const newList = [currentRpLink];
-                coherentRoutePathLinksList.push(newList);
-                index += 1;
-            }
-        });
-
-        return coherentRoutePathLinksList.map((routePathLinks) =>
-            routePathLinks.map((routePathLink, index) => {
-                // Use node.internalId as key instead of id because there might be nodes with the same id
-                this.listObjectReferences[routePathLink.startNode.internalId] = React.createRef();
-                this.listObjectReferences[routePathLink.id] = React.createRef();
-                const result = [
-                    this.isNodeVisible(routePathLink.startNode) ? (
-                        <RoutePathListNode
-                            key={`${routePathLink.id}-${index}-startNode`}
-                            reference={
-                                this.listObjectReferences[routePathLink.startNode.internalId]
-                            }
-                            node={routePathLink.startNode}
-                            routePathLink={routePathLink}
-                            isEditingDisabled={this.props.isEditingDisabled}
-                            isFirstNode={index === 0}
-                            isLastNode={false}
-                        />
-                    ) : null,
-                    this.areLinksVisible() ? (
-                        <RoutePathListLink
-                            key={`${routePathLink.id}-${index}-link`}
-                            reference={this.listObjectReferences[routePathLink.id]}
-                            routePathLink={routePathLink}
-                        />
-                    ) : null,
-                ];
-
-                if (index === routePathLinks.length - 1) {
-                    if (this.isNodeVisible(routePathLink.endNode)) {
-                        // Use node.internalId as key instead of id because there might be nodes with the same id
-                        this.listObjectReferences[
-                            routePathLink.endNode.internalId
-                        ] = React.createRef();
-                        result.push(
-                            <RoutePathListNode
-                                key={`${routePathLink.id}-${index}-endNode`}
-                                reference={
-                                    this.listObjectReferences[routePathLink.endNode.internalId]
-                                }
-                                node={routePathLink.endNode}
-                                routePathLink={routePathLink}
-                                isLastNode={true}
-                                isEditingDisabled={this.props.isEditingDisabled}
-                            />
-                        );
-                    }
-                }
-                return result;
-            })
-        );
-    };
 
     private onListItemExtend = () => {
         const extendedListItemId = this.props.routePathLayerStore!.extendedListItemId;
@@ -149,12 +90,79 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         this.props.routePathStore!.toggleListFilter(listFilter);
     };
 
+    private renderRpListNode = ({
+        routePathLink,
+        node,
+        isFirstNode,
+        isLastNode,
+        key,
+    }: {
+        routePathLink: IRoutePathLink;
+        node: INode;
+        isFirstNode: boolean;
+        isLastNode: boolean;
+        key: string;
+    }) => {
+        const routePathLayerStore = this.props.routePathLayerStore!;
+        const routePathLinkMassEditStore = this.props.routePathLinkMassEditStore!;
+
+        const routePath = this.props.routePathStore!.routePath;
+        const isStartNodeUsingBookSchedule = isLastNode
+            ? routePath!.isStartNodeUsingBookSchedule
+            : routePathLink.isStartNodeUsingBookSchedule;
+        const startNodeBookScheduleColumnNumber = isLastNode
+            ? routePath!.startNodeBookScheduleColumnNumber
+            : routePathLink.startNodeBookScheduleColumnNumber;
+        return (
+            <div key={key} ref={this.listObjectReferences[node.internalId]}>
+                <RoutePathListNode
+                    node={node}
+                    routePathLink={routePathLink}
+                    isEditingDisabled={this.props.isEditingDisabled}
+                    isFirstNode={isFirstNode}
+                    isLastNode={isLastNode}
+                    isHighlightedByTool={routePathLayerStore.toolHighlightedNodeIds.includes(
+                        node.internalId
+                    )}
+                    isExtended={routePathLayerStore.extendedListItemId === node.internalId}
+                    isHovered={routePathLayerStore.hoveredItemId === node.internalId}
+                    isStartNodeUsingBookSchedule={isStartNodeUsingBookSchedule}
+                    startNodeBookScheduleColumnNumber={startNodeBookScheduleColumnNumber}
+                    selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                        routePathLink
+                    )}
+                />
+            </div>
+        );
+    };
+
+    private renderRpListLink = ({
+        routePathLink,
+        key,
+    }: {
+        routePathLink: IRoutePathLink;
+        key: string;
+    }) => {
+        const routePathLayerStore = this.props.routePathLayerStore!;
+        return (
+            <div key={key} ref={this.listObjectReferences[routePathLink.id]}>
+                <RoutePathListLink
+                    routePathLink={routePathLink}
+                    isExtended={routePathLayerStore.extendedListItemId === routePathLink.id}
+                    isHovered={routePathLayerStore.hoveredItemId === routePathLink.id}
+                />
+            </div>
+        );
+    };
+
     render() {
         const routePathLinks = this.props.routePath.routePathLinks;
         if (!routePathLinks) return null;
 
         const listFilters = this.props.routePathStore!.listFilters;
-
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+            routePathLinks
+        );
         return (
             <div className={s.routePathLinksTabView}>
                 <ToggleView>
@@ -186,7 +194,53 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                     <div className={s.via}>Määränpää kilpi</div>
                 </div>
                 <div className={s.listWrapper}>
-                    <div className={s.list}>{this.renderList(routePathLinks)}</div>
+                    <div className={s.list}>
+                        {coherentRoutePathLinksList.map((routePathLinks) => {
+                            return routePathLinks.map((routePathLink, index) => {
+                                const startNode = routePathLink.startNode;
+                                const endNode = routePathLink.endNode;
+                                // Use node.internalId as key instead of id because there might be nodes with the same id
+                                this.listObjectReferences[startNode.internalId] = React.createRef();
+                                this.listObjectReferences[routePathLink.id] = React.createRef();
+                                const result = [
+                                    this.isNodeVisible(startNode)
+                                        ? this.renderRpListNode({
+                                              routePathLink,
+                                              node: routePathLink.startNode,
+                                              isFirstNode: index === 0,
+                                              isLastNode: false,
+                                              key: `${routePathLink.id}-${index}-startNode`,
+                                          })
+                                        : null,
+                                    this.areLinksVisible()
+                                        ? this.renderRpListLink({
+                                              routePathLink,
+                                              key: `${routePathLink.id}-${index}-link`,
+                                          })
+                                        : null,
+                                ];
+
+                                if (index === routePathLinks.length - 1) {
+                                    if (this.isNodeVisible(endNode)) {
+                                        // Use node.internalId as key instead of id because there might be nodes with the same id
+                                        this.listObjectReferences[
+                                            endNode.internalId
+                                        ] = React.createRef();
+                                        result.push(
+                                            this.renderRpListNode({
+                                                routePathLink,
+                                                node: routePathLink.endNode,
+                                                isFirstNode: index === 0,
+                                                isLastNode: true,
+                                                key: `${routePathLink.id}-${index}-endNode`,
+                                            })
+                                        );
+                                    }
+                                }
+                                return result;
+                            });
+                        })}
+                    </div>
                 </div>
                 <RoutePathLinkMassEditView
                     isEditingDisabled={this.props.isEditingDisabled}

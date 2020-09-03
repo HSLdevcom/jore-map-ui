@@ -4,10 +4,14 @@ import { Polyline } from 'react-leaflet';
 interface IDashedLineProps {
     startPoint: L.LatLng;
     endPoint: L.LatLng;
-    color: string;
+    color?: string;
 }
 
 class DashedLine extends Component<IDashedLineProps> {
+    static defaultProps = {
+        color: '#efc210'
+    }
+
     render() {
         const { startPoint, endPoint, color } = this.props;
 

@@ -210,9 +210,9 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 model: 'lineHeader',
             });
         });
-
+        const savePromptSection = { models: saveModels };
         confirmStore!.openConfirm({
-            content: <SavePrompt models={saveModels} />,
+            content: <SavePrompt savePromptSections={[savePromptSection]} />,
             onConfirm: () => {
                 this.save();
             },

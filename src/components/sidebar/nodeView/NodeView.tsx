@@ -9,7 +9,7 @@ import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import NodeType from '~/enums/nodeType';
 import NodeFactory from '~/factories/nodeFactory';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { ILink, INode, IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -76,7 +76,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             await this.initExistingNode(params);
         }
         this._setState({ isLoading: false });
-        EventHelper.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
+        EventListener.on('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
     }
 
     async componentDidUpdate(prevProps: INodeViewProps) {
@@ -97,7 +97,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._isMounted = false;
         this.props.nodeStore!.clear();
         this.props.mapStore!.setSelectedNodeId(null);
-        EventHelper.off('geometryChange', () => this.props.nodeStore!.setIsEditingDisabled(false));
+        EventListener.off('geometryChange', () =>
+            this.props.nodeStore!.setIsEditingDisabled(false)
+        );
     }
 
     private createNewNode = async (params: any) => {
@@ -321,9 +323,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             };
             saveModels.push(stopSaveModel);
         }
-
+        const savePromptSection = { models: saveModels };
         this.props.confirmStore!.openConfirm({
-            content: <SavePrompt models={saveModels} />,
+            content: <SavePrompt savePromptSections={[savePromptSection]} />,
             onConfirm: () => {
                 this.save();
             },

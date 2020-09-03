@@ -1,85 +1,154 @@
+import { reaction, IReactionDisposer } from 'mobx';
+import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, {
-    IEditRoutePathLayerNodeClickParams,
+import EventListener, {
     IEditRoutePathNeighborLinkClickParams,
     INodeClickParams,
-} from '~/helpers/EventHelper';
-import { INode } from '~/models';
+    IRoutePathNodeClickParams,
+} from '~/helpers/EventListener';
+import { IRoutePathLink } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathLayerStore, { NeighborToAddType } from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
-import { loopRoutePathNodes } from '~/utils/modelUtils';
+import ToolbarStore from '~/stores/toolbarStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import BaseTool from './BaseTool';
+
+type toolPhase = 'selectFirstNode' | 'selectNodeToExtend' | 'selectNeighborLink';
 
 /**
  * Tool for creating new routePath
  */
 class ExtendRoutePathTool implements BaseTool {
-    public toolType = ToolbarToolType.AddNewRoutePathLink;
+    private refreshToolPhaseListener: IReactionDisposer;
+    private isToolPhaseSwitchingPrevented = false;
+    public toolType = ToolbarToolType.ExtendRoutePath;
+    public toolHelpPhasesMap = {
+        selectFirstNode: {
+            phaseTopic: 'Aloitus-solmun valitseminen',
+            phaseHelpText:
+                'Valitse kartalta pysäkki, josta haluat aloittaa reitinsuunnan muodostamisen.',
+        },
+        selectNodeToExtend: {
+            phaseTopic: 'Laajennettavan solmun valitseminen',
+            phaseHelpText:
+                'Valitse reitinsuunnalta solmu, josta haluat jatkaa reitinsuunnan laajentamista. Valittavat solmut ovat korostettuina vihreällä kartalla ja sivupalkissa.',
+        },
+        selectNeighborLink: {
+            phaseTopic: 'Naapurisolmun valitseminen',
+            phaseHelpText:
+                'Valitse vihreällä tai punaisella merkattu naapurisolmu ja siihen johtava linkki laajentaaksesi reitinsuuntaa. Solmun sisällä oleva numero kertoo, montako reitinsuuntaa käyttää kyseistä solmua. Voit myös klikata naapurisolmua oikealla hiiren painikkeella nähdäksesi tarkemmin solmua käyttävät reitinsuunnat.',
+        },
+    };
     public toolHelpHeader = 'Laajenna reitinsuuntaa';
-    public toolHelpText =
-        'Valitse kartalta ensin aloitus-solmu. Tämän jälkeen jatka reitinsuunnan laajentamista virheitä tai punaisia solmuja klikkailemalla. Solmun sisällä oleva numero kertoo, kuinka monta reitinsuuntaa tällä hetkellä käyttää kyseistä solmua.';
-    public activate() {
+
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventHelper.on('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
-        this.highlightClickableNodes();
+        EventListener.on('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
+        EventListener.on('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
         RoutePathStore.setIsEditingDisabled(false);
-        EventHelper.on('undo', this.highlightClickableNodes);
-        EventHelper.on('redo', this.highlightClickableNodes);
-        EventHelper.on('escape', this.onEscapePress);
-    }
-    public deactivate() {
-        this.reset();
-        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
-        EventHelper.off('editRoutePathNeighborLinkClick', this.addNeighborLinkToRoutePath);
-        EventHelper.off('undo', this.highlightClickableNodes);
-        EventHelper.off('redo', this.highlightClickableNodes);
-        EventHelper.off('escape', this.onEscapePress);
-    }
-
-    private reset() {
-        RoutePathLayerStore.setNeighborLinks([]);
-        this.unhighlightClickableNodes();
-    }
-
-    // Node click
-    private onNodeClick = (clickEvent: CustomEvent) => {
-        const params: IEditRoutePathLayerNodeClickParams = clickEvent.detail;
-        this.fetchNeighborRoutePathLinks(params.node.id, params.linkOrderNumber);
+        EventListener.on('escape', this.onEscapePress);
+        this.refreshToolPhaseListener = reaction(
+            () => [
+                RoutePathStore.routePath?.routePathLinks.length,
+                RoutePathLayerStore.neighborLinks.length,
+            ],
+            this.refreshToolPhase
+        );
+        this.refreshToolPhase();
     };
 
-    // Network node click
+    public deactivate = () => {
+        this.setToolPhase(null);
+        RoutePathLayerStore.setNeighborLinks([]);
+        EventListener.off('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
+        EventListener.off('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
+        EventListener.off('escape', this.onEscapePress);
+        this.refreshToolPhaseListener();
+    };
+
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        if (this.isToolPhaseSwitchingPrevented) return;
+        const toolHighlightedNodeIds =
+            toolPhase === 'selectNodeToExtend' ? this.getHighlightedNodeIds() : [];
+        RoutePathLayerStore.setToolHighlightedNodeIds(toolHighlightedNodeIds);
+
+        if (toolPhase === 'selectFirstNode') {
+            NetworkStore.setNodeSize(NodeSize.NORMAL);
+        } else {
+            NetworkStore.setNodeSize(NodeSize.SMALL);
+        }
+        ToolbarStore.setToolPhase(toolPhase);
+    };
+
+    private refreshToolPhase = () => {
+        if (RoutePathLayerStore.neighborLinks.length > 0) {
+            this.setToolPhase('selectNeighborLink');
+        } else if (RoutePathStore.routePath?.routePathLinks.length === 0) {
+            this.setToolPhase('selectFirstNode');
+        } else {
+            this.setToolPhase('selectNodeToExtend');
+        }
+    };
+
+    private getHighlightedNodeIds = () => {
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+            RoutePathStore.routePath!.routePathLinks
+        );
+        const nodeIdsAtCoherentRpLinkEdge: string[] = [];
+        coherentRoutePathLinksList.forEach((rpLinks: IRoutePathLink[]) => {
+            nodeIdsAtCoherentRpLinkEdge.push(rpLinks[0].startNode.internalId);
+            nodeIdsAtCoherentRpLinkEdge.push(rpLinks[rpLinks.length - 1].endNode.internalId);
+        });
+        return nodeIdsAtCoherentRpLinkEdge;
+    };
+
+    private onRoutePathNodeClick = (clickEvent: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = clickEvent.detail;
+        const nodeId = params.node.id;
+        const internalId = params.node.internalId;
+        if (RoutePathLayerStore.toolHighlightedNodeIds.includes(internalId)) {
+            this.fetchNeighborRoutePathLinks({
+                nodeId,
+                linkOrderNumber: params.linkOrderNumber,
+                isFirstNodeClick: false,
+            });
+        } else {
+            const clickParams: INodeClickParams = { nodeId };
+            EventListener.trigger('nodeClick', clickParams);
+        }
+    };
+
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        if (!this.isNetworkNodesInteractive()) return;
+        if (this.getToolPhase() !== 'selectFirstNode') return;
+
         const params: INodeClickParams = clickEvent.detail;
         const nodeId = params.nodeId;
         const node = await NodeService.fetchNode(nodeId);
         if (node!.type !== NodeType.STOP) return;
 
-        this.fetchNeighborRoutePathLinks(nodeId, 1);
+        this.fetchNeighborRoutePathLinks({ nodeId, linkOrderNumber: 1, isFirstNodeClick: true });
     };
 
     private onEscapePress = () => {
         RoutePathLayerStore.setNeighborLinks([]);
-        this.highlightClickableNodes();
     };
 
-    private isNetworkNodesInteractive() {
-        return RoutePathStore!.routePath && RoutePathStore!.routePath!.routePathLinks.length === 0;
-    }
-
-    // Neighbor link click
-    private addNeighborLinkToRoutePath = async (clickEvent: CustomEvent) => {
+    private onEditRoutePathNeighborLinkClick = async (clickEvent: CustomEvent) => {
         const params: IEditRoutePathNeighborLinkClickParams = clickEvent.detail;
         const routePathLink = params.neighborLink.routePathLink;
 
+        this.isToolPhaseSwitchingPrevented = true;
         RoutePathStore!.addLink(routePathLink);
         const neighborToAddType = RoutePathLayerStore!.neighborToAddType;
         const nodeToFetch =
@@ -87,43 +156,47 @@ class ExtendRoutePathTool implements BaseTool {
                 ? routePathLink.endNode
                 : routePathLink.startNode;
         if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.id)) {
-            this.unhighlightClickableNodes();
-            this.fetchNeighborRoutePathLinks(nodeToFetch.id, routePathLink.orderNumber);
+            this.fetchNeighborRoutePathLinks({
+                nodeId: nodeToFetch.id,
+                linkOrderNumber: routePathLink.orderNumber,
+                isFirstNodeClick: false,
+            });
         } else {
-            this.highlightClickableNodes();
+            this.isToolPhaseSwitchingPrevented = false;
+            this.refreshToolPhase();
         }
     };
 
-    private fetchNeighborRoutePathLinks = async (nodeId: string, linkOrderNumber: number) => {
+    private fetchNeighborRoutePathLinks = async ({
+        nodeId,
+        linkOrderNumber,
+        isFirstNodeClick,
+    }: {
+        nodeId: string;
+        linkOrderNumber: number;
+        isFirstNodeClick: boolean;
+    }) => {
         const queryResult = await RoutePathNeighborLinkService.fetchNeighborRoutePathLinks(
             nodeId,
             RoutePathStore!.routePath!,
             linkOrderNumber
         );
+        this.isToolPhaseSwitchingPrevented = false;
         if (queryResult) {
-            RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
-            RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
-            this.unhighlightClickableNodes();
+            // Node id to fetch neighborLinks from might not exist (if user has quickly done undo for example)
+            const isNodeIdFound = Boolean(
+                RoutePathStore.routePath!.routePathLinks.find(
+                    (rpLink) => rpLink.startNode.id === nodeId || rpLink.endNode.id === nodeId
+                )
+            );
+            if (isFirstNodeClick || isNodeIdFound) {
+                RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
+                RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
+            }
         } else {
-            this.highlightClickableNodes();
+            this.refreshToolPhase();
         }
     };
-
-    private highlightClickableNodes() {
-        const routePath = RoutePathStore!.routePath!;
-
-        const clickableNodeIds: string[] = [];
-        loopRoutePathNodes(routePath, (node: INode) => {
-            if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
-                clickableNodeIds.push(node.id);
-            }
-        });
-        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
-    }
-
-    private unhighlightClickableNodes() {
-        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
-    }
 }
 
 export default ExtendRoutePathTool;

@@ -31,7 +31,7 @@ describe('RouteListView tests - read access user', () => {
     });
 });
 
-describe.only('RouteListView tests - write access user', () => {
+describe('RouteListView tests - write access user', () => {
     beforeEach(() => {
         cy.hslLoginWriteAccess();
 

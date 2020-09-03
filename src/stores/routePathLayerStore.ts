@@ -11,15 +11,15 @@ enum NeighborToAddType {
 class RoutePathLayerStore {
     @observable private _neighborLinks: INeighborLink[];
     @observable private _neighborToAddType: NeighborToAddType;
-    @observable private _extendedListItemId: string | null;
-    @observable private _hoveredItemId: string | null;
-    @observable private _highlightedExtendToolNodeIds: string[];
+    @observable private _extendedListItemId: string | null; // node.internalId, link.id
+    @observable private _hoveredItemId: string | null; // node.internalId, link.id
+    @observable private _toolHighlightedNodeIds: string[]; // node.internalId
 
     constructor() {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
-        this._highlightedExtendToolNodeIds = [];
+        this._toolHighlightedNodeIds = [];
     }
 
     @computed
@@ -43,8 +43,8 @@ class RoutePathLayerStore {
     }
 
     @computed
-    get highlightedExtendToolNodeIds() {
-        return this._highlightedExtendToolNodeIds;
+    get toolHighlightedNodeIds() {
+        return this._toolHighlightedNodeIds;
     }
 
     @action
@@ -67,10 +67,9 @@ class RoutePathLayerStore {
         this._hoveredItemId = id;
     };
 
-    // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
     @action
-    public setToolHighlightedNodeIds = (nodeIds: string[]) => {
-        return (this._highlightedExtendToolNodeIds = nodeIds);
+    public setToolHighlightedNodeIds = (ids: string[]) => {
+        this._toolHighlightedNodeIds = ids;
     };
 
     @action
@@ -78,7 +77,6 @@ class RoutePathLayerStore {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
-        this._highlightedExtendToolNodeIds = [];
     };
 }
 

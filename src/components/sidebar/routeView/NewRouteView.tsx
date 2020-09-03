@@ -2,7 +2,6 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SaveButton from '~/components/shared/SaveButton';
-import constants from '~/constants/constants';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
@@ -31,8 +30,6 @@ interface IRouteViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
 }
-
-const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject('routeStore', 'mapStore', 'alertStore', 'errorStore')
 @observer
@@ -72,7 +69,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         this.props.mapStore!.initCoordinates();
 
         try {
-            const lineId = navigator.getQueryParam(QueryParams.lineId);
+            const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
             const newRoute = RouteFactory.createNewRoute(lineId);
             this.props.routeStore!.init({ route: newRoute, isNewRoute: true });
         } catch (e) {
@@ -100,7 +97,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
     };
 
     private redirectToLineView = () => {
-        const lineId = navigator.getQueryParam(QueryParams.lineId);
+        const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
         const lineViewLink = routeBuilder.to(SubSites.line).toTarget(':id', lineId).toLink();
         navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
@@ -118,10 +115,6 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         const lineId = navigator.getQueryParam(QueryParams.lineId);
         if (!route) return null;
         const isRouteFormValid = routeStore.isRouteFormValid;
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? ''
-            : 'Uuden reitin tallentamista ei vielä tueta, sillä vanha käyttöliittymä ei näytä reittiä ellei sillä ole olemassa olevaa reitinsuuntaa eikä reitinsuuntia voi vielä luoda uudella käyttöliittymällä. Voit kokeilla reitin luontia dev-ympäristössä. Jos haluat luoda reittejä tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={classnames(s.routeView, s.form)}>
                 <SidebarHeader
@@ -143,8 +136,8 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                 <SaveButton
                     onClick={this.save}
                     disabled={!isRouteFormValid}
-                    savePreventedNotification={savePreventedNotification}
-                    type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
+                    savePreventedNotification={''}
+                    type={'saveButton'}
                 >
                     Luo uusi reitti
                 </SaveButton>

@@ -1,53 +1,101 @@
+import { reaction, IReactionDisposer } from 'mobx';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
-import { INode } from '~/models';
+import EventListener, {
+    INodeClickParams,
+    IRoutePathNodeClickParams,
+} from '~/helpers/EventListener';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
-import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
-import { loopRoutePathNodes } from '~/utils/modelUtils';
+import ToolbarStore from '~/stores/toolbarStore';
 import BaseTool from './BaseTool';
 
-class CopyRoutePathSegmentTool implements BaseTool {
-    public toolType = ToolbarToolType.CopyRoutePathSegmentTool;
-    public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
-    public toolHelpText =
-        'Valitse kopioitava väli kartalta tämän työkaluohjeen alla olevien nappien (alkusolmu ja loppusolmu) avulla. Kun sekä alku- ja loppusolmu ovat valitut ja toinen alku- tai loppusolmuista kuuluu valitulle reitinsuunnalle, alku- ja loppusolmun välillä kulkevat reitinsuunnat (tuoreimmat) haetaan sivupalkkiin. Valitse tämän jälkeen reitinsuunta sivupalkista, jolta segmentti kopioidaan.';
+type toolPhase = 'selectStartNode' | 'selectEndNode' | 'selectRoutePathToCopy';
 
-    public activate() {
+class CopyRoutePathSegmentTool implements BaseTool {
+    private refreshToolPhaseListener: IReactionDisposer;
+    public toolType = ToolbarToolType.CopyRoutePathSegment;
+    public toolHelpHeader = 'Kopioi reitinsuunnan segmentti';
+    public toolHelpPhasesMap = {
+        selectStartNode: {
+            phaseTopic: 'Alkusolmun valitseminen',
+            phaseHelpText:
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin aloitus-solmu.',
+        },
+        selectEndNode: {
+            phaseTopic: 'Loppusolmun valitseminen',
+            phaseHelpText:
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin lopetus-solmu.',
+        },
+        selectRoutePathToCopy: {
+            phaseTopic: 'Reitinsuunnan valitseminen',
+            phaseHelpText:
+                'Valitse reitinsuunta sivupalkista, jolta segmentti kopioidaan. Voit myös muuttaa alku- tai loppusolmun valintaa alku- ja loppusolmu -painikkeiden avulla.',
+        },
+    };
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.link);
-        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.on('nodeClick', this.onNodeClick);
-        EventHelper.on('editRoutePathLayerNodeClick', this.onNodeClick);
-        this.highlightClickableNodes();
+        EventListener.on('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.on('nodeClick', this.onNodeClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
-    }
-    public deactivate() {
-        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
-        EventHelper.off('nodeClick', this.onNodeClick);
-        EventHelper.off('editRoutePathLayerNodeClick', this.onNodeClick);
+        this.refreshToolPhaseListener = reaction(
+            () => [RoutePathCopySegmentStore.setNodeType, RoutePathCopySegmentStore.routePaths],
+            this.refreshToolPhase
+        );
+        this.setToolPhase('selectStartNode');
+    };
+
+    public deactivate = () => {
+        this.setToolPhase(null);
+        EventListener.off('networkNodeClick', this.onNetworkNodeClick);
+        EventListener.off('nodeClick', this.onNodeClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         RoutePathCopySegmentStore.clear();
-        this.unhighlightClickableNodes();
-    }
+        this.refreshToolPhaseListener();
+    };
 
-    private onNodeClick = (clickEvent: CustomEvent) => {
-        const setNodeType = RoutePathCopySegmentStore.setNodeType;
-        const params: INodeClickParams = clickEvent.detail;
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
 
-        if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
-        else this.selectEndNode(params.nodeId);
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        ToolbarStore.setToolPhase(toolPhase);
+    };
+
+    private refreshToolPhase = () => {
+        if (RoutePathCopySegmentStore.routePaths.length > 0) {
+            this.setToolPhase('selectRoutePathToCopy');
+        } else if (RoutePathCopySegmentStore.setNodeType === 'startNode') {
+            this.setToolPhase('selectStartNode');
+        } else {
+            this.setToolPhase('selectEndNode');
+        }
+    };
+
+    private onNodeClick = (event: CustomEvent) => {
+        const params: INodeClickParams = event.detail;
+        this.selectNode(params.nodeId);
+    };
+
+    private onRoutePathNodeClick = (event: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = event.detail;
+        this.selectNode(params.node.id);
     };
 
     private onNetworkNodeClick = (clickEvent: CustomEvent) => {
-        const setNodeType = RoutePathCopySegmentStore.setNodeType;
         const params: INodeClickParams = clickEvent.detail;
+        this.selectNode(params.nodeId);
+    };
 
-        if (setNodeType === 'startNode') this.selectStartNode(params.nodeId);
-        else this.selectEndNode(params.nodeId);
+    private selectNode = (nodeId: string) => {
+        const setNodeType = RoutePathCopySegmentStore.setNodeType;
+        if (setNodeType === 'startNode') this.selectStartNode(nodeId);
+        else this.selectEndNode(nodeId);
     };
 
     private selectStartNode = async (nodeId: string) => {
@@ -58,6 +106,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         if (!RoutePathCopySegmentStore.endNode) {
             RoutePathCopySegmentStore.setSetNodeType('endNode');
+            this.refreshToolPhase();
         }
     };
 
@@ -69,6 +118,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
         if (!RoutePathCopySegmentStore.startNode) {
             RoutePathCopySegmentStore.setSetNodeType('startNode');
+            this.refreshToolPhase();
         }
     };
 
@@ -112,25 +162,6 @@ class CopyRoutePathSegmentTool implements BaseTool {
     private isEndNodeOnRoutePath(nodeId: string) {
         const routePathLinks = RoutePathStore.routePath!.routePathLinks;
         return routePathLinks.some((link) => link.startNode.id === nodeId);
-    }
-
-    private highlightClickableNodes() {
-        const routePath = RoutePathStore!.routePath!;
-
-        const clickableNodeIds: string[] = [];
-        const unclickableNodeIds: string[] = [];
-        loopRoutePathNodes(routePath, (node: INode) => {
-            if (RoutePathStore!.hasNodeOddAmountOfNeighbors(node.id)) {
-                clickableNodeIds.push(node.id);
-            } else {
-                unclickableNodeIds.push(node.id);
-            }
-        });
-        RoutePathLayerStore!.setToolHighlightedNodeIds(clickableNodeIds);
-    }
-
-    private unhighlightClickableNodes() {
-        RoutePathLayerStore!.setToolHighlightedNodeIds([]);
     }
 }
 

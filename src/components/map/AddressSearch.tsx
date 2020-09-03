@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { reaction, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { Component } from 'react';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import PinIcon from '~/icons/PinIcon';
 import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
 import LeafletUtils from '~/utils/leafletUtils';
@@ -45,16 +45,16 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             this.onChangeSelectedSearchResult
         );
 
-        EventHelper.on('enter', this.setSelectedSearchResult());
-        EventHelper.on('arrowUp', this.moveSearchIndex('arrowUp'));
-        EventHelper.on('arrowDown', this.moveSearchIndex('arrowDown'));
+        EventListener.on('enter', this.setSelectedSearchResult());
+        EventListener.on('arrowUp', this.moveSearchIndex('arrowUp'));
+        EventListener.on('arrowDown', this.moveSearchIndex('arrowDown'));
     }
     componentWillUnmount() {
         this.reactionDisposer();
 
-        EventHelper.off('enter', this.setSelectedSearchResult());
-        EventHelper.off('arrowUp', this.moveSearchIndex('arrowUp'));
-        EventHelper.off('arrowDown', this.moveSearchIndex('arrowDown'));
+        EventListener.off('enter', this.setSelectedSearchResult());
+        EventListener.off('arrowUp', this.moveSearchIndex('arrowUp'));
+        EventListener.off('arrowDown', this.moveSearchIndex('arrowDown'));
     }
 
     private onChangeSelectedSearchResult = () => {

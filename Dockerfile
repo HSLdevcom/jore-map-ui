@@ -1,4 +1,4 @@
-FROM node:10-alpine
+FROM node:12.16.1-alpine
 
 ENV WORK /build
 

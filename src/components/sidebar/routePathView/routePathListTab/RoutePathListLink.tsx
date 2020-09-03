@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -5,6 +6,7 @@ import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -13,11 +15,11 @@ import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TextContainer from '../../../controls/TextContainer';
-import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
-    reference: React.RefObject<HTMLDivElement>;
+    isExtended: boolean;
+    isHovered: boolean;
     routePathLink: IRoutePathLink;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
@@ -38,7 +40,9 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                 onClick={this.toggleExtendedListItemId}
                 data-cy='itemHeader'
             >
-                <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
+                <div className={classnames(s.headerSubtopicContainer, s.smallFontSize)}>
+                    Reitinlinkki {orderNumber}
+                </div>
                 <div className={s.headerContent}>
                     <div className={s.itemToggle}>
                         {isExtended && <FaAngleDown />}
@@ -119,14 +123,52 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     };
 
+    private onMouseEnterLinkIcon = () => {
+        this.props.routePathLayerStore!.setHoveredItemId(this.props.routePathLink.id);
+    };
+
+    private onMouseLeaveLinkIcon = () => {
+        if (this.props.isHovered) {
+            this.props.routePathLayerStore!.setHoveredItemId(null);
+        }
+    };
+
+    private onClickLinkIcon = () => {
+        const clickParams: IRoutePathLinkClickParams = {
+            routePathLinkId: this.props.routePathLink.id,
+        };
+        EventListener.trigger('routePathLinkClick', clickParams);
+    };
     render() {
+        const isExtended = this.props.isExtended;
+        const isHovered = this.props.isHovered;
         return (
-            <RoutePathListItem
-                id={this.props.routePathLink.id}
-                reference={this.props.reference}
-                header={this.renderHeader()}
-                body={this.renderBody()}
-            />
+            <div className={classnames(s.routePathListItem)}>
+                <div
+                    className={s.listIconWrapper}
+                    onMouseEnter={this.onMouseEnterLinkIcon}
+                    onMouseLeave={this.onMouseLeaveLinkIcon}
+                    onClick={this.onClickLinkIcon}
+                >
+                    <div
+                        className={classnames(
+                            s.borderContainer,
+                            isHovered
+                                ? s.hoveredIconHighlight
+                                : isExtended
+                                ? s.extendedIconHighlight
+                                : undefined
+                        )}
+                    >
+                        <div className={s.borderLeftContainer} />
+                        <div />
+                    </div>
+                </div>
+                <div className={s.contentWrapper}>
+                    {this.renderHeader()}
+                    {isExtended && <div className={s.itemContent}>{this.renderBody()}</div>}
+                </div>
+            </div>
         );
     }
 }

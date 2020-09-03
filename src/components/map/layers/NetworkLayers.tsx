@@ -1,9 +1,10 @@
+import L from 'leaflet';
 import { IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import constants from '~/constants/constants';
 import TransitType from '~/enums/transitType';
-import EventHelper, { ILinkClickParams, INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { ILinkClickParams, INodeClickParams } from '~/helpers/EventListener';
 import NodeService from '~/services/nodeService';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -12,9 +13,9 @@ import { NodeStore } from '~/stores/nodeStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { isNetworkLinkHidden, isNetworkLinkPointHidden } from '~/utils/networkUtils';
-import * as s from './NetworkLayers.scss';
 import NodeLayer from './NodeLayer';
 import VectorGridLayer from './VectorGridLayer';
+import * as s from './networkLayers.scss';
 import { INodePopupData } from './popups/NodePopup';
 
 enum GeoserverLayer {
@@ -133,11 +134,13 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         this.props.popupStore!.showPopup(nodePopup);
     };
 
-    private onNetworkNodeClick = (nodeId: string) => {
+    private onNetworkNodeClick = (nodeId: string, e: L.LeafletEvent) => {
+        EventListener.trigger('mapClick', e);
+
         const clickParams: INodeClickParams = {
             nodeId,
         };
-        EventHelper.trigger('networkNodeClick', clickParams);
+        EventListener.trigger('networkNodeClick', clickParams);
     };
 
     private onNetworkLinkClick = (clickEvent: any) => {
@@ -147,7 +150,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
             endNodeId: properties.lnkloppusolmu,
             transitType: properties.lnkverkko,
         };
-        EventHelper.trigger('networkLinkClick', clickParams);
+        EventListener.trigger('networkLinkClick', clickParams);
     };
 
     /**

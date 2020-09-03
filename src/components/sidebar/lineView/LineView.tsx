@@ -150,8 +150,9 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             model: 'line',
         };
 
+        const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt models={[saveModel]} />,
+            content: <SavePrompt savePromptSections={[savePromptSection]} />,
             onConfirm: () => {
                 this.saveLine();
             },

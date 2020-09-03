@@ -9,7 +9,7 @@ import routePathValidationModel, {
     IRoutePathValidationModel,
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import RoutePathValidator from '~/utils/RoutePathValidator';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import { toDateString } from '~/utils/dateUtils';
 import { getText } from '~/utils/textUtils';
 import { IValidationResult } from '~/validation/FormValidator';
@@ -521,16 +521,16 @@ class RoutePathStore {
         if (routePathLinks.length === 0) {
             return getText('routePath_savePrevented_routePathLinksMissing');
         }
-        if (!RoutePathValidator.validateRoutePathLinkCoherency(routePathLinks)) {
+        if (!RoutePathUtils.validateRoutePathLinkCoherency(routePathLinks)) {
             return getText('routePath_savePrevented_geometryInvalid');
         }
-        const stopIdAppearingTwice = RoutePathValidator.getStopIdThatAppearsTwice(routePathLinks);
+        const stopIdAppearingTwice = RoutePathUtils.getStopIdThatAppearsTwice(routePathLinks);
         if (stopIdAppearingTwice) {
             return getText('routePath_savePrevented_stopAppearingTwice', {
                 stopId: stopIdAppearingTwice,
             });
         }
-        if (RoutePathValidator.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
+        if (RoutePathUtils.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
             return getText('routePath_savePrevented_startNodeTheSameAsEndNode');
         }
         if (!this.isFormValid) {
@@ -627,9 +627,9 @@ class RoutePathStore {
             const selectedTool = ToolbarStore.selectedTool;
             if (
                 selectedTool &&
-                (selectedTool.toolType === ToolbarToolType.AddNewRoutePathLink ||
+                (selectedTool.toolType === ToolbarToolType.ExtendRoutePath ||
                     selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink ||
-                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)
+                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegment)
             ) {
                 ToolbarStore.selectDefaultTool();
             }

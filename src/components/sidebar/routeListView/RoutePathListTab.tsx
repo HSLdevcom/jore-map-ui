@@ -6,7 +6,6 @@ import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
-import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
@@ -63,8 +62,6 @@ interface IRoutePathListTabState {
     groupedRoutePathsToDisplay: IRoutePath[][];
 }
 
-const ENVIRONMENT = constants.ENVIRONMENT;
-
 @inject(
     'routeListStore',
     'routePathLayerListStore',
@@ -99,6 +96,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     };
 
     componentDidMount() {
+        this._isMounted = true;
         this.selectedGroupsListener = reaction(
             () =>
                 this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
@@ -111,10 +109,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 this.props.routePathMassEditStore!.routePaths,
             () => this.updateGroupedRoutePathsToDisplay()
         );
-    }
-
-    componentWillMount() {
-        this._isMounted = true;
         this.updateGroupedRoutePathsToDisplay();
     }
 
@@ -325,7 +319,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const confirmStore = this.props.confirmStore;
         const routeId = this.props.routeId;
         const activeSchedules: ISchedule[] = await ScheduleService.fetchActiveSchedules(routeId);
-        const saveModels: ISaveModel[] = [];
+        const modifiedSaveModels: ISaveModel[] = [];
+        const copiedSaveModels: ISaveModel[] = [];
         this.props.routePathMassEditStore!.massEditRoutePaths!.forEach((massEditRp) => {
             const newRoutePath = _.cloneDeep(massEditRp.routePath);
             delete newRoutePath.internalId;
@@ -337,18 +332,36 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     delete oldRoutePath['endDate'];
                 }
             }
-            saveModels.push({
+            const saveModel: ISaveModel = {
                 type: 'saveModel',
                 newData: newRoutePath,
                 oldData: oldRoutePath ? oldRoutePath : {},
                 subTopic: `${newRoutePath.originFi} - ${newRoutePath.destinationFi}`,
                 model: 'routePath',
-            });
+            };
+            if (massEditRp.isNew) {
+                copiedSaveModels.push(saveModel);
+            } else {
+                modifiedSaveModels.push(saveModel);
+            }
         });
+        const savePromptSections = [];
+        if (modifiedSaveModels.length > 0) {
+            savePromptSections.push({
+                models: modifiedSaveModels,
+                sectionTopic: 'Muokatut reitinsuunnat',
+            });
+        }
+        if (copiedSaveModels.length > 0) {
+            savePromptSections.push({
+                models: copiedSaveModels,
+                sectionTopic: 'Kopioidut reitinsuunnat',
+            });
+        }
         confirmStore!.openConfirm({
             content: (
                 <div>
-                    <SavePrompt models={saveModels} />
+                    <SavePrompt savePromptSections={savePromptSections} />
                     <div className={s.sectionDivider} />
                     <div className={s.routeActiveSchedulesWrapper}>
                         <RouteActiveSchedules
@@ -444,10 +457,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const isSaveButtonDisabled =
             !this.props.routePathMassEditStore!.isDirty ||
             !this.props.routePathMassEditStore!.isFormValid;
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? ''
-            : 'Reitinsuuntien massatallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={s.routePathListTab}>
                 {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
@@ -505,8 +514,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     <SaveButton
                         onClick={() => this.showSavePrompt()}
                         disabled={isSaveButtonDisabled}
-                        savePreventedNotification={savePreventedNotification}
-                        type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
+                        savePreventedNotification={''}
+                        type={'saveButton'}
                     >
                         Tallenna muutokset
                     </SaveButton>

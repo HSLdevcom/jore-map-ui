@@ -26,6 +26,10 @@ select:focus {
     box-shadow: 0 0 0 1px $busBlue;
 }
 
+:global(.leaflet-popup) {
+    transition: none !important; // This prevents leaflet-popup-tip-container from blinking when popup is closed
+}
+
 :global(.leaflet-popup-content) {
     width: auto !important;
     padding: 0;

@@ -408,6 +408,7 @@ class NodeStore {
 
     @action
     public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng | null) => {
+        if (!this._node) return;
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
     };
@@ -634,9 +635,9 @@ class NodeStore {
         // Call updateNodeProperty trigger validation for these properties related to nodeId:
         this.updateNodeProperty(
             'beginningOfNodeId',
-            this._node.beginningOfNodeId ? this._node.beginningOfNodeId : null
+            this._node?.beginningOfNodeId ? this._node.beginningOfNodeId : null
         );
-        this.updateNodeProperty('idSuffix', this._node.idSuffix ? this._node.idSuffix : null);
+        this.updateNodeProperty('idSuffix', this._node?.idSuffix ? this._node.idSuffix : null);
 
         this.setIsNodeIdQueryLoading(false);
     };
