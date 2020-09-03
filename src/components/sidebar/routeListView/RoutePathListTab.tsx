@@ -6,7 +6,6 @@ import { Button } from '~/components/controls';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
-import constants from '~/constants/constants';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
@@ -62,8 +61,6 @@ interface IRoutePathListTabState {
     allGroupedRoutePaths: IRoutePath[][];
     groupedRoutePathsToDisplay: IRoutePath[][];
 }
-
-const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject(
     'routeListStore',
@@ -460,10 +457,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const isSaveButtonDisabled =
             !this.props.routePathMassEditStore!.isDirty ||
             !this.props.routePathMassEditStore!.isFormValid;
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? ''
-            : 'Reitinsuuntien massatallentaminen ei ole vielä valmis. Voit kokeilla tallentamista dev-ympäristössä. Jos haluat tallentaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={s.routePathListTab}>
                 {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
@@ -521,8 +514,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     <SaveButton
                         onClick={() => this.showSavePrompt()}
                         disabled={isSaveButtonDisabled}
-                        savePreventedNotification={savePreventedNotification}
-                        type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
+                        savePreventedNotification={''}
+                        type={'saveButton'}
                     >
                         Tallenna muutokset
                     </SaveButton>
