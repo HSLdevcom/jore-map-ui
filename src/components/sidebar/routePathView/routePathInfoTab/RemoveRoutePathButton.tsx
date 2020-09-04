@@ -2,7 +2,6 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
-import constants from '~/constants/constants';
 import { IRoutePath } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import RoutePathService from '~/services/routePathService';
@@ -21,8 +20,6 @@ interface IRemoveRoutePathButtonProps {
     confirmStore?: ConfirmStore;
     errorStore?: ErrorStore;
 }
-
-const ENVIRONMENT = constants.ENVIRONMENT;
 
 @inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
 @observer
@@ -97,17 +94,13 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         const currentDatePlusOne = toMidnightDate(new Date());
         currentDatePlusOne.setDate(currentDatePlusOne.getDate() + 1);
         const isRoutePathInFuture = routePath.startDate.getTime() >= currentDatePlusOne.getTime();
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? ''
-            : 'Reitinsuunnan poistaminen ei ole vielä valmis. Voit kokeilla poistamista dev-ympäristössä. Jos haluat poistaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <SaveButton
                 className={
                     (s.removeButton, !isRoutePathInFuture ? s.disabledHoverButton : undefined)
                 }
                 disabled={isEditingDisabled}
-                savePreventedNotification={savePreventedNotification}
+                savePreventedNotification={''}
                 type='deleteButton'
                 onClick={isRoutePathInFuture ? this.removeRoutePath : () => void 0}
                 isWide={false}
