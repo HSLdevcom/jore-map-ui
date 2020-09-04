@@ -2,6 +2,7 @@ import * as L from 'leaflet';
 import _ from 'lodash';
 import React from 'react';
 import InputContainer from '~/components/controls/InputContainer';
+import constants from '~/constants/constants';
 import FormValidator from '~/validation/FormValidator';
 import * as s from './coordinateInputRow.scss';
 
@@ -26,7 +27,7 @@ class CoordinateInputRow extends React.Component<
 
         this.state = {
             lat: props.coordinates.lat,
-            lng: props.coordinates.lng
+            lng: props.coordinates.lng,
         };
     }
 
@@ -63,6 +64,7 @@ class CoordinateInputRow extends React.Component<
                     <InputContainer
                         value={coordinates.lat}
                         type='number'
+                        decimalLimit={constants.DECIMALS_IN_GEOMETRIES}
                         onChange={this.onLatChange}
                         label='LATITUDE'
                         disabled={isEditingDisabled}
@@ -71,6 +73,7 @@ class CoordinateInputRow extends React.Component<
                     <InputContainer
                         value={coordinates.lng}
                         type='number'
+                        decimalLimit={constants.DECIMALS_IN_GEOMETRIES}
                         onChange={this.onLngChange}
                         label='LONGITUDE'
                         disabled={isEditingDisabled}

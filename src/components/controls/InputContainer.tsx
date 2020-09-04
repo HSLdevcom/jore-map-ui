@@ -19,6 +19,7 @@ interface IInputProps {
     disabled?: boolean;
     value?: string | number | Date | null;
     type?: inputType; // Defaults to text
+    decimalLimit?: number;
     isEmptyDateValueAllowed?: boolean;
     capitalizeInput?: boolean;
     isInputColorRed?: boolean;
@@ -41,6 +42,7 @@ const InputContainer = observer((props: IInputProps) => {
         disabled,
         value,
         type = 'text',
+        decimalLimit,
         isEmptyDateValueAllowed,
         capitalizeInput,
         isInputColorRed,
@@ -72,8 +74,16 @@ const InputContainer = observer((props: IInputProps) => {
     const onTextChange = (e: React.FormEvent<HTMLInputElement>) => {
         let value = e.currentTarget.value;
         if (props.type === 'number') {
-            const parsedValue = parseFloat(value);
-            props.onChange!(!isNaN(parsedValue) ? parsedValue : null);
+            const onlyNumbersReg = new RegExp('^[0-9]+$');
+            const onlyNumbersAndDotReg = new RegExp(`^[0-9]{1,2}([.][0-9]{1,${decimalLimit}})?$`);
+            const testReg =
+                decimalLimit && decimalLimit > 0 ? onlyNumbersAndDotReg : onlyNumbersReg;
+            if (testReg.test(value)) {
+                const parsedValue = parseFloat(value);
+                props.onChange!(!isNaN(parsedValue) ? parsedValue : null);
+            } else if (value.length === 0) {
+                props.onChange!(0);
+            }
         } else {
             if (props.capitalizeInput) {
                 value = value.toUpperCase();
@@ -114,7 +124,7 @@ const InputContainer = observer((props: IInputProps) => {
                     )}
                     value={
                         props.value !== null && props.value !== undefined
-                            ? (props.value as string | number)
+                            ? (props.value as string)
                             : ''
                     }
                     onChange={onTextChange}
