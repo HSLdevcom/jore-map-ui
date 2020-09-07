@@ -392,15 +392,16 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             nodeInvalidPropertiesMap={invalidPropertiesMap}
                         />
                     )}
-                    {!isNewNode && this.state.isRoutePathsUsingNodeQueryLoading ? (
-                        <Loader size={'small'} />
-                    ) : (
-                        <RoutePathList
-                            className={s.routePathList}
-                            topic={'Solmua käyttävät reitinsuunnat'}
-                            routePaths={this.state.routePathsUsingNode}
-                        />
-                    )}
+                    {!isNewNode &&
+                        (this.state.isRoutePathsUsingNodeQueryLoading ? (
+                            <Loader size={'small'} />
+                        ) : (
+                            <RoutePathList
+                                className={s.routePathList}
+                                topic={'Solmua käyttävät reitinsuunnat'}
+                                routePaths={this.state.routePathsUsingNode}
+                            />
+                        ))}
                 </div>
                 <SaveButton
                     onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
