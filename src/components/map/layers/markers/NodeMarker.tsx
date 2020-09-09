@@ -25,7 +25,6 @@ interface INodeMarkerProps {
     shortId?: string;
     hastusId?: string;
     radius?: number;
-    color?: string;
     size?: NodeSize;
     isDraggable?: boolean;
     isDisabled?: boolean;
