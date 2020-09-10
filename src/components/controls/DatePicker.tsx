@@ -47,6 +47,14 @@ class DatePicker extends React.Component<IDatePickerProps, IDatePickerState> {
         EventListener.off('enter', this.trimInputString);
     }
 
+    componentDidUpdate(prevProps: IDatePickerProps) {
+        if (this.props.value !== prevProps.value) {
+            this.setState({
+                currentValue: this.props.value ? toDateString(this.props.value) : '',
+            });
+        }
+    }
+
     // Update props.value only through this method
     private onChangeDate = (date: Date | null) => {
         let newDate = date ? toMidnightDate(date) : null;

@@ -54,7 +54,10 @@ const NodeLayer = inject(
                 nodeFeatures
             );
             setTurfPointNodeFeatures(turfPointNodeFeatures);
-        }, [props.networkStore!.selectedTransitTypes.length === 0 && !turfPointNodeFeatures]);
+        }, [
+            props.networkStore!.selectedTransitTypes.length === 0 && !turfPointNodeFeatures,
+            props.searchResultStore!.allNodes.length,
+        ]);
 
         const forceUpdate = () => {
             updateRenderCount(renderCount + 1);

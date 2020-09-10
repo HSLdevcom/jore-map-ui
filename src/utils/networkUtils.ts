@@ -2,12 +2,14 @@ import { toJS } from 'mobx';
 import Moment from 'moment';
 import TransitType from '~/enums/transitType';
 import { INeighborLink } from '~/models';
+import { IStopItem } from '~/models/IStop';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
 import RoutePathLayerListStore from '~/stores/routePathLayerListStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
+import StopAreaStore from '~/stores/stopAreaStore';
 
 type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
 
@@ -89,11 +91,13 @@ const isNetworkNodeHidden = ({
     const dateRanges: Moment.Moment[][] | undefined = _parseDateRangesString(dateRangesString);
     const selectedTransitTypes = toJS(NetworkStore.selectedTransitTypes);
 
+    // TODO: implement a better (more efficient) way of hiding node visible in other layers
     if (
         isNodeOpenInNodeView(nodeId) ||
         isNodeOpenInLinkView(nodeId) ||
         isNodeOpenInRoutePathView(nodeId) ||
         isNodeOpenInRouteListView(nodeId) ||
+        isNodeOpenInStopAreaView(nodeId) ||
         isNodeOpenInNeighborLinkLayer(nodeId)
     ) {
         return true;
@@ -137,6 +141,14 @@ const isNodeOpenInRoutePathView = (nodeId: string) => {
 
 const isNodeOpenInRouteListView = (nodeId: string) => {
     return RoutePathLayerListStore.isNodeFound(nodeId);
+};
+
+const isNodeOpenInStopAreaView = (nodeId: string) => {
+    const stopItems = StopAreaStore.stopItems;
+    return (
+        stopItems.length > 0 &&
+        Boolean(stopItems.find((stopItem: IStopItem) => stopItem.nodeId === nodeId))
+    );
 };
 
 const isNodeOpenInNeighborLinkLayer = (nodeId: string) => {

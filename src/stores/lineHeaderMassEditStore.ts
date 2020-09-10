@@ -84,29 +84,29 @@ class LineHeaderMassEditStore {
     public init = (lineHeaders: ILineHeader[]) => {
         this.clear();
 
-        const _lineHeaders = lineHeaders.map((lineHeader: ILineHeader) => {
-            return {
-                ...lineHeader,
-                originalStartDate: lineHeader.startDate,
-            };
-        });
-
-        this._massEditLineHeaders = _lineHeaders
+        const _lineHeaders = lineHeaders
             .map((lineHeader: ILineHeader) => {
-                const invalidPropertiesMap = FormValidator.validateAllProperties(
-                    lineHeaderValidationModel,
-                    lineHeader
-                );
-                const massEditLineHeader: IMassEditLineHeader = {
-                    invalidPropertiesMap,
-                    lineHeader,
-                    id: nextAvailableLineHeaderId,
-                    isRemoved: false,
+                return {
+                    ...lineHeader,
+                    originalStartDate: lineHeader.startDate,
                 };
-                nextAvailableLineHeaderId += 1;
-                return massEditLineHeader;
             })
-            .sort(_sortMassEditLineHeaders);
+            .sort(_sortLineHeaders);
+
+        this._massEditLineHeaders = _lineHeaders.map((lineHeader: ILineHeader) => {
+            const invalidPropertiesMap = FormValidator.validateAllProperties(
+                lineHeaderValidationModel,
+                lineHeader
+            );
+            const massEditLineHeader: IMassEditLineHeader = {
+                invalidPropertiesMap,
+                lineHeader,
+                id: nextAvailableLineHeaderId,
+                isRemoved: false,
+            };
+            nextAvailableLineHeaderId += 1;
+            return massEditLineHeader;
+        });
         this.setOldLineHeaders(_lineHeaders);
     };
 
@@ -292,7 +292,10 @@ class LineHeaderMassEditStore {
 }
 
 const _sortMassEditLineHeaders = (a: IMassEditLineHeader, b: IMassEditLineHeader) => {
-    return a.lineHeader.startDate < b.lineHeader.startDate ? 1 : -1;
+    return _sortLineHeaders(a.lineHeader, b.lineHeader);
+};
+const _sortLineHeaders = (a: ILineHeader, b: ILineHeader) => {
+    return a.startDate < b.startDate ? 1 : -1;
 };
 
 // Is b next date of a
