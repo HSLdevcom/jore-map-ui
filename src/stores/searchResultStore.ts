@@ -67,6 +67,12 @@ class SearchResultStore {
         this._allNodes = nodes.sort((a, b) => (a.id > b.id ? 1 : -1));
     };
 
+    @action
+    public addSearchNode = (node: ISearchNode) => {
+        // Need to do concat (instead of push) to trigger observable reaction
+        this._allNodes = this._allNodes.concat([node]);
+    };
+
     private matchWildcard(text: string, rule: string) {
         return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
     }

@@ -247,23 +247,22 @@ const getNodeQuery = () => {
         }`;
 };
 
+const getSearchNodeQuery = () => {
+    return gql`
+        query getNodeDetails($nodeId: String!) {
+            node: solmuBySoltunnus(soltunnus: $nodeId) {
+                ${nodeSearchQueryFields}
+            }
+        }
+    `;
+};
+
 const getAllNodesQuery = () => {
     return gql`
         query getAllNodes {
             allNodes: allSolmus {
                 nodes {
-                    soltunnus
-                    soltyyppi
-                    sollistunnus
-                    solkirjain
-                    geojson
-                    geojsonManual
-                    transitTypes
-                    dateRanges
-                    pysakkiBySoltunnus {
-                        soltunnus
-                        pysnimi
-                    }
+                    ${nodeSearchQueryFields}
                 }
             }
         }
@@ -618,6 +617,21 @@ const nodeQueryFields = `
     }
 `;
 
+const nodeSearchQueryFields = `
+    soltunnus
+    soltyyppi
+    sollistunnus
+    solkirjain
+    geojson
+    geojsonManual
+    transitTypes
+    dateRanges
+    pysakkiBySoltunnus {
+        soltunnus
+        pysnimi
+    }
+`;
+
 const startNodeQueryFields = `
     ${nodeQueryFields}
 `;
@@ -794,6 +808,7 @@ export default {
     getNetworkLinksFromPointQuery,
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
+    getSearchNodeQuery,
     getAllNodesQuery,
     getAllStopsQuery,
     getArmamentInfoQuery,

@@ -38,6 +38,15 @@ class NodeService {
         );
     };
 
+    public static fetchSearchNode = async (nodeId: string): Promise<ISearchNode | null> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getSearchNodeQuery(),
+            variables: { nodeId },
+            fetchPolicy: 'no-cache',
+        });
+        return queryResult.data.node ? NodeFactory.createSearchNode(queryResult.data.node) : null;
+    };
+
     public static fetchAllNodes = async (): Promise<ISearchNode[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getAllNodesQuery(),

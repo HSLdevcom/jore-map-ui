@@ -11,6 +11,7 @@ import NodeType from '~/enums/nodeType';
 import NodeFactory from '~/factories/nodeFactory';
 import EventListener from '~/helpers/EventListener';
 import { ILink, INode, IRoutePath } from '~/models';
+import { ISearchNode } from '~/models/INode';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -23,6 +24,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
@@ -37,6 +39,7 @@ interface INodeViewProps {
     mapStore?: MapStore;
     errorStore?: ErrorStore;
     confirmStore?: ConfirmStore;
+    searchResultStore?: SearchResultStore;
 }
 
 interface INodeViewState {
@@ -45,7 +48,7 @@ interface INodeViewState {
     routePathsUsingNode: IRoutePath[];
 }
 
-@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'confirmStore')
+@inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'confirmStore', 'searchResultStore')
 @observer
 class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     private _isMounted: boolean;
@@ -240,12 +243,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this._setState({ isLoading: true });
 
         const nodeStore = this.props.nodeStore!;
+        let newNodeId = null;
         try {
             if (this.props.isNewNode) {
-                const nodeId = await NodeService.createNode(nodeStore.node);
+                newNodeId = await NodeService.createNode(nodeStore.node);
                 const nodeViewLink = routeBuilder
                     .to(SubSites.node)
-                    .toTarget(':id', nodeId)
+                    .toTarget(':id', newNodeId)
                     .toLink();
                 navigator.goTo({
                     link: nodeViewLink,
@@ -260,8 +264,22 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             }
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError(`Tallennus epäonnistui `, e);
             this._setState({ isLoading: false });
+        }
+
+        // Fetch fresly created node so that it gets added into the search results
+        if (newNodeId) {
+            try {
+                const node: ISearchNode | null = await NodeService.fetchSearchNode(newNodeId);
+                if (node) {
+                    this.props.searchResultStore!.addSearchNode(node);
+                } else {
+                    throw `Solmun ${newNodeId} haku epäonnistui.`;
+                }
+            } catch (e) {
+                this.props.errorStore!.addError('Solmun haku ei onnistunut ', e);
+            }
         }
     };
 
