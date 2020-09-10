@@ -278,7 +278,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                     throw `Solmun ${newNodeId} haku epäonnistui.`;
                 }
             } catch (e) {
-                this.props.errorStore!.addError('Solmun haku ei onnistunut ', e);
+                this.props.errorStore!.addError('Solmun haku epäonnistui ', e);
             }
         }
     };
