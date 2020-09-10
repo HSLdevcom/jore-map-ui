@@ -122,8 +122,8 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.props.searchResultStore!.allNodes.length > 0) return;
 
         try {
-            await NodeService.fetchAllNodes().then((nodes: any) => {
-                this.props.searchResultStore!.setAllNodes(nodes);
+            await NodeService.fetchAllSearchNodes().then((nodes: any) => {
+                this.props.searchResultStore!.setAllSearchNodes(nodes);
                 this.props.searchResultStore!.search();
             });
         } catch (e) {

@@ -257,7 +257,7 @@ const getSearchNodeQuery = () => {
     `;
 };
 
-const getAllNodesQuery = () => {
+const getAllSearchNodesQuery = () => {
     return gql`
         query getAllNodes {
             allNodes: allSolmus {
@@ -809,7 +809,7 @@ export default {
     getLinksByStartNodeAndEndNodeQuery,
     getNodeQuery,
     getSearchNodeQuery,
-    getAllNodesQuery,
+    getAllSearchNodesQuery,
     getAllStopsQuery,
     getArmamentInfoQuery,
     getLinksByEndNodeQuery,

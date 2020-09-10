@@ -47,9 +47,9 @@ class NodeService {
         return queryResult.data.node ? NodeFactory.createSearchNode(queryResult.data.node) : null;
     };
 
-    public static fetchAllNodes = async (): Promise<ISearchNode[]> => {
+    public static fetchAllSearchNodes = async (): Promise<ISearchNode[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllNodesQuery(),
+            query: GraphqlQueries.getAllSearchNodesQuery(),
         });
         return queryResult.data.allNodes.nodes.map((node: IExternalSearchNode) => {
             return NodeFactory.createSearchNode(node);
