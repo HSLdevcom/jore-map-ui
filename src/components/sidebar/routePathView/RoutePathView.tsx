@@ -362,6 +362,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const isCopyRoutePathSegmentViewVisible =
             routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
         const savePreventedNotification = routePathStore!.getSavePreventedText();
+
+        // By default, use rpLink's transitType if rpLinks exist
+        const transitType =
+            routePath.routePathLinks.length > 0
+                ? routePath.routePathLinks[0].transitType
+                : routePath.transitType!;
         return (
             <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
@@ -387,7 +393,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                 />
                                 <div className={s.lineLinkGreaterThanSign}>&gt;</div>
                                 <TransitTypeLink
-                                    transitType={routePath.transitType!}
+                                    transitType={transitType}
                                     shouldShowTransitTypeIcon={false}
                                     text={routePath.routeId}
                                     onClick={() =>
