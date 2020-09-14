@@ -12,10 +12,12 @@ const LONGITUDE_MIN = 23;
 const LONGITUDE_MAX = 27;
 
 const validateLatLngs = (latLng: any) => {
-    return latLng.lat >= LATITUDE_MIN &&
+    return (
+        latLng.lat >= LATITUDE_MIN &&
         latLng.lat <= LATITUDE_MAX &&
         latLng.lng >= LONGITUDE_MIN &&
-        latLng.lng <= LONGITUDE_MAX;
+        latLng.lng <= LONGITUDE_MAX
+    );
 };
 
 Validator.register(
@@ -26,6 +28,11 @@ Validator.register(
 
 class FormValidator {
     public static validate = (value: any, rule: string): IValidationResult => {
+        if (rule.length === 0) {
+            return {
+                isValid: true,
+            };
+        }
         const validator = new Validator(
             {
                 value,
@@ -60,12 +67,7 @@ class FormValidator {
         return invalidPropertiesMap;
     };
 
-    public static validateProperty = (
-        validatorRule: string,
-        value: any
-    ): IValidationResult | undefined => {
-        if (!validatorRule) return;
-
+    public static validateProperty = (validatorRule: string, value: any): IValidationResult => {
         return FormValidator.validate(value, validatorRule);
     };
 
