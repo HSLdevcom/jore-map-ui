@@ -82,7 +82,7 @@ const InputContainer = observer((props: IInputProps) => {
                 const parsedValue = parseFloat(value);
                 props.onChange!(!isNaN(parsedValue) ? parsedValue : null);
             } else if (value.length === 0) {
-                props.onChange!(0);
+                props.onChange!('');
             }
         } else {
             if (props.capitalizeInput) {
