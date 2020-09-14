@@ -50,7 +50,13 @@ const _parseNeighborLinks = (
                 (rp: IExternalRoutePath) => {
                     const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
                     const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;
-                    return RoutePathFactory.mapExternalRoutePath(rp, lineId, transitType);
+                    return RoutePathFactory.mapExternalRoutePath({
+                        lineId,
+                        transitType,
+                        externalRoutePath: rp,
+                        externalRoutePathLinks:
+                            rp.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+                    });
                 }
             ),
         })
