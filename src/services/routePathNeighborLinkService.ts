@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
+import TransitType from '~/enums/transitType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import ApolloClient from '~/helpers/ApolloClient';
@@ -54,8 +55,6 @@ const _parseNeighborLinks = (
                         lineId,
                         transitType,
                         externalRoutePath: rp,
-                        externalRoutePathLinks:
-                            rp.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
                     });
                 }
             ),
@@ -90,7 +89,8 @@ class RoutePathNeighborLinkService {
         } else {
             throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
         }
-        return res.filter((rpLink) => rpLink.routePathLink.transitType === routePath.transitType);
+        const transitType: TransitType = _getTransitType(routePath);
+        return res.filter((rpLink) => rpLink.routePathLink.transitType === transitType);
     };
 
     public static fetchNeighborRoutePathLinks = async (
@@ -135,5 +135,13 @@ class RoutePathNeighborLinkService {
         return null;
     };
 }
+
+// Returns rpLinks' transitType if rpLinks exist
+const _getTransitType = (routePath: IRoutePath) => {
+    const rpLinks = routePath.routePathLinks;
+    if (rpLinks.length === 0) return routePath.transitType!;
+
+    return rpLinks[0].transitType;
+};
 
 export default RoutePathNeighborLinkService;
