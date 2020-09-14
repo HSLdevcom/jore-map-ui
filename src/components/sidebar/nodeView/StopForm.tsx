@@ -505,13 +505,15 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
                             </>
                         )}
                     </div>
-                    <div className={s.flexRow}>
-                        <TextContainer
-                            isLoading={this.state.isRiseCountLoading}
-                            label='NOUSIJAMÄÄRÄ'
-                            value={this.state.riseCount}
-                        />
-                    </div>
+                    {!this.props.isNewStop && (
+                        <div className={s.flexRow}>
+                            <TextContainer
+                                isLoading={this.state.isRiseCountLoading}
+                                label='NOUSIJAMÄÄRÄ'
+                                value={this.state.riseCount}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         );

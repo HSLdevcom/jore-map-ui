@@ -82,7 +82,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                 LinkService.fetchLink(
                     routePathLink.startNode.id,
                     routePathLink.endNode.id,
-                    routePath!.transitType!
+                    routePathLink.transitType
                 )
             );
         });

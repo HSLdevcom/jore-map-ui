@@ -244,7 +244,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                   )
                 : null;
         const activeLineHeaderName = this.getActiveLineHeaderName();
-
         const isSaveButtonDisabled =
             isEditingDisabled ||
             !lineHeaderMassEditStore!.isDirty ||

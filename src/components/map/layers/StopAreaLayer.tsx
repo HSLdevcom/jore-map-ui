@@ -1,6 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import NodeType from '~/enums/nodeType';
+import TransitType from '~/enums/transitType';
 import { IStopItem } from '~/models/IStop';
 import { MapStore } from '~/stores/mapStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
@@ -20,11 +21,10 @@ class StopAreaLayer extends Component<IStopAreaLayerProps> {
             return (
                 <NodeMarker
                     key={`${stopItem.stopAreaId}-${index}`}
-                    color={'#007ac9'}
                     coordinates={stopItem.coordinates!}
                     visibleNodeLabels={this.props.mapStore!.visibleNodeLabels}
                     nodeType={NodeType.STOP}
-                    transitTypes={[]}
+                    transitTypes={[TransitType.BUS]}
                     nodeLocationType={'coordinates'}
                     nodeId={stopItem.nodeId}
                 />

@@ -31,7 +31,7 @@ interface ICopyRoutePathState {
     selectedRouteId: string | null;
     selectedRoutePaths: IRoutePath[];
     lineQueryResult: ISearchLine[];
-    routePathQueryResult: IRoutePath[];
+    routePathQueryResults: IRoutePath[];
     lineDropdownItems: IDropdownItem[];
     routeDropdownItems: IDropdownItem[];
     newRoutePathCounter: number;
@@ -49,7 +49,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
         selectedRouteId: null,
         selectedRoutePaths: [],
         lineQueryResult: [],
-        routePathQueryResult: [],
+        routePathQueryResults: [],
         lineDropdownItems: [],
         routeDropdownItems: [],
         newRoutePathCounter: 0,
@@ -118,8 +118,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             selectedLineId: value,
             selectedRouteId: null,
             selectedRoutePaths: [],
-            routePathQueryResult: [],
+            routePathQueryResults: [],
         });
+        this.state.selectedRoutePaths.forEach((rp) =>
+            this.props.routePathLayerListStore!.removeRoutePath(rp.internalId)
+        );
     };
 
     private onRouteChange = async (routeId: string) => {
@@ -132,11 +135,14 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             return rp;
         });
         this.setState({
-            routePathQueryResult,
             newRoutePathCounter,
+            routePathQueryResults: routePathQueryResult,
             selectedRouteId: routeId,
             selectedRoutePaths: [],
         });
+        this.state.selectedRoutePaths.forEach((rp) =>
+            this.props.routePathLayerListStore!.removeRoutePath(rp.internalId)
+        );
     };
 
     private toggleRoutePath = (routePath: IRoutePath) => async () => {
@@ -163,9 +169,11 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
             // State might already have this routePath (async query, selecting item twice quickly. Read fresh selectedRoutePaths variable from state)
             let selectedRoutePaths = this.state.selectedRoutePaths;
             // isFoundFromQueryResult is used to ensure that routePathQueryResult still has routePath to select
-            const isFoundFromQueryResult = this.state.routePathQueryResult.find((rpQueryResult) => {
-                return rpQueryResult.internalId === routePath.internalId;
-            });
+            const isFoundFromQueryResult = this.state.routePathQueryResults.find(
+                (rpQueryResult) => {
+                    return rpQueryResult.internalId === routePath.internalId;
+                }
+            );
 
             if (
                 !Boolean(isFoundFromQueryResult) ||
@@ -369,7 +377,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                         {this.state.selectedRouteId && (
                             <div className={classnames(s.flexRow, s.routePathSelectView)}>
                                 <div className={s.subTopic}>Valittavat reitinsuunnat</div>
-                                {this.state.routePathQueryResult.length === 0 ? (
+                                {this.state.routePathQueryResults.length === 0 ? (
                                     <div className={s.noQueryResults}>
                                         Reitiltä {this.state.selectedRouteId} ei löytynyt
                                         reitinsuuntia.
@@ -387,7 +395,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                         <th align='left'>Loppupvm</th>
                                                         <th align='left'></th>
                                                     </tr>
-                                                    {this.state.routePathQueryResult.map(
+                                                    {this.state.routePathQueryResults.map(
                                                         (routePath: IRoutePath, index: number) => {
                                                             const isSelected = Boolean(
                                                                 this.state.selectedRoutePaths.find(
