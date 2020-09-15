@@ -181,34 +181,30 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         let routePathsToGroup = _.cloneDeep(routePaths);
         const selectedRoutePathIdPairs = this.props.routePathMassEditStore!
             .selectedRoutePathIdPairs;
-        const res = {};
 
-        // Take out selectedRoutePaths from routePathsToGroup that have no start date
+        // Take out selectedRoutePaths out from routePathsToGroup
+        // Note: selectedRoutePaths have no start date
         const selectedRoutePathGroups: IRoutePath[][] = [];
-        const selectedRoutePathsWithStartDate: IRoutePath[] = [];
-        const visitedRoutePaths = {};
         routePathsToGroup = routePathsToGroup.filter((rp: IRoutePath) => {
             const idPair = selectedRoutePathIdPairs.find((idPair: string[]) => {
                 return idPair.includes(rp.internalId);
             })!;
-            const isSelected = Boolean(idPair);
-            if (isSelected && !visitedRoutePaths[idPair[0]]) {
-                const rp1 = routePathsToGroup.find((rp) => rp.internalId === idPair[0])!;
-                const rp2 = routePathsToGroup.find((rp) => rp.internalId === idPair[1])!;
-                visitedRoutePaths[rp1!.internalId] = true;
-                visitedRoutePaths[rp2!.internalId] = true;
-
-                if (rp1.startDate.getTime() > getMaxDate().getTime()) {
-                    const sortedRpGroup = [rp1, rp2].sort((a: IRoutePath, b: IRoutePath) =>
-                        a.direction === '1' ? -1 : 1
+            const isFoundFromSelectedIdPairs = Boolean(idPair);
+            if (isFoundFromSelectedIdPairs) {
+                const rp2Id = idPair.find((id) => id !== rp.internalId);
+                let existingGroup = null;
+                if (rp2Id) {
+                    existingGroup = selectedRoutePathGroups.find((group) =>
+                        Boolean(group.find((rp) => rp.internalId === rp2Id))
                     );
-                    selectedRoutePathGroups.push(sortedRpGroup);
+                }
+                if (existingGroup) {
+                    existingGroup.push(rp);
                 } else {
-                    selectedRoutePathsWithStartDate.push(rp1);
-                    selectedRoutePathsWithStartDate.push(rp2);
+                    selectedRoutePathGroups.push([rp]);
                 }
             }
-            return !isSelected;
+            return !isFoundFromSelectedIdPairs;
         });
 
         // Take out new routePaths with unselected date from routePathsToGroup
@@ -221,15 +217,12 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             return !isNewRoutePath;
         });
 
-        // Add selected routePaths with startDate back to routePaths to group (so that they will be sorted)
-        routePathsToGroup = routePathsToGroup.concat(selectedRoutePathsWithStartDate);
-
         // Create routePath pairs from remaining (existing) routePaths, sort them by date
+        const res = {};
         routePathsToGroup.forEach((rp) => {
             const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
-
         const list: IRoutePath[][] = Object.values(res);
         list.sort(
             (a: IRoutePath[], b: IRoutePath[]) =>
