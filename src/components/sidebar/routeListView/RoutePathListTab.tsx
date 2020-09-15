@@ -15,7 +15,6 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
-import RoutePathService from '~/services/routePathService';
 import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -29,11 +28,6 @@ import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
-
-interface IRoutePathStopNames {
-    firstStopName: string;
-    lastStopName: string;
-}
 
 interface IRoutePathListTabProps {
     originalRoutePaths: IRoutePath[];
@@ -55,7 +49,6 @@ interface IRoutePathListTabProps {
 }
 
 interface IRoutePathListTabState {
-    stopNameMap: Map<string, IRoutePathStopNames>;
     areStopNamesLoading: boolean;
     hasOldRoutePaths: boolean | null;
     allGroupedRoutePaths: IRoutePath[][];
@@ -81,7 +74,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     constructor(props: IRoutePathListTabProps) {
         super(props);
         this.state = {
-            stopNameMap: new Map(),
             areStopNamesLoading: true,
             hasOldRoutePaths: null,
             allGroupedRoutePaths: [],
@@ -97,6 +89,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentDidMount() {
         this._isMounted = true;
+        this.fetchStopNames();
         this.selectedGroupsListener = reaction(
             () =>
                 this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
@@ -135,6 +128,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     };
 
     /**
+     * TODO: better would be to have this logic in a store.
      * Updates groupedRoutePathsToDisplay with the following way:
      * 1) Gets all groupedRoutePaths from this.getGroupedRoutePaths()
      * 2) fetches stop names for groupedRoutePathsToDisplay
@@ -162,7 +156,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 lastSeenNotOldRoutePathGroupIndex
             );
         }
-        this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
             hasOldRoutePaths,
             allGroupedRoutePaths,
@@ -241,47 +234,32 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         return list;
     };
 
-    private fetchStopNames = async (groupedRoutePathsToDisplay: IRoutePath[][]) => {
-        const stopNameMap = this.state.stopNameMap;
+    private fetchStopNames = async () => {
         this._setState({
             areStopNamesLoading: true,
         });
-        const promises: Promise<void>[] = [];
-        for (const routePaths of groupedRoutePathsToDisplay) {
-            for (let i = 0; i < routePaths.length; i += 1) {
-                const routePath: IRoutePath = routePaths[i];
-                const oldStopNames = stopNameMap.get(routePath.internalId);
-                if (!oldStopNames) {
-                    const createPromise = async () => {
-                        let direction = routePath.direction;
-                        let startDate = routePath.startDate;
-                        if (this.props.isEditing) {
-                            // Have to use old routePath's data for querying, current routePath's data might have changed
-                            const oldRoutePath = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                                (rp) => rp.id === routePath.internalId
-                            )!.oldRoutePath!;
-                            direction = oldRoutePath.direction;
-                            startDate = oldRoutePath.startDate;
-                        }
-                        const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath(
-                            {
-                                direction,
-                                startDate,
-                                routeId: routePath.routeId,
-                            }
-                        );
-                        stopNameMap.set(routePath.internalId, stopNames as IRoutePathStopNames);
-                    };
-                    promises.push(createPromise());
+
+        let routePaths: IRoutePath[];
+        if (this.props.isEditing) {
+            // Get routePaths from massEditStore to get the original (old) routePaths for stopName query
+            routePaths = this.props.routePathMassEditStore!.massEditRoutePaths!.map(
+                (massEditRp) => {
+                    if (massEditRp.isNew) {
+                        // Have to set internalId from massEditRp
+                        const temp = _.cloneDeep(massEditRp.oldRoutePath!);
+                        temp.internalId = massEditRp.id;
+                        return temp;
+                    }
+                    return massEditRp.routePath;
                 }
-            }
+            );
+        } else {
+            routePaths = this.getRoutePaths();
         }
 
-        Promise.all(promises).then(() => {
-            this._setState({
-                stopNameMap,
-                areStopNamesLoading: false,
-            });
+        await this.props.routeListStore!.fetchStopNames(routePaths);
+        this._setState({
+            areStopNamesLoading: false,
         });
     };
 
@@ -476,7 +454,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             nextGroup={nextGroup}
                             prevGroup={prevGroup}
                             isEditing={isEditing}
-                            stopNameMap={this.state.stopNameMap}
+                            stopNameMap={this.props.routeListStore!.stopNameMap}
                             areStopNamesLoading={this.state.areStopNamesLoading}
                             index={index}
                         />
@@ -567,5 +545,3 @@ const _hasGroupRoutePathWithDirection = (
 };
 
 export default RoutePathListTab;
-
-export { IRoutePathStopNames };

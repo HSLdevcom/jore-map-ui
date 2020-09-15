@@ -14,12 +14,12 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
+import { IRoutePathStopNames } from '~/stores/routeListStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
 import { isCurrentDateWithinTimeSpan, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
-import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
 
 interface IRoutePathGroupProps {
@@ -158,7 +158,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         const endDate = isEndDateSet ? firstRp.endDate : null;
         return (
             <div
-                key={`${header}-${index}`}
+                key={`rp-${firstRp.internalId}`}
                 className={classnames(s.routePathGroup, index % 2 ? s.shadow : undefined)}
                 data-cy={`rpGroup-${index}`}
             >
