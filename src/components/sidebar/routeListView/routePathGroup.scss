@@ -1,6 +1,9 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/flexbox';
 
+$newHighlightBorderColor: #7fda87;
+$newHighlightBackgroundColor: #e0fde2;
+
 .routePathGroup {
     padding: 5px 10px;
 
@@ -11,87 +14,112 @@
         padding: 5px;
     }
 
-    .routePath {
-        display: flex;
-        -webkit-box-align: center;
-        justify-content: space-between;
-        flex-direction: row;
-        -ms-flex-align: center;
-        align-items: center;
+    .routePathContainer {
+        margin-top: 2px;
 
-        .routePathInfoNotEditing {
+        .routePath {
             display: flex;
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        .routePathInfoNotEditing:hover {
-            padding: 5px;
-            transition: 0.5s;
-            background-color: $backgroundHoverColor;
-        }
-
-        .routePathInfoEditing {
-            display: flex;
-            padding: 5px;
-        }
-
-        .routePathHighlighted {
-            font-weight: bold;
-        }
-
-        .routePathDirection {
-            font-size: $largeFontSize;
-            display: flex;
-            width: 25px;
+            -webkit-box-align: center;
+            justify-content: space-between;
+            flex-direction: row;
+            -ms-flex-align: center;
             align-items: center;
-        }
 
-        .stopNameLoader {
-            display: flex;
-            justify-content: center;
-            width: 150px;
-        }
+            .routePathInfoNotEditing {
+                display: flex;
+                cursor: pointer;
+            }
 
-        .destinations1 {
-            font-size: $mediumFontSize;
-        }
+            .routePathInfoNotEditing:hover {
+                transition: 0.5s;
+                background-color: $backgroundHoverColor;
+            }
 
-        .destinations2 {
-            color: $mediumLightGrey;
-            font-size: $smallFontSize;
-        }
+            .routePathInfoEditing {
+                display: flex;
+            }
 
-        .routePathControls {
-            display: flex;
-            align-items: center;
-            padding: 5px;
+            .routePathHighlighted {
+                font-weight: bold;
+            }
 
-            > * {
-                margin: 0 5px;
+            .routePathDirection {
+                font-size: $largeFontSize;
+                display: flex;
+                width: 25px;
+                align-items: center;
+            }
+
+            .stopNameLoader {
+                display: flex;
+                justify-content: center;
+                width: 150px;
+            }
+
+            .destinations1 {
+                font-size: $mediumFontSize;
+            }
+
+            .destinations2 {
+                color: $mediumLightGrey;
+                font-size: $smallFontSize;
+            }
+
+            .routePathControls {
+                display: flex;
+                align-items: center;
+                > * {
+                    margin: 0 2px;
+                }
+            }
+
+            .shadow {
+                background-color: white;
+            }
+
+            .separateNewRoutePathButton {
+                border: none;
+                color: $fontColorDefault;
+            }
+            .separateNewRoutePathButton:hover {
+                color: white;
+                background-color: $fontColorDefault;
+            }
+
+            .removeNewRoutePathButton {
+                border: none;
+                color: $red;
+            }
+            .removeNewRoutePathButton:hover {
+                color: white;
+                background-color: $red;
             }
         }
 
-        .shadow {
-            background-color: white;
+        .rpNoHighlight {
+            padding: 5px;
         }
 
-        .removeNewRoutePathButton {
-            border: none;
-            color: $red;
+        .rpHighlighAsNew {
+            border-top: 2px solid $newHighlightBorderColor;
+            border-right: 2px solid $newHighlightBorderColor;
+            border-left: 2px solid $newHighlightBorderColor;
+            background-color: $newHighlightBackgroundColor;
+            padding: 3px;
         }
-        .removeNewRoutePathButton:hover {
-            color: white;
-            background-color: $red;
+        .rpHighlighAsNew:last-of-type {
+            border-bottom: 2px solid $newHighlightBorderColor;
+            border-right: 2px solid $newHighlightBorderColor;
+            border-left: 2px solid $newHighlightBorderColor;
         }
-    }
 
-    .highlighAsNew {
-        background-color: lighten($saveButtonGreen, 50);
-    }
+        .rpHighlighAsNew + .rpNoHighlight {
+            border-top: 2px solid $newHighlightBorderColor; // Special case: if .rpNoHighlight is after .rpHighlighAsNew, set border-top to .rpNoHighlight to finish the borders
+        }
 
-    .highlightAsSelected {
-        background-color: #adf;
+        .highlightAsSelected {
+            background-color: #adf;
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
+import { IoIosRedo } from 'react-icons/io';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import Loader from '~/components/shared/loader/Loader';
@@ -13,12 +14,12 @@ import { IMassEditRoutePath } from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import subSites from '~/routing/subSites';
+import { IRoutePathStopNames } from '~/stores/routeListStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
 import { isCurrentDateWithinTimeSpan, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
-import { IRoutePathStopNames } from './RoutePathListTab';
 import * as s from './routePathGroup.scss';
 
 interface IRoutePathGroupProps {
@@ -38,19 +39,11 @@ interface IRoutePathGroupProps {
 @observer
 class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     private updateStartDates = (routePaths: IRoutePath[]) => async (value: Date) => {
-        for (const index in routePaths) {
-            const routePath = routePaths[index];
-            this.props.routePathMassEditStore!.updateRoutePathStartDate(
-                routePath.internalId,
-                value
-            );
-        }
+        this.props.routePathMassEditStore!.updateRoutePathStartDates(routePaths, value);
     };
 
     private updateEndDates = (routePaths: IRoutePath[]) => (value: Date) => {
-        routePaths.forEach((rp) => {
-            this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
-        });
+        this.props.routePathMassEditStore!.updateRoutePathEndDates(routePaths, value);
     };
 
     private openRoutePathView = (routePath: IRoutePath) => () => {
@@ -157,7 +150,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         const endDate = isEndDateSet ? firstRp.endDate : null;
         return (
             <div
-                key={`${header}-${index}`}
+                key={`rp-${firstRp.internalId}`}
                 className={classnames(s.routePathGroup, index % 2 ? s.shadow : undefined)}
                 data-cy={`rpGroup-${index}`}
             >
@@ -195,7 +188,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         <div data-cy='rpHeader'>{header}</div>
                     )}
                 </div>
-                <div>
+                <div className={s.routePathContainer}>
                     {routePaths.map((routePath: IRoutePath) => {
                         const shouldHighlightRoutePath = isCurrentDateWithinTimeSpan(
                             routePath.startDate,
@@ -241,7 +234,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditingEnabled && isNew ? s.highlighAsNew : undefined,
+                                    isEditingEnabled && isNew ? s.rpHighlighAsNew : s.rpNoHighlight,
                                     isSelected ? s.highlightAsSelected : undefined
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}
@@ -303,18 +296,36 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 </div>
                                 <div className={s.routePathControls}>
                                     {isEditingEnabled && isNew && (
-                                        <Button
-                                            className={s.removeNewRoutePathButton}
-                                            hasReverseColor={true}
-                                            onClick={() =>
-                                                this.props.routePathMassEditStore!.removeRoutePath(
-                                                    routePath.internalId
-                                                )
-                                            }
-                                            data-cy='removeRoutePath'
-                                        >
-                                            <FaTrashAlt />
-                                        </Button>
+                                        <>
+                                            <Button
+                                                className={s.separateNewRoutePathButton}
+                                                hasReverseColor={true}
+                                                onClick={() =>
+                                                    this.props.routePathMassEditStore!.separateRoutePath(
+                                                        routePath.internalId
+                                                    )
+                                                }
+                                                title={
+                                                    'Eriytä kopioitu reitinsuunta omaan kalenteriryhmään'
+                                                }
+                                                data-cy='separateNewRoutePath'
+                                            >
+                                                <IoIosRedo />
+                                            </Button>
+                                            <Button
+                                                className={s.removeNewRoutePathButton}
+                                                hasReverseColor={true}
+                                                onClick={() =>
+                                                    this.props.routePathMassEditStore!.removeRoutePath(
+                                                        routePath.internalId
+                                                    )
+                                                }
+                                                title={'Poista kopioitu reitinsuunta'}
+                                                data-cy='removeRoutePath'
+                                            >
+                                                <FaTrashAlt />
+                                            </Button>
+                                        </>
                                     )}
                                     <ToggleSwitch
                                         onClick={() =>

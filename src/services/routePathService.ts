@@ -139,8 +139,7 @@ class RoutePathService {
                 externalRoutePath,
                 lineId,
                 transitType,
-                externalRoutePathLinks:
-                    externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+                externalRoutePathLinks: [],
             });
         });
     };
@@ -159,8 +158,7 @@ class RoutePathService {
                 externalRoutePath,
                 lineId,
                 transitType,
-                externalRoutePathLinks:
-                    externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+                externalRoutePathLinks: [],
             });
         });
     };

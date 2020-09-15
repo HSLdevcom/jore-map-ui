@@ -5,12 +5,18 @@ import ISchedule from '~/models/ISchedule';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import LineService from '~/services/lineService';
+import RoutePathService from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import ErrorStore from './errorStore';
 import MapStore from './mapStore';
 import RoutePathLayerListStore from './routePathLayerListStore';
 import SearchStore from './searchStore';
+
+interface IRoutePathStopNames {
+    firstStopName: string;
+    lastStopName: string;
+}
 
 interface IRouteItem {
     route: IRoute;
@@ -25,6 +31,7 @@ class RouteListStore {
     @observable private _lines: ILine[];
     @observable private _routeIdToEdit: string | null;
     @observable private _areRoutesLoading: boolean;
+    @observable private _stopNameMap: Map<string, IRoutePathStopNames>;
     @observable private _loadedRouteIds: string[];
 
     constructor() {
@@ -32,6 +39,7 @@ class RouteListStore {
         this._lines = [];
         this._routeIdToEdit = null;
         this._areRoutesLoading = false;
+        this._stopNameMap = new Map();
 
         reaction(
             () => this.routeIdToEdit != null,
@@ -61,6 +69,11 @@ class RouteListStore {
     @computed
     get areRoutesLoading(): boolean {
         return this._areRoutesLoading;
+    }
+
+    @computed
+    get stopNameMap() {
+        return this._stopNameMap;
     }
 
     public getLine(lineId: string): ILine | undefined {
@@ -134,6 +147,7 @@ class RouteListStore {
         this._routeIdToEdit = null;
         this._loadedRouteIds = [];
         this._areRoutesLoading = false;
+        this._stopNameMap = new Map();
         RoutePathLayerListStore.clear();
     };
 
@@ -157,6 +171,11 @@ class RouteListStore {
     @action
     public setLoadedRouteIds = (loadedRouteIds: string[]) => {
         this._loadedRouteIds = loadedRouteIds;
+    };
+
+    @action
+    public mergeMapToStopNamesMap = (newMap: Map<string, IRoutePathStopNames>) => {
+        this._stopNameMap = new Map([...this._stopNameMap, ...newMap]);
     };
 
     public fetchRoutes = async ({ forceUpdate }: { forceUpdate: boolean }) => {
@@ -220,6 +239,29 @@ class RouteListStore {
         }
     };
 
+    public fetchStopNames = async (routePaths: IRoutePath[]) => {
+        const newMap: Map<string, IRoutePathStopNames> = new Map();
+        const promises: Promise<void>[] = [];
+        for (let i = 0; i < routePaths.length; i += 1) {
+            const routePath: IRoutePath = routePaths[i];
+            const oldStopNames = this._stopNameMap.get(routePath.internalId);
+            if (!oldStopNames) {
+                const createPromise = async () => {
+                    const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath({
+                        direction: routePath.direction,
+                        startDate: routePath.startDate,
+                        routeId: routePath.routeId,
+                    });
+                    newMap.set(routePath.internalId, stopNames as IRoutePathStopNames);
+                };
+                promises.push(createPromise());
+            }
+        }
+        await Promise.all(promises).then(() => {
+            this.mergeMapToStopNamesMap(newMap);
+        });
+    };
+
     public getRouteItem = (routeId: string): IRouteItem | undefined => {
         return this._routeItems.find((routeItem) => routeItem.route.id === routeId);
     };
@@ -227,4 +269,4 @@ class RouteListStore {
 
 export default new RouteListStore();
 
-export { RouteListStore, IRouteItem };
+export { RouteListStore, IRouteItem, IRoutePathStopNames };
