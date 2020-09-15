@@ -188,7 +188,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                         <div data-cy='rpHeader'>{header}</div>
                     )}
                 </div>
-                <div>
+                <div className={s.routePathContainer}>
                     {routePaths.map((routePath: IRoutePath) => {
                         const shouldHighlightRoutePath = isCurrentDateWithinTimeSpan(
                             routePath.startDate,
