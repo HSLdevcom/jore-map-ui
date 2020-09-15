@@ -234,7 +234,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditingEnabled && isNew ? s.highlighAsNew : undefined,
+                                    isEditingEnabled && isNew ? s.rpHighlighAsNew : s.rpNoHighlight,
                                     isSelected ? s.highlightAsSelected : undefined
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}

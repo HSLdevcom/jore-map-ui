@@ -15,7 +15,6 @@ $newHighlightBackgroundColor: #e0fde2;
     }
 
     .routePath {
-        padding: 5px;
         display: flex;
         -webkit-box-align: center;
         justify-content: space-between;
@@ -94,17 +93,25 @@ $newHighlightBackgroundColor: #e0fde2;
         }
     }
 
-    .highlighAsNew {
+    .rpNoHighlight {
+        padding: 5px;
+    }
+
+    .rpHighlighAsNew {
         border-top: 2px solid $newHighlightBorderColor;
         border-right: 2px solid $newHighlightBorderColor;
         border-left: 2px solid $newHighlightBorderColor;
         background-color: $newHighlightBackgroundColor;
         padding: 3px;
     }
-    .highlighAsNew:last-of-type {
+    .rpHighlighAsNew:last-of-type {
         border-bottom: 2px solid $newHighlightBorderColor;
         border-right: 2px solid $newHighlightBorderColor;
         border-left: 2px solid $newHighlightBorderColor;
+    }
+
+    .rpHighlighAsNew + .rpNoHighlight {
+        border-top: 2px solid $newHighlightBorderColor; // Special case: if .rpNoHighlight is after .rpHighlighAsNew, set border-top to .rpNoHighlight to finish the borders
     }
 
     .highlightAsSelected {
