@@ -109,6 +109,13 @@ class RoutePathMassEditStore {
     };
 
     @action
+    public updateRoutePathStartDates = (routePaths: IRoutePath[], value: Date) => {
+        routePaths.forEach((rp) => {
+            this.updateRoutePathStartDate(rp.internalId, value);
+        });
+    };
+
+    @action
     public updateRoutePathStartDate = (id: string, newStartDate: Date) => {
         const massEditRpToUpdate = this._massEditRoutePaths!.find((m) => m.id === id)!;
         const routePathToUpdate = massEditRpToUpdate.routePath;
@@ -133,6 +140,13 @@ class RoutePathMassEditStore {
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
 
         this.validateMassEditRoutePaths();
+    };
+
+    @action
+    public updateRoutePathEndDates = (routePaths: IRoutePath[], value: Date) => {
+        routePaths.forEach((rp) => {
+            this.updateRoutePathEndDate(rp.internalId, value);
+        });
     };
 
     @action

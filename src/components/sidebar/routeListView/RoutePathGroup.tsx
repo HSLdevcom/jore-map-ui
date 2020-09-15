@@ -39,19 +39,11 @@ interface IRoutePathGroupProps {
 @observer
 class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     private updateStartDates = (routePaths: IRoutePath[]) => async (value: Date) => {
-        for (const index in routePaths) {
-            const routePath = routePaths[index];
-            this.props.routePathMassEditStore!.updateRoutePathStartDate(
-                routePath.internalId,
-                value
-            );
-        }
+        this.props.routePathMassEditStore!.updateRoutePathStartDates(routePaths, value);
     };
 
     private updateEndDates = (routePaths: IRoutePath[]) => (value: Date) => {
-        routePaths.forEach((rp) => {
-            this.props.routePathMassEditStore!.updateRoutePathEndDate(rp.internalId, value);
-        });
+        this.props.routePathMassEditStore!.updateRoutePathEndDates(routePaths, value);
     };
 
     private openRoutePathView = (routePath: IRoutePath) => () => {
