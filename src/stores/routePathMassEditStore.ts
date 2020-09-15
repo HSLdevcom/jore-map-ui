@@ -151,6 +151,11 @@ class RoutePathMassEditStore {
     };
 
     @action
+    public separateRoutePath = (id: string) => {
+        // TODO
+    };
+
+    @action
     public addRoutePathsToCopy = (routePathsToCopy: IRoutePathToCopy[]) => {
         let idCounter = this._newRoutePathIdCounter;
         const routePathsWithNewId: IRoutePath[] = [];

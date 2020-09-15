@@ -1,6 +1,9 @@
 @import '../../shared/styles/common';
 @import '../../shared/styles/flexbox';
 
+$newHighlightBorderColor: #7fda87;
+$newHighlightBackgroundColor: #e0fde2;
+
 .routePathGroup {
     padding: 5px 10px;
 
@@ -12,6 +15,7 @@
     }
 
     .routePath {
+        padding: 5px;
         display: flex;
         -webkit-box-align: center;
         justify-content: space-between;
@@ -22,18 +26,15 @@
         .routePathInfoNotEditing {
             display: flex;
             cursor: pointer;
-            padding: 5px;
         }
 
         .routePathInfoNotEditing:hover {
-            padding: 5px;
             transition: 0.5s;
             background-color: $backgroundHoverColor;
         }
 
         .routePathInfoEditing {
             display: flex;
-            padding: 5px;
         }
 
         .routePathHighlighted {
@@ -65,15 +66,22 @@
         .routePathControls {
             display: flex;
             align-items: center;
-            padding: 5px;
-
             > * {
-                margin: 0 5px;
+                margin: 0 2px;
             }
         }
 
         .shadow {
             background-color: white;
+        }
+
+        .separateNewRoutePathButton {
+            border: none;
+            color: $fontColorDefault;
+        }
+        .separateNewRoutePathButton:hover {
+            color: white;
+            background-color: $fontColorDefault;
         }
 
         .removeNewRoutePathButton {
@@ -87,7 +95,16 @@
     }
 
     .highlighAsNew {
-        background-color: lighten($saveButtonGreen, 50);
+        border-top: 2px solid $newHighlightBorderColor;
+        border-right: 2px solid $newHighlightBorderColor;
+        border-left: 2px solid $newHighlightBorderColor;
+        background-color: $newHighlightBackgroundColor;
+        padding: 3px;
+    }
+    .highlighAsNew:last-of-type {
+        border-bottom: 2px solid $newHighlightBorderColor;
+        border-right: 2px solid $newHighlightBorderColor;
+        border-left: 2px solid $newHighlightBorderColor;
     }
 
     .highlightAsSelected {

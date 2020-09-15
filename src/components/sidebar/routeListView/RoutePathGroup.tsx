@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
+import { IoIosRedo } from 'react-icons/io';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
 import Loader from '~/components/shared/loader/Loader';
@@ -303,18 +304,36 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                 </div>
                                 <div className={s.routePathControls}>
                                     {isEditingEnabled && isNew && (
-                                        <Button
-                                            className={s.removeNewRoutePathButton}
-                                            hasReverseColor={true}
-                                            onClick={() =>
-                                                this.props.routePathMassEditStore!.removeRoutePath(
-                                                    routePath.internalId
-                                                )
-                                            }
-                                            data-cy='removeRoutePath'
-                                        >
-                                            <FaTrashAlt />
-                                        </Button>
+                                        <>
+                                            <Button
+                                                className={s.separateNewRoutePathButton}
+                                                hasReverseColor={true}
+                                                onClick={() =>
+                                                    this.props.routePathMassEditStore!.separateRoutePath(
+                                                        routePath.internalId
+                                                    )
+                                                }
+                                                title={
+                                                    'Eriytä kopioitu reitinsuunta omaan kalenteriryhmään'
+                                                }
+                                                data-cy='separateNewRoutePath'
+                                            >
+                                                <IoIosRedo />
+                                            </Button>
+                                            <Button
+                                                className={s.removeNewRoutePathButton}
+                                                hasReverseColor={true}
+                                                onClick={() =>
+                                                    this.props.routePathMassEditStore!.removeRoutePath(
+                                                        routePath.internalId
+                                                    )
+                                                }
+                                                title={'Poista kopioitu reitinsuunta'}
+                                                data-cy='removeRoutePath'
+                                            >
+                                                <FaTrashAlt />
+                                            </Button>
+                                        </>
                                     )}
                                     <ToggleSwitch
                                         onClick={() =>
