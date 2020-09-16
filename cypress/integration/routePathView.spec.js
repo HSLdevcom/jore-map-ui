@@ -2,8 +2,6 @@ import constants from '../constants';
 
 describe('RoutePathView tests - read access user', () => {
     it('Can open routePath and close it to return home page', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
-
         cy.hslLoginReadAccess();
 
         _openRoutePath();
@@ -18,7 +16,6 @@ describe('RoutePathView tests - read access user', () => {
 
 describe('RoutePathView tests - write access user', () => {
     it('Can save routePath', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
         cy.hslLoginWriteAccess();
 
         _openRoutePath();
@@ -49,7 +46,6 @@ describe('RoutePathView tests - write access user', () => {
     });
 
     it('Can save routePath links', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
         cy.hslLoginWriteAccess();
 
         _openRoutePath();
