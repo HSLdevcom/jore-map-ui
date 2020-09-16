@@ -39,6 +39,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                         className={s.icon}
                         title={`Kopioi reitin ${routePath.routeId} reitinsuunnan segmentti`}
                         onClick={this.copySegments(routePath)}
+                        data-cy='copyRoutePathSegmentButton'
                     >
                         <FiCopy />
                     </div>

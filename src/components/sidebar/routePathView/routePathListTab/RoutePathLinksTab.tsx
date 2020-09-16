@@ -183,6 +183,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         text='Linkit'
                         isActive={!listFilters.includes(ListFilter.link)}
                         onClick={() => this.toggleListFilter(ListFilter.link)}
+                        data-cy='linksToggle'
                     />
                 </ToggleView>
                 <div className={s.listHeader}>
