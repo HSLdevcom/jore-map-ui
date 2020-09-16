@@ -109,17 +109,44 @@ class RoutePathMassEditStore {
     };
 
     @action
+    public updateRoutePathStartDates = (routePaths: IRoutePath[], value: Date) => {
+        routePaths.forEach((rp) => {
+            this.updateRoutePathStartDate(rp.internalId, value);
+        });
+    };
+
+    @action
     public updateRoutePathStartDate = (id: string, newStartDate: Date) => {
-        const massEditRpToUpdate = this._massEditRoutePaths?.find((m) => m.id === id)!;
+        const massEditRpToUpdate = this._massEditRoutePaths!.find((m) => m.id === id)!;
         const routePathToUpdate = massEditRpToUpdate.routePath;
         routePathToUpdate.startDate = newStartDate;
-        // Update routePath's endDate as the same as startDate if endDate is not set
-        if (routePathToUpdate.endDate.getTime() > getMaxDate().getTime()) {
-            routePathToUpdate.endDate = _.cloneDeep(newStartDate);
-        }
         massEditRpToUpdate.isStartDateSet = true;
+        // Update routePath's endDate as the same as startDate if endDate is not set
+        if (!massEditRpToUpdate.isEndDateSet) {
+            routePathToUpdate.endDate = _.cloneDeep(newStartDate);
+            massEditRpToUpdate.isEndDateSet = true;
+        }
+
+        // Remove id pair if found
+        const selectedRpPairRemoveIndex = this._selectedRoutePathIdPairs.findIndex(
+            (idPair: string[]) => {
+                return Boolean(idPair.find((_id: string) => _id === id));
+            }
+        );
+        if (selectedRpPairRemoveIndex >= 0) {
+            this._selectedRoutePathIdPairs.splice(selectedRpPairRemoveIndex, 1);
+        }
+
         this._massEditRoutePaths = this._massEditRoutePaths!.slice().sort(_sortMassEditRoutePaths);
+
         this.validateMassEditRoutePaths();
+    };
+
+    @action
+    public updateRoutePathEndDates = (routePaths: IRoutePath[], value: Date) => {
+        routePaths.forEach((rp) => {
+            this.updateRoutePathEndDate(rp.internalId, value);
+        });
     };
 
     @action
@@ -135,6 +162,7 @@ class RoutePathMassEditStore {
     public removeRoutePath = (id: string) => {
         const massEditRpRemoveIndex = this._massEditRoutePaths?.findIndex((rp) => rp.id === id)!;
         this._massEditRoutePaths!.splice(massEditRpRemoveIndex, 1);
+
         const selectedRpPairRemoveIndex = this._selectedRoutePathIdPairs.findIndex(
             (idPair: string[]) => {
                 return Boolean(idPair.find((_id: string) => _id === id));
@@ -143,11 +171,24 @@ class RoutePathMassEditStore {
         if (selectedRpPairRemoveIndex >= 0) {
             this._selectedRoutePathIdPairs.splice(selectedRpPairRemoveIndex, 1);
         }
+
         if (this._selectedRoutePath?.internalId === id) {
             this._selectedRoutePath = null;
         }
+
         this.validateMassEditRoutePaths();
         RoutePathLayerListStore.removeRoutePath(id);
+    };
+
+    @action
+    public separateRoutePath = (id: string) => {
+        this.resetMassEditRpDates(id);
+
+        // Add a new selectedRoutePathPair
+        this._selectedRoutePathIdPairs = this._selectedRoutePathIdPairs.concat([[id]]);
+
+        // Have to re validate massEditRoutePaths since start and end dates were changed
+        this.validateMassEditRoutePaths();
     };
 
     @action
@@ -268,44 +309,38 @@ class RoutePathMassEditStore {
         // Remove routePath pair from this._selectedRoutePathIdPairs, if found
         const routePathId1 = routePathPair[0].internalId;
         const routePathId2 = routePathPair[1].internalId;
-        const removeIndex1 = this._selectedRoutePathIdPairs.findIndex((idPair: string[]) => {
-            return Boolean(idPair.find((id: string) => id === routePathId1));
-        });
-        if (removeIndex1 >= 0) {
-            this._selectedRoutePathIdPairs.splice(removeIndex1, 1);
-        }
-        const removeIndex2 = this._selectedRoutePathIdPairs.findIndex((idPair: string[]) => {
-            return Boolean(idPair.find((id: string) => id === routePathId2));
-        });
-        if (removeIndex2 >= 0) {
-            this._selectedRoutePathIdPairs.splice(removeIndex2, 1);
-        }
-
-        // Set new routePath pair's startDate and endDate as max dates
-        const massEditRp1 = this._massEditRoutePaths!.find(
-            (massEditRp) => massEditRp.id === routePathId1
-        );
-        const massEditRp2 = this._massEditRoutePaths!.find(
-            (massEditRp) => massEditRp.id === routePathId2
-        );
-        const maxDate = getMaxDate();
-        maxDate.setDate(maxDate.getDate() + 1);
-        massEditRp1!.routePath.startDate = _.cloneDeep(maxDate);
-        massEditRp1!.routePath.endDate = _.cloneDeep(maxDate);
-        massEditRp1!.isStartDateSet = false;
-        massEditRp1!.isEndDateSet = false;
-        massEditRp2!.routePath.startDate = _.cloneDeep(maxDate);
-        massEditRp2!.routePath.endDate = _.cloneDeep(maxDate);
-        massEditRp2!.isStartDateSet = false;
-        massEditRp2!.isEndDateSet = false;
+        this.resetMassEditRpDates(routePathId1);
+        this.resetMassEditRpDates(routePathId2);
 
         // Add a new selectedRoutePathPair
         this._selectedRoutePathIdPairs = this._selectedRoutePathIdPairs.concat([
             [routePathId1, routePathId2],
         ]);
 
-        // Have to re validate massEditRoutePaths since startDate and endDates were changed to maxDatePlusOne
+        // Have to re validate massEditRoutePaths since start and end dates were changed
         this.validateMassEditRoutePaths();
+    };
+
+    @action
+    public resetMassEditRpDates = (removeRpId: string) => {
+        // Remove routePath pair from this._selectedRoutePathIdPairs, if found
+        const removeIndex = this._selectedRoutePathIdPairs.findIndex((idPair: string[]) => {
+            return Boolean(idPair.find((id: string) => id === removeRpId));
+        });
+        if (removeIndex >= 0) {
+            this._selectedRoutePathIdPairs.splice(removeIndex, 1);
+        }
+
+        // Set new routePath's startDate and endDate as max dates
+        const massEditRp = this._massEditRoutePaths!.find(
+            (massEditRp) => massEditRp.id === removeRpId
+        );
+        const maxDate = getMaxDate();
+        maxDate.setDate(maxDate.getDate() + 1);
+        massEditRp!.routePath.startDate = _.cloneDeep(maxDate);
+        massEditRp!.routePath.endDate = _.cloneDeep(maxDate);
+        massEditRp!.isStartDateSet = false;
+        massEditRp!.isEndDateSet = false;
     };
 
     @action

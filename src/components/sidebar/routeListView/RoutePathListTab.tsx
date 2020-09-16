@@ -15,7 +15,6 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
-import RoutePathService from '~/services/routePathService';
 import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -29,11 +28,6 @@ import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
-
-interface IRoutePathStopNames {
-    firstStopName: string;
-    lastStopName: string;
-}
 
 interface IRoutePathListTabProps {
     originalRoutePaths: IRoutePath[];
@@ -55,7 +49,6 @@ interface IRoutePathListTabProps {
 }
 
 interface IRoutePathListTabState {
-    stopNameMap: Map<string, IRoutePathStopNames>;
     areStopNamesLoading: boolean;
     hasOldRoutePaths: boolean | null;
     allGroupedRoutePaths: IRoutePath[][];
@@ -81,7 +74,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     constructor(props: IRoutePathListTabProps) {
         super(props);
         this.state = {
-            stopNameMap: new Map(),
             areStopNamesLoading: true,
             hasOldRoutePaths: null,
             allGroupedRoutePaths: [],
@@ -97,6 +89,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     componentDidMount() {
         this._isMounted = true;
+        this.fetchStopNames();
         this.selectedGroupsListener = reaction(
             () =>
                 this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
@@ -135,6 +128,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     };
 
     /**
+     * TODO: better would be to have this logic in a store.
      * Updates groupedRoutePathsToDisplay with the following way:
      * 1) Gets all groupedRoutePaths from this.getGroupedRoutePaths()
      * 2) fetches stop names for groupedRoutePathsToDisplay
@@ -162,7 +156,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 lastSeenNotOldRoutePathGroupIndex
             );
         }
-        this.fetchStopNames(groupedRoutePathsToDisplay);
         this._setState({
             hasOldRoutePaths,
             allGroupedRoutePaths,
@@ -181,34 +174,30 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         let routePathsToGroup = _.cloneDeep(routePaths);
         const selectedRoutePathIdPairs = this.props.routePathMassEditStore!
             .selectedRoutePathIdPairs;
-        const res = {};
 
-        // Take out selectedRoutePaths from routePathsToGroup that have no start date
+        // Take out selectedRoutePaths out from routePathsToGroup
+        // Note: selectedRoutePaths have no start date
         const selectedRoutePathGroups: IRoutePath[][] = [];
-        const selectedRoutePathsWithStartDate: IRoutePath[] = [];
-        const visitedRoutePaths = {};
         routePathsToGroup = routePathsToGroup.filter((rp: IRoutePath) => {
             const idPair = selectedRoutePathIdPairs.find((idPair: string[]) => {
                 return idPair.includes(rp.internalId);
             })!;
-            const isSelected = Boolean(idPair);
-            if (isSelected && !visitedRoutePaths[idPair[0]]) {
-                const rp1 = routePathsToGroup.find((rp) => rp.internalId === idPair[0])!;
-                const rp2 = routePathsToGroup.find((rp) => rp.internalId === idPair[1])!;
-                visitedRoutePaths[rp1!.internalId] = true;
-                visitedRoutePaths[rp2!.internalId] = true;
-
-                if (rp1.startDate.getTime() > getMaxDate().getTime()) {
-                    const sortedRpGroup = [rp1, rp2].sort((a: IRoutePath, b: IRoutePath) =>
-                        a.direction === '1' ? -1 : 1
+            const isFoundFromSelectedIdPairs = Boolean(idPair);
+            if (isFoundFromSelectedIdPairs) {
+                const rp2Id = idPair.find((id) => id !== rp.internalId);
+                let existingGroup = null;
+                if (rp2Id) {
+                    existingGroup = selectedRoutePathGroups.find((group) =>
+                        Boolean(group.find((rp) => rp.internalId === rp2Id))
                     );
-                    selectedRoutePathGroups.push(sortedRpGroup);
+                }
+                if (existingGroup) {
+                    existingGroup.push(rp);
                 } else {
-                    selectedRoutePathsWithStartDate.push(rp1);
-                    selectedRoutePathsWithStartDate.push(rp2);
+                    selectedRoutePathGroups.push([rp]);
                 }
             }
-            return !isSelected;
+            return !isFoundFromSelectedIdPairs;
         });
 
         // Take out new routePaths with unselected date from routePathsToGroup
@@ -221,15 +210,12 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             return !isNewRoutePath;
         });
 
-        // Add selected routePaths with startDate back to routePaths to group (so that they will be sorted)
-        routePathsToGroup = routePathsToGroup.concat(selectedRoutePathsWithStartDate);
-
         // Create routePath pairs from remaining (existing) routePaths, sort them by date
+        const res = {};
         routePathsToGroup.forEach((rp) => {
             const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
         });
-
         const list: IRoutePath[][] = Object.values(res);
         list.sort(
             (a: IRoutePath[], b: IRoutePath[]) =>
@@ -248,47 +234,32 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         return list;
     };
 
-    private fetchStopNames = async (groupedRoutePathsToDisplay: IRoutePath[][]) => {
-        const stopNameMap = this.state.stopNameMap;
+    private fetchStopNames = async () => {
         this._setState({
             areStopNamesLoading: true,
         });
-        const promises: Promise<void>[] = [];
-        for (const routePaths of groupedRoutePathsToDisplay) {
-            for (let i = 0; i < routePaths.length; i += 1) {
-                const routePath: IRoutePath = routePaths[i];
-                const oldStopNames = stopNameMap.get(routePath.internalId);
-                if (!oldStopNames) {
-                    const createPromise = async () => {
-                        let direction = routePath.direction;
-                        let startDate = routePath.startDate;
-                        if (this.props.isEditing) {
-                            // Have to use old routePath's data for querying, current routePath's data might have changed
-                            const oldRoutePath = this.props.routePathMassEditStore!.massEditRoutePaths?.find(
-                                (rp) => rp.id === routePath.internalId
-                            )!.oldRoutePath!;
-                            direction = oldRoutePath.direction;
-                            startDate = oldRoutePath.startDate;
-                        }
-                        const stopNames = await RoutePathService.fetchFirstAndLastStopNamesOfRoutePath(
-                            {
-                                direction,
-                                startDate,
-                                routeId: routePath.routeId,
-                            }
-                        );
-                        stopNameMap.set(routePath.internalId, stopNames as IRoutePathStopNames);
-                    };
-                    promises.push(createPromise());
+
+        let routePaths: IRoutePath[];
+        if (this.props.isEditing) {
+            // Get routePaths from massEditStore to get the original (old) routePaths for stopName query
+            routePaths = this.props.routePathMassEditStore!.massEditRoutePaths!.map(
+                (massEditRp) => {
+                    if (massEditRp.isNew) {
+                        // Have to set internalId from massEditRp
+                        const temp = _.cloneDeep(massEditRp.oldRoutePath!);
+                        temp.internalId = massEditRp.id;
+                        return temp;
+                    }
+                    return massEditRp.routePath;
                 }
-            }
+            );
+        } else {
+            routePaths = this.getRoutePaths();
         }
 
-        Promise.all(promises).then(() => {
-            this._setState({
-                stopNameMap,
-                areStopNamesLoading: false,
-            });
+        await this.props.routeListStore!.fetchStopNames(routePaths);
+        this._setState({
+            areStopNamesLoading: false,
         });
     };
 
@@ -483,7 +454,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             nextGroup={nextGroup}
                             prevGroup={prevGroup}
                             isEditing={isEditing}
-                            stopNameMap={this.state.stopNameMap}
+                            stopNameMap={this.props.routeListStore!.stopNameMap}
                             areStopNamesLoading={this.state.areStopNamesLoading}
                             index={index}
                         />
@@ -574,5 +545,3 @@ const _hasGroupRoutePathWithDirection = (
 };
 
 export default RoutePathListTab;
-
-export { IRoutePathStopNames };

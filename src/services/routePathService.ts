@@ -29,7 +29,13 @@ class RoutePathService {
         if (!externalRoutePath) return null;
         const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
         const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-        return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+        return RoutePathFactory.mapExternalRoutePath({
+            externalRoutePath,
+            lineId,
+            transitType,
+            externalRoutePathLinks:
+                externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+        });
     };
 
     public static fetchFirstAndLastStopNamesOfRoutePath = async (
@@ -83,7 +89,13 @@ class RoutePathService {
         return queryResult.data.routePaths.nodes.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath({
+                externalRoutePath,
+                lineId,
+                transitType,
+                externalRoutePathLinks:
+                    externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+            });
         });
     };
 
@@ -123,7 +135,12 @@ class RoutePathService {
         return externalRoutePathLinks.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath({
+                externalRoutePath,
+                lineId,
+                transitType,
+                externalRoutePathLinks: [],
+            });
         });
     };
 
@@ -137,7 +154,12 @@ class RoutePathService {
         return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath({
+                externalRoutePath,
+                lineId,
+                transitType,
+                externalRoutePathLinks: [],
+            });
         });
     };
 }

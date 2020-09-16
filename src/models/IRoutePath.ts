@@ -12,7 +12,7 @@ interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
     isVisible?: boolean;
-    transitType?: TransitType;
+    transitType?: TransitType; // Same as ILine's transitType (not the same as IRoutePathLink's transitType)
     lineId?: string;
 }
 
