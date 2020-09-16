@@ -435,7 +435,7 @@ const RoutePathListNode = inject(
                         <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
                         <div />
                     </div>
-                    <div className={s.listIcon}>
+                    <div className={s.listIcon} data-cy='rpListNode'>
                         <TransitTypeNodeIcon
                             nodeType={node.type}
                             transitTypes={node.transitTypes}

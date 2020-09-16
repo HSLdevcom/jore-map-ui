@@ -28,6 +28,7 @@ class ToolbarLineButtons extends React.Component {
                     isActive={ToolbarStore.isSelected(ToolbarToolType.RemoveRoutePathLink)}
                     isDisabled={ToolbarStore.isDisabled(ToolbarToolType.RemoveRoutePathLink)}
                     label='Poista reitinsuunnan linkki'
+                    data-cy='RemoveRoutePathLinkTool'
                 >
                     <FiDelete />
                 </MapControlButton>
@@ -36,6 +37,7 @@ class ToolbarLineButtons extends React.Component {
                     isActive={ToolbarStore.isSelected(ToolbarToolType.CopyRoutePathSegment)}
                     isDisabled={ToolbarStore.isDisabled(ToolbarToolType.CopyRoutePathSegment)}
                     label='Kopioi reitinsuunnan segmentti toiselta reitinsuunnalta'
+                    data-cy='CopyRoutePathSegmentTool'
                 >
                     <FiCopy />
                 </MapControlButton>

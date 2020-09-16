@@ -159,6 +159,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                                 ? s.extendedIconHighlight
                                 : undefined
                         )}
+                        data-cy='rpListLink'
                     >
                         <div className={s.borderLeftContainer} />
                         <div />
