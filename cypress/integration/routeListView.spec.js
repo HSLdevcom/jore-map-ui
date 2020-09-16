@@ -42,15 +42,15 @@ describe('RouteListView tests - write access user', () => {
     });
 
     it('Can copy routePath & save, edit routePath & save, finally remove routePath', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
-
         const initialStartDate = '10.05.2099';
         const initialEndDate = '11.05.2099';
         const startDateAfterEditing = '15.05.2099';
         const endDateAfterEditing = '16.05.2099';
 
-        // If routePaths to be created / edited exist, remove them at first
+        // Make sure that there are no existing routePaths before running the test
+        removeRoutePathIfExists(initialStartDate, initialStartDate);
         removeRoutePathIfExists(initialStartDate, initialEndDate);
+        removeRoutePathIfExists(startDateAfterEditing, startDateAfterEditing);
         removeRoutePathIfExists(startDateAfterEditing, endDateAfterEditing);
 
         cy.getTestElement('routeListView').should('exist');
@@ -106,12 +106,14 @@ describe('RouteListView tests - write access user', () => {
 
         cy.getTestElement('rpGroup-0')
             .find('[data-cy=startDateInput]')
-            .type('10.5.2099', { force: true });
+            .clear()
+            .type(initialStartDate, { force: true });
         cy.get('body').type('{enter}');
 
         cy.getTestElement('rpGroup-0')
             .find('[data-cy=endDateInput]')
-            .type('11.5.2099', { force: true });
+            .clear()
+            .type(initialEndDate, { force: true });
         cy.get('body').type('{enter}');
 
         cy.getTestElement('saveButton').click();
