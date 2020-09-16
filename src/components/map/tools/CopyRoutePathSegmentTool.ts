@@ -4,13 +4,16 @@ import EventListener, {
     INodeClickParams,
     IRoutePathNodeClickParams,
 } from '~/helpers/EventListener';
+import { IRoutePathLink } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import RoutePathCopySegmentStore from '~/stores/routePathCopySegmentStore';
+import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
 import ToolbarStore from '~/stores/toolbarStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import BaseTool from './BaseTool';
 
 type toolPhase = 'selectStartNode' | 'selectEndNode' | 'selectRoutePathToCopy';
@@ -64,6 +67,8 @@ class CopyRoutePathSegmentTool implements BaseTool {
     };
 
     public setToolPhase = (toolPhase: toolPhase | null) => {
+        const toolHighlightedNodeIds = this.getHighlightedNodeIds(toolPhase);
+        RoutePathLayerStore.setToolHighlightedNodeIds(toolHighlightedNodeIds);
         ToolbarStore.setToolPhase(toolPhase);
     };
 
@@ -77,6 +82,24 @@ class CopyRoutePathSegmentTool implements BaseTool {
         }
     };
 
+    private getHighlightedNodeIds = (toolPhase: toolPhase | null) => {
+        if (!toolPhase || toolPhase === 'selectRoutePathToCopy') return [];
+        const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+            RoutePathStore.routePath!.routePathLinks
+        );
+        const nodeIdsAtCoherentRpLinkEdge: string[] = [];
+        coherentRoutePathLinksList.forEach((rpLinks: IRoutePathLink[]) => {
+            if (toolPhase === 'selectStartNode') {
+                nodeIdsAtCoherentRpLinkEdge.push(rpLinks[rpLinks.length - 1].endNode.internalId);
+            } else if (toolPhase === 'selectEndNode') {
+                nodeIdsAtCoherentRpLinkEdge.push(rpLinks[0].startNode.internalId);
+            } else {
+                throw `ToolPhase not supported: ${toolPhase}`;
+            }
+        });
+        return nodeIdsAtCoherentRpLinkEdge;
+    };
+
     private onNodeClick = (event: CustomEvent) => {
         const params: INodeClickParams = event.detail;
         this.selectNode(params.nodeId);
@@ -84,7 +107,10 @@ class CopyRoutePathSegmentTool implements BaseTool {
 
     private onRoutePathNodeClick = (event: CustomEvent) => {
         const params: IRoutePathNodeClickParams = event.detail;
-        this.selectNode(params.node.id);
+        const node = params.node;
+        if (RoutePathLayerStore.toolHighlightedNodeIds.includes(node.internalId)) {
+            this.selectNode(node.id);
+        }
     };
 
     private onNetworkNodeClick = (clickEvent: CustomEvent) => {
