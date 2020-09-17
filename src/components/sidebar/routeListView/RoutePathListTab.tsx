@@ -313,7 +313,9 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             if (massEditRp.isNew) {
                 copiedSaveModels.push(saveModel);
             } else {
-                modifiedSaveModels.push(saveModel);
+                if (!_.isEqual(saveModel.newData, saveModel.oldData)) {
+                    modifiedSaveModels.push(saveModel);
+                }
             }
         });
         const savePromptSections = [];
