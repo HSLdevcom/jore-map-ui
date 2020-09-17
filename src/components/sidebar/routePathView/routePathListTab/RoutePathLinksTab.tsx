@@ -231,7 +231,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                             this.renderRpListNode({
                                                 routePathLink,
                                                 node: routePathLink.endNode,
-                                                isFirstNode: index === 0,
+                                                isFirstNode: false,
                                                 isLastNode: true,
                                                 key: `${routePathLink.id}-${index}-endNode`,
                                             })
