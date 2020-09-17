@@ -248,6 +248,7 @@ class RoutePathStore {
         this._routePath!.routePathLinks.forEach((rpLink) =>
             this.initRoutePathLinkValidationStore(rpLink)
         );
+        this.updateRoutePathNodes();
     };
 
     @action
@@ -484,7 +485,7 @@ class RoutePathStore {
 
     @action
     public resetChanges = () => {
-        if (this._oldRoutePath) {
+        if (this.isDirty && this._oldRoutePath) {
             this.init({ routePath: this._oldRoutePath, isNewRoutePath: this._isNewRoutePath });
         }
         RoutePathCopySegmentStore.clear();
@@ -621,7 +622,6 @@ class RoutePathStore {
     };
 
     private onChangeIsEditingDisabled = () => {
-        RoutePathLayerStore.setNeighborLinks([]);
         if (this._isEditingDisabled) {
             this.resetChanges();
             const selectedTool = ToolbarStore.selectedTool;
