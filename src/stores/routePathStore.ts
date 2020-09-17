@@ -580,11 +580,12 @@ class RoutePathStore {
         return Boolean(this._routePathNodes[nodeId] !== undefined);
     };
 
-    public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
+    public hasNodeOddAmountOfNeighbors = (nodeInternalId: string): boolean => {
         const routePath = this.routePath;
         return (
-            routePath!.routePathLinks.filter((x) => x.startNode.id === nodeId).length !==
-            routePath!.routePathLinks.filter((x) => x.endNode.id === nodeId).length
+            routePath!.routePathLinks.filter((x) => x.startNode.internalId === nodeInternalId)
+                .length !==
+            routePath!.routePathLinks.filter((x) => x.endNode.internalId === nodeInternalId).length
         );
     };
 

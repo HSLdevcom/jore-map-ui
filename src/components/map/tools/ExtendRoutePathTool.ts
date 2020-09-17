@@ -155,7 +155,7 @@ class ExtendRoutePathTool implements BaseTool {
             neighborToAddType === NeighborToAddType.AfterNode
                 ? routePathLink.endNode
                 : routePathLink.startNode;
-        if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.id)) {
+        if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.internalId)) {
             this.fetchNeighborRoutePathLinks({
                 nodeId: nodeToFetch.id,
                 linkOrderNumber: routePathLink.orderNumber,

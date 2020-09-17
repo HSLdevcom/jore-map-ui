@@ -360,7 +360,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const isEditingDisabled = routePathStore!.isEditingDisabled;
         const routePathCopySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
-            routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
+            routePathCopySegmentStore!.startSegmentPoint &&
+            routePathCopySegmentStore!.endSegmentPoint;
         const savePreventedNotification = routePathStore!.getSavePreventedText();
 
         // By default, use rpLink's transitType if rpLinks exist

@@ -152,7 +152,8 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
 
         const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
         const isRoutePathCopySegmentLayerVisible =
-            routePathCopySegmentStore!.startNode || routePathCopySegmentStore!.endNode;
+            routePathCopySegmentStore!.startSegmentPoint ||
+            routePathCopySegmentStore!.endSegmentPoint;
         const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
             routePathStore.routePath!.routePathLinks
         );

@@ -74,31 +74,40 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
     };
 
     private copySegments = (routePath: IRoutePathSegment) => async () => {
+        const copySegmentStore = this.props.routePathCopySegmentStore;
         this.props.alertStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
 
-        const copySegmentStore = this.props.routePathCopySegmentStore;
-        const copyStartNodeId = copySegmentStore!.startNode!.id;
-        const copyEndNodeId = copySegmentStore!.endNode!.id;
+        const startSegmentPoint = copySegmentStore!.startSegmentPoint;
+        const endSegmentPoint = copySegmentStore!.endSegmentPoint;
+        if (!startSegmentPoint || !endSegmentPoint) {
+            throw 'Either start or end segment point was not set';
+        }
+        if (!startSegmentPoint.nodeInternalId && !endSegmentPoint.nodeInternalId) {
+            throw 'Missing at least one nodeInternalId';
+        }
+
         const segmentsToCopy = copySegmentStore!.getSegmentLinksToCopy(
             routePath,
-            copyStartNodeId,
-            copyEndNodeId
+            startSegmentPoint.nodeId,
+            endSegmentPoint.nodeId
         );
         segmentsToCopy.sort((a, b) => (a.orderNumber < b.orderNumber ? -1 : 1));
 
-        const isNaturalDirection = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(
-            copyStartNodeId
-        );
+        const isNaturalDirection =
+            startSegmentPoint.nodeInternalId &&
+            this.props.routePathStore!.hasNodeOddAmountOfNeighbors(
+                startSegmentPoint.nodeInternalId
+            );
 
-        const isOppositeDirection = this.props.routePathStore!.hasNodeOddAmountOfNeighbors(
-            copyEndNodeId
-        );
+        const isOppositeDirection =
+            endSegmentPoint.nodeInternalId &&
+            this.props.routePathStore!.hasNodeOddAmountOfNeighbors(endSegmentPoint.nodeInternalId);
 
         if (isNaturalDirection) {
             // orderNumbers start from 1
             let orderNumber =
                 this.props.routePathStore!.routePath!.routePathLinks.find(
-                    (link) => link.endNode.id === copyStartNodeId
+                    (link) => link.endNode.internalId === startSegmentPoint.nodeInternalId
                 )!.orderNumber + 1;
             for (let i = 0; i < segmentsToCopy.length; i += 1) {
                 await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
@@ -106,7 +115,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             }
         } else if (isOppositeDirection) {
             const orderNumber = this.props.routePathStore!.routePath!.routePathLinks.find(
-                (link) => link.startNode.id === copyEndNodeId
+                (link) => link.startNode.internalId === endSegmentPoint.nodeInternalId
             )!.orderNumber;
             for (let i = segmentsToCopy.length - 1; i >= 0; i -= 1) {
                 await this.copySegment(segmentsToCopy[i].routePathLinkId, orderNumber);
