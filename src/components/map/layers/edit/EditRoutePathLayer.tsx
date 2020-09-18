@@ -100,6 +100,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                 )}
                 isHovered={routePathLayerStore.hoveredItemId === node.internalId}
                 isExtended={routePathLayerStore.extendedListItemId === node.internalId}
+                visibleNodeLabels={this.props.mapStore!.visibleNodeLabels}
                 setHoveredItemId={routePathLayerStore.setHoveredItemId}
             />
         );
