@@ -149,13 +149,16 @@ class ExtendRoutePathTool implements BaseTool {
         const routePathLink = params.neighborLink.routePathLink;
 
         this.isToolPhaseSwitchingPrevented = true;
-        RoutePathStore!.addLink(routePathLink);
+        RoutePathStore!.addLink({
+            routePathLink,
+            isBookSchedulePropertiesCopyToRoutePathPrevented: false,
+        });
         const neighborToAddType = RoutePathLayerStore!.neighborToAddType;
         const nodeToFetch =
             neighborToAddType === NeighborToAddType.AfterNode
                 ? routePathLink.endNode
                 : routePathLink.startNode;
-        if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.id)) {
+        if (RoutePathStore.hasNodeOddAmountOfNeighbors(nodeToFetch.internalId)) {
             this.fetchNeighborRoutePathLinks({
                 nodeId: nodeToFetch.id,
                 linkOrderNumber: routePathLink.orderNumber,

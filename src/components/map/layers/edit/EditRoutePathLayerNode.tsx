@@ -2,6 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
 import INode from '~/models/INode';
+import { NodeLabel } from '~/stores/mapStore';
 import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from '../markers/NodeMarker';
 
@@ -12,6 +13,7 @@ interface IRoutePathLayerNodeProps {
     isHighlightedByTool: boolean;
     isHovered: boolean;
     isExtended: boolean;
+    visibleNodeLabels: NodeLabel[];
     setHoveredItemId: (id: string | null) => void;
 }
 
@@ -35,7 +37,7 @@ const EditRoutePathLayerNode = inject()(
                     coordinates={node.coordinates}
                     nodeType={node.type}
                     transitTypes={node.transitTypes ? node.transitTypes : []}
-                    visibleNodeLabels={[]}
+                    visibleNodeLabels={props.visibleNodeLabels}
                     nodeLocationType={'coordinates'}
                     nodeId={node.id}
                     shortId={NodeUtils.getShortId(node)}
