@@ -1,8 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import ApolloClient from '~/helpers/ApolloClient';
+import { IViaName } from '~/models';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import IViaShieldName from '~/models/IViaShieldName';
 import GraphqlQueries from './graphqlQueries';
+import ViaNameService from './viaNameService';
 
 class RoutePathLinkService {
     public static fetchRoutePathLink = async (id: number): Promise<IRoutePathLink> => {
@@ -10,7 +13,17 @@ class RoutePathLinkService {
             query: GraphqlQueries.getRoutePathLinkQuery(),
             variables: { routeLinkId: id },
         });
-        return RoutePathLinkFactory.mapExternalRoutePathLink(queryResult.data.routePathLink);
+        let routePathLink: IRoutePathLink = RoutePathLinkFactory.mapExternalRoutePathLink(
+            queryResult.data.routePathLink
+        );
+        const viaName: IViaName = await ViaNameService.fetchViaNameById(id);
+        const viaShieldName: IViaShieldName = await ViaNameService.fetchViaShieldNameById(id);
+        routePathLink = {
+            ...routePathLink,
+            ...viaShieldName,
+            ...viaName,
+        };
+        return routePathLink;
     };
 }
 
