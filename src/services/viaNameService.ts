@@ -24,14 +24,15 @@ class ViaNameService {
         return externalViaNames.map((extViaName) => _parseExternalViaName(extViaName));
     };
 
-    public static fetchViaNameById = async (viaNameId: number): Promise<IViaName> => {
+    public static fetchViaNameById = async (viaNameId: number): Promise<IViaName | null> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
             query: GraphqlQueries.getViaNameByIdKeyQuery(),
             variables: {
                 relid: viaNameId,
             },
         });
-        return _parseExternalViaName(queryResult.data.viaNimetByRelid);
+        const extViaName: IExternalViaName | null = queryResult.data.viaNimetByRelid;
+        return extViaName ? _parseExternalViaName(extViaName) : null;
     };
 
     public static fetchViaShieldNamesByRpPrimaryKey = async (
@@ -54,14 +55,18 @@ class ViaNameService {
 
     public static fetchViaShieldNameById = async (
         viaShieldNameId: number
-    ): Promise<IViaShieldName> => {
+    ): Promise<IViaShieldName | null> => {
         const queryResult: ApolloQueryResult<any> = await apolloClient.query({
             query: GraphqlQueries.getViaShieldNameByIdKeyQuery(),
             variables: {
                 relid: viaShieldNameId,
             },
         });
-        return _parseExternalViaShieldName(queryResult.data.viaKilpiNimetByRelid);
+        const extViaShieldName: IExternalViaShieldName | null =
+            queryResult.data.viaKilpiNimetByRelid;
+        return extViaShieldName
+            ? _parseExternalViaShieldName(queryResult.data.viaKilpiNimetByRelid)
+            : null;
     };
 }
 

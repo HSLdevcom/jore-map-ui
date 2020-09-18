@@ -140,7 +140,10 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             routePathLinkId
         );
         routePathLink.orderNumber = fixedOrderNumber;
-        this.props.routePathStore!.addLink(routePathLink);
+        this.props.routePathStore!.addLink({
+            routePathLink,
+            isBookSchedulePropertiesCopyToRoutePathPrevented: true,
+        });
     };
 
     private openRoutePathInNewTab = (routePath: IRoutePathSegment) => () => {
@@ -168,13 +171,16 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
 
     private renderResults = () => {
         const routePaths = this.props.routePathCopySegmentStore!.routePaths;
+
+        const startNodeId = this.props.routePathCopySegmentStore!.startSegmentPoint!.nodeId;
+        const endNodeId = this.props.routePathCopySegmentStore!.endSegmentPoint!.nodeId;
         return (
             <div className={s.routePathList}>
                 {routePaths.length === 0 ? (
                     <div className={s.messageContainer}>
-                        Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta alku- ja
-                        loppusolmun väliltä. Kokeile muuttaa kopioitavaa väliä, esimerkiksi asettaa
-                        pienempi kopioitava väli.
+                        {`Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta alku- ja
+                        loppusolmun väliltä (${startNodeId} - ${endNodeId}). Kokeile muuttaa kopioitavaa väliä, esimerkiksi asettaa
+                        pienempi kopioitava väli.`}
                     </div>
                 ) : (
                     <>
