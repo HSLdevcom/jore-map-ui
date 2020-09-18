@@ -426,7 +426,17 @@ const getAllLineHeadersQuery = () => {
     `;
 };
 
-const getViaNameQuery = () => {
+const getViaNameByIdKeyQuery = () => {
+    return gql`
+        query viaNimetByRelid($relid: Int!) {
+            viaNimetByRelid(relid: $relid) {
+                ${viaNameQueryFields}
+            }
+        }
+    `;
+};
+
+const getViaNamesByRpPrimaryKeyQuery = () => {
     return gql`
         query getViaNames($routeId: String, $startDate: Datetime, $direction: String) {
             get_via_names: getViaNames(
@@ -435,18 +445,24 @@ const getViaNameQuery = () => {
                 direction: $direction
             ) {
                 nodes {
-                    relid
-                    maaranpaa1
-                    maaranpaa2
-                    maaranpaa1R
-                    maaranpaa2R
+                    ${viaNameQueryFields}
                 }
             }
         }
     `;
 };
 
-const getViaShieldNameQuery = () => {
+const getViaShieldNameByIdKeyQuery = () => {
+    return gql`
+        query viaKilpiNimetByRelid($relid: Int!) {
+            viaKilpiNimetByRelid(relid: $relid) {
+                ${viaShieldNameQueryFields}
+            }
+        }
+    `;
+};
+
+const getViaShieldNamesByRpPrimaryKeyQuery = () => {
     return gql`
         query getViaShieldNames($routeId: String, $startDate: Datetime, $direction: String) {
             get_via_shield_names: getViaShieldNames(
@@ -455,9 +471,7 @@ const getViaShieldNameQuery = () => {
                 direction: $direction
             ) {
                 nodes {
-                    relid
-                    viasuomi
-                    viaruotsi
+                    ${viaShieldNameQueryFields}
                 }
             }
         }
@@ -684,6 +698,19 @@ const lineHeaderQueryFields = `
     linviimpvm
 `;
 
+const viaNameQueryFields = `
+    relid
+    maaranpaa1
+    maaranpaa2
+    maaranpaa1R
+    maaranpaa2R
+`;
+const viaShieldNameQueryFields = `
+    relid
+    viasuomi
+    viaruotsi
+`;
+
 const routePathLinksForRoutePathQuery = `
 reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
     nodes {
@@ -824,7 +851,9 @@ export default {
     getAllStopSections,
     getAllHastusAreas,
     getReservedShortIds,
-    getViaNameQuery,
-    getViaShieldNameQuery,
+    getViaNameByIdKeyQuery,
+    getViaNamesByRpPrimaryKeyQuery,
+    getViaShieldNameByIdKeyQuery,
+    getViaShieldNamesByRpPrimaryKeyQuery,
     getAllSchedulesQuery,
 };

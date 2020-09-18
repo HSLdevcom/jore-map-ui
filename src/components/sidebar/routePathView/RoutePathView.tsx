@@ -244,17 +244,19 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         try {
             const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
 
-            const viaNames: IViaName[] = await ViaNameService.fetchViaName({
+            const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
                 routeId: routePath.routeId,
                 startDate: routePath.startDate,
                 direction: routePath.direction,
             });
 
-            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldName({
-                routeId: routePath.routeId,
-                startDate: routePath.startDate,
-                direction: routePath.direction,
-            });
+            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldNamesByRpPrimaryKey(
+                {
+                    routeId: routePath.routeId,
+                    startDate: routePath.startDate,
+                    direction: routePath.direction,
+                }
+            );
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
                 const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);

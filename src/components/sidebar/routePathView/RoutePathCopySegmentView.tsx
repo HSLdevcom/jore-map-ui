@@ -3,11 +3,14 @@ import Moment from 'moment';
 import React from 'react';
 import { FiCopy, FiExternalLink } from 'react-icons/fi';
 import Loader from '~/components/shared/loader/Loader';
+import { IViaName } from '~/models';
 import { IRoutePathSegment } from '~/models/IRoutePath';
 import IRoutePathLink from '~/models/IRoutePathLink';
+import IViaShieldName from '~/models/IViaShieldName';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathLinkService from '~/services/routePathLinkService';
+import ViaNameService from '~/services/viaNameService';
 import { AlertStore, AlertType } from '~/stores/alertStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -136,10 +139,19 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
     };
 
     private copySegment = async (routePathLinkId: number, fixedOrderNumber: number) => {
-        const routePathLink: IRoutePathLink = await RoutePathLinkService.fetchRoutePathLink(
+        let routePathLink: IRoutePathLink = await RoutePathLinkService.fetchRoutePathLink(
             routePathLinkId
         );
         routePathLink.orderNumber = fixedOrderNumber;
+        const viaName: IViaName = await ViaNameService.fetchViaNameById(routePathLinkId);
+        const viaShieldName: IViaShieldName = await ViaNameService.fetchViaShieldNameById(
+            routePathLinkId
+        );
+        routePathLink = {
+            ...routePathLink,
+            ...viaShieldName,
+            ...viaName,
+        };
 
         this.props.routePathStore!.addLink(routePathLink);
     };
