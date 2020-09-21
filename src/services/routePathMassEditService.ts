@@ -3,7 +3,7 @@ import EndpointPath from '~/enums/endpointPath';
 import ApolloClient from '~/helpers/ApolloClient';
 import IRoutePath, {
     IMassEditRoutePath,
-    IMultipleRoutePathSaveModel,
+    IMassEditRoutePathSaveModels,
     IRoutePathPrimaryKey,
     ISingleRoutePathSaveModel,
 } from '~/models/IRoutePath';
@@ -42,7 +42,7 @@ class RoutePathMassEditService {
                 }
             }
         });
-        const massEditRoutePathSaveModel: IMultipleRoutePathSaveModel = {
+        const massEditRoutePathSaveModel: IMassEditRoutePathSaveModels = {
             routeId,
             added: addedRpSaveModel,
             modified: modifiedRpSaveModel,

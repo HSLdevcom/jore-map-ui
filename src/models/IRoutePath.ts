@@ -58,7 +58,7 @@ interface ISingleRoutePathSaveModel {
     routePathLinkSaveModel?: IRoutePathLinkSaveModel;
 }
 
-interface IMultipleRoutePathSaveModel {
+interface IMassEditRoutePathSaveModels {
     routeId: string;
     added: ISingleRoutePathSaveModel[];
     modified: ISingleRoutePathSaveModel[];
@@ -73,5 +73,5 @@ export {
     IMassEditRoutePath,
     IRoutePathSegment,
     ISingleRoutePathSaveModel,
-    IMultipleRoutePathSaveModel,
+    IMassEditRoutePathSaveModels,
 };
