@@ -5,7 +5,7 @@ import IRoutePath, {
     IMassEditRoutePath,
     IMultipleRoutePathSaveModel,
     IRoutePathPrimaryKey,
-    IRoutePathSaveModel,
+    ISingleRoutePathSaveModel,
 } from '~/models/IRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
 
@@ -17,9 +17,9 @@ class RoutePathMassEditService {
         routeId: string;
         massEditRoutePaths: IMassEditRoutePath[];
     }) => {
-        const addedRpSaveModel: IRoutePathSaveModel[] = [];
-        const modifiedRpSaveModel: IRoutePathSaveModel[] = [];
-        const originalRpSaveModel: IRoutePathSaveModel[] = [];
+        const addedRpSaveModel: ISingleRoutePathSaveModel[] = [];
+        const modifiedRpSaveModel: ISingleRoutePathSaveModel[] = [];
+        const originalRpSaveModel: ISingleRoutePathSaveModel[] = [];
         massEditRoutePaths.forEach((massEditRp) => {
             const currentRp = massEditRp.routePath;
             const oldRp = massEditRp.oldRoutePath;

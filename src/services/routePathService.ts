@@ -4,7 +4,7 @@ import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath } from '~/models';
-import { IRoutePathPrimaryKey, IRoutePathSaveModel } from '~/models/IRoutePath';
+import { IRoutePathPrimaryKey, ISingleRoutePathSaveModel } from '~/models/IRoutePath';
 import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
@@ -167,7 +167,7 @@ class RoutePathService {
 const _createRoutePathSaveModel = (
     newRoutePath: IRoutePath,
     oldRoutePath: IRoutePath | null
-): IRoutePathSaveModel => {
+): ISingleRoutePathSaveModel => {
     const added: IRoutePathLink[] = [];
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];

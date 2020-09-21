@@ -52,7 +52,7 @@ interface IRoutePathSegment extends IRoutePathPrimaryKey {
     links: IRoutePathSegmentLink[];
 }
 
-interface IRoutePathSaveModel {
+interface ISingleRoutePathSaveModel {
     originalPrimaryKey: IRoutePathPrimaryKey; // Used when editing primarykey or copying routePaths
     routePath: Omit<IRoutePath, 'routePathLinks'>;
     routePathLinkSaveModel?: IRoutePathLinkSaveModel;
@@ -60,9 +60,9 @@ interface IRoutePathSaveModel {
 
 interface IMultipleRoutePathSaveModel {
     routeId: string;
-    added: IRoutePathSaveModel[];
-    modified: IRoutePathSaveModel[];
-    originals: IRoutePathSaveModel[];
+    added: ISingleRoutePathSaveModel[];
+    modified: ISingleRoutePathSaveModel[];
+    originals: ISingleRoutePathSaveModel[];
 }
 
 export default IRoutePath;
@@ -72,6 +72,6 @@ export {
     IViewOnlyRoutePathProperties,
     IMassEditRoutePath,
     IRoutePathSegment,
-    IRoutePathSaveModel,
+    ISingleRoutePathSaveModel,
     IMultipleRoutePathSaveModel,
 };
