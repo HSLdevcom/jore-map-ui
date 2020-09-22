@@ -215,11 +215,6 @@ const _createRoutePathSaveModel = (
 
     return {
         routePathLinkSaveModel,
-        originalPrimaryKey: {
-            routeId: routePathToSave.routeId,
-            direction: routePathToSave.direction,
-            startDate: routePathToSave.startDate,
-        },
         routePath: routePathToSave,
     };
 };
