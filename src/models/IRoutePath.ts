@@ -58,11 +58,20 @@ interface ISingleRoutePathSaveModel {
     routePathLinkSaveModel?: IRoutePathLinkSaveModel;
 }
 
+interface IBackendMassEditRoutePath extends IRoutePathPrimaryKey {
+    endDate: Date; // No other data should be needed (only primary key and endDate can be changed in mass edit)
+}
+
+interface IMassEditRoutePathSaveModel {
+    originalPrimaryKey: IRoutePathPrimaryKey;
+    massEditRoutePath: IBackendMassEditRoutePath;
+}
+
 interface IMassEditRoutePathSaveModels {
     routeId: string;
-    added: ISingleRoutePathSaveModel[];
-    modified: ISingleRoutePathSaveModel[];
-    originals: ISingleRoutePathSaveModel[];
+    added: IMassEditRoutePathSaveModel[];
+    modified: IMassEditRoutePathSaveModel[];
+    originals: IMassEditRoutePathSaveModel[];
 }
 
 export default IRoutePath;
@@ -73,5 +82,7 @@ export {
     IMassEditRoutePath,
     IRoutePathSegment,
     ISingleRoutePathSaveModel,
+    IBackendMassEditRoutePath,
+    IMassEditRoutePathSaveModel,
     IMassEditRoutePathSaveModels,
 };
