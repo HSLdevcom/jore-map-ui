@@ -140,9 +140,8 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             routePathLinkId
         );
         routePathLink.orderNumber = fixedOrderNumber;
-        this.props.routePathStore!.addLink({
+        this.props.routePathStore!.cloneLink({
             routePathLink,
-            isBookSchedulePropertiesCopyToRoutePathPrevented: true,
         });
     };
 
