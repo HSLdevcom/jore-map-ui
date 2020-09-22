@@ -393,7 +393,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     isWide={true}
                     data-cy='copyRoutePathButton'
                 >
-                    {`Kopioi reitinsuunta`}
+                    {`Kopioi reitinsuuntia`}
                 </Button>
             </div>
         );

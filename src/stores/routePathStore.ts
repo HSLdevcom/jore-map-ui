@@ -380,6 +380,7 @@ class RoutePathStore {
      * in routePath.routePathLinks array
      *
      * isBookSchedulePropertiesCopyToRoutePathPrevented: when copying routePathSegment, bookSchedule copy is disabled because it breaks bookSchedule copy
+     * TODO: find a better way of achieving this without isBookSchedulePropertiesCopyToRoutePathPrevented hack,
      */
     @action
     public addLink = ({
