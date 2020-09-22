@@ -26,17 +26,17 @@ class CopyRoutePathSegmentTool implements BaseTool {
         selectStartNode: {
             phaseTopic: 'Alkusolmun valitseminen',
             phaseHelpText:
-                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin aloitus-solmu.',
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin aloitus-solmu. Huom. kopioinnin jälkeen tarkista, että segmentin alku- ja loppusolmujen tiedot ovat oikein.',
         },
         selectEndNode: {
             phaseTopic: 'Loppusolmun valitseminen',
             phaseHelpText:
-                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin lopetus-solmu.',
+                'Valitse kartalta (tai sivupalkista) kopioitavan reitinsuunnan segmentin lopetus-solmu. Huom. kopioinnin jälkeen tarkista, että segmentin alku- ja loppusolmujen tiedot ovat oikein.',
         },
         selectRoutePathToCopy: {
             phaseTopic: 'Reitinsuunnan valitseminen',
             phaseHelpText:
-                'Valitse reitinsuunta sivupalkista, jolta segmentti kopioidaan. Voit myös muuttaa alku- tai loppusolmun valintaa alku- ja loppusolmu -painikkeiden avulla.',
+                'Valitse reitinsuunta sivupalkista, jolta segmentti kopioidaan. Voit myös muuttaa alku- tai loppusolmun valintaa alku- ja loppusolmu -painikkeiden avulla. Huom. kopioinnin jälkeen tarkista, että segmentin alku- ja loppusolmujen tiedot ovat oikein.',
         },
     };
     public activate = () => {
@@ -143,7 +143,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         const endSegmentPoint = RoutePathCopySegmentStore.endSegmentPoint;
         if (!startSegmentPoint || !endSegmentPoint) return;
 
-        if (!startSegmentPoint.nodeInternalId && endSegmentPoint.nodeInternalId) {
+        if (!startSegmentPoint.nodeInternalId && !endSegmentPoint.nodeInternalId) {
             ErrorStore.addError(
                 'Ainakin toisen kopioitavan välin alku- tai loppusolmuista on kuuluttava reitinsuuntaan, johon segmentti kopioidaan.'
             );

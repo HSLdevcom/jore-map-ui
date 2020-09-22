@@ -151,7 +151,6 @@ class ExtendRoutePathTool implements BaseTool {
         this.isToolPhaseSwitchingPrevented = true;
         RoutePathStore!.addLink({
             routePathLink,
-            isBookSchedulePropertiesCopyToRoutePathPrevented: false,
         });
         const neighborToAddType = RoutePathLayerStore!.neighborToAddType;
         const nodeToFetch =

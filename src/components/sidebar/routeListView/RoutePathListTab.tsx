@@ -355,7 +355,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     private save = async () => {
         this._setState({ isLoading: true });
-
+        let wasSaveSuccesful = false;
         try {
             this.props.alertStore!.setLoaderMessage('Tallennetaan reitinsuuntia...');
             await RoutePathMassEditService.massEditRoutePaths({
@@ -363,14 +363,18 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 massEditRoutePaths: this.props.routePathMassEditStore!.massEditRoutePaths!,
             });
             this.props.routeListStore!.removeFromRouteItems(this.props.routeId);
-            await this.props.routeListStore!.fetchRoutes({ forceUpdate: true });
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+            wasSaveSuccesful = true;
         } catch (e) {
             this.props.alertStore!.close();
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
         }
         this.props.routePathMassEditStore!.clear();
         this.props.routeListStore!.setRouteIdToEdit(null);
+        // Fetch routes only after editing is disabled (otherwise stopNames might not work after saving)
+        if (wasSaveSuccesful) {
+            await this.props.routeListStore!.fetchRoutes({ forceUpdate: true });
+        }
     };
 
     private renderBottomBarButtons = () => {

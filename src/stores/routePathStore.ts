@@ -378,28 +378,18 @@ class RoutePathStore {
     /**
      * Uses given routePathLink's orderNumber to place given routePathLink in the correct position
      * in routePath.routePathLinks array
-     *
-     * isBookSchedulePropertiesCopyToRoutePathPrevented: when copying routePathSegment, bookSchedule copy is disabled because it breaks bookSchedule copy
-     * TODO: find a better way of achieving this without isBookSchedulePropertiesCopyToRoutePathPrevented hack,
      */
     @action
-    public addLink = ({
-        routePathLink,
-        isBookSchedulePropertiesCopyToRoutePathPrevented,
-    }: {
-        routePathLink: IRoutePathLink;
-        isBookSchedulePropertiesCopyToRoutePathPrevented: boolean;
-    }) => {
+    public addLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
+        const rpLinkToAdd = _.cloneDeep(routePathLink);
         const rpLinks = this._routePath!.routePathLinks;
-
-        const rpLinkToAddClone = _.cloneDeep(routePathLink);
-
+        const rpLinkToAddClone = _.cloneDeep(rpLinkToAdd);
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(
             // Order numbers start from 1
-            routePathLink.orderNumber - 1,
+            rpLinkToAdd.orderNumber - 1,
             0,
-            routePathLink
+            rpLinkToAdd
         );
 
         /**
@@ -423,11 +413,7 @@ class RoutePathStore {
          * lastRpLink.data = routePath.data
          * routePath.data = rpLinkToAddClone.data
          */
-        if (
-            !isBookSchedulePropertiesCopyToRoutePathPrevented &&
-            this.isLastRoutePathLink(routePathLink) &&
-            rpLinks.length > 1
-        ) {
+        if (this.isLastRoutePathLink(rpLinkToAdd) && rpLinks.length > 1) {
             const lastRpLink = rpLinks[rpLinks.length - 1];
             this.copyPropertyToRoutePathLinkFromRoutePath(
                 lastRpLink,
@@ -450,7 +436,27 @@ class RoutePathStore {
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
 
-        this.initRoutePathLinkValidationStore(routePathLink);
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
+    };
+
+    // Same as addLink() but doesnt support cloning routePath's bookSchedule properties.
+    // TODO: if needed, copy those bookSchedule properties from segment's routePath if segment to copy ends into routePath's last node
+    @action
+    public cloneLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
+        const rpLinkToAdd = _.cloneDeep(routePathLink);
+        const rpLinks = this._routePath!.routePathLinks;
+        // Need to do splice to trigger ReactionDisposer watcher
+        rpLinks.splice(
+            // Order numbers start from 1
+            rpLinkToAdd.orderNumber - 1,
+            0,
+            rpLinkToAdd
+        );
+
+        this.recalculateOrderNumbers();
+        this.addCurrentStateToUndoStore();
+
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
     };
 
     @action
