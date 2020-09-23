@@ -244,9 +244,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
         const nodeStore = this.props.nodeStore!;
         let newNodeId = null;
+        let nodeIdToUpdate = null;
         try {
             if (this.props.isNewNode) {
                 newNodeId = await NodeService.createNode(nodeStore.node);
+                nodeIdToUpdate = newNodeId;
                 const nodeViewLink = routeBuilder
                     .to(SubSites.node)
                     .toTarget(':id', newNodeId)
@@ -258,6 +260,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
                 await NodeService.updateNode(nodeStore.node, nodeStore.getDirtyLinks());
+                nodeIdToUpdate = nodeStore.node.id;
                 nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
                 this.initExistingNode(nodeStore.node.id);
                 nodeStore.setIsEditingDisabled(true);
@@ -267,13 +270,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             this.props.errorStore!.addError(`Tallennus epäonnistui `, e);
             this._setState({ isLoading: false });
         }
-
-        // Fetch fresly created node so that it gets added into the search results
-        if (newNodeId) {
+        // Fetch fresly updated/created node so that it gets updated into the searchResultStore
+        if (nodeIdToUpdate) {
             try {
-                const node: ISearchNode | null = await NodeService.fetchSearchNode(newNodeId);
+                const node: ISearchNode | null = await NodeService.fetchSearchNode(nodeIdToUpdate);
                 if (node) {
-                    this.props.searchResultStore!.addSearchNode(node);
+                    this.props.searchResultStore!.updateSearchNode(node);
                 } else {
                     throw `Solmun ${newNodeId} haku epäonnistui.`;
                 }

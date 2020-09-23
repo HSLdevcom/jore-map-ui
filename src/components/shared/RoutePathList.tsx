@@ -157,17 +157,17 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         return (
             <div className={classnames(s.routePathList, className ? className : undefined)}>
                 <div className={s.topic}>{topic}</div>
-                <div className={s.filtersContainer}>
-                    <div className={s.filterContainer}>
-                        <Dropdown
-                            label='Järjestä'
-                            selected={this.state.searchOrder}
-                            items={filterOptions}
-                            onChange={this.onOrderChange}
-                        />
-                    </div>
-                    <div className={s.filterContainer}>
-                        {routePaths.length > 0 && (
+                {routePaths.length > 0 && (
+                    <div className={s.filtersContainer}>
+                        <div className={s.filterContainer}>
+                            <Dropdown
+                                label='Järjestä'
+                                selected={this.state.searchOrder}
+                                items={filterOptions}
+                                onChange={this.onOrderChange}
+                            />
+                        </div>
+                        <div className={s.filterContainer}>
                             <InputContainer
                                 placeholder='Reitin tunnus, lähtö- / päätepaikka'
                                 type='text'
@@ -175,9 +175,9 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
                                 value={this.state.searchInputValue}
                                 onChange={this.onSearchInputChange}
                             />
-                        )}
+                        </div>
                     </div>
-                </div>
+                )}
                 {hasNoSearchResults ? (
                     <div className={s.noSearchResultsText}>Reitinsuuntia ei löytynyt.</div>
                 ) : (
