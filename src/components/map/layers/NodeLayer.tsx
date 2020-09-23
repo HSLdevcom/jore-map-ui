@@ -56,7 +56,7 @@ const NodeLayer = inject(
             setTurfPointNodeFeatures(turfPointNodeFeatures);
         }, [
             props.networkStore!.selectedTransitTypes.length === 0 && !turfPointNodeFeatures,
-            props.searchResultStore!.allNodes.length,
+            props.searchResultStore!.allNodes,
         ]);
 
         const forceUpdate = () => {
@@ -100,7 +100,6 @@ const NodeLayer = inject(
                     dateRangesString: node.dateRanges,
                 });
             });
-
         return (
             <>
                 {featuresToShow.map((node: ISearchNode, index: number) => {

@@ -68,7 +68,13 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this.nodeListener();
     }
 
-    private saveHastusArea = async ({ isNewHastusArea }: { isNewHastusArea: boolean }) => {
+    private saveHastusArea = async ({
+        isNewHastusArea,
+        isHastusAreaSavedToNode,
+    }: {
+        isNewHastusArea: boolean;
+        isHastusAreaSavedToNode: boolean;
+    }) => {
         const nodeStore = this.props.nodeStore!;
         try {
             if (isNewHastusArea) {
@@ -83,6 +89,12 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 });
             }
             nodeStore.updateStopProperty('hastusId', nodeStore.hastusArea.id);
+            if (isHastusAreaSavedToNode) {
+                nodeStore.updateOldStopProperty('hastusId', nodeStore.hastusArea.id);
+            } else {
+                // Make sure editing is enabled so that user will see unsaved changes
+                nodeStore.setIsEditingDisabled(false);
+            }
             nodeStore.setOldHastusArea(nodeStore.hastusArea);
             const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
             this.setState({
