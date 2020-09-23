@@ -1,11 +1,12 @@
 import _ from 'lodash';
 import EndpointPath from '~/enums/endpointPath';
 import ApolloClient from '~/helpers/ApolloClient';
-import IRoutePath, {
+import {
+    IBackendMassEditRoutePath,
     IMassEditRoutePath,
-    IMultipleRoutePathSaveModel,
+    IMassEditRoutePathSaveModel,
+    IMassEditRoutePathSaveModels,
     IRoutePathPrimaryKey,
-    IRoutePathSaveModel,
 } from '~/models/IRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
 
@@ -17,32 +18,39 @@ class RoutePathMassEditService {
         routeId: string;
         massEditRoutePaths: IMassEditRoutePath[];
     }) => {
-        const addedRpSaveModel: IRoutePathSaveModel[] = [];
-        const modifiedRpSaveModel: IRoutePathSaveModel[] = [];
-        const originalRpSaveModel: IRoutePathSaveModel[] = [];
+        const addedRpSaveModel: IMassEditRoutePathSaveModel[] = [];
+        const modifiedRpSaveModel: IMassEditRoutePathSaveModel[] = [];
+        const originalRpSaveModel: IMassEditRoutePathSaveModel[] = [];
         massEditRoutePaths.forEach((massEditRp) => {
             const currentRp = massEditRp.routePath;
+            const massEditRoutePath: IBackendMassEditRoutePath = {
+                routeId: currentRp.routeId,
+                startDate: currentRp.startDate,
+                direction: currentRp.direction,
+                endDate: currentRp.endDate,
+            };
+
             const oldRp = massEditRp.oldRoutePath;
             if (_.isEqual(massEditRp.routePath, massEditRp.oldRoutePath)) {
                 originalRpSaveModel.push({
-                    routePath: currentRp,
+                    massEditRoutePath,
                     originalPrimaryKey: _getOriginalRpPrimaryKey(currentRp),
                 });
             } else {
                 if (massEditRp.isNew) {
                     addedRpSaveModel.push({
-                        routePath: currentRp,
+                        massEditRoutePath,
                         originalPrimaryKey: _getOriginalRpPrimaryKey(oldRp!),
                     });
                 } else {
                     modifiedRpSaveModel.push({
-                        routePath: currentRp,
+                        massEditRoutePath,
                         originalPrimaryKey: _getOriginalRpPrimaryKey(oldRp!),
                     });
                 }
             }
         });
-        const massEditRoutePathSaveModel: IMultipleRoutePathSaveModel = {
+        const massEditRoutePathSaveModel: IMassEditRoutePathSaveModels = {
             routeId,
             added: addedRpSaveModel,
             modified: modifiedRpSaveModel,
@@ -53,7 +61,7 @@ class RoutePathMassEditService {
     };
 }
 
-const _getOriginalRpPrimaryKey = (routePath: IRoutePath): IRoutePathPrimaryKey => {
+const _getOriginalRpPrimaryKey = (routePath: IBackendMassEditRoutePath): IRoutePathPrimaryKey => {
     return {
         routeId: routePath.routeId,
         direction: routePath.direction,

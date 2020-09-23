@@ -183,6 +183,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                         text='Linkit'
                         isActive={!listFilters.includes(ListFilter.link)}
                         onClick={() => this.toggleListFilter(ListFilter.link)}
+                        data-cy='linksToggle'
                     />
                 </ToggleView>
                 <div className={s.listHeader}>
@@ -230,7 +231,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                             this.renderRpListNode({
                                                 routePathLink,
                                                 node: routePathLink.endNode,
-                                                isFirstNode: index === 0,
+                                                isFirstNode: false,
                                                 isLastNode: true,
                                                 key: `${routePathLink.id}-${index}-endNode`,
                                             })

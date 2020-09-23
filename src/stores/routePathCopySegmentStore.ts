@@ -1,15 +1,21 @@
 import { action, computed, observable } from 'mobx';
-import INode from '~/models/INode';
 import { IRoutePathSegment } from '~/models/IRoutePath';
 import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
 
-// which type of node will be set next when a node is selected on map
+// Which type of node will be set next when a node is selected on map
 type setNodeType = 'startNode' | 'endNode';
+
+// When selecting point from routePath, internalId needs to be known (to handle cases where the same nodeId appears twice)
+interface ISegmentPoint {
+    nodeInternalId?: string;
+    nodeId: string;
+    coordinates: L.LatLng;
+}
 
 class RoutePathCopySegmentStore {
     @observable private _isLoading: boolean;
-    @observable private _startNode: INode | null;
-    @observable private _endNode: INode | null;
+    @observable private _startSegmentPoint: ISegmentPoint | null;
+    @observable private _endSegmentPoint: ISegmentPoint | null;
     @observable private _routePaths: IRoutePathSegment[];
     @observable private _highlightedRoutePath: IRoutePathSegment | null;
     @observable private _setNodeType: setNodeType;
@@ -17,8 +23,8 @@ class RoutePathCopySegmentStore {
 
     constructor() {
         this._isLoading = true;
-        this._startNode = null;
-        this._endNode = null;
+        this._startSegmentPoint = null;
+        this._endSegmentPoint = null;
         this._routePaths = [];
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
@@ -31,13 +37,13 @@ class RoutePathCopySegmentStore {
     }
 
     @computed
-    get startNode(): INode | null {
-        return this._startNode;
+    get startSegmentPoint(): ISegmentPoint | null {
+        return this._startSegmentPoint;
     }
 
     @computed
-    get endNode(): INode | null {
-        return this._endNode;
+    get endSegmentPoint(): ISegmentPoint | null {
+        return this._endSegmentPoint;
     }
 
     @computed
@@ -66,13 +72,13 @@ class RoutePathCopySegmentStore {
     };
 
     @action
-    public setStartNode = (node: INode) => {
-        this._startNode = node;
+    public setStartSegmentPoint = (segmentPoint: ISegmentPoint) => {
+        this._startSegmentPoint = segmentPoint;
     };
 
     @action
-    public setEndNode = (node: INode) => {
-        this._endNode = node;
+    public setEndSegmentPoint = (segmentPoint: ISegmentPoint) => {
+        this._endSegmentPoint = segmentPoint;
     };
 
     @action
@@ -97,8 +103,8 @@ class RoutePathCopySegmentStore {
 
     @action
     public clear = () => {
-        this._startNode = null;
-        this._endNode = null;
+        this._startSegmentPoint = null;
+        this._endSegmentPoint = null;
         this._routePaths = [];
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
@@ -145,4 +151,4 @@ class RoutePathCopySegmentStore {
 
 export default new RoutePathCopySegmentStore();
 
-export { RoutePathCopySegmentStore, setNodeType };
+export { RoutePathCopySegmentStore, setNodeType, ISegmentPoint };

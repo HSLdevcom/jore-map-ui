@@ -248,6 +248,7 @@ class RoutePathStore {
         this._routePath!.routePathLinks.forEach((rpLink) =>
             this.initRoutePathLinkValidationStore(rpLink)
         );
+        this.updateRoutePathNodes();
     };
 
     @action
@@ -379,27 +380,55 @@ class RoutePathStore {
      * in routePath.routePathLinks array
      */
     @action
-    public addLink = (routePathLink: IRoutePathLink) => {
-        routePathLink.viaNameId = routePathLink.id;
+    public addLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
+        const rpLinkToAdd = _.cloneDeep(routePathLink);
         const rpLinks = this._routePath!.routePathLinks;
-
+        const rpLinkToAddClone = _.cloneDeep(rpLinkToAdd);
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(
             // Order numbers start from 1
-            routePathLink.orderNumber - 1,
+            rpLinkToAdd.orderNumber - 1,
             0,
-            routePathLink
+            rpLinkToAdd
         );
 
-        // Copy bookSchedule properties from routePath to last routePathLink
-        if (this.isLastRoutePathLink(routePathLink) && rpLinks.length > 1) {
-            const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
+        /**
+         * Last routePathLinkNode's book schedule data is stored at routePath (this is because of routePathLinkNode model is missing in jore)
+         *
+         * Example of adding rp link to the end of rpLink list
+         * 1. node <- data stored at routePathLink
+         * link
+         * 2. node <- data stored at routePath
+         *
+         * after a link is added (to the end of routePath)
+         * 1. node
+         * link
+         * 2. node <- data at routePathLink (data copied from routePath to this link)
+         * link
+         * 3. node <- data at routePath (from new link)
+         *
+         * Adding to the end of routePathList
+         * rpLinkToAddClone = rpLinkToAdd
+         * <add rpLink to the end of the list>
+         * lastRpLink.data = routePath.data
+         * routePath.data = rpLinkToAddClone.data
+         */
+        if (this.isLastRoutePathLink(rpLinkToAdd) && rpLinks.length > 1) {
+            const lastRpLink = rpLinks[rpLinks.length - 1];
             this.copyPropertyToRoutePathLinkFromRoutePath(
-                routePathLinkToCopyFor,
+                lastRpLink,
                 'isStartNodeUsingBookSchedule'
             );
             this.copyPropertyToRoutePathLinkFromRoutePath(
-                routePathLinkToCopyFor,
+                lastRpLink,
+                'startNodeBookScheduleColumnNumber'
+            );
+            this.copyPropertyToRoutePathFromRoutePathLink(
+                rpLinkToAddClone,
+                'isStartNodeUsingBookSchedule'
+            );
+            this.copyPropertyToRoutePathFromRoutePathLink(
+                rpLinkToAddClone,
                 'startNodeBookScheduleColumnNumber'
             );
         }
@@ -407,7 +436,27 @@ class RoutePathStore {
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
 
-        this.initRoutePathLinkValidationStore(routePathLink);
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
+    };
+
+    // Same as addLink() but doesnt support cloning routePath's bookSchedule properties.
+    // TODO: if needed, copy those bookSchedule properties from segment's routePath if segment to copy ends into routePath's last node
+    @action
+    public cloneLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
+        const rpLinkToAdd = _.cloneDeep(routePathLink);
+        const rpLinks = this._routePath!.routePathLinks;
+        // Need to do splice to trigger ReactionDisposer watcher
+        rpLinks.splice(
+            // Order numbers start from 1
+            rpLinkToAdd.orderNumber - 1,
+            0,
+            rpLinkToAdd
+        );
+
+        this.recalculateOrderNumbers();
+        this.addCurrentStateToUndoStore();
+
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
     };
 
     @action
@@ -415,22 +464,37 @@ class RoutePathStore {
         const rpLinks = this._routePath!.routePathLinks;
 
         const linkToRemoveIndex = rpLinks.findIndex((link) => link.id === id);
-        const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
 
-        // Need to do splice to trigger ReactionDisposer watcher
-        rpLinks.splice(linkToRemoveIndex, 1);
+        /**
+         * Last routePathLinkNode's book schedule data is stored at routePath (this is because of routePathLinkNode model is missing in jore)
+         *
+         * Example of adding rp link to the end of rpLink list
+         * 1. node <- data stored at routePathLink
+         * link
+         * 2. node <- data stored at routePath
+         *
+         * after a link is removed
+         * 1. node <- data stored at routePath (data from rpLink was copied into routePath)
+         *
+         * Last routePath link removal
+         * routePath.data = last rpLink.data
+         * <remove last link>
+         */
+        if (linkToRemoveIndex === rpLinks.length - 1) {
+            const rpLinkToRemoveClone = _.cloneDeep(rpLinks[rpLinks.length - 1]);
 
-        // Copy bookSchedule properties from last routePathLink to routePath
-        if (linkToRemoveIndex === this._routePath!.routePathLinks.length) {
             this.copyPropertyToRoutePathFromRoutePathLink(
-                routePathLinkToCopyFor,
+                rpLinkToRemoveClone,
                 'isStartNodeUsingBookSchedule'
             );
             this.copyPropertyToRoutePathFromRoutePathLink(
-                routePathLinkToCopyFor,
+                rpLinkToRemoveClone,
                 'startNodeBookScheduleColumnNumber'
             );
         }
+
+        // Need to do splice to trigger ReactionDisposer watcher
+        rpLinks.splice(linkToRemoveIndex, 1);
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
@@ -484,7 +548,7 @@ class RoutePathStore {
 
     @action
     public resetChanges = () => {
-        if (this._oldRoutePath) {
+        if (this.isDirty && this._oldRoutePath) {
             this.init({ routePath: this._oldRoutePath, isNewRoutePath: this._isNewRoutePath });
         }
         RoutePathCopySegmentStore.clear();
@@ -579,11 +643,12 @@ class RoutePathStore {
         return Boolean(this._routePathNodes[nodeId] !== undefined);
     };
 
-    public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
+    public hasNodeOddAmountOfNeighbors = (nodeInternalId: string): boolean => {
         const routePath = this.routePath;
         return (
-            routePath!.routePathLinks.filter((x) => x.startNode.id === nodeId).length !==
-            routePath!.routePathLinks.filter((x) => x.endNode.id === nodeId).length
+            routePath!.routePathLinks.filter((x) => x.startNode.internalId === nodeInternalId)
+                .length !==
+            routePath!.routePathLinks.filter((x) => x.endNode.internalId === nodeInternalId).length
         );
     };
 
@@ -606,7 +671,7 @@ class RoutePathStore {
         routePathLink: IRoutePathLink,
         property: keyof IRoutePathLink | keyof IRoutePath
     ) => {
-        const valueToCopy = routePathLink[property];
+        const valueToCopy = _.cloneDeep(routePathLink[property]);
         this.updateRoutePathProperty(property, valueToCopy);
     };
 
@@ -615,13 +680,12 @@ class RoutePathStore {
         routePathLink: IRoutePathLink,
         property: keyof IRoutePathLink
     ) => {
-        const valueToCopy = this.routePath![property];
+        const valueToCopy = _.cloneDeep(this.routePath![property]);
         this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, valueToCopy);
         this.updateRoutePathProperty(property, null);
     };
 
     private onChangeIsEditingDisabled = () => {
-        RoutePathLayerStore.setNeighborLinks([]);
         if (this._isEditingDisabled) {
             this.resetChanges();
             const selectedTool = ToolbarStore.selectedTool;

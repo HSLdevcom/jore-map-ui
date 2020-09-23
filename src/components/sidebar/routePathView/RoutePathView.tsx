@@ -244,17 +244,19 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         try {
             const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
 
-            const viaNames: IViaName[] = await ViaNameService.fetchViaName({
+            const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
                 routeId: routePath.routeId,
                 startDate: routePath.startDate,
                 direction: routePath.direction,
             });
 
-            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldName({
-                routeId: routePath.routeId,
-                startDate: routePath.startDate,
-                direction: routePath.direction,
-            });
+            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldNamesByRpPrimaryKey(
+                {
+                    routeId: routePath.routeId,
+                    startDate: routePath.startDate,
+                    direction: routePath.direction,
+                }
+            );
 
             routePathLinks.forEach((routePathLink: IRoutePathLink) => {
                 const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
@@ -360,7 +362,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const isEditingDisabled = routePathStore!.isEditingDisabled;
         const routePathCopySegmentStore = this.props.routePathCopySegmentStore;
         const isCopyRoutePathSegmentViewVisible =
-            routePathCopySegmentStore!.startNode && routePathCopySegmentStore!.endNode;
+            routePathCopySegmentStore!.startSegmentPoint &&
+            routePathCopySegmentStore!.endSegmentPoint;
         const savePreventedNotification = routePathStore!.getSavePreventedText();
 
         // By default, use rpLink's transitType if rpLinks exist

@@ -100,6 +100,7 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
                 )}
                 isHovered={routePathLayerStore.hoveredItemId === node.internalId}
                 isExtended={routePathLayerStore.extendedListItemId === node.internalId}
+                visibleNodeLabels={this.props.mapStore!.visibleNodeLabels}
                 setHoveredItemId={routePathLayerStore.setHoveredItemId}
             />
         );
@@ -152,7 +153,8 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
 
         const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
         const isRoutePathCopySegmentLayerVisible =
-            routePathCopySegmentStore!.startNode || routePathCopySegmentStore!.endNode;
+            routePathCopySegmentStore!.startSegmentPoint ||
+            routePathCopySegmentStore!.endSegmentPoint;
         const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
             routePathStore.routePath!.routePathLinks
         );

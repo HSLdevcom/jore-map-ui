@@ -78,6 +78,32 @@ describe('RoutePathView tests - write access user', () => {
             );
         });
     });
+
+    it('Can remove routePathLink and use copy routePath segment tool', () => {
+        cy.hslLoginWriteAccess();
+
+        _openRoutePath();
+
+        cy.getTestElement('routePathView').should('exist');
+        cy.getTestElement('editButton').should('exist');
+
+        cy.getTestElement('tab').contains('Solmut ja linkit').click();
+
+        cy.getTestElement('linksToggle').click();
+
+        cy.getTestElement('RemoveRoutePathLinkTool').click();
+
+        cy.getTestElement('rpListLink').eq(3).click();
+        cy.getTestElement('CopyRoutePathSegmentTool').click();
+        cy.wait(100);
+        cy.getTestElement('rpListNode').eq(3).click();
+        cy.wait(100);
+        cy.getTestElement('rpListNode').eq(4).click();
+        cy.getTestElement('copyRoutePathSegmentButton').first().click();
+
+        cy.getTestElement('routePathSaveButton').click();
+        cy.getTestElement('savePromptView').should('exist');
+    });
 });
 
 const _openRoutePath = () => {
