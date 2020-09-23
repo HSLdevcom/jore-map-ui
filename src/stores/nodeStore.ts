@@ -421,6 +421,12 @@ class NodeStore {
     };
 
     @action
+    public updateOldStopProperty = (property: string, value?: string | number | Date) => {
+        if (!this.node) return;
+        this._oldNode!.stop![property] = value;
+    };
+
+    @action
     public updateNodeType = (type: NodeType) => {
         this._node!.type = type;
         this._nodeValidationStore.updateProperty('type', type);

@@ -34,7 +34,13 @@ interface IStopFormProps {
     hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
     nodeInvalidPropertiesMap: object;
-    saveHastusArea?: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
+    saveHastusArea?: ({
+        isNewHastusArea,
+        isHastusAreaSavedToNode,
+    }: {
+        isNewHastusArea: boolean;
+        isHastusAreaSavedToNode: boolean;
+    }) => void;
     match?: match<any>;
     isReadOnly?: boolean;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;

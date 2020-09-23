@@ -18,7 +18,13 @@ import * as s from './hastusAreaModal.scss';
 interface IHastusAreaModalProps {
     isNewHastusArea: boolean;
     existingHastusAreas: IHastusArea[];
-    saveHastusArea: ({ isNewHastusArea }: { isNewHastusArea: boolean }) => void;
+    saveHastusArea: ({
+        isNewHastusArea,
+        isHastusAreaSavedToNode,
+    }: {
+        isNewHastusArea: boolean;
+        isHastusAreaSavedToNode: boolean;
+    }) => void;
     nodeStore?: NodeStore;
     modalStore?: ModalStore;
 }
@@ -52,7 +58,7 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
         this._setState({ isLoading: true });
         this.validateHastusArea();
         if (!this.props.isNewHastusArea) {
-            const currentHastusArea = this.props.nodeStore!.hastusArea;
+            const currentHastusArea = _.cloneDeep(this.props.nodeStore!.hastusArea);
             const stops = await StopService.fetchAllStops();
             const otherStopsUsingHastus = stops.filter(
                 (stop) => stop.hastusId === currentHastusArea.id
@@ -98,7 +104,10 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
     };
 
     private saveHastusArea = () => {
-        this.props.saveHastusArea({ isNewHastusArea: this.props.isNewHastusArea });
+        this.props.saveHastusArea({
+            isNewHastusArea: this.props.isNewHastusArea,
+            isHastusAreaSavedToNode: this.state.otherStopsUsingHastus.length > 0,
+        });
         this.props.modalStore!.closeModal();
     };
 
@@ -124,7 +133,7 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
             this.props.nodeStore!.hastusArea,
             this.props.nodeStore!.oldHastusArea
         );
-        const isSaveButtonDisabled = !isDirty || !isFormValid;
+        const isSaveButtonDisabled = !isDirty || !isFormValid || this.state.isLoading;
         return (
             <div className={s.hastusAreaModal}>
                 <div className={classnames(s.hastusAreaForm, s.form)} data-cy='hastusAreaForm'>
