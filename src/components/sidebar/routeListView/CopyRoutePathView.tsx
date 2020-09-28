@@ -224,6 +224,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
     render() {
         const routePathCopyStore = this.props.routePathCopyStore!;
         const lineId = routePathCopyStore.lineId;
+        const routeId = routePathCopyStore.routeId;
         const transitType = routePathCopyStore.transitType;
         const routePathsToCopy = routePathCopyStore!.routePathsToCopy;
 
@@ -244,7 +245,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                         </span>{' '}
                         reitille{' '}
                         <span className={TransitTypeUtils.getColorClass(transitType)}>
-                            {lineId}
+                            {routeId}
                         </span>
                     </div>
                 </SidebarHeader>
