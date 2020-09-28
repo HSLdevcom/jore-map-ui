@@ -2,12 +2,14 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SaveButton from '~/components/shared/SaveButton';
+import Loader from '~/components/shared/loader/Loader';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -70,10 +72,19 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
         try {
             const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
-            const newRoute = RouteFactory.createNewRoute(lineId);
+            const line = await LineService.fetchLine(lineId);
+            const basicRoute = await RouteService.fetchRoute({
+                routeId: line.lineBasicRoute,
+                areRoutePathLinksExcluded: true,
+            });
+            const nameFi = basicRoute ? basicRoute.routeName : '';
+            const nameSw = basicRoute ? basicRoute.routeNameSw : '';
+            const newRoute = RouteFactory.createNewRoute({ lineId, nameFi, nameSw });
             this.props.routeStore!.init({ route: newRoute, isNewRoute: true });
         } catch (e) {
-            this.props.errorStore!.addError('Uuden reitin luonti epäonnistui', e);
+            this.props.errorStore!.addError(`Uuden reitin luonti epäonnistui. ${e}`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
         }
 
         this.setState({
@@ -113,7 +124,13 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         const invalidPropertiesMap = isEditingDisabled ? {} : routeStore.invalidPropertiesMap;
         const route = isEditingDisabled ? this.props.route : routeStore.route;
         const lineId = navigator.getQueryParam(QueryParams.lineId);
-        if (!route) return null;
+        if (!route) {
+            return (
+                <div className={s.routeView}>
+                    <Loader />
+                </div>
+            );
+        }
         const isRouteFormValid = routeStore.isRouteFormValid;
         return (
             <div className={classnames(s.routeView, s.form)}>
