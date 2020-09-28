@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SaveButton from '~/components/shared/SaveButton';
@@ -15,6 +16,7 @@ import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import SidebarHeader from '../SidebarHeader';
 import RouteForm from './RouteForm';
 import * as s from './newRouteView.scss';
@@ -28,12 +30,13 @@ interface IRouteViewProps {
     isNewRoute: boolean;
     route?: IRoute;
     routeStore?: RouteStore;
+    searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
 }
 
-@inject('routeStore', 'mapStore', 'alertStore', 'errorStore')
+@inject('routeStore', 'searchResultStore', 'mapStore', 'alertStore', 'errorStore')
 @observer
 class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
     constructor(props: IRouteViewProps) {
@@ -101,6 +104,14 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             await RouteService.createRoute(route!);
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
             this.redirectToNewRouteview(route.id);
+
+            // Update line search results
+            const searchLineToUpdate = _.cloneDeep(
+                this.props.searchResultStore!.allLines.find((line) => line.id === route.lineId)
+            );
+            const searchRoute = RouteFactory.createSearchRoute(route);
+            searchLineToUpdate!.routes = searchLineToUpdate!.routes.concat([searchRoute]);
+            this.props.searchResultStore!.updateSearchLine(searchLineToUpdate!);
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             this.setState({ isLoading: false });

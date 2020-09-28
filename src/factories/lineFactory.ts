@@ -49,7 +49,6 @@ class LineFactory {
                     id: route.reitunnus,
                     name: _getRouteName(route),
                     isUsedByRoutePath: route.isUsedByRoutePath!,
-                    date: route.reiviimpvm ? new Date(route.reiviimpvm) : undefined,
                 };
             }
         );

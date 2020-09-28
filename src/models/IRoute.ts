@@ -17,7 +17,6 @@ interface ISearchRoute {
     id: string;
     name: string;
     isUsedByRoutePath: boolean;
-    date?: Date;
 }
 
 export default IRoute;

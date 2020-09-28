@@ -1,4 +1,5 @@
 import { IRoute, IRoutePath } from '~/models';
+import { ISearchRoute } from '~/models/IRoute';
 import IExternalRoute from '~/models/externals/IExternalRoute.ts';
 
 class RouteFactory {
@@ -34,6 +35,14 @@ class RouteFactory {
             routeNameSw: nameSw ? nameSw : '',
             modifiedBy: '',
             modifiedOn: new Date(),
+        };
+    };
+
+    public static createSearchRoute = (route: IRoute): ISearchRoute => {
+        return {
+            id: route.id,
+            isUsedByRoutePath: false,
+            name: route.routeName,
         };
     };
 }
