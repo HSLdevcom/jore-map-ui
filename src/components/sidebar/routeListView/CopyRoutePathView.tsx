@@ -377,7 +377,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                         </div>
                         {this.state.selectedRouteId && (
                             <div className={classnames(s.flexRow, s.routePathSelectView)}>
-                                <div className={s.subTopic}>Valittavat reitinsuunnat</div>
+                                <div className={s.subTopic}>Valitse kopioitava reitinsuunta</div>
                                 {this.state.routePathQueryResults.length === 0 ? (
                                     <div className={s.noQueryResults}>
                                         Reitiltä {this.state.selectedRouteId} ei löytynyt
@@ -417,14 +417,15 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                             return (
                                                                 <tr
                                                                     key={`rpQueryResult-${index}`}
-                                                                    onClick={this.toggleRoutePath(
-                                                                        routePath
-                                                                    )}
-                                                                    className={
+                                                                    className={classnames(
+                                                                        s.tableRow,
                                                                         isSelected
                                                                             ? s.selectedRow
                                                                             : undefined
-                                                                    }
+                                                                    )}
+                                                                    onClick={this.toggleRoutePath(
+                                                                        routePath
+                                                                    )}
                                                                     data-cy={`rpQueryResult`}
                                                                 >
                                                                     <td>{routePath.direction}</td>
