@@ -34,6 +34,14 @@ class LineFactory {
         };
     };
 
+    public static createSearchLineFromLine = (line: ILine, routes: ISearchRoute[]): ISearchLine => {
+        return {
+            routes,
+            id: line.id,
+            transitType: line.transitType!,
+        };
+    };
+
     public static createSearchLine = (externalLine: IExternalLine): ISearchLine => {
         const routes = externalLine.reittisByLintunnus.nodes.map(
             (route: IExternalRoute): ISearchRoute => {

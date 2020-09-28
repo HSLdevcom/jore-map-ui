@@ -63,6 +63,19 @@ class SearchResultStore {
     };
 
     @action
+    public updateSearchLine = (line: ISearchLine) => {
+        const existingIndex = this._allLines.findIndex((n) => n.id === line.id);
+        if (existingIndex === -1) {
+            // Need to do concat (instead of push) to trigger observable reaction
+            this._allLines = this._allLines.concat([line]).sort((a, b) => (a.id < b.id ? -1 : 1));
+        } else {
+            // Update existing line
+            this._allLines = this._allLines.map((n) => (n.id === line.id ? line : n));
+        }
+        this.search();
+    };
+
+    @action
     public setAllSearchNodes = (nodes: ISearchNode[]) => {
         this._allNodes = nodes.sort((a, b) => (a.id > b.id ? 1 : -1));
     };
@@ -74,9 +87,10 @@ class SearchResultStore {
             // Need to do concat (instead of push) to trigger observable reaction
             this._allNodes = this._allNodes.concat([node]);
         } else {
+            // Update existing node
             this._allNodes = this._allNodes.map((n) => (n.id === node.id ? node : n));
-            // this._allNodes[existingIndex] = node;
         }
+        this.search();
     };
 
     private matchWildcard(text: string, rule: string) {
