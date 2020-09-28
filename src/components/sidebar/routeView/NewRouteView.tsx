@@ -100,11 +100,21 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         try {
             await RouteService.createRoute(route!);
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+            this.redirectToNewRouteview(route.id);
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             this.setState({ isLoading: false });
+            this.redirectToLineView();
         }
-        this.redirectToLineView();
+    };
+
+    private redirectToNewRouteview = (routeId: string) => {
+        const routeViewLink = routeBuilder
+            .to(SubSites.routes)
+            .append(QueryParams.routes, routeId)
+            .toLink();
+
+        navigator.goTo({ link: routeViewLink });
     };
 
     private redirectToLineView = () => {
