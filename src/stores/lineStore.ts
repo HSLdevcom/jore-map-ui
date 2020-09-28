@@ -7,6 +7,7 @@ import lineValidationModel, {
 } from '~/models/validationModels/lineValidationModel';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
+import SearchResultStore from './searchResultStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
 class LineStore {
@@ -15,7 +16,6 @@ class LineStore {
     @observable private _oldline: ILine | null;
     @observable private _isNewLine: boolean;
     @observable private _isEditingDisabled: boolean;
-    @observable private _existingLines: ISearchLine[] = [];
     private _validationStore: ValidationStore<ILine, ILineValidationModel>;
 
     constructor() {
@@ -56,11 +56,6 @@ class LineStore {
     @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
-    }
-
-    @computed
-    get existingLines() {
-        return this._existingLines;
     }
 
     @computed
@@ -127,11 +122,6 @@ class LineStore {
     };
 
     @action
-    public setExistingLines = (existingLines: ISearchLine[]) => {
-        this._existingLines = existingLines;
-    };
-
-    @action
     public clear = () => {
         this._line = null;
         this._oldline = null;
@@ -147,7 +137,7 @@ class LineStore {
 
     private isLineAlreadyFound = (lineId: string): boolean => {
         return Boolean(
-            this.existingLines.find((searchLine: ISearchLine) => searchLine.id === lineId)
+            SearchResultStore.allLines.find((searchLine: ISearchLine) => searchLine.id === lineId)
         );
     };
 

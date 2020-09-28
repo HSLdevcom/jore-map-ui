@@ -6,7 +6,6 @@ import TextContainer from '~/components/controls/TextContainer';
 import SaveButton from '~/components/shared/SaveButton';
 import TransitType from '~/enums/transitType';
 import { ILine } from '~/models';
-import LineService from '~/services/lineService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
@@ -50,18 +49,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         };
     }
 
-    componentDidMount() {
-        if (this.props.lineStore!.isNewLine) {
-            this.fetchAllLines();
-        }
-    }
-
-    componentDidUpdate() {
-        if (this.props.lineStore!.isNewLine) {
-            this.fetchAllLines();
-        }
-    }
-
     private selectTransitType = (transitType: TransitType) => {
         const lineStore = this.props.lineStore!;
         lineStore.updateLineProperty('transitType', transitType);
@@ -69,17 +56,6 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
             'publicTransportType',
             transitTypeDefaultValueMap[transitType]
         );
-    };
-
-    private fetchAllLines = async () => {
-        if (this.props.lineStore!.existingLines.length > 0) return;
-
-        try {
-            const existingLines = await LineService.fetchAllSearchLines();
-            this.props.lineStore!.setExistingLines(existingLines);
-        } catch (e) {
-            this.props.errorStore!.addError('Olemassa olevien linjojen haku ei onnistunut', e);
-        }
     };
 
     private onChangeLineProperty = (property: keyof ILine) => (value: any) => {
