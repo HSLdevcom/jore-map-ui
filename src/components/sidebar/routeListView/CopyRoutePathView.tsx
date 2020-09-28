@@ -342,6 +342,13 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                     <div className={classnames(s.form, s.selectView)}>
                         <div className={s.subTopic}>Etsi kopioitavia reitinsuuntia</div>
                         <div className={s.flexRow}>
+                            <Checkbox
+                                content='Näytä vain aktiiviset linjat'
+                                checked={this.state.areInactiveLinesHidden}
+                                onClick={this.toggleAreInactiveLinesHidden}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
                             <Dropdown
                                 label='LINJA'
                                 selected={this.state.selectedLineId}
@@ -366,13 +373,6 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                         : undefined
                                 }
                                 data-cy='routeDropdown'
-                            />
-                        </div>
-                        <div className={s.flexRow}>
-                            <Checkbox
-                                content='Näytä vain aktiiviset linjat'
-                                checked={this.state.areInactiveLinesHidden}
-                                onClick={this.toggleAreInactiveLinesHidden}
                             />
                         </div>
                         {this.state.selectedRouteId && (
