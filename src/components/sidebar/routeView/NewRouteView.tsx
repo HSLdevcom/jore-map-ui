@@ -1,5 +1,4 @@
 import classnames from 'classnames';
-import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SaveButton from '~/components/shared/SaveButton';
@@ -106,12 +105,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             this.redirectToNewRouteview(route.id);
 
             // Update line search results
-            const searchLineToUpdate = _.cloneDeep(
-                this.props.searchResultStore!.allLines.find((line) => line.id === route.lineId)
-            );
-            const searchRoute = RouteFactory.createSearchRoute(route);
-            searchLineToUpdate!.routes = searchLineToUpdate!.routes.concat([searchRoute]);
-            this.props.searchResultStore!.updateSearchLine(searchLineToUpdate!);
+            this.props.searchResultStore!.updateSearchRoute(route.lineId, route!);
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             this.setState({ isLoading: false });

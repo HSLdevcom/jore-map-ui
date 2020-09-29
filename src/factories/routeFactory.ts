@@ -38,10 +38,16 @@ class RouteFactory {
         };
     };
 
-    public static createSearchRoute = (route: IRoute): ISearchRoute => {
+    public static createSearchRoute = ({
+        route,
+        isUsedByRoutePath,
+    }: {
+        route: IRoute;
+        isUsedByRoutePath: boolean;
+    }): ISearchRoute => {
         return {
+            isUsedByRoutePath,
             id: route.id,
-            isUsedByRoutePath: false,
             name: route.routeName,
         };
     };
