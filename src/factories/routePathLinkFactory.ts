@@ -32,7 +32,7 @@ class RoutePathLinkFactory {
                 ? externalRoutePathLink.ajantaspys
                 : '0',
             startNodeType: externalRoutePathLink.relpysakki,
-            isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
+            isStartNodeHastusStop: externalRoutePathLink.paikka === 1,
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',
             startNodeBookScheduleColumnNumber: externalRoutePathLink.kirjasarake,
             transitType: externalRoutePathLink.lnkverkko,
