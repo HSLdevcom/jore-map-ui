@@ -35,10 +35,6 @@
             height: 40px; // To make items have equal height
             cursor: pointer;
 
-            .opacity {
-                opacity: 0.55;
-            }
-
             .headerSubtopicContainer {
                 display: block;
                 text-overflow: ellipsis;
@@ -185,4 +181,8 @@
 .highlightedItem {
     transition: 0.5s;
     background-color: #ffff82;
+}
+
+.opacity {
+    opacity: 0.55;
 }
