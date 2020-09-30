@@ -15,6 +15,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import { MapStore } from '~/stores/mapStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
 import LineRoutesTab from './LineRoutesTab';
@@ -28,6 +29,7 @@ interface ILineViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     confirmStore?: ConfirmStore;
+    searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
 }
 
@@ -42,7 +44,8 @@ interface ILineViewState {
     'errorStore',
     'alertStore',
     'mapStore',
-    'confirmStore'
+    'confirmStore',
+    'searchResultStore'
 )
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
@@ -137,6 +140,9 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             this._setState({ isLoading: false });
         }
+        // Need to refresh line in search result store
+        const searchLine = LineFactory.createSearchLineFromLine(line!, []);
+        this.props.searchResultStore!.updateSearchLine(searchLine);
     };
 
     private showSavePrompt = () => {

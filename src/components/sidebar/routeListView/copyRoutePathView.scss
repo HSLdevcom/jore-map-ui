@@ -81,6 +81,9 @@ $routePathTablePadding: 15px;
             .selectedRow {
                 background-color: #adf;
             }
+            .tableRow:hover {
+                background-color: #adf !important;
+            }
 
             .circle {
                 height: 20px;

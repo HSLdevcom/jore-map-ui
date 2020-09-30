@@ -224,6 +224,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
     render() {
         const routePathCopyStore = this.props.routePathCopyStore!;
         const lineId = routePathCopyStore.lineId;
+        const routeId = routePathCopyStore.routeId;
         const transitType = routePathCopyStore.transitType;
         const routePathsToCopy = routePathCopyStore!.routePathsToCopy;
 
@@ -244,7 +245,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                         </span>{' '}
                         reitille{' '}
                         <span className={TransitTypeUtils.getColorClass(transitType)}>
-                            {lineId}
+                            {routeId}
                         </span>
                     </div>
                 </SidebarHeader>
@@ -341,6 +342,13 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                     <div className={classnames(s.form, s.selectView)}>
                         <div className={s.subTopic}>Etsi kopioitavia reitinsuuntia</div>
                         <div className={s.flexRow}>
+                            <Checkbox
+                                content='Näytä vain aktiiviset linjat'
+                                checked={this.state.areInactiveLinesHidden}
+                                onClick={this.toggleAreInactiveLinesHidden}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
                             <Dropdown
                                 label='LINJA'
                                 selected={this.state.selectedLineId}
@@ -367,16 +375,9 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                 data-cy='routeDropdown'
                             />
                         </div>
-                        <div className={s.flexRow}>
-                            <Checkbox
-                                content='Näytä vain aktiiviset linjat'
-                                checked={this.state.areInactiveLinesHidden}
-                                onClick={this.toggleAreInactiveLinesHidden}
-                            />
-                        </div>
                         {this.state.selectedRouteId && (
                             <div className={classnames(s.flexRow, s.routePathSelectView)}>
-                                <div className={s.subTopic}>Valittavat reitinsuunnat</div>
+                                <div className={s.subTopic}>Valitse kopioitava reitinsuunta</div>
                                 {this.state.routePathQueryResults.length === 0 ? (
                                     <div className={s.noQueryResults}>
                                         Reitiltä {this.state.selectedRouteId} ei löytynyt
@@ -416,14 +417,15 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                             return (
                                                                 <tr
                                                                     key={`rpQueryResult-${index}`}
-                                                                    onClick={this.toggleRoutePath(
-                                                                        routePath
-                                                                    )}
-                                                                    className={
+                                                                    className={classnames(
+                                                                        s.tableRow,
                                                                         isSelected
                                                                             ? s.selectedRow
                                                                             : undefined
-                                                                    }
+                                                                    )}
+                                                                    onClick={this.toggleRoutePath(
+                                                                        routePath
+                                                                    )}
                                                                     data-cy={`rpQueryResult`}
                                                                 >
                                                                     <td>{routePath.direction}</td>
