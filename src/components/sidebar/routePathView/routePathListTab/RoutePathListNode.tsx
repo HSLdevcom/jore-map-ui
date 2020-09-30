@@ -78,7 +78,12 @@ const RoutePathListNode = inject(
                         {subTopic}
                     </div>
                     <div className={s.headerContent}>
-                        <div className={s.hastusId}>
+                        <div
+                            className={classnames(
+                                s.hastusId,
+                                routePathLink.isStartNodeHastusStop ? undefined : s.opacity
+                            )}
+                        >
                             {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
                         </div>
                         <div className={s.longId}>{node.id}</div>

@@ -35,6 +35,10 @@
             height: 40px; // To make items have equal height
             cursor: pointer;
 
+            .opacity {
+                opacity: 0.55;
+            }
+
             .headerSubtopicContainer {
                 display: block;
                 text-overflow: ellipsis;
