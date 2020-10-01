@@ -171,11 +171,12 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
 
     private conditionallyUnselectSearchResult = () => {
         // Need to setTimeout before unselect because click event from searchResults come after onBlur event
+        // The problem is that onBlur followed by setState causes click event to not fire. This is the best solution found so far. Note: lower delay than 500ms is not recommended (on slow browsers e.g. 100ms might not work)
         setTimeout(() => {
             if (this.state.searchResults.length > 0) {
                 this.unselectSearchResult();
             }
-        }, 100);
+        }, 500);
     };
 
     render() {
