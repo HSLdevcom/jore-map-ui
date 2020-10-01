@@ -112,6 +112,13 @@ const NodeLayer = inject(
                             visibleNodeLabels={props.mapStore!.visibleNodeLabels}
                             nodeLocationType={'coordinates'}
                             nodeId={node.id}
+                            shortId={
+                                node.shortIdString
+                                    ? `${node.shortIdLetter ? node.shortIdLetter : ''}${
+                                          node.shortIdString
+                                      }`
+                                    : undefined
+                            }
                             onClick={props.onClick}
                             onContextMenu={props.onContextMenu}
                             size={props.networkStore!.nodeSize}

@@ -26,6 +26,7 @@ import { MapStore } from '~/stores/mapStore';
 import { INodeCacheObj, NodeStore } from '~/stores/nodeStore';
 import { SearchResultStore } from '~/stores/searchResultStore';
 import NodeLocationType from '~/types/NodeLocationType';
+import NodeUtils from '~/utils/NodeUtils';
 import SidebarHeader from '../SidebarHeader';
 import NodeForm from './NodeForm';
 import StopView from './StopView';
@@ -392,7 +393,15 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         isEditing={!isEditingDisabled}
                         onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >
-                        {isNewNode ? 'Luo uusi solmu' : `Solmu ${node.id}`}
+                        {isNewNode
+                            ? 'Luo uusi solmu'
+                            : `${NodeUtils.getNodeTypeName(node.type)} ${node.id}`}
+                        {node.shortIdString && (
+                            <div className={s.headerShortId}>
+                                {node.shortIdLetter}
+                                {node.shortIdString}
+                            </div>
+                        )}
                     </SidebarHeader>
                     <NodeForm
                         node={node}

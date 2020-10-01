@@ -6,6 +6,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
+import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
@@ -228,6 +229,15 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.updateLinkProperty(property, value);
     };
 
+    private renderHeaderNodeContainer = (node: INode) => {
+        return (
+            <div className={s.headerNodeContainer}>
+                <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
+                <div className={s.nodeId}>{node.id}</div>
+            </div>
+        );
+    };
+
     render() {
         const link = this.props.linkStore!.link;
         if (this.state.isLoading) {
@@ -273,7 +283,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         onEditButtonClick={this.props.linkStore!.toggleIsEditingDisabled}
                         isCloseButtonVisible={true}
                     >
-                        Linkki
+                        Linkki{' '}
+                        <div className={s.headerNodesContainer}>
+                            {this.renderHeaderNodeContainer(link.startNode)} -{' '}
+                            {this.renderHeaderNodeContainer(link.endNode)}
+                        </div>
                     </SidebarHeader>
                     <div className={s.formSection}>
                         <div className={s.flexRow}>
