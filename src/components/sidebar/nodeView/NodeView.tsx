@@ -393,6 +393,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         onEditButtonClick={nodeStore.toggleIsEditingDisabled}
                     >
                         {isNewNode ? 'Luo uusi solmu' : `Solmu ${node.id}`}
+                        {node.shortIdString && (
+                            <div className={s.headerShortId}>
+                                {node.shortIdLetter}
+                                {node.shortIdString}
+                            </div>
+                        )}
                     </SidebarHeader>
                     <NodeForm
                         node={node}
