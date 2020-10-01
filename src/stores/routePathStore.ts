@@ -147,6 +147,8 @@ class RoutePathStore {
     }) => {
         this.clear();
         this._routePath = routePath;
+        this.setOldRoutePath(routePath);
+
         this._isNewRoutePath = isNewRoutePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
         this.setRoutePathLinks(routePathLinks);
@@ -156,8 +158,6 @@ class RoutePathStore {
             startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
         };
         this._geometryUndoStore.addItem(currentUndoState);
-
-        this.setOldRoutePath(this._routePath);
 
         const validateRoutePathPrimaryKey = (routePath: IRoutePath) => {
             if (!this.isNewRoutePath) return;
