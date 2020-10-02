@@ -12,6 +12,7 @@ import L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
+import NodeType from '~/enums/nodeType';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
@@ -103,10 +104,12 @@ const NodeLayer = inject(
         return (
             <>
                 {featuresToShow.map((node: ISearchNode, index: number) => {
+                    const coordinates =
+                        node.type === NodeType.STOP ? node.coordinates : node.coordinatesProjection;
                     return (
                         <NodeMarker
                             key={`nodeMarker-${node.id}`}
-                            coordinates={node.coordinates}
+                            coordinates={coordinates}
                             nodeType={node.type}
                             transitTypes={node.transitTypes}
                             visibleNodeLabels={props.mapStore!.visibleNodeLabels}

@@ -81,10 +81,12 @@ class NodeFactory {
         const coordinates = _getLatLng(
             externalNode.geojson ? externalNode.geojson : externalNode.geojsonManual
         );
+        const coordinatesProjection = _getLatLng(externalNode.geojsonProjection);
         const type = _getNodeType(externalNode.soltyyppi, externalNode.soltunnus);
         return {
             type,
             coordinates,
+            coordinatesProjection,
             id: externalNode.soltunnus,
             transitTypes: externalNode.transitTypes
                 ? (externalNode.transitTypes.split(',') as TransitType[])

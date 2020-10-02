@@ -39,6 +39,7 @@ interface ISearchNode {
     id: string;
     type: NodeType;
     coordinates: L.LatLng;
+    coordinatesProjection: L.LatLng;
     transitTypes: TransitType[];
     dateRanges: string;
     shortIdLetter?: string;

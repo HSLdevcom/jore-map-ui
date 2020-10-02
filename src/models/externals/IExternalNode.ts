@@ -27,6 +27,7 @@ interface IExternalSearchNode {
     transitTypes: string;
     geojson?: string;
     geojsonManual: string;
+    geojsonProjection: string;
     dateRanges?: string;
 }
 

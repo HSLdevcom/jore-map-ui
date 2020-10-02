@@ -638,6 +638,7 @@ const nodeSearchQueryFields = `
     solkirjain
     geojson
     geojsonManual
+    geojsonProjection
     transitTypes
     dateRanges
     pysakkiBySoltunnus {
