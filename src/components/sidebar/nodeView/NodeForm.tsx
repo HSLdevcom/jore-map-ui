@@ -100,75 +100,75 @@ class NodeForm extends Component<INodeFormProps> {
                     )}
                 </div>
                 <div className={classnames(s.formSection, s.noBorder)}>
+                    {node.type === NodeType.STOP && (
+                        <>
+                            <CoordinateInputRow
+                                isEditingDisabled={isEditingDisabled}
+                                label={
+                                    <div className={s.sectionHeader}>
+                                        Mitattu piste
+                                        <div
+                                            className={classnames(
+                                                s.labelIcon,
+                                                ...NodeUtils.getNodeTypeClasses(node.type, {})
+                                            )}
+                                        />
+                                    </div>
+                                }
+                                coordinates={node.coordinates}
+                                onChange={
+                                    onChangeNodeGeometry
+                                        ? onChangeNodeGeometry('coordinates')
+                                        : () => void 0
+                                }
+                            />
+                            <div className={s.flexRow}>
+                                <InputContainer
+                                    type='date'
+                                    label='MITTAUSPVM'
+                                    value={node.measurementDate}
+                                    disabled={isEditingDisabled}
+                                    onChange={
+                                        onChangeNodeProperty
+                                            ? onChangeNodeProperty('measurementDate')
+                                            : undefined
+                                    }
+                                    isClearButtonVisibleOnDates={true}
+                                    isEmptyDateValueAllowed={true}
+                                    validationResult={invalidPropertiesMap['measurementDate']}
+                                    data-cy='measurementDate'
+                                />
+                                <Dropdown
+                                    label='MITTAUSTAPA'
+                                    disabled={isEditingDisabled}
+                                    selected={node.measurementType}
+                                    items={this.createMeasuredDropdownItems()}
+                                    validationResult={invalidPropertiesMap['measurementType']}
+                                    onChange={
+                                        onChangeNodeProperty
+                                            ? onChangeNodeProperty('measurementType')
+                                            : undefined
+                                    }
+                                    data-cy='measurementType'
+                                />
+                            </div>
+                        </>
+                    )}
                     <CoordinateInputRow
                         isEditingDisabled={isEditingDisabled}
                         label={
                             <div className={s.sectionHeader}>
-                                Mitattu piste
-                                <div
-                                    className={classnames(
-                                        s.labelIcon,
-                                        ...NodeUtils.getNodeTypeClasses(node.type, {})
-                                    )}
-                                />
+                                Projisoitu piste
+                                <div className={classnames(s.labelIcon, s.projected)} />
                             </div>
                         }
-                        coordinates={node.coordinates}
+                        coordinates={node.coordinatesProjection}
                         onChange={
                             onChangeNodeGeometry
-                                ? onChangeNodeGeometry('coordinates')
+                                ? onChangeNodeGeometry('coordinatesProjection')
                                 : () => void 0
                         }
                     />
-                    {node.type === NodeType.STOP && (
-                        <div className={s.flexRow}>
-                            <InputContainer
-                                type='date'
-                                label='MITTAUSPVM'
-                                value={node.measurementDate}
-                                disabled={isEditingDisabled}
-                                onChange={
-                                    onChangeNodeProperty
-                                        ? onChangeNodeProperty('measurementDate')
-                                        : undefined
-                                }
-                                isClearButtonVisibleOnDates={true}
-                                isEmptyDateValueAllowed={true}
-                                validationResult={invalidPropertiesMap['measurementDate']}
-                                data-cy='measurementDate'
-                            />
-                            <Dropdown
-                                label='MITTAUSTAPA'
-                                disabled={isEditingDisabled}
-                                selected={node.measurementType}
-                                items={this.createMeasuredDropdownItems()}
-                                validationResult={invalidPropertiesMap['measurementType']}
-                                onChange={
-                                    onChangeNodeProperty
-                                        ? onChangeNodeProperty('measurementType')
-                                        : undefined
-                                }
-                                data-cy='measurementType'
-                            />
-                        </div>
-                    )}
-                    {node.type === NodeType.STOP && (
-                        <CoordinateInputRow
-                            isEditingDisabled={isEditingDisabled}
-                            label={
-                                <div className={s.sectionHeader}>
-                                    Projisoitu piste
-                                    <div className={classnames(s.labelIcon, s.projected)} />
-                                </div>
-                            }
-                            coordinates={node.coordinatesProjection}
-                            onChange={
-                                onChangeNodeGeometry
-                                    ? onChangeNodeGeometry('coordinatesProjection')
-                                    : () => void 0
-                            }
-                        />
-                    )}
                 </div>
             </div>
         );

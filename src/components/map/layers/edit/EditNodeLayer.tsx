@@ -81,13 +81,13 @@ const EditNodeLayer = inject(
             return (
                 <>
                     {renderNode({
-                        coordinates: node.coordinates,
-                        nodeLocationType: 'coordinates',
+                        coordinates: node.coordinatesProjection,
+                        nodeLocationType: 'coordinatesProjection',
                     })}
                     {node.type === NodeType.STOP &&
                         renderNode({
-                            coordinates: node.coordinatesProjection,
-                            nodeLocationType: 'coordinatesProjection',
+                            coordinates: node.coordinates,
+                            nodeLocationType: 'coordinates',
                         })}
                     <DashedLine
                         startPoint={node.coordinates}
