@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SidebarHeader from '~/components/sidebar/SidebarHeader';
 import NodeForm from '~/components/sidebar/nodeView/NodeForm';
 import StopForm from '~/components/sidebar/nodeView/StopForm';
+import NodeType from '~/enums/nodeType';
 import { INode } from '~/models';
 import { PopupStore } from '~/stores/popupStore';
 import NodeUtils from '~/utils/NodeUtils';
@@ -34,7 +35,7 @@ class NodePopup extends Component<INodePopupProps> {
                         }}
                     >
                         {`${NodeUtils.getNodeTypeName(node.type)} ${node.id}`}
-                        {node.shortIdString && (
+                        {node.type === NodeType.STOP && node.shortIdString && (
                             <div className={s.headerShortId}>
                                 {node.shortIdLetter}
                                 {node.shortIdString}

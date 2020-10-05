@@ -116,7 +116,7 @@ const NodeLayer = inject(
                             nodeLocationType={'coordinates'}
                             nodeId={node.id}
                             shortId={
-                                node.shortIdString
+                                node.type === NodeType.STOP && node.shortIdString
                                     ? `${node.shortIdLetter ? node.shortIdLetter : ''}${
                                           node.shortIdString
                                       }`

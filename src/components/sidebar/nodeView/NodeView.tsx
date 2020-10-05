@@ -396,7 +396,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         {isNewNode
                             ? 'Luo uusi solmu'
                             : `${NodeUtils.getNodeTypeName(node.type)} ${node.id}`}
-                        {node.shortIdString && (
+                        {node.type === NodeType.STOP && node.shortIdString && (
                             <div className={s.headerShortId}>
                                 {node.shortIdLetter}
                                 {node.shortIdString}
