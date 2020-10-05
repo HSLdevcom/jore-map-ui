@@ -311,23 +311,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const saveModels: (ISaveModel | ITextModel)[] = [
             {
                 type: 'saveModel',
-                subTopic: 'Solmu',
+                subTopic: 'Solmun tiedot',
                 newData: currentNode,
                 oldData: oldNode,
                 model: 'node',
             },
         ];
-
-        if (!_.isEqual(currentLinks, oldLinks)) {
-            const textModel: ITextModel = {
-                type: 'textModel',
-                subTopic: 'Linkit',
-                oldText: 'Vanhat linkit',
-                newText: 'Uudet linkit',
-            };
-            saveModels.push(textModel);
-        }
-
         // Create stop save model
         if (currentStop && currentNode.type === NodeType.STOP) {
             // Generate stopArea label values for savePrompt
@@ -344,6 +333,17 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             };
             saveModels.push(stopSaveModel);
         }
+        // Create links save model
+        if (!_.isEqual(currentLinks, oldLinks)) {
+            const textModel: ITextModel = {
+                type: 'textModel',
+                subTopic: 'Linkit',
+                oldText: 'Vanhat linkit',
+                newText: 'Uudet linkit',
+            };
+            saveModels.push(textModel);
+        }
+
         const savePromptSection = { models: saveModels };
         this.props.confirmStore!.openConfirm({
             content: <SavePrompt savePromptSections={[savePromptSection]} />,
@@ -414,12 +414,10 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         onChangeNodeType={this.onChangeNodeType}
                     />
                     {node.type === NodeType.STOP && node.stop && (
-                        <StopView
-                            node={node}
-                            onNodePropertyChange={this.onChangeNodeProperty}
-                            isNewStop={isNewNode}
-                            nodeInvalidPropertiesMap={invalidPropertiesMap}
-                        />
+                        <>
+                            <div className={s.sectionDivider} />
+                            <StopView node={node} isNewStop={isNewNode} />
+                        </>
                     )}
                     {!isNewNode &&
                         (this.state.isRoutePathsUsingNodeQueryLoading ? (

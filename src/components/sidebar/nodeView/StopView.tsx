@@ -15,8 +15,6 @@ import StopForm from './StopForm';
 interface IStopViewProps {
     node: INode;
     isNewStop: boolean;
-    nodeInvalidPropertiesMap: object;
-    onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     alertStore?: AlertStore;
@@ -129,7 +127,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const invalidPropertiesMap = this.props.nodeStore!.stopInvalidPropertiesMap;
-        const { node, isNewStop, onNodePropertyChange } = this.props;
+        const { node, isNewStop } = this.props;
 
         if (this.state.isLoading) {
             return <Loader size='small' />;
@@ -145,9 +143,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 hastusAreas={this.state.hastusAreas}
                 saveHastusArea={this.saveHastusArea}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
-                nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 updateStopProperty={this.updateStopProperty}
-                onNodePropertyChange={onNodePropertyChange}
                 setCurrentStateIntoNodeCache={this.setCurrentStateIntoNodeCache}
             />
         );

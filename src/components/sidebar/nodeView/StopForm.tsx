@@ -20,8 +20,6 @@ import StopService, { IStopSectionItem } from '~/services/stopService';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ModalStore } from '~/stores/modalStore';
 import { NodeStore } from '~/stores/nodeStore';
-import SidebarHeader from '../SidebarHeader';
-import ShortIdInput from './ShortIdInput';
 import HastusAreaModal from './hastusAreaModal';
 import * as s from './stopForm.scss';
 
@@ -33,7 +31,6 @@ interface IStopFormProps {
     stopSections: IStopSectionItem[];
     hastusAreas: IHastusArea[];
     stopInvalidPropertiesMap: object;
-    nodeInvalidPropertiesMap: object;
     saveHastusArea?: ({
         isNewHastusArea,
         isHastusAreaSavedToNode,
@@ -44,7 +41,6 @@ interface IStopFormProps {
     match?: match<any>;
     isReadOnly?: boolean;
     updateStopProperty?: (property: keyof IStop) => (value: any) => void;
-    onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     setCurrentStateIntoNodeCache?: () => void;
     codeListStore?: CodeListStore;
     nodeStore?: NodeStore;
@@ -55,25 +51,6 @@ interface IStopFormState {
     isRiseCountLoading: boolean;
     riseCount: number;
 }
-
-// Key: node id beginning, value: short id options array
-const SHORT_ID_OPTIONS_MAP = {
-    1: ['H', 'XH'],
-    2: ['E', 'XE'],
-    3: ['Ka'],
-    4: ['V', 'XV'],
-    5: ['Hy', 'La', 'Ri', 'Vi', 'Ko', 'Or'],
-    6: ['Ki', 'Ra'],
-    90: ['Ke'],
-    91: ['Ke'],
-    92: ['Si'],
-    93: ['Po'],
-    94: ['Pn'],
-    95: ['Jä'],
-    96: ['Tu'],
-    97: ['Nu'],
-    98: ['Mä'],
-};
 
 @inject('codeListStore', 'nodeStore', 'modalStore')
 @observer
@@ -101,36 +78,6 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
             };
             return item;
         });
-    };
-
-    private getShortIdLetterDropdownItems = (nodeId: string) => {
-        const dropdownItems: IDropdownItem[] = [];
-        for (const nodeIdBeginning in SHORT_ID_OPTIONS_MAP) {
-            if (Object.prototype.hasOwnProperty.call(SHORT_ID_OPTIONS_MAP, nodeIdBeginning)) {
-                if (nodeId.startsWith(nodeIdBeginning)) {
-                    const nodeIdOptions = SHORT_ID_OPTIONS_MAP[nodeIdBeginning];
-                    nodeIdOptions.forEach((nodeIdOption: string) => {
-                        const codeListLabel = this.props.codeListStore!.getCodeListLabel(
-                            'Lyhyttunnus',
-                            nodeIdOption
-                        );
-                        const dropdownItem = {
-                            value: nodeIdOption,
-                            label: `${nodeIdOption} - ${codeListLabel}`,
-                        };
-                        dropdownItems.push(dropdownItem);
-                    });
-                }
-            }
-        }
-        return dropdownItems;
-    };
-
-    private onShortIdLetterChange = (value: string) => {
-        this.props.onNodePropertyChange!('shortIdLetter')(value);
-        if (!value) {
-            this.props.onNodePropertyChange!('shortIdString')(null);
-        }
     };
 
     private redirectToStopArea = (stopAreaId: string | undefined) => {
@@ -237,8 +184,6 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
             stopSections,
             hastusAreas,
             stopInvalidPropertiesMap,
-            nodeInvalidPropertiesMap,
-            onNodePropertyChange,
             updateStopProperty,
             isReadOnly,
         } = this.props;
@@ -248,29 +193,6 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
         );
         return (
             <div className={classnames(s.stopView, s.form)}>
-                <SidebarHeader>Pysäkin tiedot</SidebarHeader>
-                <div className={s.formSection}>
-                    <div className={s.flexRow}>
-                        <Dropdown
-                            label='LYHYTTUNNUS (2 kirj.'
-                            onChange={this.onShortIdLetterChange}
-                            disabled={isEditingDisabled}
-                            selected={node.shortIdLetter}
-                            emptyItem={{
-                                value: '',
-                                label: '',
-                            }}
-                            items={this.getShortIdLetterDropdownItems(node.id)}
-                        />
-                        <ShortIdInput
-                            node={node}
-                            isBackgroundGrey={!isEditingDisabled && !Boolean(node.shortIdLetter)}
-                            isEditingDisabled={isEditingDisabled || !Boolean(node.shortIdLetter)}
-                            nodeInvalidPropertiesMap={nodeInvalidPropertiesMap}
-                            onNodePropertyChange={onNodePropertyChange}
-                        />
-                    </div>
-                </div>
                 <div className={s.formSection}>
                     <div className={s.sectionHeader}>Nimitiedot</div>
                     <div className={s.flexRow}>
