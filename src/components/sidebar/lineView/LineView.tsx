@@ -142,6 +142,13 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         }
         // Need to refresh line in search result store
         const searchLine = LineFactory.createSearchLineFromLine(line!, []);
+        if (!this.props.isNewLine) {
+            // Find possibly existing searchRoutes, add them to searchLine
+            const searchRoutes = this.props.searchResultStore!.allLines.find(
+                (l) => l.id === line!.id
+            )!.routes;
+            searchLine.routes = searchRoutes;
+        }
         this.props.searchResultStore!.updateSearchLine(searchLine);
     };
 
