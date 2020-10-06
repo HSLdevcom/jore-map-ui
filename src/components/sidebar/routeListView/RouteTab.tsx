@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
+import Loader from '~/components/shared/loader/Loader';
 import { IRoute } from '~/models';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
@@ -11,6 +12,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import { RouteStore } from '~/stores/routeStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import RouteForm from '../routeView/RouteForm';
 import * as s from './routeTab.scss';
 
@@ -21,6 +23,7 @@ interface IRouteTabProps {
     routeStore?: RouteStore;
     routeListStore?: RouteListStore;
     loginStore?: LoginStore;
+    searchResultStore?: SearchResultStore;
     confirmStore?: ConfirmStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
@@ -30,7 +33,15 @@ interface IRouteTabState {
     isLoading: boolean;
 }
 
-@inject('routeStore', 'routeListStore', 'loginStore', 'confirmStore', 'alertStore', 'errorStore')
+@inject(
+    'routeStore',
+    'routeListStore',
+    'loginStore',
+    'searchResultStore',
+    'confirmStore',
+    'alertStore',
+    'errorStore'
+)
 @observer
 class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
     private _isMounted: boolean;
@@ -39,7 +50,7 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
     constructor(props: IRouteTabProps) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: false,
         };
     }
 
@@ -108,20 +119,19 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         try {
             await RouteService.updateRoute(route!);
             this.props.routeStore!.clear();
-            this.fetchRoute(route.id);
+            await this.fetchRoute(route.id);
+            this.props.searchResultStore!.updateSearchRoute(route.lineId, route);
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            this.setState({ isLoading: false });
         }
+        this.setState({ isLoading: false });
         this.props.routeListStore!.setRouteIdToEdit(null);
     };
 
     private fetchRoute = async (routeId: string) => {
-        this._setState({ isLoading: true });
         const route = await RouteService.fetchRoute({ routeId });
         this.props.routeListStore!.updateRoute(route!);
-        this._setState({ isLoading: false });
     };
 
     render() {
@@ -130,6 +140,14 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         const invalidPropertiesMap = isEditing ? routeStore.invalidPropertiesMap : {};
         const route = isEditing ? routeStore.route : this.props.route;
         if (!route) return null;
+
+        if (this.state.isLoading) {
+            return (
+                <div className={s.routeTab}>
+                    <Loader />
+                </div>
+            );
+        }
 
         const isSaveButtonDisabled =
             !routeStore.route || !(isEditing && routeStore.isDirty) || !routeStore.isRouteFormValid;

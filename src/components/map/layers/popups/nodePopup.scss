@@ -11,4 +11,12 @@
         padding: 0px 20px 0px 20px;
         width: 360px;
     }
+
+    .headerShortId  {
+        font-size: $mediumFontSize;
+        padding-left: 10px;
+        line-height: 28px;
+        display: flex;
+        align-items: flex-end;
+    }
 }

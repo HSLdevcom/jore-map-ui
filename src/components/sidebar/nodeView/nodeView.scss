@@ -16,4 +16,12 @@
             margin-top: 20px;
         }
     }
+
+    .headerShortId  {
+        font-size: $mediumFontSize;
+        padding-left: 10px;
+        line-height: 23px;
+        display: flex;
+        align-items: flex-end;
+    }
 }

@@ -146,18 +146,18 @@ class RoutePathStore {
         isNewRoutePath: boolean;
     }) => {
         this.clear();
-        this._routePath = routePath;
+        this._routePath = _.cloneDeep(routePath);
+        this._oldRoutePath = _.cloneDeep(routePath);
+
         this._isNewRoutePath = isNewRoutePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
-        this.setRoutePathLinks(routePathLinks);
+        this.initRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
             routePathLinks,
             isStartNodeUsingBookSchedule: Boolean(this.routePath!.isStartNodeUsingBookSchedule),
             startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
         };
         this._geometryUndoStore.addItem(currentUndoState);
-
-        this.setOldRoutePath(this._routePath);
 
         const validateRoutePathPrimaryKey = (routePath: IRoutePath) => {
             if (!this.isNewRoutePath) return;
@@ -236,7 +236,7 @@ class RoutePathStore {
     };
 
     @action
-    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
+    public initRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks = routePathLinks;
 
         // Need to recalculate orderNumbers to ensure that they are correct
@@ -302,7 +302,7 @@ class RoutePathStore {
             });
 
             this.restoreBookScheduleProperties(nextUndoState);
-            this.setRoutePathLinks(newRoutePathLinks);
+            this.initRoutePathLinks(newRoutePathLinks);
         });
     };
 
@@ -325,29 +325,8 @@ class RoutePathStore {
             });
 
             this.restoreBookScheduleProperties(previousUndoState);
-            this.setRoutePathLinks(newRoutePathLinks);
+            this.initRoutePathLinks(newRoutePathLinks);
         });
-    };
-
-    @action
-    public setRoutePath = (routePath: IRoutePath) => {
-        this._routePath = routePath;
-
-        const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
-        this.setRoutePathLinks(routePathLinks);
-        const currentUndoState: UndoState = {
-            routePathLinks,
-            isStartNodeUsingBookSchedule: Boolean(this.routePath!.isStartNodeUsingBookSchedule),
-            startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
-        };
-        this._geometryUndoStore.addItem(currentUndoState);
-
-        this.setOldRoutePath(this._routePath);
-    };
-
-    @action
-    public setOldRoutePath = (routePath: IRoutePath) => {
-        this._oldRoutePath = _.cloneDeep(routePath);
     };
 
     @action

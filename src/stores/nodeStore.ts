@@ -295,7 +295,9 @@ class NodeStore {
 
         newNode[nodeLocationType] = roundLatLng(newCoordinates);
 
-        if (nodeLocationType === 'coordinates') this.mirrorCoordinates(newNode);
+        if (this._node.type !== NodeType.STOP) {
+            this.mirrorCoordinates(newNode);
+        }
 
         const coordinatesProjection = newNode.coordinatesProjection;
         // Update the first link geometry of startNodes to coordinatesProjection
@@ -319,7 +321,7 @@ class NodeStore {
             this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
 
-        if (nodeLocationType === 'coordinatesProjection') {
+        if (this._node.type === NodeType.STOP) {
             this.updateStopPropertiesAccordingToNodeLocation();
         }
     };
@@ -341,9 +343,7 @@ class NodeStore {
 
     @action
     public mirrorCoordinates = (node: INode) => {
-        if (node.type !== NodeType.STOP) {
-            node.coordinatesProjection = node.coordinates;
-        }
+        node.coordinates = node.coordinatesProjection;
     };
 
     @action
@@ -431,16 +431,20 @@ class NodeStore {
         this._node!.type = type;
         this._nodeValidationStore.updateProperty('type', type);
 
-        this.mirrorCoordinates(this._node!);
+        if (this._node!.type !== NodeType.STOP) {
+            this.mirrorCoordinates(this._node!);
+        }
 
         if (this._node!.type === NodeType.STOP && !this._node!.stop) {
             const stop = NodeStopFactory.createNewStop();
             this._node!.stop = stop;
             this._stopValidationStore.init(stop, stopValidationModel);
         } else {
-            // Only node which type is stop has measurementType and measurementDate, remove them if type is not stop
+            // Remove properties of node which does not belong to a node which type is not stop
             this.updateNodeProperty('measurementType', '');
             this.updateNodeProperty('measurementDate', '');
+            this.updateNodeProperty('shortIdLetter', null);
+            this.updateNodeProperty('shortIdString', null);
         }
     };
 

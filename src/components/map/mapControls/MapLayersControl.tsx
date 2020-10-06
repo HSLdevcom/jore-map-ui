@@ -109,7 +109,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                         <Checkbox
                             onClick={this.toggleNodeLabelVisibility(NodeLabel.hastusId)}
                             checked={MapStore.isNodeLabelVisible(NodeLabel.hastusId)}
-                            content='Hastus id'
+                            content='Hastus-paikka'
                         />
                     </div>
                     <div className={s.checkboxContainer}>

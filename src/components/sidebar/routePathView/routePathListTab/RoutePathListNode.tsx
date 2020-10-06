@@ -68,9 +68,10 @@ const RoutePathListNode = inject(
             const shortId = NodeUtils.getShortId(node);
             const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
             const isLastNode = props.isLastNode;
+            const isNodeDisabled = routePathLink.startNodeType === StartNodeType.DISABLED;
             return (
                 <div
-                    className={s.itemHeader}
+                    className={classnames(s.itemHeader, isNodeDisabled ? s.opacity : undefined)}
                     onClick={toggleExtendedListItemId}
                     data-cy='itemHeader'
                 >
@@ -78,7 +79,14 @@ const RoutePathListNode = inject(
                         {subTopic}
                     </div>
                     <div className={s.headerContent}>
-                        <div className={s.hastusId}>
+                        <div
+                            className={classnames(
+                                s.hastusId,
+                                isNodeDisabled || routePathLink.isStartNodeHastusStop
+                                    ? undefined
+                                    : s.opacity
+                            )}
+                        >
                             {node.stop && node.stop.hastusId ? node.stop.hastusId : ''}
                         </div>
                         <div className={s.longId}>{node.id}</div>
