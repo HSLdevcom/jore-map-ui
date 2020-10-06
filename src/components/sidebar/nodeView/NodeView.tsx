@@ -382,7 +382,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const isNodeFormInvalid = !nodeStore.isNodeFormValid;
         const isStopFormInvalid = node.type === NodeType.STOP && !nodeStore.isStopFormValid;
         const isSaveButtonDisabled =
-            isEditingDisabled || !nodeStore.isDirty || isNodeFormInvalid || isStopFormInvalid;
+            isEditingDisabled ||
+            !nodeStore.isDirty ||
+            isNodeFormInvalid ||
+            isStopFormInvalid ||
+            nodeStore.isNodeIdQueryLoading;
         return (
             <div className={s.nodeView} data-cy='nodeView'>
                 <div className={s.content}>
