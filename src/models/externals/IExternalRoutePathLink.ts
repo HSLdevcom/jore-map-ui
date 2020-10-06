@@ -15,7 +15,7 @@ interface IExternalRoutePathLink {
     relpysakki: string;
     lnkverkko: TransitType;
     ajantaspys?: string;
-    paikka?: number;
+    paikka?: string;
     kirjaan?: string;
     kirjasarake?: number;
     relkuka?: string;
