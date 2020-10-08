@@ -125,6 +125,18 @@ class SearchResultStore {
         this.search();
     };
 
+    @action
+    public updateSearchNodeStopName = (id: string, stopName: string) => {
+        this._allNodes = this.allNodes.map((n) => {
+            if (n.id === id) {
+                n.stopName = stopName;
+                return n;
+            }
+            return n;
+        });
+        this.search();
+    };
+
     private matchWildcard(text: string, rule: string) {
         return new RegExp(`^${rule.split('*').join('.*')}$`).test(text);
     }
