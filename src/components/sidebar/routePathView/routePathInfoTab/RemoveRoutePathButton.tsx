@@ -42,6 +42,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                     this.props.alertStore!.setFadeMessage({ message: 'Reitinsuunta poistettu!' });
                     NavigationUtils.openRouteView({
                         routeId: routePath.routeId,
+                        shouldSkipUnsavedChangesPrompt: true,
                     });
                 } catch (e) {
                     this.props.alertStore!.close();

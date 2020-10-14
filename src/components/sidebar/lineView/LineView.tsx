@@ -139,6 +139,7 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         } catch (e) {
             this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
             this._setState({ isLoading: false });
+            return;
         }
         // Need to refresh line in search result store
         const searchLine = LineFactory.createSearchLineFromLine(line!, []);
