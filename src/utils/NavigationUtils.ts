@@ -15,9 +15,11 @@ class NavigationUtils {
     public static openRouteView = ({
         routeId,
         queryValues,
+        shouldSkipUnsavedChangesPrompt,
     }: {
         routeId: string;
         queryValues?: any;
+        shouldSkipUnsavedChangesPrompt?: boolean;
     }) => {
         const routes = queryValues?.routes;
         const isRouteIdAlreadyInQueryValues = routes && routes.includes(routeId);
@@ -33,6 +35,7 @@ class NavigationUtils {
         }
         navigator.goTo({
             link: routeViewLink,
+            shouldSkipUnsavedChangesPrompt: Boolean(shouldSkipUnsavedChangesPrompt),
         });
     };
 
