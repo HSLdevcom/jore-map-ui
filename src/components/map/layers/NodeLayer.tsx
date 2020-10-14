@@ -38,8 +38,8 @@ const NodeLayer = inject(
     'routePathStore'
 )(
     observer((props: INodeLayerProps) => {
-        const getMap = (): L.Map => {
-            return props.map.current.leafletElement;
+        const getMap = (): L.Map | undefined => {
+            return props.map.current?.leafletElement;
         };
         const [turfPointNodeFeatures, setTurfPointNodeFeatures] = useState<FeatureCollection<
             Point,
@@ -64,16 +64,19 @@ const NodeLayer = inject(
             updateRenderCount(renderCount + 1);
         };
         useEffect(() => {
-            getMap().on('moveend', forceUpdate);
+            getMap()!.on('moveend', forceUpdate);
             return () => {
-                getMap().off('moveend', forceUpdate);
+                const map = getMap();
+                if (map) {
+                    map.off('moveend', forceUpdate);
+                }
             };
         });
 
         if (props.mapStore!.areNetworkLayersHidden) return <div />;
         if (!turfPointNodeFeatures) return <div />;
 
-        const bounds = getMap().getBounds();
+        const bounds = getMap()!.getBounds();
 
         const ne = bounds.getNorthEast();
         const se = bounds.getSouthEast();
