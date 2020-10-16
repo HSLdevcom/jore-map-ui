@@ -22,7 +22,7 @@ switch (environment) {
     }
     case Environment.STAGE: {
         APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
-        HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
+        HSL_ID_URL = 'https://id.hsl.fi';
         HSL_ID_CLIENT_ID = '6549375356227079';
         break;
     }
