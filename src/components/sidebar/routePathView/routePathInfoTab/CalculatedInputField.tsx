@@ -4,9 +4,9 @@ import ButtonType from '~/enums/buttonType';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
-import Loader from '../shared/loader/Loader';
-import Button from './Button';
-import InputContainer from './InputContainer';
+import Button from '../../../controls/Button';
+import InputContainer from '../../../controls/InputContainer';
+import Loader from '../../../shared/loader/Loader';
 import * as s from './calculatedInputField.scss';
 
 interface ICalculatedInputFieldProps {

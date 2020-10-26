@@ -1,6 +1,5 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import CalculatedInputField from '~/components/controls/CalculatedInputField';
 import { IRoutePath } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -8,6 +7,7 @@ import { toMidnightDate } from '~/utils/dateUtils';
 import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
+import CalculatedInputField from './CalculatedInputField';
 import RemoveRoutePathButton from './RemoveRoutePathButton';
 import * as s from './routePathInfoTab.scss';
 
