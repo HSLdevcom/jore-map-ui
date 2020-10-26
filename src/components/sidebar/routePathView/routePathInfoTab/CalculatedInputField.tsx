@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import ButtonType from '~/enums/buttonType';
 import { IRoutePathLink } from '~/models';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -30,6 +31,8 @@ const CalculatedInputField = inject('routePathStore')(
         };
 
         const calculatedRoutePathLength = props.routePathStore!.calculatedRoutePathLength;
+        const isRoutePathLengthFormedByMeasuredLengths = props.routePathStore!
+            .isRoutePathLengthFormedByMeasuredLengths;
         return (
             <div className={s.calculateInputFieldView}>
                 <InputContainer
@@ -54,6 +57,11 @@ const CalculatedInputField = inject('routePathStore')(
                             `${calculatedRoutePathLength}m`
                         ) : (
                             '-'
+                        )}
+                        {isRoutePathLengthFormedByMeasuredLengths ? (
+                            <FaCheckCircle className={s.isMeasuredLength} />
+                        ) : (
+                            <FaExclamationCircle className={s.isNotMeasuredLength} />
                         )}
                     </div>
                 </Button>
