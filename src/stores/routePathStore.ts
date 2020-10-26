@@ -44,6 +44,8 @@ class RoutePathStore {
     @observable private _invalidLinkOrderNumbers: number[];
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
+    @observable private _calculatedRoutePathLength: number | null;
+    @observable private _isRoutePathLengthFormedByMeasuredLengths: boolean;
     private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
@@ -62,6 +64,8 @@ class RoutePathStore {
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
+        this._calculatedRoutePathLength = null;
+        this._isRoutePathLengthFormedByMeasuredLengths = false;
 
         reaction(
             () => this.isDirty && !this._isEditingDisabled,
@@ -135,6 +139,16 @@ class RoutePathStore {
     @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
+    }
+
+    @computed
+    get calculatedRoutePathLength() {
+        return this._calculatedRoutePathLength;
+    }
+
+    @computed
+    get isRoutePathLengthFormedByMeasuredLengths() {
+        return this._isRoutePathLengthFormedByMeasuredLengths;
     }
 
     @action
@@ -214,6 +228,21 @@ class RoutePathStore {
             };
         };
 
+        const validateRoutePathLength = () => {
+            const routePath = this.routePath!;
+            const isValid = routePath!.length > 0;
+            const isCalculatedFromMeasuredLengthsOnly =
+                this.calculatedRoutePathLength === routePath!.length &&
+                this.isRoutePathLengthFormedByMeasuredLengths;
+
+            return {
+                isValid,
+                errorMessage: isCalculatedFromMeasuredLengthsOnly
+                    ? ''
+                    : 'Reitinsuunnan pituutta ei ole laskettu pelkästään mitatuilla pysäkkiväleillä.',
+            };
+        };
+
         const customValidatorMap: ICustomValidatorMap = {
             // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
             routePathPrimaryKey: {
@@ -230,6 +259,9 @@ class RoutePathStore {
             endDate: {
                 validators: [],
                 dependentProperties: ['routePathPrimaryKey'],
+            },
+            length: {
+                validators: [validateRoutePathLength],
             },
         };
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
@@ -511,6 +543,18 @@ class RoutePathStore {
     public toggleIsEditingDisabled = () => {
         this._isEditingDisabled = !this._isEditingDisabled;
     };
+
+    @action
+    public setCalculatedRoutePathLength(calculatedRoutePathLength: number | null) {
+        this._calculatedRoutePathLength = calculatedRoutePathLength;
+    }
+
+    @action
+    public setIsRoutePathLengthFormedByMeasuredLengths(
+        isRoutePathLengthFormedByMeasuredLengths: boolean
+    ) {
+        this._isRoutePathLengthFormedByMeasuredLengths = isRoutePathLengthFormedByMeasuredLengths;
+    }
 
     @action
     public clear = () => {

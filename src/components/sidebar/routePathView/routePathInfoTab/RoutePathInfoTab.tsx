@@ -12,13 +12,10 @@ import RemoveRoutePathButton from './RemoveRoutePathButton';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
+    isEditingDisabled: boolean;
+    isRoutePathCalculatedLengthLoading: boolean;
     routePathStore?: RoutePathStore;
     codeListStore?: CodeListStore;
-    isEditingDisabled: boolean;
-    routePath: IRoutePath;
-    invalidPropertiesMap: object;
-    calculatedRoutePathLength: number | null;
-    isRoutePathCalculatedLengthLoading: boolean;
 }
 
 @inject('routePathStore', 'codeListStore')
@@ -32,9 +29,9 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         const routePathStore = this.props.routePathStore!;
         const isEditingDisabled = this.props.isEditingDisabled;
         const isUpdating = !routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
-        const invalidPropertiesMap = this.props.invalidPropertiesMap;
+        const invalidPropertiesMap = this.props.routePathStore!.invalidPropertiesMap;
         const onChange = this.onChangeRoutePathProperty;
-        const routePath = this.props.routePath;
+        const routePath = this.props.routePathStore!.routePath!;
         const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
             'routePathPrimaryKey'
         ];
@@ -48,7 +45,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <Dropdown
                                 label='SUUNTA'
                                 disabled={isUpdating}
-                                selected={this.props.routePath.direction}
+                                selected={routePath.direction}
                                 items={this.props.codeListStore!.getDropdownItemList('Suunta')}
                                 onChange={onChange('direction')}
                                 validationResult={invalidPropertiesMap['direction']}
@@ -144,7 +141,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <Dropdown
                                 label='POIKKEUSREITTI'
                                 disabled={isEditingDisabled}
-                                selected={this.props.routePath.exceptionPath}
+                                selected={routePath.exceptionPath}
                                 items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
                                 onChange={onChange('exceptionPath')}
                                 validationResult={invalidPropertiesMap['exceptionPath']}
@@ -156,7 +153,6 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                                 onChange={onChange('length')}
                                 validationResult={invalidPropertiesMap['length']}
                                 value={routePath.length}
-                                calculatedRoutePathLength={this.props.calculatedRoutePathLength}
                                 isRoutePathCalculatedLengthLoading={
                                     this.props.isRoutePathCalculatedLengthLoading
                                 }

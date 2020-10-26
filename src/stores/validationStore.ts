@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { observable } from 'mobx';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
@@ -60,8 +60,16 @@ class ValidationStore<ValidationObject, ValidationModel> {
             value
         );
         if (!validatorResult || (validatorResult && validatorResult.isValid)) {
-            if (!_.isEmpty(validatorRule)) {
-                validatorResult = FormValidator.validateProperty(validatorRule, value);
+            if (!isEmpty(validatorRule)) {
+                const tempValidationResult = FormValidator.validateProperty(validatorRule, value);
+                const hasWarningMessage =
+                    validatorResult &&
+                    validatorResult.isValid &&
+                    !isEmpty(validatorResult.errorMessage);
+                // validatorResult can be overridden only by invalid validation result
+                if (!tempValidationResult.isValid && !hasWarningMessage) {
+                    validatorResult = tempValidationResult;
+                }
             }
         }
         if (validatorResult) {

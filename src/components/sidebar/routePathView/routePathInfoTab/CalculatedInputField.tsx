@@ -16,7 +16,6 @@ interface ICalculatedInputFieldProps {
     isDisabled: boolean;
     validationResult?: IValidationResult;
     onChange: (value: number) => void;
-    calculatedRoutePathLength: number | null;
     isRoutePathCalculatedLengthLoading: boolean;
     routePathStore?: RoutePathStore;
 }
@@ -24,14 +23,13 @@ interface ICalculatedInputFieldProps {
 const CalculatedInputField = inject('routePathStore')(
     observer((props: ICalculatedInputFieldProps) => {
         const useCalculatedLength = () => {
-            if (props.calculatedRoutePathLength && !props.isRoutePathCalculatedLengthLoading) {
-                props.routePathStore!.updateRoutePathProperty(
-                    'length',
-                    props.calculatedRoutePathLength
-                );
+            const calculatedRoutePathLength = props.routePathStore!.calculatedRoutePathLength;
+            if (calculatedRoutePathLength && !props.isRoutePathCalculatedLengthLoading) {
+                props.routePathStore!.updateRoutePathProperty('length', calculatedRoutePathLength);
             }
         };
 
+        const calculatedRoutePathLength = props.routePathStore!.calculatedRoutePathLength;
         return (
             <div className={s.calculateInputFieldView}>
                 <InputContainer
@@ -52,8 +50,8 @@ const CalculatedInputField = inject('routePathStore')(
                     <div className={s.routePathLength}>
                         {props.isRoutePathCalculatedLengthLoading ? (
                             <Loader size='tiny' hasNoMargin={true} />
-                        ) : props.calculatedRoutePathLength ? (
-                            `${props.calculatedRoutePathLength}m`
+                        ) : calculatedRoutePathLength ? (
+                            `${calculatedRoutePathLength}m`
                         ) : (
                             '-'
                         )}

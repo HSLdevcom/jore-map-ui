@@ -64,9 +64,7 @@ interface IRoutePathViewProps {
 
 interface IRoutePathViewState {
     isLoading: boolean;
-    calculatedRoutePathLength: number | null;
     isRoutePathCalculatedLengthLoading: boolean;
-    isRoutePathLengthFormedByMeasuredLengths: boolean;
 }
 
 @inject(
@@ -89,9 +87,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         super(props);
         this.state = {
             isLoading: true,
-            calculatedRoutePathLength: null,
             isRoutePathCalculatedLengthLoading: false,
-            isRoutePathLengthFormedByMeasuredLengths: false,
         };
     }
 
@@ -310,8 +306,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
         // RoutePathLinks needs to be coherent in order to calculate total length
         if (!RoutePathUtils.validateRoutePathLinkCoherency(routePath.routePathLinks)) {
+            this.props.routePathStore!.setCalculatedRoutePathLength(null);
             this._setState({
-                calculatedRoutePathLength: null,
                 isRoutePathCalculatedLengthLoading: false,
             });
             return;
@@ -329,10 +325,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const response: IRoutePathLengthResponse = await RoutePathService.fetchRoutePathLength(
             requestBody
         );
+        this.props.routePathStore!.setCalculatedRoutePathLength(response.length);
+        this.props.routePathStore!.setIsRoutePathLengthFormedByMeasuredLengths(
+            response.isCalculatedFromMeasuredStopGapsOnly
+        );
         this._setState({
-            calculatedRoutePathLength: response.length,
             isRoutePathCalculatedLengthLoading: false,
-            isRoutePathLengthFormedByMeasuredLengths: response.isCalculatedFromMeasuredStopGapsOnly,
         });
     };
 
@@ -489,13 +487,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                 <ContentItem>
                                     <RoutePathInfoTab
                                         isEditingDisabled={isEditingDisabled}
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        invalidPropertiesMap={
-                                            this.props.routePathStore!.invalidPropertiesMap
-                                        }
-                                        calculatedRoutePathLength={
-                                            this.state.calculatedRoutePathLength
-                                        }
                                         isRoutePathCalculatedLengthLoading={
                                             this.state.isRoutePathCalculatedLengthLoading
                                         }
