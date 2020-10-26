@@ -1,5 +1,6 @@
 import L from 'leaflet';
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
@@ -22,7 +23,10 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
-import RoutePathService from '~/services/routePathService';
+import RoutePathService, {
+    IGetRoutePathLengthRequest,
+    IRoutePathLengthResponse,
+} from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
@@ -36,6 +40,7 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
@@ -59,6 +64,9 @@ interface IRoutePathViewProps {
 
 interface IRoutePathViewState {
     isLoading: boolean;
+    calculatedRoutePathLength: number | null;
+    isRoutePathCalculatedLengthLoading: boolean;
+    isRoutePathLengthFormedByMeasuredLengths: boolean;
 }
 
 @inject(
@@ -75,11 +83,15 @@ interface IRoutePathViewState {
 )
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
+    private isRoutePathLinksChangedListener: IReactionDisposer;
     private _isMounted: boolean;
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
             isLoading: true,
+            calculatedRoutePathLength: null,
+            isRoutePathCalculatedLengthLoading: false,
+            isRoutePathLengthFormedByMeasuredLengths: false,
         };
     }
 
@@ -97,10 +109,17 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
+        this.isRoutePathLinksChangedListener = reaction(
+            () =>
+                this.props.routePathStore!.routePath &&
+                this.props.routePathStore!.routePath!.routePathLinks.length,
+            this.updateCalculatedLength
+        );
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.isRoutePathLinksChangedListener();
         this.props.toolbarStore!.selectTool(null);
         this.props.routePathStore!.clear();
         EventListener.off('undo', this.undo);
@@ -285,6 +304,38 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         return [];
     };
 
+    private updateCalculatedLength = async () => {
+        const routePath = this.props.routePathStore!.routePath;
+        if (!routePath) return;
+
+        // RoutePathLinks needs to be coherent in order to calculate total length
+        if (!RoutePathUtils.validateRoutePathLinkCoherency(routePath.routePathLinks)) {
+            this._setState({
+                calculatedRoutePathLength: null,
+                isRoutePathCalculatedLengthLoading: false,
+            });
+            return;
+        }
+
+        this._setState({
+            isRoutePathCalculatedLengthLoading: true,
+        });
+        const requestBody: IGetRoutePathLengthRequest = {
+            lineId: routePath.lineId!,
+            routeId: routePath.routeId,
+            transitType: routePath.transitType!,
+            routePathLinks: routePath.routePathLinks,
+        };
+        const response: IRoutePathLengthResponse = await RoutePathService.fetchRoutePathLength(
+            requestBody
+        );
+        this._setState({
+            calculatedRoutePathLength: response.length,
+            isRoutePathCalculatedLengthLoading: false,
+            isRoutePathLengthFormedByMeasuredLengths: response.isCalculatedFromMeasuredStopGapsOnly,
+        });
+    };
+
     private centerMapToRoutePath = (routePath: IRoutePath) => {
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
 
@@ -441,6 +492,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                         routePath={this.props.routePathStore!.routePath!}
                                         invalidPropertiesMap={
                                             this.props.routePathStore!.invalidPropertiesMap
+                                        }
+                                        calculatedRoutePathLength={
+                                            this.state.calculatedRoutePathLength
+                                        }
+                                        isRoutePathCalculatedLengthLoading={
+                                            this.state.isRoutePathCalculatedLengthLoading
                                         }
                                     />
                                 </ContentItem>

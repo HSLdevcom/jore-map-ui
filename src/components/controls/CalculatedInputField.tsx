@@ -1,40 +1,67 @@
+import { inject, observer } from 'mobx-react';
 import React from 'react';
 import ButtonType from '~/enums/buttonType';
+import { IRoutePathLink } from '~/models';
+import { RoutePathStore } from '~/stores/routePathStore';
 import { IValidationResult } from '~/validation/FormValidator';
+import Loader from '../shared/loader/Loader';
 import Button from './Button';
 import InputContainer from './InputContainer';
 import * as s from './calculatedInputField.scss';
 
 interface ICalculatedInputFieldProps {
+    routePathLinks: IRoutePathLink[];
     label: string;
     value: number;
-    calculatedValue: number | null;
     isDisabled: boolean;
     validationResult?: IValidationResult;
     onChange: (value: number) => void;
-    useCalculatedValue: () => void;
+    calculatedRoutePathLength: number | null;
+    isRoutePathCalculatedLengthLoading: boolean;
+    routePathStore?: RoutePathStore;
 }
 
-const CalculatedInputField = (props: ICalculatedInputFieldProps) => (
-    <div className={s.calculateInputFieldView}>
-        <InputContainer
-            label={props.label}
-            value={props.value}
-            disabled={props.isDisabled}
-            type='number'
-            onChange={props.onChange}
-            validationResult={props.validationResult}
-        />
-        <Button
-            disabled={props.isDisabled}
-            onClick={props.useCalculatedValue}
-            type={ButtonType.SQUARE}
-            className={s.calulateButton}
-        >
-            Laske
-            <span>{props.calculatedValue ? `${props.calculatedValue}m` : '0m'}</span>
-        </Button>
-    </div>
+const CalculatedInputField = inject('routePathStore')(
+    observer((props: ICalculatedInputFieldProps) => {
+        const useCalculatedLength = () => {
+            if (props.calculatedRoutePathLength && !props.isRoutePathCalculatedLengthLoading) {
+                props.routePathStore!.updateRoutePathProperty(
+                    'length',
+                    props.calculatedRoutePathLength
+                );
+            }
+        };
+
+        return (
+            <div className={s.calculateInputFieldView}>
+                <InputContainer
+                    label={props.label}
+                    value={props.value}
+                    disabled={props.isDisabled}
+                    type='number'
+                    onChange={props.onChange}
+                    validationResult={props.validationResult}
+                />
+                <Button
+                    disabled={props.isDisabled}
+                    onClick={useCalculatedLength}
+                    type={ButtonType.SQUARE}
+                    className={s.calulateButton}
+                >
+                    Laske
+                    <div className={s.routePathLength}>
+                        {props.isRoutePathCalculatedLengthLoading ? (
+                            <Loader size='tiny' hasNoMargin={true} />
+                        ) : props.calculatedRoutePathLength ? (
+                            `${props.calculatedRoutePathLength}m`
+                        ) : (
+                            '-'
+                        )}
+                    </div>
+                </Button>
+            </div>
+        );
+    })
 );
 
 export default CalculatedInputField;
