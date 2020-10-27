@@ -1,101 +1,26 @@
-import { autorun, reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import CalculatedInputField from '~/components/controls/CalculatedInputField';
-import { ILink, IRoutePath } from '~/models';
-import LinkService from '~/services/linkService';
+import { IRoutePath } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { toMidnightDate } from '~/utils/dateUtils';
 import { Dropdown } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
 import TextContainer from '../../../controls/TextContainer';
+import CalculatedInputField from './CalculatedInputField';
 import RemoveRoutePathButton from './RemoveRoutePathButton';
 import * as s from './routePathInfoTab.scss';
 
 interface IRoutePathInfoTabProps {
+    isEditingDisabled: boolean;
+    isRoutePathCalculatedLengthLoading: boolean;
     routePathStore?: RoutePathStore;
     codeListStore?: CodeListStore;
-    isEditingDisabled: boolean;
-    routePath: IRoutePath;
-    invalidPropertiesMap: object;
-}
-
-interface IRoutePathInfoTabState {
-    calculatedValue: number | null;
 }
 
 @inject('routePathStore', 'codeListStore')
 @observer
-class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePathInfoTabState> {
-    private isRoutePathLinksChangedListener: IReactionDisposer;
-    private mounted: boolean;
-
-    constructor(props: IRoutePathInfoTabProps) {
-        super(props);
-        this.state = {
-            calculatedValue: null,
-        };
-    }
-
-    async componentDidMount() {
-        this.mounted = true;
-        this.isRoutePathLinksChangedListener = reaction(
-            () =>
-                this.props.routePathStore!.routePath &&
-                this.props.routePathStore!.routePath!.routePathLinks.length,
-            this.updateCalculatedLength
-        );
-        autorun(() => this.updateCalculatedLength);
-        this.updateCalculatedLength();
-    }
-
-    componentWillUnmount() {
-        this.isRoutePathLinksChangedListener();
-        this.mounted = false;
-    }
-
-    private updateCalculatedLength = async () => {
-        if (!this.props.routePathStore!.routePath) {
-            return;
-        }
-        const calculatedValue = await this.getCalculatedLength();
-        if (this.mounted) {
-            this.setState({
-                calculatedValue,
-            });
-        }
-    };
-
-    private updateLength = async () => {
-        const routePathStore = this.props.routePathStore;
-        const length = await this.getCalculatedLength();
-        routePathStore!.updateRoutePathProperty('length', length);
-    };
-
-    private getCalculatedLength = async () => {
-        const routePathStore = this.props.routePathStore;
-        const routePath = routePathStore!.routePath;
-        const promises: Promise<ILink | null>[] = [];
-        routePath!.routePathLinks.forEach((routePathLink) => {
-            promises.push(
-                LinkService.fetchLink(
-                    routePathLink.startNode.id,
-                    routePathLink.endNode.id,
-                    routePathLink.transitType
-                )
-            );
-        });
-        const links = await Promise.all(promises);
-        // RoutePath length is calculated by summing up length & measuredLength values of each link.
-        // If measured length is missing for a link, use length instead.
-        let length = 0;
-        links.forEach((link) => {
-            length += link!.measuredLength ? link!.measuredLength : link!.length;
-        });
-        return length;
-    };
-
+class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
     private onChangeRoutePathProperty = (property: keyof IRoutePath) => (value: any) => {
         this.props.routePathStore!.updateRoutePathProperty(property, value);
     };
@@ -104,9 +29,9 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
         const routePathStore = this.props.routePathStore!;
         const isEditingDisabled = this.props.isEditingDisabled;
         const isUpdating = !routePathStore!.isNewRoutePath || this.props.isEditingDisabled;
-        const invalidPropertiesMap = this.props.invalidPropertiesMap;
+        const invalidPropertiesMap = this.props.routePathStore!.invalidPropertiesMap;
         const onChange = this.onChangeRoutePathProperty;
-        const routePath = this.props.routePath;
+        const routePath = this.props.routePathStore!.routePath!;
         const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
             'routePathPrimaryKey'
         ];
@@ -120,7 +45,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             <Dropdown
                                 label='SUUNTA'
                                 disabled={isUpdating}
-                                selected={this.props.routePath.direction}
+                                selected={routePath.direction}
                                 items={this.props.codeListStore!.getDropdownItemList('Suunta')}
                                 onChange={onChange('direction')}
                                 validationResult={invalidPropertiesMap['direction']}
@@ -216,19 +141,21 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps, IRoutePat
                             <Dropdown
                                 label='POIKKEUSREITTI'
                                 disabled={isEditingDisabled}
-                                selected={this.props.routePath.exceptionPath}
+                                selected={routePath.exceptionPath}
                                 items={this.props.codeListStore!.getDropdownItemList('Kyllä/Ei')}
                                 onChange={onChange('exceptionPath')}
                                 validationResult={invalidPropertiesMap['exceptionPath']}
                             />
                             <CalculatedInputField
+                                routePathLinks={routePath.routePathLinks}
                                 label='PITUUS (m)'
                                 isDisabled={isEditingDisabled}
                                 onChange={onChange('length')}
-                                useCalculatedValue={this.updateLength}
                                 validationResult={invalidPropertiesMap['length']}
                                 value={routePath.length}
-                                calculatedValue={this.state.calculatedValue}
+                                isRoutePathCalculatedLengthLoading={
+                                    this.props.isRoutePathCalculatedLengthLoading
+                                }
                             />
                         </div>
                         <div className={s.flexRow}>

@@ -2,6 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
+import TransitType from '~/enums/transitType';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath } from '~/models';
 import { IRoutePathPrimaryKey, ISingleRoutePathSaveModel } from '~/models/IRoutePath';
@@ -10,6 +11,18 @@ import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
+
+interface IRoutePathLengthResponse {
+    length: number;
+    isCalculatedFromMeasuredStopGapsOnly: boolean;
+}
+
+interface IGetRoutePathLengthRequest {
+    lineId: string;
+    routeId: string;
+    transitType: TransitType;
+    routePathLinks: IRoutePathLink[];
+}
 
 class RoutePathService {
     public static fetchRoutePath = async (
@@ -162,6 +175,12 @@ class RoutePathService {
             });
         });
     };
+
+    public static fetchRoutePathLength = async (
+        requestBody: IGetRoutePathLengthRequest
+    ): Promise<IRoutePathLengthResponse> => {
+        return await HttpUtils.postRequest(EndpointPath.ROUTE_PATH_LENGTH, requestBody);
+    };
 }
 
 const _createRoutePathSaveModel = (
@@ -233,3 +252,5 @@ const _findRoutePathLink = (
 };
 
 export default RoutePathService;
+
+export { IRoutePathLengthResponse, IGetRoutePathLengthRequest };

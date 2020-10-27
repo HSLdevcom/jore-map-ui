@@ -9,6 +9,7 @@ enum EndpointPath {
     ROUTE_PATH = 'routePath',
     ROUTE_PATH_REMOVE = 'routePathRemove',
     ROUTE_PATH_MASS_EDIT = 'routePathMassEdit',
+    ROUTE_PATH_LENGTH = 'routePathLength',
     NODE = 'node',
     GET_AVAILABLE_NODE_ID = 'getAvailableNodeId',
     GET_AVAILABLE_NODE_IDS_WITH_PREFIX = 'getAvailableNodeIdsWithPrefix',
