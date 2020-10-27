@@ -332,7 +332,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             });
         }
         confirmStore!.openConfirm({
-            content: (
+            confirmData: (
                 <div>
                     <SavePrompt savePromptSections={savePromptSections} />
                     <div className={s.sectionDivider} />

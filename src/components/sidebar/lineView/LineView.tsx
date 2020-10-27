@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import Loader from '~/components/shared/loader/Loader';
 import LineFactory from '~/factories/lineFactory';
@@ -166,7 +166,8 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
 
         const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: [savePromptSection],
             onConfirm: () => {
                 this.saveLine();
             },

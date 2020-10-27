@@ -88,7 +88,7 @@ class SplitLinkTool implements BaseTool {
             });
         }
         ConfirmStore.openConfirm({
-            content: confirmContent,
+            confirmData: confirmContent,
             onConfirm: () => {
                 ToolbarStore.selectTool(null);
                 this.navigateToSplitLink(nodeId);

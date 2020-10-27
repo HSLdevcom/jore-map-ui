@@ -32,7 +32,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         );
         const routePath = this.props.routePathStore!.routePath!;
         this.props.confirmStore!.openConfirm({
-            content: this.renderConfirmContent(routePath, activeSchedules),
+            confirmData: this.renderConfirmContent(routePath, activeSchedules),
             onConfirm: async () => {
                 try {
                     this.props.alertStore!.setLoaderMessage('Reitinsuuntaa poistetaan...');

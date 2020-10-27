@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoute } from '~/models';
@@ -104,7 +104,8 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         };
         const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: [savePromptSection],
             onConfirm: () => {
                 this.save();
             },

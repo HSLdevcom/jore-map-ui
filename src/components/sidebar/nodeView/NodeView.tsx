@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
-import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
@@ -184,7 +184,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     }) => {
         const nodeStore = this.props.nodeStore;
         this.props.confirmStore!.openConfirm({
-            content:
+            confirmData:
                 'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
             onConfirm: async () => {
                 this.initNode(nodeCacheObj.node, nodeCacheObj.links, oldNode, oldLinks);
@@ -346,7 +346,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
         const savePromptSection = { models: saveModels };
         this.props.confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: [savePromptSection],
             onConfirm: () => {
                 this.save();
             },

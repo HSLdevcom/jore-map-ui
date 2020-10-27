@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -212,7 +212,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         });
         const savePromptSection = { models: saveModels };
         confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: [savePromptSection],
             onConfirm: () => {
                 this.save();
             },

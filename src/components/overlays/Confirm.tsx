@@ -5,7 +5,9 @@ import React from 'react';
 import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
+import UnmeasuredStopGapsConfirm from '../sidebar/routePathView/routePathInfoTab/UnmeasuredStopGapsConfirm';
 import ModalContainer from './ModalContainer';
+import SavePrompt from './SavePrompt';
 import * as s from './confirm.scss';
 
 interface IConfirmProps {
@@ -40,16 +42,19 @@ class Confirm extends React.Component<IConfirmProps> {
         const doubleConfirmText = this.props.confirmStore!.doubleConfirmText;
         const shouldShowDoubleConfirm = !_.isEmpty(doubleConfirmText);
 
+        const confirmComponentName = confirmStore.confirmComponentName;
+        const confirmData = confirmStore.confirmData;
         return (
             <ModalContainer>
                 <div className={s.confirmView} data-cy='confirmView'>
-                    <div
-                        className={classnames(
-                            s.content,
-                            typeof confirmStore!.content === 'string' ? s.padding : undefined
-                        )}
-                    >
-                        {confirmStore!.content}
+                    <div className={classnames(s.content)}>
+                        {
+                            {
+                                default: <div className={s.padding}>{confirmData}</div>,
+                                savePrompt: <SavePrompt savePromptSections={confirmData} />,
+                                unmeasuredStopGapsConfirm: <UnmeasuredStopGapsConfirm />,
+                            }[confirmComponentName]
+                        }
                     </div>
                     <div className={s.buttonWrapper}>
                         {confirmStore!.confirmNotification && (

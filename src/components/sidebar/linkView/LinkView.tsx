@@ -3,7 +3,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
@@ -199,7 +199,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         };
         const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: [savePromptSection],
             onConfirm: () => {
                 this.save();
             },
