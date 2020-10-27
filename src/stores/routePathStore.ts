@@ -151,14 +151,6 @@ class RoutePathStore {
         return this._isCalculatedRoutePathLengthFormedByMeasuredLengths;
     }
 
-    @computed
-    get isRoutePathLengthFormedByMeasuredLengths() {
-        return (
-            this.calculatedRoutePathLength === this.routePath!.length &&
-            this.isCalculatedRoutePathLengthFormedByMeasuredLengths
-        );
-    }
-
     @action
     public init = ({
         routePath,
@@ -237,11 +229,9 @@ class RoutePathStore {
         };
 
         const validateRoutePathLength = () => {
-            const routePath = this.routePath!;
-            const isValid = routePath!.length > 0;
             return {
-                isValid,
-                errorMessage: this.isRoutePathLengthFormedByMeasuredLengths
+                isValid: true, // let default routePathValidation will catch the error (in case it's not valid)
+                errorMessage: this.isRoutePathLengthFormedByMeasuredLengths()
                     ? ''
                     : 'Reitinsuunnan pituutta ei ole laskettu pelkästään mitatuilla pysäkkiväleillä.',
             };
@@ -603,6 +593,11 @@ class RoutePathStore {
         this._routePathNodes = routePathNodes;
     };
 
+    @action
+    public validateRoutePathLength = () => {
+        this._validationStore.validateProperty('length');
+    };
+
     public getSavePreventedText = (): string => {
         const routePathLinks = this.routePath!.routePathLinks;
         if (this.isEditingDisabled) {
@@ -675,6 +670,13 @@ class RoutePathStore {
             routePath!.routePathLinks.filter((x) => x.startNode.internalId === nodeInternalId)
                 .length !==
             routePath!.routePathLinks.filter((x) => x.endNode.internalId === nodeInternalId).length
+        );
+    };
+
+    public isRoutePathLengthFormedByMeasuredLengths = (): boolean => {
+        return (
+            this.calculatedRoutePathLength === this.routePath!.length &&
+            this.isCalculatedRoutePathLengthFormedByMeasuredLengths
         );
     };
 

@@ -9,6 +9,7 @@ import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import { toDateString, toMidnightDate } from '~/utils/dateUtils';
@@ -19,9 +20,10 @@ interface IRemoveRoutePathButtonProps {
     alertStore?: AlertStore;
     confirmStore?: ConfirmStore;
     errorStore?: ErrorStore;
+    loginStore?: LoginStore;
 }
 
-@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
+@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore', 'loginStore')
 @observer
 class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps> {
     private removeRoutePath = async () => {
@@ -88,6 +90,8 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         );
     };
     render() {
+        if (!this.props.loginStore!.hasWriteAccess) return null;
+
         const routePathStore = this.props.routePathStore!;
         const routePath = routePathStore.routePath!;
         const isEditingDisabled = routePathStore.isEditingDisabled;

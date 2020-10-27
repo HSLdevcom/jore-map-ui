@@ -32,6 +32,7 @@ import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
@@ -57,6 +58,7 @@ interface IRoutePathViewProps {
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
+    loginStore?: LoginStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
@@ -75,6 +77,7 @@ interface IRoutePathViewState {
     'toolbarStore',
     'errorStore',
     'alertStore',
+    'loginStore',
     'mapStore',
     'confirmStore',
     'routePathLinkMassEditStore'
@@ -302,7 +305,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private updateCalculatedLength = async () => {
         const routePath = this.props.routePathStore!.routePath;
-        if (!routePath) return;
+        const hasWriteAccess = this.props.loginStore!.hasWriteAccess;
+        if (!routePath || !hasWriteAccess) return;
 
         // RoutePathLinks needs to be coherent in order to calculate total length
         if (!RoutePathUtils.validateRoutePathLinkCoherency(routePath.routePathLinks)) {
@@ -332,6 +336,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this._setState({
             isRoutePathCalculatedLengthLoading: false,
         });
+        this.props.routePathStore!.validateRoutePathLength();
     };
 
     private centerMapToRoutePath = (routePath: IRoutePath) => {
@@ -400,7 +405,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         const confirmStore = this.props.confirmStore;
         confirmStore!.openConfirm({
             content: (
-                <div className={s.unmeasuredStopGapPrompt}>
+                <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapsPrompt'>
                     <div>
                         Haluatko varmasti edetä reitinsuunnan tallennukseen? Reitinsuunnan pituuden
                         laskennassa on käytetty mittaamattomia pysäkkivälejä
@@ -523,7 +528,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                         </Tabs>
                         <SaveButton
                             onClick={() => {
-                                if (routePathStore!.isRoutePathLengthFormedByMeasuredLengths) {
+                                if (routePathStore!.isRoutePathLengthFormedByMeasuredLengths()) {
                                     this.showSavePrompt();
                                 } else {
                                     this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
