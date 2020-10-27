@@ -284,7 +284,6 @@ class RoutePathStore {
         this._routePath!.routePathLinks.forEach((rpLink) =>
             this.initRoutePathLinkValidationStore(rpLink)
         );
-        this.updateRoutePathNodes();
     };
 
     @action
