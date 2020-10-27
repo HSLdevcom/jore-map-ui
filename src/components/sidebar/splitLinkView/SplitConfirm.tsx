@@ -1,12 +1,12 @@
 import * as React from 'react';
-import * as s from './splitConfirmContent.scss';
+import * as s from './splitConfirm.scss';
 
-interface ISplitConfirmContentProps {
+interface ISplitConfirmProps {
     message: string;
     itemList: { label: string; value: string }[];
 }
 
-const SplitConfirmContent = (props: ISplitConfirmContentProps) => (
+const SplitConfirm = (props: ISplitConfirmProps) => (
     <div className={s.splitConfirmContentView}>
         <div className={s.confirmHeader}>{props.message}</div>
         {props.itemList.map((item, index) => (
@@ -19,4 +19,4 @@ const SplitConfirmContent = (props: ISplitConfirmContentProps) => (
     </div>
 );
 
-export default SplitConfirmContent;
+export default SplitConfirm;

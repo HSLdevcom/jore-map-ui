@@ -6,6 +6,7 @@ import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
 import UnmeasuredStopGapsConfirm from '../sidebar/routePathView/routePathInfoTab/UnmeasuredStopGapsConfirm';
+import SplitConfirm from '../sidebar/splitLinkView/SplitConfirm';
 import ModalContainer from './ModalContainer';
 import SavePrompt from './SavePrompt';
 import * as s from './confirm.scss';
@@ -53,6 +54,7 @@ class Confirm extends React.Component<IConfirmProps> {
                                 default: <div className={s.padding}>{confirmData}</div>,
                                 savePrompt: <SavePrompt savePromptSections={confirmData} />,
                                 unmeasuredStopGapsConfirm: <UnmeasuredStopGapsConfirm />,
+                                splitConfirm: SplitConfirm(confirmData),
                             }[confirmComponentName]
                         }
                     </div>
