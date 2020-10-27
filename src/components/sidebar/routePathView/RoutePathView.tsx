@@ -396,6 +396,27 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
+    private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
+        const confirmStore = this.props.confirmStore;
+        confirmStore!.openConfirm({
+            content: (
+                <div className={s.unmeasuredStopGapPrompt}>
+                    <div>
+                        Haluatko varmasti edetä reitinsuunnan tallennukseen? Reitinsuunnan pituuden
+                        laskennassa on käytetty mittaamattomia pysäkkivälejä
+                    </div>
+                    <div>Mittaamattomat pysäkkivälit: (Lista tulee tähän myöhemmin)</div>
+                </div>
+            ),
+            onConfirm: () => {
+                // With confirmStore.content being not an observable in mobX store, UI doens't get updated between two confirms
+                // TODO: A better way would be to make confirmStore.content as data instead, create a /confirms folder to support all of the confirm dialogs in project (plain text, savePrompt, etc.)
+                window.setTimeout(() => onConfirm(), 500);
+            },
+            confirmButtonText: 'Jatka tallennukseen',
+        });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -501,7 +522,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             </ContentList>
                         </Tabs>
                         <SaveButton
-                            onClick={this.showSavePrompt}
+                            onClick={() => {
+                                if (routePathStore!.isRoutePathLengthFormedByMeasuredLengths) {
+                                    this.showSavePrompt();
+                                } else {
+                                    this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                                }
+                            }}
                             disabled={savePreventedNotification.length > 0}
                             savePreventedNotification={savePreventedNotification}
                             type={

@@ -31,8 +31,8 @@ const CalculatedInputField = inject('routePathStore')(
         };
 
         const calculatedRoutePathLength = props.routePathStore!.calculatedRoutePathLength;
-        const isRoutePathLengthFormedByMeasuredLengths = props.routePathStore!
-            .isRoutePathLengthFormedByMeasuredLengths;
+        const isCalculatedRoutePathLengthFormedByMeasuredLengths = props.routePathStore!
+            .isCalculatedRoutePathLengthFormedByMeasuredLengths;
         return (
             <div className={s.calculateInputFieldView}>
                 <InputContainer
@@ -58,7 +58,7 @@ const CalculatedInputField = inject('routePathStore')(
                         ) : (
                             '-'
                         )}
-                        {isRoutePathLengthFormedByMeasuredLengths ? (
+                        {isCalculatedRoutePathLengthFormedByMeasuredLengths ? (
                             <FaCheckCircle className={s.isMeasuredLength} />
                         ) : (
                             <FaExclamationCircle className={s.isNotMeasuredLength} />

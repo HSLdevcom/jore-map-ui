@@ -45,7 +45,7 @@ class RoutePathStore {
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
     @observable private _calculatedRoutePathLength: number | null;
-    @observable private _isRoutePathLengthFormedByMeasuredLengths: boolean;
+    @observable private _isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean;
     private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
@@ -65,7 +65,7 @@ class RoutePathStore {
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
         this._calculatedRoutePathLength = null;
-        this._isRoutePathLengthFormedByMeasuredLengths = false;
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = false;
 
         reaction(
             () => this.isDirty && !this._isEditingDisabled,
@@ -147,8 +147,16 @@ class RoutePathStore {
     }
 
     @computed
+    get isCalculatedRoutePathLengthFormedByMeasuredLengths() {
+        return this._isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    }
+
+    @computed
     get isRoutePathLengthFormedByMeasuredLengths() {
-        return this._isRoutePathLengthFormedByMeasuredLengths;
+        return (
+            this.calculatedRoutePathLength === this.routePath!.length &&
+            this.isCalculatedRoutePathLengthFormedByMeasuredLengths
+        );
     }
 
     @action
@@ -231,13 +239,9 @@ class RoutePathStore {
         const validateRoutePathLength = () => {
             const routePath = this.routePath!;
             const isValid = routePath!.length > 0;
-            const isCalculatedFromMeasuredLengthsOnly =
-                this.calculatedRoutePathLength === routePath!.length &&
-                this.isRoutePathLengthFormedByMeasuredLengths;
-
             return {
                 isValid,
-                errorMessage: isCalculatedFromMeasuredLengthsOnly
+                errorMessage: this.isRoutePathLengthFormedByMeasuredLengths
                     ? ''
                     : 'Reitinsuunnan pituutta ei ole laskettu pelkästään mitatuilla pysäkkiväleillä.',
             };
@@ -551,9 +555,9 @@ class RoutePathStore {
 
     @action
     public setIsRoutePathLengthFormedByMeasuredLengths(
-        isRoutePathLengthFormedByMeasuredLengths: boolean
+        isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean
     ) {
-        this._isRoutePathLengthFormedByMeasuredLengths = isRoutePathLengthFormedByMeasuredLengths;
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isCalculatedRoutePathLengthFormedByMeasuredLengths;
     }
 
     @action

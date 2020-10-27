@@ -101,18 +101,22 @@ class ConfirmStore {
 
     @action
     public cancel = () => {
-        if (this._onCancel) {
-            this._onCancel();
-        }
+        // In cases of having two confirm's in a row, we want to first call clear, then call onCancel()
+        const onCancelTemp = this._onCancel ? this._onCancel.bind({}) : null;
         this.clear();
+        if (onCancelTemp) {
+            onCancelTemp();
+        }
     };
 
     @action
     public confirm = () => {
-        if (this._onConfirm) {
-            this._onConfirm();
-        }
+        // In cases of having two confirm's in a row, we want to first call clear, then call onConfirm()
+        const onConfirmTemp = this._onConfirm ? this._onConfirm.bind({}) : null;
         this.clear();
+        if (onConfirmTemp) {
+            onConfirmTemp();
+        }
     };
 
     @action
@@ -121,7 +125,7 @@ class ConfirmStore {
     };
 
     @action
-    private clear = () => {
+    public clear = () => {
         this._content = null;
         this._onCancel = null;
         this._onConfirm = null;
