@@ -431,7 +431,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             routePathCopySegmentStore!.startSegmentPoint &&
             routePathCopySegmentStore!.endSegmentPoint;
         const savePreventedNotification = routePathStore!.getSavePreventedText();
-
         // By default, use rpLink's transitType if rpLinks exist
         const transitType =
             routePath.routePathLinks.length > 0
