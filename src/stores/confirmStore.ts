@@ -9,7 +9,12 @@ const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
  **/
 type confirmType = 'default' | 'save' | 'delete';
 
-type confirmComponentName = 'default' | 'savePrompt' | 'unmeasuredStopGapsConfirm' | 'splitConfirm';
+type confirmComponentName =
+    | 'default'
+    | 'savePrompt'
+    | 'routePathConfirm'
+    | 'unmeasuredStopGapsConfirm'
+    | 'splitConfirm';
 
 class ConfirmStore {
     @observable private _confirmComponentName: confirmComponentName;
