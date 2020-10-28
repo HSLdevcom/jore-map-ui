@@ -6,6 +6,7 @@ import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
 import RoutePathConfirm from '../sidebar/routeListView/RoutePathConfirm';
+import RemoveRoutePathConfirm from '../sidebar/routePathView/routePathInfoTab/RemoveRoutePathConfirm';
 import UnmeasuredStopGapsConfirm from '../sidebar/routePathView/routePathInfoTab/UnmeasuredStopGapsConfirm';
 import SplitConfirm from '../sidebar/splitLinkView/SplitConfirm';
 import ModalContainer from './ModalContainer';
@@ -48,7 +49,7 @@ class Confirm extends React.Component<IConfirmProps> {
         const confirmData = confirmStore.confirmData;
         return (
             <ModalContainer>
-                <div className={s.confirmView} data-cy='confirmView'>
+                <div className={s.confirmView} data-cy='confairmView'>
                     <div className={classnames(s.content)}>
                         {
                             {
@@ -56,6 +57,7 @@ class Confirm extends React.Component<IConfirmProps> {
                                 savePrompt: <SavePrompt savePromptSections={confirmData} />,
                                 routePathConfirm: <RoutePathConfirm {...confirmData} />,
                                 unmeasuredStopGapsConfirm: <UnmeasuredStopGapsConfirm />,
+                                removeRoutePathConfirm: <RemoveRoutePathConfirm {...confirmData} />,
                                 splitConfirm: <SplitConfirm {...confirmData} />,
                             }[confirmComponentName]
                         }

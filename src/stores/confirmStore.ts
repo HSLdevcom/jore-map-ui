@@ -14,6 +14,7 @@ type confirmComponentName =
     | 'savePrompt'
     | 'routePathConfirm'
     | 'unmeasuredStopGapsConfirm'
+    | 'removeRoutePathConfirm'
     | 'splitConfirm';
 
 class ConfirmStore {
