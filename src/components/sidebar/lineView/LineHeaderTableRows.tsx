@@ -33,7 +33,7 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
     private removeLineHeader = (massEditLineHeader: IMassEditLineHeader) => () => {
         const confirmText = `Haluatko varmasti poistaa linjan otsikon ${massEditLineHeader.lineHeader.lineNameFi}?`;
         this.props.confirmStore!.openConfirm({
-            content: confirmText,
+            confirmData: confirmText,
             onConfirm: () => {
                 this.props.lineHeaderMassEditStore!.removeLineHeader(massEditLineHeader.id);
             },

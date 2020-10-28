@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
@@ -394,7 +394,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
         const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },
@@ -404,19 +405,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
         const confirmStore = this.props.confirmStore;
         confirmStore!.openConfirm({
-            content: (
-                <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapsPrompt'>
-                    <div>
-                        Haluatko varmasti edetä reitinsuunnan tallennukseen? Reitinsuunnan pituuden
-                        laskennassa on käytetty mittaamattomia pysäkkivälejä
-                    </div>
-                    <div>Mittaamattomat pysäkkivälit: (Lista tulee tähän myöhemmin)</div>
-                </div>
-            ),
+            confirmComponentName: 'unmeasuredStopGapsConfirm',
             onConfirm: () => {
-                // With confirmStore.content being not an observable in mobX store, UI doens't get updated between two confirms
-                // TODO: A better way would be to make confirmStore.content as data instead, create a /confirms folder to support all of the confirm dialogs in project (plain text, savePrompt, etc.)
-                window.setTimeout(() => onConfirm(), 500);
+                onConfirm();
             },
             confirmButtonText: 'Jatka tallennukseen',
         });
@@ -440,7 +431,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             routePathCopySegmentStore!.startSegmentPoint &&
             routePathCopySegmentStore!.endSegmentPoint;
         const savePreventedNotification = routePathStore!.getSavePreventedText();
-
         // By default, use rpLink's transitType if rpLinks exist
         const transitType =
             routePath.routePathLinks.length > 0

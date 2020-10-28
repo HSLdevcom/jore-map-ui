@@ -229,4 +229,4 @@ const SavePrompt = observer(
 
 export default SavePrompt;
 
-export { Model, ISaveModel, ITextModel };
+export { Model, ISaveModel, ITextModel, ISavePromptSection };

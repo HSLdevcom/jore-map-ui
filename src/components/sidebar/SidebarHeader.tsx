@@ -43,7 +43,7 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
 
         if (this.props.navigationStore!.shouldShowUnsavedChangesPrompt) {
             this.props.confirmStore!.openConfirm({
-                content: defaultEditPromptMessage,
+                confirmData: defaultEditPromptMessage,
                 onConfirm: this.props.onEditButtonClick!,
                 confirmButtonText: 'Kyllä',
             });

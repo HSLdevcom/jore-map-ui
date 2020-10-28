@@ -52,3 +52,28 @@
         font-style: italic;
     }
 }
+
+.schedulesLink {
+    display: flex;
+    padding: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    align-items: center;
+    transition: 0.5s;
+    color: $busBlue;
+}
+
+.schedulesLink:hover {
+    background-color: $backgroundHoverColor;
+    transition: 0.5s;
+}
+
+.activeSchedulesLink {
+    color: #fff;
+    background-color: $busBlue;
+    transition: 0.5s;
+}
+.activeSchedulesLink:hover {
+    background-color: darken($busBlue, 10);
+    transition: 0.5s;
+}
