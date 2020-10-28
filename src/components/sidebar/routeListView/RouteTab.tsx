@@ -105,7 +105,7 @@ class RouteTab extends React.Component<IRouteTabProps, IRouteTabState> {
         const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
             confirmComponentName: 'savePrompt',
-            confirmData: [savePromptSection],
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },

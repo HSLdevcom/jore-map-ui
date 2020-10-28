@@ -210,7 +210,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         confirmStore.openConfirm({
             confirmNotification,
             confirmComponentName: 'savePrompt',
-            confirmData: [savePromptSection],
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },

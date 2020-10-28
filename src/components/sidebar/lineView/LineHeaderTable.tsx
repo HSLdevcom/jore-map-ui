@@ -213,7 +213,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         const savePromptSection = { models: saveModels };
         confirmStore!.openConfirm({
             confirmComponentName: 'savePrompt',
-            confirmData: [savePromptSection],
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },

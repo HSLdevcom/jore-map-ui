@@ -347,7 +347,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const savePromptSection = { models: saveModels };
         this.props.confirmStore!.openConfirm({
             confirmComponentName: 'savePrompt',
-            confirmData: [savePromptSection],
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },
