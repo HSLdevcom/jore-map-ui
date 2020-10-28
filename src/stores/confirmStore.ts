@@ -19,7 +19,7 @@ type confirmComponentName =
 
 class ConfirmStore {
     @observable private _confirmComponentName: confirmComponentName;
-    @observable private _confirmData: any; // Data format is dependent on used confirm component
+    @observable private _confirmData: string | Object | null; // Data format is dependent on used confirm component, e.g. default type confirm takes string
     @observable private _isOpen: boolean;
     @observable private _isConfirmButtonDisabled: boolean;
     @observable private _confirmButtonText: string | null;
@@ -40,7 +40,7 @@ class ConfirmStore {
     }
 
     @computed
-    get confirmData() {
+    get confirmData(): string | Object | null {
         return this._confirmData;
     }
 
@@ -92,7 +92,7 @@ class ConfirmStore {
         doubleConfirmText,
     }: {
         confirmComponentName?: confirmComponentName;
-        confirmData?: any;
+        confirmData?: string | Object;
         onConfirm: () => void;
         onCancel?: () => void;
         confirmButtonText?: string;
@@ -102,7 +102,7 @@ class ConfirmStore {
         doubleConfirmText?: string;
     }) => {
         this._confirmComponentName = confirmComponentName;
-        this._confirmData = confirmData;
+        this._confirmData = confirmData ? confirmData : null;
         this._onConfirm = onConfirm;
         this._isOpen = true;
         this._onCancel = onCancel ? onCancel : null;

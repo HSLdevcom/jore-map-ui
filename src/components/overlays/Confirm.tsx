@@ -54,11 +54,13 @@ class Confirm extends React.Component<IConfirmProps> {
                         {
                             {
                                 default: <div className={s.padding}>{confirmData}</div>,
-                                savePrompt: <SavePrompt savePromptSections={confirmData} />,
-                                routePathConfirm: <RoutePathConfirm {...confirmData} />,
+                                savePrompt: <SavePrompt {...(confirmData as any)} />,
+                                routePathConfirm: <RoutePathConfirm {...(confirmData as any)} />,
                                 unmeasuredStopGapsConfirm: <UnmeasuredStopGapsConfirm />,
-                                removeRoutePathConfirm: <RemoveRoutePathConfirm {...confirmData} />,
-                                splitConfirm: <SplitConfirm {...confirmData} />,
+                                removeRoutePathConfirm: (
+                                    <RemoveRoutePathConfirm {...(confirmData as any)} />
+                                ),
+                                splitConfirm: <SplitConfirm {...(confirmData as any)} />,
                             }[confirmComponentName]
                         }
                     </div>
