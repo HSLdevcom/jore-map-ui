@@ -169,14 +169,21 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.mapStore!.setMapBounds(bounds);
     };
 
-    private save = async () => {
+    private save = async ({
+        shouldChangeStopGapMeasurementType,
+    }: {
+        shouldChangeStopGapMeasurementType: boolean;
+    }) => {
         this._setState({ isLoading: true });
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
                 this.navigateToCreatedLink();
             } else {
-                await LinkService.updateLink(this.props.linkStore!.link);
+                await LinkService.updateLink(
+                    this.props.linkStore!.link,
+                    shouldChangeStopGapMeasurementType
+                );
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
                 this.props.linkStore!.setIsEditingDisabled(true);
                 this.initExistingLink();
@@ -199,20 +206,39 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             model: 'link',
         };
         const savePromptSection = { models: [saveModel] };
-        const notification = isEqual(currentLink.geometry, oldLink.geometry)
-            ? ''
-            : 'Huom. koska linkin geometriaa on muutettu, tallennetaan linkkiä käyttävien pysäkkivälien mittaustavat laskeituksi.';
-        const savePromptProps: ISavePromptProps = {
-            notification,
-            savePromptSections: [savePromptSection],
+        const hasLinksGeometryChanged = !isEqual(currentLink.geometry, oldLink.geometry);
+        const openSavePrompt = (shouldChangeStopGapMeasurementType: boolean) => {
+            const notification = shouldChangeStopGapMeasurementType
+                ? 'Huom. koska linkin geometriaa on muutettu ja vastasit "kyllä" edelliseen kysymykseen, tallennetaan linkkiä käyttävien pysäkkivälien mittaustavat laskeituksi.'
+                : '';
+            const savePromptProps: ISavePromptProps = {
+                notification,
+                savePromptSections: [savePromptSection],
+            };
+            confirmStore!.openConfirm({
+                confirmComponentName: 'savePrompt',
+                confirmData: savePromptProps,
+                onConfirm: () => {
+                    this.save({ shouldChangeStopGapMeasurementType });
+                },
+            });
         };
-        confirmStore!.openConfirm({
-            confirmComponentName: 'savePrompt',
-            confirmData: savePromptProps,
-            onConfirm: () => {
-                this.save();
-            },
-        });
+        if (hasLinksGeometryChanged) {
+            this.props.confirmStore!.openConfirm({
+                confirmData:
+                    'Linkin geometriaa muutettu. Haluatko muuttaa kaikkien linkkiä käyttävien pysäkkivälien pituuksien saantitavan lasketuksi?',
+                onConfirm: () => {
+                    openSavePrompt(true);
+                },
+                confirmButtonText: 'Kyllä',
+                onCancel: () => {
+                    openSavePrompt(false);
+                },
+                cancelButtonText: 'En halua',
+            });
+        } else {
+            openSavePrompt(false);
+        }
     };
 
     private navigateToCreatedLink = () => {
@@ -415,7 +441,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </Button>
                 </div>
                 <SaveButton
-                    onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
+                    onClick={() =>
+                        this.props.isNewLink
+                            ? this.save({ shouldChangeStopGapMeasurementType: false })
+                            : this.showSavePrompt()
+                    }
                     disabled={isSaveButtonDisabled}
                     savePreventedNotification={''}
                 >
