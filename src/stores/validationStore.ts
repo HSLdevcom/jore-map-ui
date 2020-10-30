@@ -37,6 +37,8 @@ class ValidationStore<ValidationObject, ValidationModel> {
         this._validationObject = validationObject;
         this._validationModel = validationModel;
         this._customValidatorMap = customValidatorsMap ? customValidatorsMap : null;
+
+        this.validateAllProperties();
     };
 
     public updateProperty = (property: string, value: any) => {
