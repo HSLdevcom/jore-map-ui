@@ -7,10 +7,10 @@ const UnmeasuredStopGapsConfirm = inject()(
         return (
             <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapsPrompt'>
                 <div>
-                    Haluatko varmasti edetä reitinsuunnan tallennukseen? Reitinsuunnan pituuden
-                    laskennassa on käytetty mittaamattomia pysäkkivälejä
+                    Haluatko varmasti edetä reitinsuunnan tallennukseen? Reitinsuunnan pituus ei ole
+                    sama kuin automaattisesti pysäkkivälien ja linkkien avulla saatu pituus.
                 </div>
-                <div>Mittaamattomat pysäkkivälit: (Lista tulee tähän myöhemmin)</div>
+                <div>Lista mittaamattomista pysäkkiväleistä:</div>
             </div>
         );
     })

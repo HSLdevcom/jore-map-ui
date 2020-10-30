@@ -331,7 +331,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
         this.props.routePathStore!.setCalculatedRoutePathLength(response.length);
         this.props.routePathStore!.setIsRoutePathLengthFormedByMeasuredLengths(
-            response.isCalculatedFromMeasuredStopGapsOnly
+            response.isCalculatedFromMeasuredStopGaps
         );
         this._setState({
             isRoutePathCalculatedLengthLoading: false,

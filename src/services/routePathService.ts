@@ -14,7 +14,7 @@ import GraphqlQueries from './graphqlQueries';
 
 interface IRoutePathLengthResponse {
     length: number;
-    isCalculatedFromMeasuredStopGapsOnly: boolean;
+    isCalculatedFromMeasuredStopGaps: boolean;
 }
 
 interface IGetRoutePathLengthRequest {
