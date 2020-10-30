@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import _ from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
@@ -288,12 +288,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private showSavePrompt = () => {
         const nodeStore = this.props.nodeStore!;
-        const currentNode = _.cloneDeep(nodeStore.node);
-        const oldNode = _.cloneDeep(nodeStore.oldNode);
-        const currentStop = _.cloneDeep(currentNode.stop);
-        const oldStop = _.cloneDeep(oldNode.stop);
-        const currentLinks = _.cloneDeep(nodeStore.links);
-        const oldLinks = _.cloneDeep(nodeStore.oldLinks);
+        const currentNode = cloneDeep(nodeStore.node);
+        const oldNode = cloneDeep(nodeStore.oldNode);
+        const currentStop = cloneDeep(currentNode.stop);
+        const oldStop = cloneDeep(oldNode.stop);
+        const currentLinks = cloneDeep(nodeStore.links);
+        const oldLinks = cloneDeep(nodeStore.oldLinks);
 
         // Create node save model
         if (currentStop) {
@@ -333,8 +333,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             };
             saveModels.push(stopSaveModel);
         }
+        let notification;
         // Create links save model
-        if (!_.isEqual(currentLinks, oldLinks)) {
+        if (!isEqual(currentLinks, oldLinks)) {
             const textModel: ITextModel = {
                 type: 'textModel',
                 subTopic: 'Linkit',
@@ -342,12 +343,13 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 newText: 'Uudet linkit',
             };
             saveModels.push(textModel);
+            notification =
+                'Huom. koska linkkien geometrioita on muutettu, tallennetaan linkkejä käyttävien pysäkkivälien mittaustavat laskeituksi.';
         }
-
         const savePromptSection = { models: saveModels };
         this.props.confirmStore!.openConfirm({
             confirmComponentName: 'savePrompt',
-            confirmData: { savePromptSections: [savePromptSection] },
+            confirmData: { notification, savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },

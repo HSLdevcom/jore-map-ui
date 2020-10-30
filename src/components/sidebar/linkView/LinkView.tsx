@@ -201,7 +201,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         const savePromptSection = { models: [saveModel] };
         const notification = isEqual(currentLink.geometry, oldLink.geometry)
             ? ''
-            : 'Huom. koska linkin geometriaan on tehty muutos, tallennetaan linkkiä käyttävien pysäkkivälien mittaustapa lasketuksi.';
+            : 'Huom. koska linkin geometriaa on muutettu, tallennetaan linkkiä käyttävien pysäkkivälien mittaustavat laskeituksi.';
         const savePromptProps: ISavePromptProps = {
             notification,
             savePromptSections: [savePromptSection],
