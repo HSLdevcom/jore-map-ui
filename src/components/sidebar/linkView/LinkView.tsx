@@ -1,9 +1,10 @@
 import L from 'leaflet';
+import { isEqual } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
-import { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel, ISavePromptProps } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
@@ -198,9 +199,16 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             model: 'link',
         };
         const savePromptSection = { models: [saveModel] };
+        const notification = isEqual(currentLink.geometry, oldLink.geometry)
+            ? ''
+            : 'Huom. koska linkin geometriaan on tehty muutos, tallennetaan linkkiä käyttävien pysäkkivälien mittaustapa lasketuksi.';
+        const savePromptProps: ISavePromptProps = {
+            notification,
+            savePromptSections: [savePromptSection],
+        };
         confirmStore!.openConfirm({
             confirmComponentName: 'savePrompt',
-            confirmData: { savePromptSections: [savePromptSection] },
+            confirmData: savePromptProps,
             onConfirm: () => {
                 this.save();
             },

@@ -13,6 +13,16 @@ import * as s from './savePrompt.scss';
 
 type Model = 'node' | 'stop' | 'link' | 'route' | 'stopArea' | 'line' | 'routePath' | 'lineHeader';
 
+interface ISavePromptProps {
+    savePromptSections: ISavePromptSection[];
+    notification?: string;
+}
+
+interface ISavePromptSection {
+    sectionTopic?: string;
+    models: (ISaveModel | ITextModel)[];
+}
+
 interface ISaveModel {
     type: 'saveModel';
     model: Model;
@@ -27,11 +37,6 @@ interface ITextModel {
     subTopic: string;
     newText: string;
     oldText: string;
-}
-
-interface ISavePromptSection {
-    sectionTopic?: string;
-    models: (ISaveModel | ITextModel)[];
 }
 
 interface ICustomPropertyValueFuncObj {
@@ -190,43 +195,39 @@ const renderChangeRow = (oldValue: string, newValue: string, property?: string) 
 };
 
 // TODO: move to shared folder. This isn't really an overlay
-const SavePrompt = observer(
-    ({ savePromptSections }: { savePromptSections: ISavePromptSection[] }) => {
-        // const models = props.models;
-        return (
-            <div className={s.savePromptView} data-cy='savePromptView'>
-                <div className={s.topic}>Tallennettavat muutokset</div>
-                <div className={s.savePromptContent}>
-                    {savePromptSections.map(
-                        (savePropmtSection: ISavePromptSection, index: number) => {
-                            return (
-                                <div key={`section-${index}`}>
-                                    <div className={s.sectionTopic}>
-                                        {savePropmtSection.sectionTopic}
-                                    </div>
-                                    {savePropmtSection.models.map(
-                                        (model: ISaveModel | ITextModel, index: number) => {
-                                            return model.type === 'saveModel'
-                                                ? renderSaveModelSection(
-                                                      model,
-                                                      `saveModelRowSection-${index}`
-                                                  )
-                                                : renderTextModelSection(
-                                                      model,
-                                                      `textModelRowSection-${index}`
-                                                  );
-                                        }
-                                    )}
-                                </div>
-                            );
-                        }
-                    )}
-                </div>
+const SavePrompt = observer((props: ISavePromptProps) => {
+    const savePromptSections = props.savePromptSections;
+    const notification = props.notification;
+    return (
+        <div className={s.savePromptView} data-cy='savePromptView'>
+            <div className={s.topic}>Tallennettavat muutokset</div>
+            <div className={s.savePromptContent}>
+                {savePromptSections.map((savePropmtSection: ISavePromptSection, index: number) => {
+                    return (
+                        <div key={`section-${index}`}>
+                            <div className={s.sectionTopic}>{savePropmtSection.sectionTopic}</div>
+                            {savePropmtSection.models.map(
+                                (model: ISaveModel | ITextModel, index: number) => {
+                                    return model.type === 'saveModel'
+                                        ? renderSaveModelSection(
+                                              model,
+                                              `saveModelRowSection-${index}`
+                                          )
+                                        : renderTextModelSection(
+                                              model,
+                                              `textModelRowSection-${index}`
+                                          );
+                                }
+                            )}
+                        </div>
+                    );
+                })}
             </div>
-        );
-    }
-);
+            {notification && <div className={s.notificationContainer}>{notification}</div>}
+        </div>
+    );
+});
 
 export default SavePrompt;
 
-export { Model, ISaveModel, ITextModel, ISavePromptSection };
+export { Model, ISaveModel, ITextModel, ISavePromptSection, ISavePromptProps };
