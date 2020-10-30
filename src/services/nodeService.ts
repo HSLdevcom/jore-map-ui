@@ -56,17 +56,16 @@ class NodeService {
         });
     };
 
-    public static updateNode = async (node: INode, links: ILink[]) => {
-        interface INodeSaveModel {
-            node: INode;
-            links: ILink[];
-        }
-        const requestBody: INodeSaveModel = {
+    public static updateNode = async (
+        node: INode,
+        links: ILink[],
+        shouldChangeStopGapMeasurementType: boolean
+    ) => {
+        await HttpUtils.updateObject(EndpointPath.NODE, {
             node,
             links,
-        };
-
-        await HttpUtils.updateObject(EndpointPath.NODE, requestBody);
+            shouldChangeStopGapMeasurementType,
+        });
     };
 
     public static createNode = async (node: INode) => {
