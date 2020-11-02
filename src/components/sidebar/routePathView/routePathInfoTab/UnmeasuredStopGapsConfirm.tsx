@@ -11,7 +11,7 @@ interface IUnmeasuredStopGapsConfirmProps {
 const UnmeasuredStopGapsConfirm = inject()(
     observer((props: IUnmeasuredStopGapsConfirmProps) => {
         return (
-            <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapsPrompt'>
+            <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapPrompt'>
                 <div>Haluatko varmasti edetä reitinsuunnan tallentamiseen?</div>
                 {props.routePathLength !== props.calculatedRoutePathLength && (
                     <div>

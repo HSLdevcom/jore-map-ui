@@ -110,10 +110,10 @@ const _saveRoutePath = () => {
         if (modal[0].innerHTML.includes('unmeasuredStopGapPrompt')) {
             cy.getTestElement('confirmButton').click();
         }
-    });
 
-    cy.getTestElement('savePromptView').should('exist');
-    cy.getTestElement('confirmButton').click();
+        cy.getTestElement('savePromptView').should('exist');
+        cy.getTestElement('confirmButton').click();
+    });
 }
 
 const _openRoutePath = () => {
