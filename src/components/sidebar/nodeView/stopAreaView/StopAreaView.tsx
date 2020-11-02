@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
@@ -209,7 +209,8 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
         const savePromptSection = { models: [saveModel] };
         confirmStore.openConfirm({
             confirmNotification,
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },

@@ -1,10 +1,11 @@
 import L from 'leaflet';
 import _ from 'lodash';
+import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLink from '~/components/shared/TransitTypeLink';
@@ -22,12 +23,16 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
-import RoutePathService from '~/services/routePathService';
+import RoutePathService, {
+    IGetRoutePathLengthRequest,
+    IRoutePathLengthResponse,
+} from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { MapStore } from '~/stores/mapStore';
 import { MapLayer, NetworkStore } from '~/stores/networkStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
@@ -36,6 +41,7 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
@@ -52,6 +58,7 @@ interface IRoutePathViewProps {
     networkStore?: NetworkStore;
     toolbarStore?: ToolbarStore;
     errorStore?: ErrorStore;
+    loginStore?: LoginStore;
     mapStore?: MapStore;
     confirmStore?: ConfirmStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
@@ -59,6 +66,7 @@ interface IRoutePathViewProps {
 
 interface IRoutePathViewState {
     isLoading: boolean;
+    isRoutePathCalculatedLengthLoading: boolean;
 }
 
 @inject(
@@ -69,17 +77,20 @@ interface IRoutePathViewState {
     'toolbarStore',
     'errorStore',
     'alertStore',
+    'loginStore',
     'mapStore',
     'confirmStore',
     'routePathLinkMassEditStore'
 )
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
+    private isRoutePathLinksChangedListener: IReactionDisposer;
     private _isMounted: boolean;
     constructor(props: IRoutePathViewProps) {
         super(props);
         this.state = {
             isLoading: true,
+            isRoutePathCalculatedLengthLoading: false,
         };
     }
 
@@ -97,10 +108,17 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
+        this.isRoutePathLinksChangedListener = reaction(
+            () =>
+                this.props.routePathStore!.routePath &&
+                this.props.routePathStore!.routePath!.routePathLinks.length,
+            this.updateCalculatedLength
+        );
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+        this.isRoutePathLinksChangedListener();
         this.props.toolbarStore!.selectTool(null);
         this.props.routePathStore!.clear();
         EventListener.off('undo', this.undo);
@@ -285,6 +303,43 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         return [];
     };
 
+    private updateCalculatedLength = async () => {
+        const routePath = this.props.routePathStore!.routePath;
+        const hasWriteAccess = this.props.loginStore!.hasWriteAccess;
+        if (!routePath || !hasWriteAccess) return;
+
+        // RoutePathLinks needs to be coherent in order to calculate total length
+        if (!RoutePathUtils.validateRoutePathLinkCoherency(routePath.routePathLinks)) {
+            this.props.routePathStore!.setCalculatedRoutePathLength(null);
+            this._setState({
+                isRoutePathCalculatedLengthLoading: false,
+            });
+            return;
+        }
+
+        this._setState({
+            isRoutePathCalculatedLengthLoading: true,
+        });
+        const requestBody: IGetRoutePathLengthRequest = {
+            lineId: routePath.lineId!,
+            routeId: routePath.routeId,
+            transitType: routePath.transitType!,
+            routePathLinks: routePath.routePathLinks,
+        };
+        const response: IRoutePathLengthResponse = await RoutePathService.fetchRoutePathLength(
+            requestBody
+        );
+        this.props.routePathStore!.setCalculatedRoutePathLength(response.length);
+        this.props.routePathStore!.setIsRoutePathLengthFormedByMeasuredLengths(
+            response.isCalculatedFromMeasuredStopGaps
+        );
+        this.props.routePathStore!.setUnmeasuredStopGapList(response.unmeasuredStopGapList);
+        this._setState({
+            isRoutePathCalculatedLengthLoading: false,
+        });
+        this.props.routePathStore!.validateRoutePathLength();
+    };
+
     private centerMapToRoutePath = (routePath: IRoutePath) => {
         const bounds: L.LatLngBounds = new L.LatLngBounds([]);
 
@@ -340,10 +395,27 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         };
         const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },
+        });
+    };
+
+    private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
+        const confirmStore = this.props.confirmStore;
+        const routePathStore = this.props.routePathStore!;
+        const unmeasuredStopGapList = routePathStore.unmeasuredStopGapList;
+        const routePathLength = routePathStore!.routePath!.length;
+        const calculatedRoutePathLength = routePathStore!.calculatedRoutePathLength;
+        confirmStore!.openConfirm({
+            confirmData: { unmeasuredStopGapList, routePathLength, calculatedRoutePathLength },
+            confirmComponentName: 'unmeasuredStopGapsConfirm',
+            onConfirm: () => {
+                onConfirm();
+            },
+            confirmButtonText: 'Jatka tallennukseen',
         });
     };
 
@@ -365,7 +437,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             routePathCopySegmentStore!.startSegmentPoint &&
             routePathCopySegmentStore!.endSegmentPoint;
         const savePreventedNotification = routePathStore!.getSavePreventedText();
-
         // By default, use rpLink's transitType if rpLinks exist
         const transitType =
             routePath.routePathLinks.length > 0
@@ -438,9 +509,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                 <ContentItem>
                                     <RoutePathInfoTab
                                         isEditingDisabled={isEditingDisabled}
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        invalidPropertiesMap={
-                                            this.props.routePathStore!.invalidPropertiesMap
+                                        isRoutePathCalculatedLengthLoading={
+                                            this.state.isRoutePathCalculatedLengthLoading
                                         }
                                     />
                                 </ContentItem>
@@ -453,7 +523,13 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             </ContentList>
                         </Tabs>
                         <SaveButton
-                            onClick={this.showSavePrompt}
+                            onClick={() => {
+                                if (routePathStore!.isRoutePathLengthFormedByMeasuredLengths()) {
+                                    this.showSavePrompt();
+                                } else {
+                                    this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                                }
+                            }}
                             disabled={savePreventedNotification.length > 0}
                             savePreventedNotification={savePreventedNotification}
                             type={

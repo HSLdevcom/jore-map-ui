@@ -35,11 +35,7 @@ describe('RoutePathView tests - write access user', () => {
                 }
                 cy.getTestElement('nameFi').clear().type(newInputValue);
 
-                cy.saveButtonShouldBeActive('routePathSaveButton');
-
-                cy.getTestElement('routePathSaveButton').click();
-                cy.getTestElement('savePromptView').should('exist');
-                cy.getTestElement('confirmButton').click();
+                _saveRoutePath();
 
                 cy.getTestElement('nameFi').contains(newInputValue);
             });
@@ -62,11 +58,8 @@ describe('RoutePathView tests - write access user', () => {
         cy.incrementInputValue('destinationFi1').then((newInputValueDestinationFi1) => {
             cy.incrementInputValue('destinationShieldFi').then(
                 (newInputValueDestinationShieldFi) => {
-                    cy.saveButtonShouldBeActive();
 
-                    cy.getTestElement('routePathSaveButton').click();
-                    cy.getTestElement('savePromptView').should('exist');
-                    cy.getTestElement('confirmButton').click();
+                    _saveRoutePath();
 
                     cy.getTestElement('itemHeader').first().click();
 
@@ -102,9 +95,25 @@ describe('RoutePathView tests - write access user', () => {
         cy.getTestElement('copyRoutePathSegmentButton').first().click();
 
         cy.getTestElement('routePathSaveButton').click();
-        cy.getTestElement('savePromptView').should('exist');
+
+        cy.getTestElement('modalContainer').should('exist');
     });
 });
+
+const _saveRoutePath = () => {
+    cy.saveButtonShouldBeActive();
+
+    cy.getTestElement('routePathSaveButton').click();
+
+    cy.getTestElement('modalContainer').then((modal) => {
+        // unmeasuredStopGapPrompt is not guaranteed to show up
+        if (modal[0].innerHTML.includes('unmeasuredStopGapPrompt')) {
+            cy.getTestElement('confirmButton').click();
+        }
+        cy.getTestElement('savePromptView').should('exist');
+        cy.getTestElement('confirmButton').click();
+    });
+}
 
 const _openRoutePath = () => {
     cy.getTestElement('lineToggle').click();

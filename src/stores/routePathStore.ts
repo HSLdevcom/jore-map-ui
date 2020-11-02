@@ -44,6 +44,9 @@ class RoutePathStore {
     @observable private _invalidLinkOrderNumbers: number[];
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
+    @observable private _calculatedRoutePathLength: number | null;
+    @observable private _isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean;
+    @observable private _unmeasuredStopGapList: string[][];
     private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
@@ -62,6 +65,8 @@ class RoutePathStore {
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
+        this._calculatedRoutePathLength = null;
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = false;
 
         reaction(
             () => this.isDirty && !this._isEditingDisabled,
@@ -135,6 +140,21 @@ class RoutePathStore {
     @computed
     get isEditingDisabled() {
         return this._isEditingDisabled;
+    }
+
+    @computed
+    get calculatedRoutePathLength() {
+        return this._calculatedRoutePathLength;
+    }
+
+    @computed
+    get isCalculatedRoutePathLengthFormedByMeasuredLengths() {
+        return this._isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    }
+
+    @computed
+    get unmeasuredStopGapList() {
+        return this._unmeasuredStopGapList;
     }
 
     @action
@@ -214,6 +234,15 @@ class RoutePathStore {
             };
         };
 
+        const validateRoutePathLength = () => {
+            return {
+                isValid: true, // let default routePathValidation will catch the error (in case it's not valid)
+                errorMessage: this.isRoutePathLengthFormedByMeasuredLengths()
+                    ? ''
+                    : 'Reitinsuunnan pituutta ei ole laskettu pelkästään mitatuilla pysäkkiväleillä.',
+            };
+        };
+
         const customValidatorMap: ICustomValidatorMap = {
             // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
             routePathPrimaryKey: {
@@ -230,6 +259,9 @@ class RoutePathStore {
             endDate: {
                 validators: [],
                 dependentProperties: ['routePathPrimaryKey'],
+            },
+            length: {
+                validators: [validateRoutePathLength],
             },
         };
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
@@ -248,7 +280,6 @@ class RoutePathStore {
         this._routePath!.routePathLinks.forEach((rpLink) =>
             this.initRoutePathLinkValidationStore(rpLink)
         );
-        this.updateRoutePathNodes();
     };
 
     @action
@@ -513,6 +544,23 @@ class RoutePathStore {
     };
 
     @action
+    public setCalculatedRoutePathLength = (calculatedRoutePathLength: number | null) => {
+        this._calculatedRoutePathLength = calculatedRoutePathLength;
+    };
+
+    @action
+    public setIsRoutePathLengthFormedByMeasuredLengths = (
+        isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean
+    ) => {
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    };
+
+    @action
+    public setUnmeasuredStopGapList = (unmeasuredStopGapList: string[][]) => {
+        this._unmeasuredStopGapList = unmeasuredStopGapList;
+    };
+
+    @action
     public clear = () => {
         this._routePath = null;
         this._oldRoutePath = null;
@@ -554,6 +602,11 @@ class RoutePathStore {
             routePathNodes[rpLink.endNode.id] = rpLink.endNode.id;
         });
         this._routePathNodes = routePathNodes;
+    };
+
+    @action
+    public validateRoutePathLength = () => {
+        this._validationStore.validateProperty('length');
     };
 
     public getSavePreventedText = (): string => {
@@ -628,6 +681,13 @@ class RoutePathStore {
             routePath!.routePathLinks.filter((x) => x.startNode.internalId === nodeInternalId)
                 .length !==
             routePath!.routePathLinks.filter((x) => x.endNode.internalId === nodeInternalId).length
+        );
+    };
+
+    public isRoutePathLengthFormedByMeasuredLengths = (): boolean => {
+        return (
+            this.calculatedRoutePathLength === this.routePath!.length &&
+            this.isCalculatedRoutePathLengthFormedByMeasuredLengths
         );
     };
 

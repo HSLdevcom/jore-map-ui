@@ -5,7 +5,12 @@ import React from 'react';
 import ButtonType from '~/enums/buttonType';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { Button } from '../controls';
+import RoutePathConfirm from '../sidebar/routeListView/RoutePathConfirm';
+import RemoveRoutePathConfirm from '../sidebar/routePathView/routePathInfoTab/RemoveRoutePathConfirm';
+import UnmeasuredStopGapsConfirm from '../sidebar/routePathView/routePathInfoTab/UnmeasuredStopGapsConfirm';
+import SplitConfirm from '../sidebar/splitLinkView/SplitConfirm';
 import ModalContainer from './ModalContainer';
+import SavePrompt from './SavePrompt';
 import * as s from './confirm.scss';
 
 interface IConfirmProps {
@@ -40,16 +45,26 @@ class Confirm extends React.Component<IConfirmProps> {
         const doubleConfirmText = this.props.confirmStore!.doubleConfirmText;
         const shouldShowDoubleConfirm = !_.isEmpty(doubleConfirmText);
 
+        const confirmComponentName = confirmStore.confirmComponentName;
+        const confirmData = confirmStore.confirmData;
         return (
             <ModalContainer>
                 <div className={s.confirmView} data-cy='confirmView'>
-                    <div
-                        className={classnames(
-                            s.content,
-                            typeof confirmStore!.content === 'string' ? s.padding : undefined
-                        )}
-                    >
-                        {confirmStore!.content}
+                    <div className={classnames(s.content)}>
+                        {
+                            {
+                                default: <div className={s.padding}>{confirmData}</div>,
+                                savePrompt: <SavePrompt {...(confirmData as any)} />,
+                                routePathConfirm: <RoutePathConfirm {...(confirmData as any)} />,
+                                unmeasuredStopGapsConfirm: (
+                                    <UnmeasuredStopGapsConfirm {...(confirmData as any)} />
+                                ),
+                                removeRoutePathConfirm: (
+                                    <RemoveRoutePathConfirm {...(confirmData as any)} />
+                                ),
+                                splitConfirm: <SplitConfirm {...(confirmData as any)} />,
+                            }[confirmComponentName]
+                        }
                     </div>
                     <div className={s.buttonWrapper}>
                         {confirmStore!.confirmNotification && (

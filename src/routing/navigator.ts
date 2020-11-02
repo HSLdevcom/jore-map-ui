@@ -120,7 +120,7 @@ class Navigator {
             NavigationStore.shouldShowUnsavedChangesPrompt
         ) {
             ConfirmStore!.openConfirm({
-                content: unsavedChangesPromptMessage
+                confirmData: unsavedChangesPromptMessage
                     ? unsavedChangesPromptMessage
                     : DEFAULT_PROMPT_MESSAGE,
                 onConfirm: () => {

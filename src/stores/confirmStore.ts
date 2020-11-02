@@ -9,8 +9,17 @@ const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
  **/
 type confirmType = 'default' | 'save' | 'delete';
 
+type confirmComponentName =
+    | 'default'
+    | 'savePrompt'
+    | 'routePathConfirm'
+    | 'unmeasuredStopGapsConfirm'
+    | 'removeRoutePathConfirm'
+    | 'splitConfirm';
+
 class ConfirmStore {
-    private _content: React.ReactNode;
+    @observable private _confirmComponentName: confirmComponentName;
+    @observable private _confirmData: string | Object | null; // Data format is dependent on used confirm component, e.g. default type confirm takes string
     @observable private _isOpen: boolean;
     @observable private _isConfirmButtonDisabled: boolean;
     @observable private _confirmButtonText: string | null;
@@ -22,8 +31,17 @@ class ConfirmStore {
     private _onCancel: null | (() => void);
 
     constructor() {
-        this._content = null;
         this._isOpen = false;
+    }
+
+    @computed
+    get confirmComponentName() {
+        return this._confirmComponentName;
+    }
+
+    @computed
+    get confirmData(): string | Object | null {
+        return this._confirmData;
     }
 
     @computed
@@ -34,11 +52,6 @@ class ConfirmStore {
     @computed
     get isConfirmButtonDisabled(): boolean {
         return this._isConfirmButtonDisabled;
-    }
-
-    @computed
-    get content() {
-        return this._content;
     }
 
     @computed
@@ -68,7 +81,8 @@ class ConfirmStore {
 
     @action
     public openConfirm = ({
-        content,
+        confirmComponentName = 'default',
+        confirmData,
         onConfirm,
         onCancel,
         confirmButtonText,
@@ -77,7 +91,8 @@ class ConfirmStore {
         confirmType = 'default',
         doubleConfirmText,
     }: {
-        content: React.ReactNode | string;
+        confirmComponentName?: confirmComponentName;
+        confirmData?: string | Object;
         onConfirm: () => void;
         onCancel?: () => void;
         confirmButtonText?: string;
@@ -86,7 +101,8 @@ class ConfirmStore {
         confirmType?: confirmType;
         doubleConfirmText?: string;
     }) => {
-        this._content = content;
+        this._confirmComponentName = confirmComponentName;
+        this._confirmData = confirmData ? confirmData : null;
         this._onConfirm = onConfirm;
         this._isOpen = true;
         this._onCancel = onCancel ? onCancel : null;
@@ -101,18 +117,22 @@ class ConfirmStore {
 
     @action
     public cancel = () => {
-        if (this._onCancel) {
-            this._onCancel();
-        }
+        // In cases of having two confirm's in a row, we want to first call clear, then call onCancel()
+        const onCancelTemp = this._onCancel ? this._onCancel.bind({}) : null;
         this.clear();
+        if (onCancelTemp) {
+            onCancelTemp();
+        }
     };
 
     @action
     public confirm = () => {
-        if (this._onConfirm) {
-            this._onConfirm();
-        }
+        // In cases of having two confirm's in a row, we want to first call clear, then call onConfirm()
+        const onConfirmTemp = this._onConfirm ? this._onConfirm.bind({}) : null;
         this.clear();
+        if (onConfirmTemp) {
+            onConfirmTemp();
+        }
     };
 
     @action
@@ -121,8 +141,8 @@ class ConfirmStore {
     };
 
     @action
-    private clear = () => {
-        this._content = null;
+    public clear = () => {
+        this._confirmData = null;
         this._onCancel = null;
         this._onConfirm = null;
         this._isOpen = false;

@@ -1,14 +1,13 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
-import { IRoutePath } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import RoutePathService from '~/services/routePathService';
 import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import { toDateString, toMidnightDate } from '~/utils/dateUtils';
@@ -19,9 +18,10 @@ interface IRemoveRoutePathButtonProps {
     alertStore?: AlertStore;
     confirmStore?: ConfirmStore;
     errorStore?: ErrorStore;
+    loginStore?: LoginStore;
 }
 
-@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
+@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore', 'loginStore')
 @observer
 class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps> {
     private removeRoutePath = async () => {
@@ -29,8 +29,35 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             this.props.routePathStore!.routePath?.routeId!
         );
         const routePath = this.props.routePathStore!.routePath!;
+        let confirmMessage;
+        if (activeSchedules.length > 0) {
+            confirmMessage = `Oletko täysin varma, että haluat poistaa `;
+        } else {
+            confirmMessage = `Haluatko varmasti poistaa `;
+        }
+        confirmMessage += `reitinsuunnan ${routePath.originFi} - ${
+            routePath.destinationFi
+        }, suunta ${routePath.direction}, ${toDateString(routePath.startDate)} - ${toDateString(
+            routePath.endDate
+        )}?`;
+
+        const routeId = routePath.routeId;
+        const routePathsAfterRemove = this.props.routePathStore!.existingRoutePaths.filter((rp) => {
+            const isRpToRemove =
+                rp.startDate.getTime() === routePath.startDate.getTime() &&
+                rp.direction === routePath.direction &&
+                rp.routeId === routePath.routeId;
+            return !isRpToRemove;
+        });
+
         this.props.confirmStore!.openConfirm({
-            content: this.renderConfirmContent(routePath, activeSchedules),
+            confirmComponentName: 'removeRoutePathConfirm',
+            confirmData: {
+                routeId,
+                activeSchedules,
+                confirmMessage,
+                routePaths: routePathsAfterRemove,
+            },
             onConfirm: async () => {
                 try {
                     this.props.alertStore!.setLoaderMessage('Reitinsuuntaa poistetaan...');
@@ -53,41 +80,10 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             confirmType: 'delete',
         });
     };
-    private renderConfirmContent = (routePath: IRoutePath, activeSchedules: ISchedule[]) => {
-        let confirmMessage;
-        if (activeSchedules.length > 0) {
-            confirmMessage = `Oletko täysin varma, että haluat poistaa `;
-        } else {
-            confirmMessage = `Haluatko varmasti poistaa `;
-        }
-        confirmMessage += `reitinsuunnan ${routePath.originFi} - ${
-            routePath.destinationFi
-        }, suunta ${routePath.direction}, ${toDateString(routePath.startDate)} - ${toDateString(
-            routePath.endDate
-        )}?`;
 
-        const routeId = routePath.routeId;
-        const routePathsAfterRemove = this.props.routePathStore!.existingRoutePaths.filter((rp) => {
-            const isRpToRemove =
-                rp.startDate.getTime() === routePath.startDate.getTime() &&
-                rp.direction === routePath.direction &&
-                rp.routeId === routePath.routeId;
-            return !isRpToRemove;
-        });
-        return (
-            <div>
-                <div className={s.routeActiveSchedulesWrapper}>
-                    <RouteActiveSchedules
-                        header={routeId}
-                        routePaths={routePathsAfterRemove}
-                        activeSchedules={activeSchedules}
-                        confirmMessage={confirmMessage}
-                    />
-                </div>
-            </div>
-        );
-    };
     render() {
+        if (!this.props.loginStore!.hasWriteAccess) return null;
+
         const routePathStore = this.props.routePathStore!;
         const routePath = routePathStore.routePath!;
         const isEditingDisabled = routePathStore.isEditingDisabled;

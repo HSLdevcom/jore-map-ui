@@ -1,9 +1,9 @@
 import * as L from 'leaflet';
-import _ from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import * as React from 'react';
 import { match } from 'react-router';
-import SavePrompt, { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel, ITextModel } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
@@ -184,7 +184,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     }) => {
         const nodeStore = this.props.nodeStore;
         this.props.confirmStore!.openConfirm({
-            content:
+            confirmData:
                 'Välimuistista löytyi tallentamaton solmu. Palautetaanko tallentamattoman solmun tiedot ja jatketaan muokkausta?',
             onConfirm: async () => {
                 this.initNode(nodeCacheObj.node, nodeCacheObj.links, oldNode, oldLinks);
@@ -240,7 +240,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setMapBounds(bounds);
     };
 
-    private save = async () => {
+    private save = async ({
+        shouldChangeStopGapMeasurementType,
+    }: {
+        shouldChangeStopGapMeasurementType: boolean;
+    }) => {
         this._setState({ isLoading: true });
 
         const nodeStore = this.props.nodeStore!;
@@ -260,7 +264,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 });
                 nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
-                await NodeService.updateNode(nodeStore.node, nodeStore.getDirtyLinks());
+                await NodeService.updateNode(
+                    nodeStore.node,
+                    nodeStore.getDirtyLinks(),
+                    shouldChangeStopGapMeasurementType
+                );
                 nodeIdToUpdate = nodeStore.node.id;
                 nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
                 this.initExistingNode(nodeStore.node.id);
@@ -288,12 +296,12 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private showSavePrompt = () => {
         const nodeStore = this.props.nodeStore!;
-        const currentNode = _.cloneDeep(nodeStore.node);
-        const oldNode = _.cloneDeep(nodeStore.oldNode);
-        const currentStop = _.cloneDeep(currentNode.stop);
-        const oldStop = _.cloneDeep(oldNode.stop);
-        const currentLinks = _.cloneDeep(nodeStore.links);
-        const oldLinks = _.cloneDeep(nodeStore.oldLinks);
+        const currentNode = cloneDeep(nodeStore.node);
+        const oldNode = cloneDeep(nodeStore.oldNode);
+        const currentStop = cloneDeep(currentNode.stop);
+        const oldStop = cloneDeep(oldNode.stop);
+        const currentLinks = cloneDeep(nodeStore.links);
+        const oldLinks = cloneDeep(nodeStore.oldLinks);
 
         // Create node save model
         if (currentStop) {
@@ -333,8 +341,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             };
             saveModels.push(stopSaveModel);
         }
+        let hasLinksGeometryChanged = false;
         // Create links save model
-        if (!_.isEqual(currentLinks, oldLinks)) {
+        if (!isEqual(currentLinks, oldLinks)) {
             const textModel: ITextModel = {
                 type: 'textModel',
                 subTopic: 'Linkit',
@@ -342,15 +351,37 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 newText: 'Uudet linkit',
             };
             saveModels.push(textModel);
+            hasLinksGeometryChanged = true;
         }
-
-        const savePromptSection = { models: saveModels };
-        this.props.confirmStore!.openConfirm({
-            content: <SavePrompt savePromptSections={[savePromptSection]} />,
-            onConfirm: () => {
-                this.save();
-            },
-        });
+        const openSavePrompt = (shouldChangeStopGapMeasurementType: boolean) => {
+            const notification = shouldChangeStopGapMeasurementType
+                ? 'Huom. koska linkkien geometrioita on muutettu ja vastasit "kyllä" edelliseen kysymykseen, tallennetaan linkkejä käyttävien pysäkkivälien mittaustavat laskeituksi.'
+                : '';
+            const savePromptSection = { models: saveModels };
+            this.props.confirmStore!.openConfirm({
+                confirmComponentName: 'savePrompt',
+                confirmData: { notification, savePromptSections: [savePromptSection] },
+                onConfirm: () => {
+                    this.save({ shouldChangeStopGapMeasurementType });
+                },
+            });
+        };
+        if (hasLinksGeometryChanged) {
+            this.props.confirmStore!.openConfirm({
+                confirmData:
+                    'Linkkien geometrioita muutettu. Haluatko muuttaa kaikkien linkkejä käyttävien pysäkkivälien pituuksien saantitavan lasketuksi?',
+                onConfirm: () => {
+                    openSavePrompt(true);
+                },
+                confirmButtonText: 'Kyllä',
+                onCancel: () => {
+                    openSavePrompt(false);
+                },
+                cancelButtonText: 'En halua',
+            });
+        } else {
+            openSavePrompt(false);
+        }
     };
 
     private onChangeNodeGeometry = (property: NodeLocationType) => (value: L.LatLng) => {
@@ -435,7 +466,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         ))}
                 </div>
                 <SaveButton
-                    onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
+                    onClick={() =>
+                        isNewNode
+                            ? this.save({ shouldChangeStopGapMeasurementType: false })
+                            : this.showSavePrompt()
+                    }
                     disabled={isSaveButtonDisabled}
                     savePreventedNotification={''}
                 >

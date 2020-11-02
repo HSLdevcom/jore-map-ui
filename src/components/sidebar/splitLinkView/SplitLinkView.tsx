@@ -60,7 +60,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             isLoading: false,
             selectedRoutePathIds: {},
             routePaths: [],
-            isLoadingRoutePaths: false
+            isLoadingRoutePaths: false,
         };
     }
 
@@ -90,7 +90,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             linkStartNodeId,
             linkEndNodeId,
             linkTransitType,
-            nodeId
+            nodeId,
         ] = this.props.match!.params.id.split(',');
         try {
             if (linkStartNodeId && linkEndNodeId && linkTransitType && nodeId) {
@@ -116,7 +116,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
     private fetchRoutePaths = async (date: Date) => {
         if (!date) return;
         this.setState({
-            isLoadingRoutePaths: true
+            isLoadingRoutePaths: true,
         });
         const link = this.props.linkStore!.link;
         const routePaths = await RoutePathService.fetchRoutePathsUsingLinkFromDate(
@@ -127,7 +127,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         );
         this.setState({
             routePaths,
-            isLoadingRoutePaths: false
+            isLoadingRoutePaths: false,
         });
     };
 
@@ -141,8 +141,8 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
         this.setState({
             selectedRoutePathIds: {
                 ...this.state.selectedRoutePathIds,
-                [routePathId]: !this.state.selectedRoutePathIds[routePathId]
-            }
+                [routePathId]: !this.state.selectedRoutePathIds[routePathId],
+            },
         });
     };
 
@@ -157,8 +157,8 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             confirmText = `${confirmText} Tämä toimenpide vaikuttaa kaikkiin tätä linkkiä käyttäviin reitinsuuntiin.`;
         }
         this.props.confirmStore!.openConfirm({
-            content: confirmText,
-            onConfirm: this.save
+            confirmData: confirmText,
+            onConfirm: this.save,
         });
     };
 
@@ -168,11 +168,11 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             routePaths: this.getRoutepathsBeingSplit(),
             date: this.state.selectedDate,
             link: this.props.linkStore!.link,
-            node: this.props.linkStore!.nodes[0]
+            node: this.props.linkStore!.nodes[0],
         });
         this.props.alertStore!.setFadeMessage({
             message: 'Linkin jaon kehitys kesken.',
-            type: AlertType.Info
+            type: AlertType.Info,
         });
     };
 
@@ -181,13 +181,13 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
             selectedRoutePathIds: this.state.routePaths.reduce<{}>(
                 (acc, curr) => ({ ...acc, [curr.internalId]: true }),
                 {}
-            )
+            ),
         });
     };
 
     private unselectAllRoutePaths = () => {
         this.setState({
-            selectedRoutePathIds: {}
+            selectedRoutePathIds: {},
         });
     };
 
@@ -196,7 +196,7 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
     };
 
     private getRoutepathsBeingSplit = () => {
-        return this.state.routePaths.filter(rp =>
+        return this.state.routePaths.filter((rp) =>
             Boolean(this.state.selectedRoutePathIds[rp.internalId])
         );
     };

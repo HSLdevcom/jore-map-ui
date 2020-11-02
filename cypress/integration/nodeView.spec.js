@@ -93,6 +93,8 @@ describe('NodeView tests - write access user', () => {
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
+
+        cy.getTestElement('confirmButton').click();
         cy.getTestElement('savePromptView').should('exist');
     });
 
@@ -109,6 +111,8 @@ describe('NodeView tests - write access user', () => {
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
+
+        cy.getTestElement('confirmButton').click();
         cy.getTestElement('savePromptView').should('exist');
     });
 

@@ -3,8 +3,7 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
-import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
@@ -332,19 +331,13 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             });
         }
         confirmStore!.openConfirm({
-            content: (
-                <div>
-                    <SavePrompt savePromptSections={savePromptSections} />
-                    <div className={s.sectionDivider} />
-                    <div className={s.routeActiveSchedulesWrapper}>
-                        <RouteActiveSchedules
-                            routePaths={this.props.routePathMassEditStore!.routePaths}
-                            activeSchedules={activeSchedules}
-                            confirmMessage={`Haluatko varmasti tallentaa tehdyt reitin ${routeId} reitinsuuntien muutokset?`}
-                        />
-                    </div>
-                </div>
-            ),
+            confirmComponentName: 'routePathConfirm',
+            confirmData: {
+                routeId,
+                activeSchedules,
+                savePromptSections,
+                routePaths: this.props.routePathMassEditStore!.routePaths,
+            },
             onConfirm: () => {
                 this.save();
             },

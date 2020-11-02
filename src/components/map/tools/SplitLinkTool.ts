@@ -1,4 +1,3 @@
-import SplitConfirmContent from '~/components/sidebar/splitLinkView/SplitConfirmContent';
 import NodeType from '~/enums/nodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener from '~/helpers/EventListener';
@@ -65,18 +64,18 @@ class SplitLinkTool implements BaseTool {
             ErrorStore.addError(`Solmua (soltunnus ${nodeId}) ei löytynyt`);
             return;
         }
-        let confirmContent: React.ReactNode = null;
+        let confirmData: Object = {};
         if (node.type === NodeType.STOP) {
-            confirmContent = SplitConfirmContent({
+            confirmData = {
                 message: 'Oletko varma, että haluat jakaa linkin pysäkillä?',
                 itemList: [
                     { label: 'Lyhyt ID', value: NodeUtils.getShortId(node) },
                     { label: 'Nimi', value: node.stop!.nameFi },
                     { label: 'Soltunnus', value: node.id },
                 ],
-            });
+            };
         } else {
-            confirmContent = SplitConfirmContent({
+            confirmData = {
                 message: 'Oletko varma, että haluat jakaa linkin solmulla?',
                 itemList: [
                     {
@@ -85,10 +84,11 @@ class SplitLinkTool implements BaseTool {
                     },
                     { label: 'Soltunnus', value: node.id },
                 ],
-            });
+            };
         }
         ConfirmStore.openConfirm({
-            content: confirmContent,
+            confirmData,
+            confirmComponentName: 'splitConfirm',
             onConfirm: () => {
                 ToolbarStore.selectTool(null);
                 this.navigateToSplitLink(nodeId);

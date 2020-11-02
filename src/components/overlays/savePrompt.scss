@@ -2,6 +2,8 @@
 @import '../shared/styles/form';
 @import '../shared/styles/flexbox';
 
+$savePromptContentPadding: 5px 15px 5px 15px;
+
 .savePromptView {
     width: 500px;
     overflow-x: hidden;
@@ -39,7 +41,7 @@
     .savePromptContent {
         max-height: 450px;
         overflow-y: auto;
-        padding: 5px 15px 5px 15px;
+        padding: $savePromptContentPadding;
         font-size: $smallFontSize;
 
         .sectionTopic {
@@ -82,6 +84,7 @@
             padding: 0px 3px 0px 3px;
         }
     }
+
     .removedItemWrapper {
         text-align: center;
 
@@ -91,5 +94,11 @@
             padding: 3px;
             border-radius: 5px;
         }
+    }
+
+    .notificationContainer {
+        border-top: 1px solid $borderLightGrey;
+        padding: $savePromptContentPadding;
+        font-style: italic;
     }
 }
