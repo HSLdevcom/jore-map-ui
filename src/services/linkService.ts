@@ -60,16 +60,18 @@ class LinkService {
         return queriedLinks.map((link: IExternalLink) => LinkFactory.mapExternalLink(link));
     };
 
-    public static updateLink = async (link: ILink) => {
-        const simplifiedLink = {
-            ...link,
-            geometry: link.geometry.map((coor) => new LatLng(coor.lat, coor.lng)),
-        };
-        await HttpUtils.updateObject(EndpointPath.LINK, simplifiedLink);
+    public static updateLink = async (link: ILink, shouldChangeStopGapMeasurementType: boolean) => {
+        await HttpUtils.updateObject(EndpointPath.LINK, {
+            shouldChangeStopGapMeasurementType,
+            link: {
+                ...link,
+                geometry: link.geometry.map((coor) => new LatLng(coor.lat, coor.lng)),
+            },
+        });
     };
 
     public static createLink = async (link: ILink) => {
-        await HttpUtils.createObject(EndpointPath.LINK, link);
+        await HttpUtils.createObject(EndpointPath.LINK, { link });
     };
 }
 

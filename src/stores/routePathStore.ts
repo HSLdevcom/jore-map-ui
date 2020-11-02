@@ -46,6 +46,7 @@ class RoutePathStore {
     @observable private _selectedTabIndex: number;
     @observable private _calculatedRoutePathLength: number | null;
     @observable private _isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean;
+    @observable private _unmeasuredStopGapList: string[][];
     private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
@@ -149,6 +150,11 @@ class RoutePathStore {
     @computed
     get isCalculatedRoutePathLengthFormedByMeasuredLengths() {
         return this._isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    }
+
+    @computed
+    get unmeasuredStopGapList() {
+        return this._unmeasuredStopGapList;
     }
 
     @action
@@ -538,16 +544,21 @@ class RoutePathStore {
     };
 
     @action
-    public setCalculatedRoutePathLength(calculatedRoutePathLength: number | null) {
+    public setCalculatedRoutePathLength = (calculatedRoutePathLength: number | null) => {
         this._calculatedRoutePathLength = calculatedRoutePathLength;
-    }
+    };
 
     @action
-    public setIsRoutePathLengthFormedByMeasuredLengths(
+    public setIsRoutePathLengthFormedByMeasuredLengths = (
         isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean
-    ) {
+    ) => {
         this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isCalculatedRoutePathLengthFormedByMeasuredLengths;
-    }
+    };
+
+    @action
+    public setUnmeasuredStopGapList = (unmeasuredStopGapList: string[][]) => {
+        this._unmeasuredStopGapList = unmeasuredStopGapList;
+    };
 
     @action
     public clear = () => {

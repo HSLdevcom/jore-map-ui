@@ -331,8 +331,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
         this.props.routePathStore!.setCalculatedRoutePathLength(response.length);
         this.props.routePathStore!.setIsRoutePathLengthFormedByMeasuredLengths(
-            response.isCalculatedFromMeasuredStopGapsOnly
+            response.isCalculatedFromMeasuredStopGaps
         );
+        this.props.routePathStore!.setUnmeasuredStopGapList(response.unmeasuredStopGapList);
         this._setState({
             isRoutePathCalculatedLengthLoading: false,
         });
@@ -404,7 +405,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
         const confirmStore = this.props.confirmStore;
+        const routePathStore = this.props.routePathStore!;
+        const unmeasuredStopGapList = routePathStore.unmeasuredStopGapList;
+        const routePathLength = routePathStore!.routePath!.length;
+        const calculatedRoutePathLength = routePathStore!.calculatedRoutePathLength;
         confirmStore!.openConfirm({
+            confirmData: { unmeasuredStopGapList, routePathLength, calculatedRoutePathLength },
             confirmComponentName: 'unmeasuredStopGapsConfirm',
             onConfirm: () => {
                 onConfirm();

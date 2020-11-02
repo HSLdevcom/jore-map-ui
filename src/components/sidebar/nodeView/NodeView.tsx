@@ -240,7 +240,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         this.props.mapStore!.setMapBounds(bounds);
     };
 
-    private save = async () => {
+    private save = async ({
+        shouldChangeStopGapMeasurementType,
+    }: {
+        shouldChangeStopGapMeasurementType: boolean;
+    }) => {
         this._setState({ isLoading: true });
 
         const nodeStore = this.props.nodeStore!;
@@ -260,7 +264,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 });
                 nodeStore.clearNodeCache({ shouldClearNewNodeCache: true });
             } else {
-                await NodeService.updateNode(nodeStore.node, nodeStore.getDirtyLinks());
+                await NodeService.updateNode(
+                    nodeStore.node,
+                    nodeStore.getDirtyLinks(),
+                    shouldChangeStopGapMeasurementType
+                );
                 nodeIdToUpdate = nodeStore.node.id;
                 nodeStore.clearNodeCache({ nodeId: nodeStore.node.id });
                 this.initExistingNode(nodeStore.node.id);
@@ -333,7 +341,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             };
             saveModels.push(stopSaveModel);
         }
-        let notification;
+        let hasLinksGeometryChanged = false;
         // Create links save model
         if (!isEqual(currentLinks, oldLinks)) {
             const textModel: ITextModel = {
@@ -343,17 +351,37 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                 newText: 'Uudet linkit',
             };
             saveModels.push(textModel);
-            notification =
-                'Huom. koska linkkien geometrioita on muutettu, tallennetaan linkkejä käyttävien pysäkkivälien mittaustavat laskeituksi.';
+            hasLinksGeometryChanged = true;
         }
-        const savePromptSection = { models: saveModels };
-        this.props.confirmStore!.openConfirm({
-            confirmComponentName: 'savePrompt',
-            confirmData: { notification, savePromptSections: [savePromptSection] },
-            onConfirm: () => {
-                this.save();
-            },
-        });
+        const openSavePrompt = (shouldChangeStopGapMeasurementType: boolean) => {
+            const notification = shouldChangeStopGapMeasurementType
+                ? 'Huom. koska linkkien geometrioita on muutettu ja vastasit "kyllä" edelliseen kysymykseen, tallennetaan linkkejä käyttävien pysäkkivälien mittaustavat laskeituksi.'
+                : '';
+            const savePromptSection = { models: saveModels };
+            this.props.confirmStore!.openConfirm({
+                confirmComponentName: 'savePrompt',
+                confirmData: { notification, savePromptSections: [savePromptSection] },
+                onConfirm: () => {
+                    this.save({ shouldChangeStopGapMeasurementType });
+                },
+            });
+        };
+        if (hasLinksGeometryChanged) {
+            this.props.confirmStore!.openConfirm({
+                confirmData:
+                    'Linkkien geometrioita muutettu. Haluatko muuttaa kaikkien linkkejä käyttävien pysäkkivälien pituuksien saantitavan lasketuksi?',
+                onConfirm: () => {
+                    openSavePrompt(true);
+                },
+                confirmButtonText: 'Kyllä',
+                onCancel: () => {
+                    openSavePrompt(false);
+                },
+                cancelButtonText: 'En halua',
+            });
+        } else {
+            openSavePrompt(false);
+        }
     };
 
     private onChangeNodeGeometry = (property: NodeLocationType) => (value: L.LatLng) => {
@@ -438,7 +466,11 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                         ))}
                 </div>
                 <SaveButton
-                    onClick={() => (isNewNode ? this.save() : this.showSavePrompt())}
+                    onClick={() =>
+                        isNewNode
+                            ? this.save({ shouldChangeStopGapMeasurementType: false })
+                            : this.showSavePrompt()
+                    }
                     disabled={isSaveButtonDisabled}
                     savePreventedNotification={''}
                 >
