@@ -16,10 +16,10 @@ import { AlertStore } from '~/stores/alertStore';
 import { LoginStore } from '~/stores/loginStore';
 import { UserStore } from '~/stores/userStore';
 import HttpUtils from '~/utils/HttpUtils';
-import packageVersion from '../project/version.json';
+import packageVersion from '../../project/version.json';
+import TransitIcon from '../shared/TransitIcon';
+import Loader from '../shared/loader/Loader';
 import * as s from './navigationBar.scss';
-import TransitIcon from './shared/TransitIcon';
-import Loader from './shared/loader/Loader';
 
 interface INavigationBarProps {
     alertStore?: AlertStore;
@@ -38,7 +38,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
     constructor(props: INavigationBarProps) {
         super(props);
         this.state = {
-            isSyncLoading: false
+            isSyncLoading: false,
         };
     }
 
@@ -49,16 +49,16 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
 
     private syncLocalDatabase = async () => {
         this.setState({
-            isSyncLoading: true
+            isSyncLoading: true,
         });
         const response = await HttpUtils.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
         if (response && response.isDbSyncing) {
             this.props.alertStore!.setFadeMessage({
-                message: 'Sisäisen JORE-tietokannan päivitys on jo käynnissä.'
+                message: 'Sisäisen JORE-tietokannan päivitys on jo käynnissä.',
             });
         }
         this.setState({
-            isSyncLoading: false
+            isSyncLoading: false,
         });
     };
 
