@@ -80,7 +80,8 @@ const SyncView = inject('alertStore')(
                                     <>
                                         <div className={s.loaderContainer}>
                                             <div className={s.loadingText}>
-                                                Tietoja päivitetään...
+                                                Tietoja päivitetään, voit sulkea tämän ikkunan, jos
+                                                haluat.
                                             </div>
                                             <Loader hasNoMargin={true} />
                                         </div>
