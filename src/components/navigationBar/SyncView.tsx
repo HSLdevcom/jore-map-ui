@@ -66,13 +66,10 @@ const SyncView = inject('alertStore')(
         return (
             <>
                 <div
-                    className={s.refreshIconWrapper}
+                    className={s.openSyncViewButton}
                     title={`Avaa uusi ikkuna uusimpien tietojen hakuun Joresta`}
                 >
-                    <IoIosArrowDown
-                        className={s.refreshIcon}
-                        onClick={() => setIsSyncViewVisible(true)}
-                    />
+                    <IoIosArrowDown className={s.icon} onClick={() => setIsSyncViewVisible(true)} />
                 </div>
                 <div>
                     {isSyncViewVisible && (

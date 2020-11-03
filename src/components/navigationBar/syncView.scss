@@ -40,14 +40,16 @@
     }
 }
 
-.refreshIconWrapper {
+.openSyncViewButton {
     display: flex;
     margin: 6px;
+    cursor: pointer;
+    padding: 3px;
 
-    .refreshIcon {
+    .icon {
         font-size: 24px;
     }
 }
-.refreshIconWrapper:hover {
+.openSyncViewButton:hover {
     background-color: #0064a5;
 }
