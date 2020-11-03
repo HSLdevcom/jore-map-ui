@@ -4,6 +4,7 @@ import React from 'react';
 import * as s from './checkbox.scss';
 
 interface ICheckboxProps {
+    className?: string;
     disabled?: boolean;
     checked: boolean;
     content: React.ReactNode;
@@ -11,7 +12,7 @@ interface ICheckboxProps {
 }
 
 const Checkbox = observer((props: ICheckboxProps) => {
-    const { disabled, checked, content, onClick, ...attr } = props;
+    const { className, disabled, checked, content, onClick, ...attr } = props;
 
     const _onClick = (event: React.MouseEvent<HTMLElement>) => {
         onClick(!checked);
@@ -22,7 +23,7 @@ const Checkbox = observer((props: ICheckboxProps) => {
     return (
         <div
             onClick={_onClick}
-            className={classnames(s.container, disabled ? s.disabled : undefined)}
+            className={classnames(className, s.container, disabled ? s.disabled : undefined)}
             {...attr}
         >
             <div className={s.content}>{content}</div>
