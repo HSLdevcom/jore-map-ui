@@ -9,29 +9,22 @@ $unusedNeighborColorHighlight: #c40608;
     font-size: 17px;
     font-weight: 900;
     text-align: center;
-    color: #fff;
     line-height: 24px;
 }
 
-.usedNeighbor {
-    color: $usedNeighborColor;
-    background-color: $usedNeighborColor;
-    border-color: $usedNeighborColor;
+.nodeMarkerStop {
+    background-color: #fff;
+    border-color: $busBlue;
 }
-.usedNeighborHighlight {
-    color: $usedNeighborColorHighlight;
-    background-color: $usedNeighborColorHighlight;
-    border-color: $usedNeighborColorHighlight;
+
+.nodeMarkerCrossroad {
+    background-color: #fff;
+    border-color: $crossroadBorder;
 }
-.unusedNeighbor {
-    color: $unusedNeighborColor;
-    background-color: $unusedNeighborColor;
-    border-color: $unusedNeighborColor;
-}
-.unusedNeighborHighlight {
-    color: $unusedNeighborColorHighlight;
-    background-color: $unusedNeighborColorHighlight;
-    border-color: $unusedNeighborColorHighlight;
+
+.nodeMarkerMunicipality {
+    background-color: #fff;
+    border-color: $municipalityBorder;
 }
 
 :export {
