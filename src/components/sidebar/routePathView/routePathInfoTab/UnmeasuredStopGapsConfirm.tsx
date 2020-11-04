@@ -3,7 +3,8 @@ import React from 'react';
 import * as s from './unmeasuredStopGapsConfirm.scss';
 
 interface IUnmeasuredStopGapsConfirmProps {
-    unmeasuredStopGapList: string[][];
+    unmeasuredStopGapsList: string[][];
+    missingStopGapsList: string[][];
     routePathLength: number;
     calculatedRoutePathLength: number;
 }
@@ -14,18 +15,33 @@ const UnmeasuredStopGapsConfirm = inject()(
             <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapPrompt'>
                 <div>Haluatko varmasti edetä reitinsuunnan tallentamiseen?</div>
                 {props.routePathLength !== props.calculatedRoutePathLength && (
-                    <div>
+                    <div className={s.header}>
                         Reitinsuunnan tämänhetkinen pituus ei ole sama kuin pysäkkivälien ja
                         linkkien pituuksista muodostettu summa.
                     </div>
                 )}
-
-                {props.unmeasuredStopGapList.length > 0 && (
+                {props.missingStopGapsList.length > 0 && (
                     <>
-                        <div className={s.unmeasuredStopGapsHeader}>
+                        <div className={s.header}>
+                            Reitinsuunnan laskettu pituus sisältää puuttuvia pysäkkivälejä:
+                        </div>
+                        {props.missingStopGapsList.map(
+                            (missingStopGap: string[], index: number) => {
+                                return (
+                                    <div key={`stopGap-${index}`}>
+                                        {missingStopGap[0]} - {missingStopGap[1]}
+                                    </div>
+                                );
+                            }
+                        )}
+                    </>
+                )}
+                {props.unmeasuredStopGapsList.length > 0 && (
+                    <>
+                        <div className={s.header}>
                             Reitinsuunnan laskettu pituus sisältää mittaamattomia pysäkkivälejä:
                         </div>
-                        {props.unmeasuredStopGapList.map(
+                        {props.unmeasuredStopGapsList.map(
                             (unmeasuredStopGap: string[], index: number) => {
                                 return (
                                     <div key={`stopGap-${index}`}>
