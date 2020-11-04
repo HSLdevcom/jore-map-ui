@@ -46,7 +46,8 @@ class RoutePathStore {
     @observable private _selectedTabIndex: number;
     @observable private _calculatedRoutePathLength: number | null;
     @observable private _isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean;
-    @observable private _unmeasuredStopGapList: string[][];
+    @observable private _unmeasuredStopGapsList: string[][];
+    @observable private _missingStopGapsList: string[][];
     private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
@@ -153,8 +154,13 @@ class RoutePathStore {
     }
 
     @computed
-    get unmeasuredStopGapList() {
-        return this._unmeasuredStopGapList;
+    get unmeasuredStopGapsList() {
+        return this._unmeasuredStopGapsList;
+    }
+
+    @computed
+    get missingStopGapsList() {
+        return this._missingStopGapsList;
     }
 
     @action
@@ -556,8 +562,12 @@ class RoutePathStore {
     };
 
     @action
-    public setUnmeasuredStopGapList = (unmeasuredStopGapList: string[][]) => {
-        this._unmeasuredStopGapList = unmeasuredStopGapList;
+    public setUnmeasuredStopGapsList = (unmeasuredStopGapsList: string[][]) => {
+        this._unmeasuredStopGapsList = unmeasuredStopGapsList;
+    };
+    @action
+    public setMissingStopGapsList = (missingStopGapsList: string[][]) => {
+        this._missingStopGapsList = missingStopGapsList;
     };
 
     @action
