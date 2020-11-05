@@ -1,0 +1,80 @@
+@import '../../../shared/styles/common';
+
+.routePathRow {
+    .routePathRowHeader {
+        padding: 15px 20px 15px 20px;
+        border-bottom: 1px solid $borderLightGrey;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+
+        .transitTypeLinks  {
+            display: flex;
+            align-items: center;
+            pointer-events: none;
+
+            .lineLinkGreaterThanSign {
+                font-weight: bold;
+            }
+        }
+
+        .itemToggle {
+            font-size: 16px;
+            transition: 0.5s;
+            padding: 0px;
+            text-align: end;
+            align-self: center;
+            color: $mediumGrey;
+
+            :hover {
+                color: darken($mediumGrey, 10);
+                transition: 0.5s;
+            }
+        }
+    }
+
+    .loaderContainer  {
+        display: flex;
+        padding: 15px;
+        justify-content: center;
+        border-bottom: 1px solid $borderLightGrey;
+    }
+
+    .routePathRowContainer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 10px 10px 40px;
+        font-size: 15px;
+        border-bottom: 1px solid $borderLightGrey;
+
+        .timestampRow {
+            font-size: $smallFontSize;
+        }
+
+        .icons  {
+            display: flex;
+
+            .icon {
+                position: relative;
+                color: #007ac9;
+                font-size: 1.5rem;
+                line-height: 1.5rem;
+                cursor: pointer;
+                border-width: 1px;
+                border-style: solid;
+                border-color: #e2e2e2;
+                padding: 3px;
+                transition: 0.5s;
+                height: 24px;
+                margin: 2px;
+            }
+        }
+    }
+    .routePathRowContainer:nth-child(odd) {
+        background-color: #fafafa;
+    }
+    .routePathRowContainer:hover {
+        background-color: $backgroundlightGrey;
+    }
+}

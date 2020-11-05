@@ -1,0 +1,24 @@
+@import '../../../shared/styles/common';
+
+.routePathCopySegmentView {
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+
+    .routePathList {
+        overflow-y: auto;
+        height: 100%;
+        background-color: white;
+
+        .messageContainer {
+            padding: 20px;
+            font-size: $mediumFontSize;
+        }
+    }
+}
+
+.header {
+    border-bottom: 1px solid #bebebe;
+    padding: 20px;
+}

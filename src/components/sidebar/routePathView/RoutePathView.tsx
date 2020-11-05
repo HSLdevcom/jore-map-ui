@@ -43,7 +43,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import RoutePathUtils from '~/utils/RoutePathUtils';
 import SidebarHeader from '../SidebarHeader';
-import RoutePathCopySegmentView from './RoutePathCopySegmentView';
+import RoutePathCopySegmentView from './RoutePathCopySegmentView/RoutePathCopySegmentView';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import * as s from './routePathView.scss';
