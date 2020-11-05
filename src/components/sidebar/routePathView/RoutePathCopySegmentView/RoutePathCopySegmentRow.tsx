@@ -69,7 +69,11 @@ const RoutePathCopySegmentRow = inject(
 
         return (
             <div className={s.routePathRow}>
-                <div onClick={expandRow} className={s.routePathRowHeader}>
+                <div
+                    onClick={expandRow}
+                    className={s.routePathRowHeader}
+                    data-cy='rpSegmentRowHeader'
+                >
                     <div className={s.transitTypeLinks}>
                         <TransitTypeLink
                             transitType={transitType!}
