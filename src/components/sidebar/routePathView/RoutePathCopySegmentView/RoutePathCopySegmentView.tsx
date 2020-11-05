@@ -1,18 +1,15 @@
 import { inject, observer } from 'mobx-react';
-import Moment from 'moment';
 import React from 'react';
-import { FiCopy, FiExternalLink } from 'react-icons/fi';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePathSegment } from '~/models/IRoutePath';
 import IRoutePathLink from '~/models/IRoutePathLink';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import RoutePathLinkService from '~/services/routePathLinkService';
 import { AlertStore, AlertType } from '~/stores/alertStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import SidebarHeader from '../SidebarHeader';
+import SidebarHeader from '../../SidebarHeader';
+import RoutePathCopySegmentRow from './RoutePathCopySegmentRow';
 import * as s from './routePathCopySegmentView.scss';
 
 interface IRoutePathCopySegmentViewProps {
@@ -25,55 +22,7 @@ interface IRoutePathCopySegmentViewProps {
 @inject('alertStore', 'routePathStore', 'routePathCopySegmentStore', 'toolbarStore')
 @observer
 class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentViewProps> {
-    private renderRoutePathRow = (routePath: IRoutePathSegment, key: string) => {
-        return (
-            <div
-                key={key}
-                className={s.routePathRow}
-                onMouseEnter={this.setHighlightedRoutePath(routePath)}
-                onMouseLeave={this.setHighlightedRoutePath(null)}
-            >
-                {this.renderTextRow(routePath)}
-                <div className={s.icons}>
-                    <div
-                        className={s.icon}
-                        title={`Kopioi reitin ${routePath.routeId} reitinsuunnan segmentti`}
-                        onClick={this.copySegments(routePath)}
-                        data-cy='copyRoutePathSegmentButton'
-                    >
-                        <FiCopy />
-                    </div>
-                    <div
-                        className={s.icon}
-                        title={`Avaa reitin ${routePath.routeId} reitinsuunta uuteen ikkunaan`}
-                        onClick={this.openRoutePathInNewTab(routePath)}
-                    >
-                        <FiExternalLink />
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    private setHighlightedRoutePath = (routePath: IRoutePathSegment | null) => () => {
-        this.props.routePathCopySegmentStore!.setHighlightedRoutePath(routePath);
-    };
-
-    private renderTextRow = (routePath: IRoutePathSegment) => {
-        return (
-            <div>
-                <div>
-                    {routePath.routeId} {routePath.originFi} - {routePath.destinationFi}
-                </div>
-                <div className={s.timestampRow}>
-                    {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
-                    {Moment(routePath.endDate).format('DD.MM.YYYY')}
-                </div>
-            </div>
-        );
-    };
-
-    private copySegments = (routePath: IRoutePathSegment) => async () => {
+    private copySegments = async (rpSegment: IRoutePathSegment) => {
         const copySegmentStore = this.props.routePathCopySegmentStore;
         this.props.alertStore!.setLoaderMessage('Kopioidaan reitinsuunnan segmenttiä...');
 
@@ -87,7 +36,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         }
 
         const segmentsToCopy = copySegmentStore!.getSegmentLinksToCopy(
-            routePath,
+            rpSegment,
             startSegmentPoint.nodeId,
             endSegmentPoint.nodeId
         );
@@ -145,21 +94,6 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
         });
     };
 
-    private openRoutePathInNewTab = (routePath: IRoutePathSegment) => () => {
-        const routePathLink = routeBuilder
-            .to(SubSites.routePath)
-            .toTarget(
-                ':id',
-                [
-                    routePath.routeId,
-                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-                    routePath.direction,
-                ].join(',')
-            )
-            .toLink();
-        window.open(routePathLink, '_blank');
-    };
-
     private renderErrorMessage = () => {
         return (
             <div className={s.routePathList}>
@@ -169,13 +103,13 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
     };
 
     private renderResults = () => {
-        const routePaths = this.props.routePathCopySegmentStore!.routePaths;
+        const routesUsingLink = this.props.routePathCopySegmentStore!.routesUsingLink;
 
         const startNodeId = this.props.routePathCopySegmentStore!.startSegmentPoint!.nodeId;
         const endNodeId = this.props.routePathCopySegmentStore!.endSegmentPoint!.nodeId;
         return (
             <div className={s.routePathList}>
-                {routePaths.length === 0 ? (
+                {routesUsingLink.length === 0 ? (
                     <div className={s.messageContainer}>
                         {`Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta alku- ja
                         loppusolmun väliltä (${startNodeId} - ${endNodeId}). Kokeile muuttaa kopioitavaa väliä, esimerkiksi asettaa
@@ -183,10 +117,14 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                     </div>
                 ) : (
                     <>
-                        {routePaths.map((routePath, index) => {
-                            return this.renderRoutePathRow(
-                                routePath,
-                                `row-${index}-${routePath.routeId}`
+                        {routesUsingLink.map((routeUsingLink, index) => {
+                            return (
+                                <RoutePathCopySegmentRow
+                                    key={`routeUsingLink-${index}`}
+                                    lineId={routeUsingLink.lineId}
+                                    routeId={routeUsingLink.routeId}
+                                    copySegments={this.copySegments}
+                                />
                             );
                         })}
                     </>
@@ -194,6 +132,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
             </div>
         );
     };
+
     private closeEditing = () => {
         this.props.routePathCopySegmentStore!.clear();
     };
@@ -218,7 +157,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                     isCloseButtonVisible={true}
                     isBackButtonVisible={false}
                 >
-                    Kopioitavat reitinsuuntasegmentit
+                    Reitinsuunta segmentin kopiointi
                 </SidebarHeader>
                 {
                     {

@@ -4,12 +4,15 @@ import EventListener, {
     INodeClickParams,
     IRoutePathNodeClickParams,
 } from '~/helpers/EventListener';
-import { IRoutePathLink } from '~/models';
+import { IRoutePath, IRoutePathLink } from '~/models';
 import NodeService from '~/services/nodeService';
-import RoutePathSegmentService from '~/services/routePathSegmentService';
+import RoutePathService from '~/services/routePathService';
 import ErrorStore from '~/stores/errorStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
-import RoutePathCopySegmentStore, { ISegmentPoint } from '~/stores/routePathCopySegmentStore';
+import RoutePathCopySegmentStore, {
+    IRoutesUsingLink,
+    ISegmentPoint,
+} from '~/stores/routePathCopySegmentStore';
 import RoutePathLayerStore from '~/stores/routePathLayerStore';
 import RoutePathStore from '~/stores/routePathStore';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -46,7 +49,10 @@ class CopyRoutePathSegmentTool implements BaseTool {
         EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         RoutePathStore.setIsEditingDisabled(false);
         this.refreshToolPhaseListener = reaction(
-            () => [RoutePathCopySegmentStore.setNodeType, RoutePathCopySegmentStore.routePaths],
+            () => [
+                RoutePathCopySegmentStore.setNodeType,
+                RoutePathCopySegmentStore.routesUsingLink,
+            ],
             this.refreshToolPhase
         );
         this.setToolPhase('selectStartNode');
@@ -71,7 +77,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
     };
 
     private refreshToolPhase = () => {
-        if (RoutePathCopySegmentStore.routePaths.length > 0) {
+        if (RoutePathCopySegmentStore.routesUsingLink.length > 0) {
             this.setToolPhase('selectRoutePathToCopy');
         } else if (RoutePathCopySegmentStore.setNodeType === 'startNode') {
             this.setToolPhase('selectStartNode');
@@ -161,12 +167,27 @@ class CopyRoutePathSegmentTool implements BaseTool {
         RoutePathCopySegmentStore.setIsLoading(true);
 
         const transitType = RoutePathStore.routePath!.transitType!;
-        const routePaths = await RoutePathSegmentService.fetchRoutePathLinkSegment(
+        const routePaths: IRoutePath[] = await RoutePathService.fetchRoutePathsUsingLink(
             startSegmentPoint.nodeId,
             endSegmentPoint.nodeId,
             transitType
         );
-        RoutePathCopySegmentStore.setRoutePaths(routePaths);
+        const routesUsingLink: IRoutesUsingLink[] = [];
+        routePaths.forEach((routePath) => {
+            if (
+                !routesUsingLink.find(
+                    (r) => r.routeId === routePath.routeId && r.lineId === routePath.lineId
+                )
+            ) {
+                routesUsingLink.push({
+                    lineId: routePath.lineId!,
+                    routeId: routePath.routeId,
+                    isExpanded: false,
+                    routePathSegments: [],
+                });
+            }
+        });
+        RoutePathCopySegmentStore.setRoutesUsingLink(routesUsingLink);
         RoutePathCopySegmentStore.setIsLoading(false);
     };
 }

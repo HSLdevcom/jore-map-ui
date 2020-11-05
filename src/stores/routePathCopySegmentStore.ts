@@ -12,11 +12,18 @@ interface ISegmentPoint {
     coordinates: L.LatLng;
 }
 
+interface IRoutesUsingLink {
+    lineId: string;
+    routeId: string;
+    isExpanded: boolean;
+    routePathSegments: IRoutePathSegment[];
+}
+
 class RoutePathCopySegmentStore {
     @observable private _isLoading: boolean;
     @observable private _startSegmentPoint: ISegmentPoint | null;
     @observable private _endSegmentPoint: ISegmentPoint | null;
-    @observable private _routePaths: IRoutePathSegment[];
+    @observable private _routesUsingLink: IRoutesUsingLink[];
     @observable private _highlightedRoutePath: IRoutePathSegment | null;
     @observable private _setNodeType: setNodeType;
     @observable private _areNodePositionsValid: boolean;
@@ -25,7 +32,7 @@ class RoutePathCopySegmentStore {
         this._isLoading = true;
         this._startSegmentPoint = null;
         this._endSegmentPoint = null;
-        this._routePaths = [];
+        this._routesUsingLink = [];
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
         this._areNodePositionsValid = true;
@@ -47,8 +54,8 @@ class RoutePathCopySegmentStore {
     }
 
     @computed
-    get routePaths(): IRoutePathSegment[] {
-        return this._routePaths;
+    get routesUsingLink(): IRoutesUsingLink[] {
+        return this._routesUsingLink;
     }
 
     @computed
@@ -82,8 +89,8 @@ class RoutePathCopySegmentStore {
     };
 
     @action
-    public setRoutePaths = (routePaths: IRoutePathSegment[]) => {
-        this._routePaths = routePaths;
+    public setRoutesUsingLink = (routesUsingLink: IRoutesUsingLink[]) => {
+        this._routesUsingLink = routesUsingLink;
     };
 
     @action
@@ -105,7 +112,6 @@ class RoutePathCopySegmentStore {
     public clear = () => {
         this._startSegmentPoint = null;
         this._endSegmentPoint = null;
-        this._routePaths = [];
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
     };
@@ -151,4 +157,4 @@ class RoutePathCopySegmentStore {
 
 export default new RoutePathCopySegmentStore();
 
-export { RoutePathCopySegmentStore, setNodeType, ISegmentPoint };
+export { RoutePathCopySegmentStore, setNodeType, ISegmentPoint, IRoutesUsingLink };
