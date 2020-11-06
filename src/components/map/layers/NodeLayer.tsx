@@ -43,9 +43,6 @@ const NodeLayer = inject(
                 }
             };
         });
-        useEffect(() => {
-            forceUpdate();
-        }, [props.networkStore!.selectedTransitTypes, props.searchResultStore!.allNodes])
         const mapBounds = getMap()!.getBounds();
         const allNodes = props.searchResultStore!.allNodes;
         const nodesInMapBounds = useMemo(() => {
@@ -61,7 +58,7 @@ const NodeLayer = inject(
                     dateRangesString: node.dateRanges,
                 });
             });
-          }, [allNodes, mapBounds]);
+          }, [allNodes, mapBounds, props.networkStore!.selectedTransitTypes]);
 
         if (props.mapStore!.areNetworkLayersHidden) return <div />;
         if (!nodesInMapBounds) return <div />;
