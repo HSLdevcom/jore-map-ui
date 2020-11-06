@@ -5,8 +5,6 @@
     "dependencies": {
         "@babel/core": "7.10.5",
         "@babel/preset-env": "7.10.4",
-        "@turf/helpers": "^6.1.4",
-        "@turf/points-within-polygon": "^5.1.5",
         "apollo-cache-inmemory": "^1.6.5",
         "apollo-client": "^2.4.1",
         "apollo-link-batch-http": "^1.2.13",
