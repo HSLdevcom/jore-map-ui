@@ -18,6 +18,7 @@ describe('RouteListView tests - read access user', () => {
         cy.getTestElement('lineSearch').click();
         cy.getTestElement('lineSearch').type('550');
         cy.wait(1000);
+
         cy.getTestElement('routeItem').first().click();
 
         cy.getTestElement('editButton').should('not.exist');

@@ -417,7 +417,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
             !nodeStore.isDirty ||
             isNodeFormInvalid ||
             isStopFormInvalid ||
-            nodeStore.isNodeIdQueryLoading;
+            nodeStore.isNodeIdQueryLoading ||
+            nodeStore.isAddressQueryLoading;
         return (
             <div className={s.nodeView} data-cy='nodeView'>
                 <div className={s.content}>

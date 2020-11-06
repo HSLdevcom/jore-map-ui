@@ -5,7 +5,7 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import { INeighborLink, INode, IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { NeighborToAddType, RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathUtils from '~/utils/RoutePathUtils';
@@ -115,12 +115,16 @@ class EditRoutePathLayer extends Component<IEditRoutePathLayerProps> {
     };
 
     private isNodeVisibleAtNeighborLinkLayer = (nodeId: string) => {
+        const neighborToAddType = this.props.routePathLayerStore!.neighborToAddType;
+
         return Boolean(
-            this.props.routePathLayerStore!.neighborLinks.find(
-                (link: INeighborLink) =>
-                    link.routePathLink.startNode.id === nodeId ||
-                    link.routePathLink.endNode.id === nodeId
-            )
+            this.props.routePathLayerStore!.neighborLinks.find((link: INeighborLink) => {
+                const neighborNode =
+                    neighborToAddType === NeighborToAddType.AfterNode
+                        ? link.routePathLink.endNode
+                        : link.routePathLink.startNode;
+                return neighborNode.id === nodeId;
+            })
         );
     };
 

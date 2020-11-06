@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
 import NodeSize from '~/enums/nodeSize';
+import NodeType from '~/enums/nodeType';
 import EventListener, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventListener';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
@@ -99,7 +100,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                classNames={[this.getNeighborLinkClassName(neighborLink)]}
+                classNames={[this.getNodeMarkerClassName(node)]}
                 visibleNodeLabels={visibleNodeLabels}
                 onClick={onNeighborLinkClick}
                 onContextMenu={() => this.showNodePopup(node, neighborLink.nodeUsageRoutePaths)}
@@ -118,7 +119,10 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 hasHighZIndex={this.isNeighborLinkHighlighted(neighborLink)}
                 size={NodeSize.LARGE}
             >
-                <div className={s.usageCount}>
+                <div
+                    className={s.usageCount}
+                    style={{ color: this.getNeighborLinkColor(neighborLink) }}
+                >
                     {neighborLink.nodeUsageRoutePaths.length > 9
                         ? '9+'
                         : neighborLink.nodeUsageRoutePaths.length}
@@ -127,18 +131,17 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         );
     };
 
-    private getNeighborLinkClassName = (neighborLink: INeighborLink) => {
-        const isNeighborLinkUsed = neighborLink.nodeUsageRoutePaths.length > 0;
-        if (this.isNeighborLinkHighlighted(neighborLink)) {
-            if (isNeighborLinkUsed) {
-                return s.usedNeighborHighlight;
-            }
-            return s.unusedNeighborHighlight;
+    private getNodeMarkerClassName = (node: INode) => {
+        switch (node.type) {
+            case NodeType.STOP:
+                return s.nodeMarkerStop;
+            case NodeType.CROSSROAD:
+                return s.nodeMarkerCrossroad;
+            case NodeType.MUNICIPALITY_BORDER:
+                return s.nodeMarkerMunicipality;
+            default:
+                throw `NodeType not supported: ${node.type}`;
         }
-        if (isNeighborLinkUsed) {
-            return s.usedNeighbor;
-        }
-        return s.unusedNeighbor;
     };
 
     private isNeighborLinkHighlighted = (neighborLink: INeighborLink) => {

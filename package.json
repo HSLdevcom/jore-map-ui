@@ -89,9 +89,9 @@
         "release-minor": "bumped release minor",
         "release-major": "bumped release major",
         "production": "forever start -c \"yarn run serve -s -l 5000\" build && forever logs -f 0",
-        "cypress": "cypress",
-        "cypress:run:dev": "cypress run --env configFile=dev",
-        "cypress:run:stage": "cypress run --env configFile=stage",
+        "cypress": "CYPRESS_E2E=true cypress",
+        "cypress:run:dev": "CYPRESS_E2E=true cypress run --env configFile=dev",
+        "cypress:run:stage": "CYPRESS_E2E=true cypress run --env configFile=stage",
         "prettify-all-files": "npx prettier --write '**/*.ts'"
     },
     "devDependencies": {
@@ -118,7 +118,7 @@
         "bumped": "^0.10.11",
         "bumped-changelog": "0.3.13",
         "bumped-terminal": "^0.7.6",
-        "cypress": "^4.0.2",
+        "cypress": "5.5.0",
         "cypress-commands": "^0.3.1",
         "cypress-wait-until": "^1.6.1",
         "del-cli": "^1.1.0",
@@ -187,12 +187,6 @@
                 "tsConfig": "tsconfig.test.json"
             }
         }
-    },
-    "babel": {
-        "presets": [
-            "react-app",
-            "@babel/preset-env"
-        ]
     },
     "eslintConfig": {
         "extends": "react-app"

@@ -43,7 +43,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import RoutePathUtils from '~/utils/RoutePathUtils';
 import SidebarHeader from '../SidebarHeader';
-import RoutePathCopySegmentView from './RoutePathCopySegmentView';
+import RoutePathCopySegmentView from './RoutePathCopySegmentView/RoutePathCopySegmentView';
 import RoutePathInfoTab from './routePathInfoTab/RoutePathInfoTab';
 import RoutePathLinksTab from './routePathListTab/RoutePathLinksTab';
 import * as s from './routePathView.scss';
@@ -331,9 +331,11 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         );
         this.props.routePathStore!.setCalculatedRoutePathLength(response.length);
         this.props.routePathStore!.setIsRoutePathLengthFormedByMeasuredLengths(
-            response.isCalculatedFromMeasuredStopGaps
+            response.isCalculatedFromMeasuredStopGapsOnly
         );
-        this.props.routePathStore!.setUnmeasuredStopGapList(response.unmeasuredStopGapList);
+        this.props.routePathStore!.setUnmeasuredStopGapsList(response.unmeasuredStopGapsList);
+        this.props.routePathStore!.setMissingStopGapsList(response.missingStopGapsList);
+
         this._setState({
             isRoutePathCalculatedLengthLoading: false,
         });
@@ -406,11 +408,18 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
         const confirmStore = this.props.confirmStore;
         const routePathStore = this.props.routePathStore!;
-        const unmeasuredStopGapList = routePathStore.unmeasuredStopGapList;
+        const unmeasuredStopGapsList = routePathStore.unmeasuredStopGapsList;
+        const missingStopGapsList = routePathStore.missingStopGapsList;
+
         const routePathLength = routePathStore!.routePath!.length;
         const calculatedRoutePathLength = routePathStore!.calculatedRoutePathLength;
         confirmStore!.openConfirm({
-            confirmData: { unmeasuredStopGapList, routePathLength, calculatedRoutePathLength },
+            confirmData: {
+                unmeasuredStopGapsList,
+                missingStopGapsList,
+                routePathLength,
+                calculatedRoutePathLength,
+            },
             confirmComponentName: 'unmeasuredStopGapsConfirm',
             onConfirm: () => {
                 onConfirm();

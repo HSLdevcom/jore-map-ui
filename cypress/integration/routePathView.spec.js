@@ -92,6 +92,8 @@ describe('RoutePathView tests - write access user', () => {
         cy.getTestElement('rpListNode').eq(3).click();
         cy.wait(100);
         cy.getTestElement('rpListNode').eq(4).click();
+
+        cy.getTestElement('rpSegmentRowHeader').first().click();
         cy.getTestElement('copyRoutePathSegmentButton').first().click();
 
         cy.getTestElement('routePathSaveButton').click();

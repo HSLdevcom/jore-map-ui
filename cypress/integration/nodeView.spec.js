@@ -184,6 +184,7 @@ const _openCrossroad = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').clear().type('101');
+    cy.wait(1000);
 
     cy.getTestElement('nodeItemX').first().click();
     cy.getTestElement('nodeView').should('exist');
@@ -193,6 +194,7 @@ const _openMunicipality = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').clear().type('101');
+    cy.wait(1000);
 
     cy.getTestElement('nodeItem-').first().click();
     cy.getTestElement('nodeView').should('exist');
