@@ -73,7 +73,7 @@ const NodeMarker = inject()(
                 return labels;
             };
 
-            const getclassNames = (): string[] => {
+            const getNodeMarkerIconClassNames = (): string[] => {
                 const {
                     classNames = [],
                     nodeType,
@@ -193,7 +193,7 @@ const NodeMarker = inject()(
                         ) : null,
                     options: {
                         iconWidth,
-                        classNames: [nodeRootClass, ...getclassNames()],
+                        classNames: [nodeRootClass, ...getNodeMarkerIconClassNames()],
                         iconHeight: iconWidth,
                         popupOffset: -15,
                     },

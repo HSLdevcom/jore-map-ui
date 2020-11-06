@@ -1,17 +1,6 @@
-import {
-    featureCollection,
-    point,
-    polygon,
-    Feature,
-    FeatureCollection,
-    Point,
-    Properties,
-} from '@turf/helpers';
-import pointsWithinPolygon from '@turf/points-within-polygon';
-import L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import NodeType from '~/enums/nodeType';
 import { ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
@@ -41,25 +30,7 @@ const NodeLayer = inject(
         const getMap = (): L.Map | undefined => {
             return props.map.current?.leafletElement;
         };
-        const [turfPointNodeFeatures, setTurfPointNodeFeatures] = useState<FeatureCollection<
-            Point,
-            Properties
-        > | null>(null);
-        const [renderCount, updateRenderCount] = React.useState(1);
-
-        useEffect(() => {
-            const nodeFeatures = props.searchResultStore!.allNodes.map((node: ISearchNode) => {
-                return point([node.coordinates.lat, node.coordinates.lng], node);
-            });
-            const turfPointNodeFeatures: FeatureCollection<Point, Properties> = featureCollection(
-                nodeFeatures
-            );
-            setTurfPointNodeFeatures(turfPointNodeFeatures);
-        }, [
-            props.networkStore!.selectedTransitTypes.length === 0 && !turfPointNodeFeatures,
-            props.searchResultStore!.allNodes,
-        ]);
-
+        const [renderCount, updateRenderCount] = useState<number>(1);
         const forceUpdate = () => {
             updateRenderCount(renderCount + 1);
         };
@@ -72,41 +43,31 @@ const NodeLayer = inject(
                 }
             };
         });
-
-        if (props.mapStore!.areNetworkLayersHidden) return <div />;
-        if (!turfPointNodeFeatures) return <div />;
-
-        const bounds = getMap()!.getBounds();
-
-        const ne = bounds.getNorthEast();
-        const se = bounds.getSouthEast();
-        const sw = bounds.getSouthWest();
-        const nw = bounds.getNorthWest();
-
-        const searchWithin = polygon([
-            [
-                [ne.lat, ne.lng],
-                [se.lat, se.lng],
-                [sw.lat, sw.lng],
-                [nw.lat, nw.lng],
-                [ne.lat, ne.lng],
-            ],
-        ]);
-
-        const featuresToShow = pointsWithinPolygon(turfPointNodeFeatures, searchWithin)
-            .features.map((nodeFeature: Feature<Point, Properties>) => {
-                return nodeFeature.properties as ISearchNode;
-            })
-            .filter((node: ISearchNode) => {
+        useEffect(() => {
+            forceUpdate();
+        }, [props.networkStore!.selectedTransitTypes, props.searchResultStore!.allNodes])
+        const mapBounds = getMap()!.getBounds();
+        const allNodes = props.searchResultStore!.allNodes;
+        const nodesInMapBounds = useMemo(() => {
+            if (!mapBounds) {
+              return [];
+            }
+            return allNodes.filter(
+              (node) => mapBounds.contains([node.coordinates.lat, node.coordinates.lng])
+            ).filter((node: ISearchNode) => {
                 return !isNetworkNodeHidden({
                     nodeId: node.id,
                     transitTypeCodes: node.transitTypes.join(','),
                     dateRangesString: node.dateRanges,
                 });
             });
+          }, [allNodes, mapBounds]);
+
+        if (props.mapStore!.areNetworkLayersHidden) return <div />;
+        if (!nodesInMapBounds) return <div />;
         return (
             <>
-                {featuresToShow.map((node: ISearchNode, index: number) => {
+                {nodesInMapBounds.map((node: ISearchNode, index: number) => {
                     const coordinates =
                         node.type === NodeType.STOP ? node.coordinates : node.coordinatesProjection;
                     return (
@@ -128,7 +89,7 @@ const NodeLayer = inject(
                             onClick={props.onClick}
                             onContextMenu={props.onContextMenu}
                             size={props.networkStore!.nodeSize}
-                        />
+                        ></NodeMarker>
                     );
                 })}
             </>
