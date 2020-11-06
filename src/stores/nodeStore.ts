@@ -55,6 +55,7 @@ class NodeStore {
     @observable private _stopAreas: IStopArea[];
     @observable private _isNodeIdEditable: boolean;
     @observable private _isNodeIdQueryLoading: boolean;
+    @observable private _isAddressQueryLoading: boolean;
     @observable private _nodeIdSuffixOptions: IDropdownItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
@@ -72,6 +73,7 @@ class NodeStore {
         this._isEditingDisabled = true;
         this._isNodeIdEditable = false;
         this._isNodeIdQueryLoading = false;
+        this._isAddressQueryLoading = false;
         this._nodeIdSuffixOptions = [];
         this._nodeCache = {
             newNodeCache: null,
@@ -148,6 +150,11 @@ class NodeStore {
     @computed
     get isNodeIdQueryLoading() {
         return this._isNodeIdQueryLoading;
+    }
+
+    @computed
+    get isAddressQueryLoading() {
+        return this._isAddressQueryLoading;
     }
 
     @computed
@@ -321,7 +328,7 @@ class NodeStore {
             this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
 
-        if (this._node.type === NodeType.STOP) {
+        if (this._node.type === NodeType.STOP && nodeLocationType === 'coordinatesProjection') {
             this.updateStopPropertiesAccordingToNodeLocation();
         }
     };
@@ -350,6 +357,8 @@ class NodeStore {
     public updateAddressData = async (features: IGeoJSONFeature[] | null) => {
         if (!this.node || !this.node.stop) return;
 
+        this.setIsAddressQueryLoading(true);
+
         const coordinates = this.node.coordinatesProjection;
         const addressFi: string = await GeocodingService.fetchStreetNameFromCoordinates(
             coordinates,
@@ -367,7 +376,13 @@ class NodeStore {
         this.updateStopProperty('addressFi', addressFi);
         this.updateStopProperty('addressSw', addressSw);
         this.updateStopProperty('postalNumber', postalNumber);
+        this.setIsAddressQueryLoading(false);
     };
+
+    @action
+    public setIsAddressQueryLoading = (isLoading: boolean) => {
+        this._isAddressQueryLoading = isLoading;
+    }
 
     @action
     public updateMunicipality = (features: IGeoJSONFeature[] | null) => {
