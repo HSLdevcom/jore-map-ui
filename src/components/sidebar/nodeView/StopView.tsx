@@ -100,7 +100,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
             });
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
         }
     };
 

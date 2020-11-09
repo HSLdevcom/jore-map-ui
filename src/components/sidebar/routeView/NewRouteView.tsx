@@ -107,7 +107,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             // Update line search results
             this.props.searchResultStore!.updateSearchRoute(route.lineId, route!);
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
             this.setState({ isLoading: false });
             this.redirectToLineView();
         }
