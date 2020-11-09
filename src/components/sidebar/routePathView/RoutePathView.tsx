@@ -380,7 +380,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             this.props.routePathLinkMassEditStore!.clear();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
             this.setState({ isLoading: false });
         }
     };
