@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Set time zone to Europe/Helsinki"
-        uses: actions/set-timezone-action@v1.1
+        uses: zcong1993/setup-timezone@master
         with:
-          timezoneLinux: "Europe/Helsinki"
+          timezone: "Europe/Helsinki"
       - name: Set current date to be accessible later with steps.date.outputs.date
         id: date
         run: echo "::set-output name=date::$(date +'%d.%m.%Y_%H:%M')"
