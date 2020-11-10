@@ -73,7 +73,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                     });
                 } catch (e) {
                     this.props.alertStore!.close();
-                    this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+                    this.props.errorStore!.addError('', e);
                 }
             },
             confirmButtonText: 'Poista reitinsuunta',
