@@ -16,7 +16,7 @@ jobs:
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           name: hsldevcom/jore-map-ui
-          username: ${{ secrets.DOCKER_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
           buildargs: APP_ENVIRONMENT=prod, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=date::$(date +'%d.%m.%Y')
           tags: release-prod
