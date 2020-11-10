@@ -9,6 +9,8 @@ jobs:
   deploy-prod:
     runs-on: ubuntu-latest
     steps:
+      - name: Set current date as env variable (NOW)
+        run: echo "::set-env name=NOW::$(date +'%d.%m.%Y %H:%M')"
       - uses: actions/checkout@v2
         with:
           ref: release-prod
@@ -18,7 +20,7 @@ jobs:
           name: hsldevcom/jore-map-ui
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-          buildargs: APP_ENVIRONMENT=prod, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=date::$(date +'%d.%m.%Y')
+          buildargs: APP_ENVIRONMENT=prod, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=${{ NOW }}
           tags: release-prod
       - name: Notify of deployment
         uses: 8398a7/action-slack@v2
