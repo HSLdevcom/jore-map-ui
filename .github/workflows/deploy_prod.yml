@@ -1,0 +1,31 @@
+name: Deploy prod
+
+on:
+  push:
+    branches:
+      - release-prod
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: release-prod
+      - name: Build UI and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/jore-map-ui
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          buildargs: APP_ENVIRONMENT=prod, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=date::$(date +'%d.%m.%Y')
+          tags: release-prod
+      - name: Notify of deployment
+        uses: 8398a7/action-slack@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: Jore-map PROD deployment status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

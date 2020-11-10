@@ -1,0 +1,31 @@
+name: Deploy dev
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: Build UI and publish Docker image
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: hsldevcom/jore-map-ui
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          buildargs: APP_ENVIRONMENT=dev, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=date::$(date +'%d.%m.%Y')
+          tags: develop
+      - name: Notify of deployment
+        uses: 8398a7/action-slack@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: Jore-map DEV deployment status
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
