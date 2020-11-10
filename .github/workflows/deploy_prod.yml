@@ -20,7 +20,7 @@ jobs:
           name: hsldevcom/jore-map-ui
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-          buildargs: APP_ENVIRONMENT=prod, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=$NOW
+          buildargs: APP_ENVIRONMENT=prod, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=${NOW}
           tags: release-prod
       - name: Notify of deployment
         uses: 8398a7/action-slack@v2
