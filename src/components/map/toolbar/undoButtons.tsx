@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import { IoMdRedo, IoMdUndo } from 'react-icons/io';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import LoginStore from '~/stores/loginStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import MapControlButton from '../mapControls/MapControlButton';
@@ -9,11 +9,11 @@ import MapControlButton from '../mapControls/MapControlButton';
 @observer
 class UndoButtons extends React.Component {
     private undo = () => {
-        EventHelper.trigger('undo');
+        EventListener.trigger('undo');
     };
 
     private redo = () => {
-        EventHelper.trigger('redo');
+        EventListener.trigger('redo');
     };
 
     render() {

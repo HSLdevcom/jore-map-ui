@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { reaction, IReactionDisposer } from 'mobx';
 import { observer } from 'mobx-react';
 import React, { Component } from 'react';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import PinIcon from '~/icons/PinIcon';
 import GeocodingService, { IGeoJSONFeature } from '~/services/geocodingService';
 import LeafletUtils from '~/utils/leafletUtils';
@@ -35,7 +35,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             input: '',
             searchResults: [],
             searchIndex: -1,
-            selectedSearchResult: null
+            selectedSearchResult: null,
         };
         this.map = this.props.map.current.leafletElement;
     }
@@ -45,16 +45,16 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             this.onChangeSelectedSearchResult
         );
 
-        EventHelper.on('enter', this.setSelectedSearchResult());
-        EventHelper.on('arrowUp', this.moveSearchIndex('arrowUp'));
-        EventHelper.on('arrowDown', this.moveSearchIndex('arrowDown'));
+        EventListener.on('enter', this.setSelectedSearchResult());
+        EventListener.on('arrowUp', this.moveSearchIndex('arrowUp'));
+        EventListener.on('arrowDown', this.moveSearchIndex('arrowDown'));
     }
     componentWillUnmount() {
         this.reactionDisposer();
 
-        EventHelper.off('enter', this.setSelectedSearchResult());
-        EventHelper.off('arrowUp', this.moveSearchIndex('arrowUp'));
-        EventHelper.off('arrowDown', this.moveSearchIndex('arrowDown'));
+        EventListener.off('enter', this.setSelectedSearchResult());
+        EventListener.off('arrowUp', this.moveSearchIndex('arrowUp'));
+        EventListener.off('arrowDown', this.moveSearchIndex('arrowDown'));
     }
 
     private onChangeSelectedSearchResult = () => {
@@ -72,10 +72,13 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         this.setState({
             input: selectedSearchResult.properties.label,
             searchResults: [],
-            searchIndex: -1
+            searchIndex: -1,
         });
         this.map.setView(latLng, this.map.getZoom());
-        const marker = LeafletUtils.createDivIcon(<PinIcon color={SEARCH_RESULT_MARKER_COLOR} />);
+        const marker = LeafletUtils.createDivIcon({
+            html: <PinIcon color={SEARCH_RESULT_MARKER_COLOR} />,
+            options: { classNames: [] },
+        });
         this.searchResultMarker = L.marker(latLng, { icon: marker }).addTo(this.map);
     };
 
@@ -88,7 +91,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             input: '',
             searchResults: [],
             searchIndex: -1,
-            selectedSearchResult: null
+            selectedSearchResult: null,
         });
     };
 
@@ -100,7 +103,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
             return;
         }
         this.setState({
-            searchIndex
+            searchIndex,
         });
     };
 
@@ -108,7 +111,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         const newValue = event.currentTarget.value;
         if (newValue) {
             this.setState({
-                input: newValue
+                input: newValue,
             });
             this.requestAddress(newValue);
         } else {
@@ -122,7 +125,7 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
         );
         if (searchResultFeatures) {
             this.setState({
-                searchResults: searchResultFeatures
+                searchResults: searchResultFeatures,
             });
         }
     };
@@ -162,17 +165,18 @@ class AddressSearch extends Component<IAddressSearchProps, IAddressSearchState> 
 
         const selectedSearchResult = this.state.searchResults[searchIndex];
         this.setState({
-            selectedSearchResult
+            selectedSearchResult,
         });
     };
 
     private conditionallyUnselectSearchResult = () => {
         // Need to setTimeout before unselect because click event from searchResults come after onBlur event
+        // The problem is that onBlur followed by setState causes click event to not fire. This is the best solution found so far. Note: lower delay than 500ms is not recommended (on slow browsers e.g. 100ms might not work)
         setTimeout(() => {
             if (this.state.searchResults.length > 0) {
                 this.unselectSearchResult();
             }
-        }, 100);
+        }, 500);
     };
 
     render() {

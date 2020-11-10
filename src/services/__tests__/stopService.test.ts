@@ -1,7 +1,10 @@
+import { mocked } from 'ts-jest/utils';
 import ApolloClient from '~/helpers/ApolloClient';
 import StopService from '../stopService';
 
 jest.mock('../../helpers/ApolloClient');
+
+const mockedApolloClient = mocked(ApolloClient, true) as any;
 
 // These tests expect that StopService.SHORT_ID_LENGTH = 4
 
@@ -13,17 +16,17 @@ describe('StopService.fetchAvailableShortIds', () => {
                     nodes: [
                         {
                             soltunnus: '1',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '2',
-                            sollistunnus: '0002'
-                        }
-                    ]
-                }
-            }
+                            sollistunnus: '0002',
+                        },
+                    ],
+                },
+            },
         };
-        ApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
+        mockedApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
         const currentNodeId = '3';
 
         const availableIds = await StopService.fetchAvailableShortIds(currentNodeId);
@@ -40,17 +43,17 @@ describe('StopService.fetchAvailableShortIds', () => {
                     nodes: [
                         {
                             soltunnus: '1',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '2',
-                            sollistunnus: '0002'
-                        }
-                    ]
-                }
-            }
+                            sollistunnus: '0002',
+                        },
+                    ],
+                },
+            },
         };
-        ApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
+        mockedApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
         const currentNodeId = '1';
 
         const availableIds = await StopService.fetchAvailableShortIds(currentNodeId);
@@ -67,21 +70,21 @@ describe('StopService.fetchAvailableShortIds', () => {
                     nodes: [
                         {
                             soltunnus: '1',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '2',
-                            sollistunnus: '0001'
+                            sollistunnus: '0001',
                         },
                         {
                             soltunnus: '3',
-                            sollistunnus: '0002'
-                        }
-                    ]
-                }
-            }
+                            sollistunnus: '0002',
+                        },
+                    ],
+                },
+            },
         };
-        ApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
+        mockedApolloClient.query = jest.fn(async (options: any) => queryReturnValue);
         const currentNodeId = '1';
 
         const availableIds = await StopService.fetchAvailableShortIds(currentNodeId);

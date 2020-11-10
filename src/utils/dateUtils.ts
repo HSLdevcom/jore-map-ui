@@ -46,7 +46,7 @@ const getMaxDate = () => {
     maxDate.setFullYear(constants.MAX_YEAR + 1);
     maxDate.setMonth(0);
     maxDate.setDate(1);
-    maxDate.setDate(maxDate.getDate()-1);
+    maxDate.setDate(maxDate.getDate() - 1);
     maxDate.setHours(0, 0, 0, 0);
     return maxDate;
 };

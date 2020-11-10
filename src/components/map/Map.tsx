@@ -6,16 +6,15 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { LayerContainer, Map, Pane, TileLayer, ZoomControl } from 'react-leaflet';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
 import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
-import RoutePathLayer from './layers/RoutePathLayer';
+import RoutePathListLayer from './layers/RoutePathListLayer';
 import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
 import EditNodeLayer from './layers/edit/EditNodeLayer';
@@ -34,7 +33,6 @@ interface IMapProps {
     mapStore?: MapStore;
     routeListStore?: RouteListStore;
     nodeStore?: NodeStore;
-    toolbarStore?: ToolbarStore;
 }
 
 interface IMapPropReference {
@@ -55,7 +53,7 @@ type LeafletContext = {
     popupContainer?: L.Layer;
 };
 
-@inject('mapStore', 'routeListStore', 'nodeStore', 'toolbarStore')
+@inject('mapStore', 'routeListStore', 'nodeStore')
 @observer
 class LeafletMap extends React.Component<IMapProps> {
     private mapReference: React.RefObject<Map<IMapPropReference, L.Map>>;
@@ -88,8 +86,20 @@ class LeafletMap extends React.Component<IMapProps> {
         if (coordinates) {
             map.setView(coordinates, mapStore!.zoom);
         }
-        map.on('click', (e: L.LeafletEvent) => EventHelper.trigger('mapClick', e));
+        this.enableMapClickListener();
     }
+
+    private enableMapClickListener = () => {
+        const map = this.getMap();
+        map!.on('click', (e: L.LeafletEvent) => {
+            EventListener.trigger('mapClick', e);
+        });
+    };
+
+    private disableMapClickListener = () => {
+        const map = this.getMap();
+        map!.off('click');
+    };
 
     private getMap() {
         return this.mapReference.current ? this.mapReference.current.leafletElement : null;
@@ -170,11 +180,14 @@ class LeafletMap extends React.Component<IMapProps> {
                         tileSize={512}
                         zoomOffset={-1}
                     />
-                    <NetworkLayers />
+                    <NetworkLayers map={this.mapReference} />
                     <EditNodeLayer />
                     <EditLinkLayer />
-                    <RoutePathLayer />
-                    <EditRoutePathLayer />
+                    <RoutePathListLayer />
+                    <EditRoutePathLayer
+                        enableMapClickListener={this.enableMapClickListener}
+                        disableMapClickListener={this.disableMapClickListener}
+                    />
                     <PopupLayer />
                     <StopAreaLayer />
                     <HighlightEntityLayer />

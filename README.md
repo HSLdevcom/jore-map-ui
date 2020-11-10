@@ -1,9 +1,5 @@
 # Joukkoliikennerekisteri Map UI
 
-### Travis status
-
-[![Build Status](https://travis-ci.org/HSLdevcom/jore-map-ui.svg?branch=develop)](https://travis-ci.org/HSLdevcom/jore-map-ui)
-
 ### Cypress status
 
 ![Test dev](https://github.com/HSLdevcom/jore-map-ui/workflows/Test%20dev/badge.svg)
@@ -36,11 +32,11 @@ Runs at http://localhost:3000/
 
 ## Release
 
-### Travis builds docker image automatically with
+### Github actions builds docker images automatically with
 
--   `:prod` tag, when code is pushed to `release-prod` branch
+-   `:release-prod` tag, when code is pushed to `release-prod` branch
 -   `:stage` tag, when code is pushed to `master` branch
--   `:dev` tag, when code is pushed to `develop` branch
+-   `:develop` tag, when code is pushed to `develop` branch
 
 ### Release a new version
 

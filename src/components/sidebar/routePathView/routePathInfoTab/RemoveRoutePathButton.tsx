@@ -1,15 +1,13 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import RouteActiveSchedules from '~/components/shared/RouteActiveSchedules';
 import SaveButton from '~/components/shared/SaveButton';
-import constants from '~/constants/constants';
-import { IRoutePath } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import RoutePathService from '~/services/routePathService';
 import ScheduleService from '~/services/scheduleService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
+import { LoginStore } from '~/stores/loginStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import { toDateString, toMidnightDate } from '~/utils/dateUtils';
@@ -20,11 +18,10 @@ interface IRemoveRoutePathButtonProps {
     alertStore?: AlertStore;
     confirmStore?: ConfirmStore;
     errorStore?: ErrorStore;
+    loginStore?: LoginStore;
 }
 
-const ENVIRONMENT = constants.ENVIRONMENT;
-
-@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore')
+@inject('routePathStore', 'alertStore', 'confirmStore', 'errorStore', 'loginStore')
 @observer
 class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps> {
     private removeRoutePath = async () => {
@@ -32,30 +29,6 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             this.props.routePathStore!.routePath?.routeId!
         );
         const routePath = this.props.routePathStore!.routePath!;
-        this.props.confirmStore!.openConfirm({
-            content: this.renderConfirmContent(routePath, activeSchedules),
-            onConfirm: async () => {
-                try {
-                    this.props.alertStore!.setLoaderMessage('Reitinsuuntaa poistetaan...');
-                    await RoutePathService.removeRoutePath({
-                        routeId: routePath.routeId,
-                        direction: routePath.direction,
-                        startDate: routePath.startDate,
-                    });
-                    this.props.alertStore!.setFadeMessage({ message: 'Reitinsuunta poistettu!' });
-                    NavigationUtils.openRouteView({
-                        routeId: routePath.routeId,
-                    });
-                } catch (e) {
-                    this.props.alertStore!.close();
-                    this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-                }
-            },
-            confirmButtonText: 'Poista reitinsuunta',
-            confirmType: 'delete',
-        });
-    };
-    private renderConfirmContent = (routePath: IRoutePath, activeSchedules: ISchedule[]) => {
         let confirmMessage;
         if (activeSchedules.length > 0) {
             confirmMessage = `Oletko täysin varma, että haluat poistaa `;
@@ -68,20 +41,49 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             routePath.endDate
         )}?`;
 
-        const routeId = this.props.routePathStore!.routePath?.routeId!;
-        return (
-            <div>
-                <div className={s.routeActiveSchedulesWrapper}>
-                    <RouteActiveSchedules
-                        header={routeId}
-                        activeSchedules={activeSchedules}
-                        confirmMessage={confirmMessage}
-                    />
-                </div>
-            </div>
-        );
+        const routeId = routePath.routeId;
+        const routePathsAfterRemove = this.props.routePathStore!.existingRoutePaths.filter((rp) => {
+            const isRpToRemove =
+                rp.startDate.getTime() === routePath.startDate.getTime() &&
+                rp.direction === routePath.direction &&
+                rp.routeId === routePath.routeId;
+            return !isRpToRemove;
+        });
+
+        this.props.confirmStore!.openConfirm({
+            confirmComponentName: 'removeRoutePathConfirm',
+            confirmData: {
+                routeId,
+                activeSchedules,
+                confirmMessage,
+                routePaths: routePathsAfterRemove,
+            },
+            onConfirm: async () => {
+                try {
+                    this.props.alertStore!.setLoaderMessage('Reitinsuuntaa poistetaan...');
+                    await RoutePathService.removeRoutePath({
+                        routeId: routePath.routeId,
+                        direction: routePath.direction,
+                        startDate: routePath.startDate,
+                    });
+                    this.props.alertStore!.setFadeMessage({ message: 'Reitinsuunta poistettu!' });
+                    NavigationUtils.openRouteView({
+                        routeId: routePath.routeId,
+                        shouldSkipUnsavedChangesPrompt: true,
+                    });
+                } catch (e) {
+                    this.props.alertStore!.close();
+                    this.props.errorStore!.addError('', e);
+                }
+            },
+            confirmButtonText: 'Poista reitinsuunta',
+            confirmType: 'delete',
+        });
     };
+
     render() {
+        if (!this.props.loginStore!.hasWriteAccess) return null;
+
         const routePathStore = this.props.routePathStore!;
         const routePath = routePathStore.routePath!;
         const isEditingDisabled = routePathStore.isEditingDisabled;
@@ -89,17 +91,13 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         const currentDatePlusOne = toMidnightDate(new Date());
         currentDatePlusOne.setDate(currentDatePlusOne.getDate() + 1);
         const isRoutePathInFuture = routePath.startDate.getTime() >= currentDatePlusOne.getTime();
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? ''
-            : 'Reitinsuunnan poistaminen ei ole vielä valmis. Voit kokeilla poistamista dev-ympäristössä. Jos haluat poistaa reitinsuuntia tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <SaveButton
                 className={
                     (s.removeButton, !isRoutePathInFuture ? s.disabledHoverButton : undefined)
                 }
                 disabled={isEditingDisabled}
-                savePreventedNotification={savePreventedNotification}
+                savePreventedNotification={''}
                 type='deleteButton'
                 onClick={isRoutePathInFuture ? this.removeRoutePath : () => void 0}
                 isWide={false}

@@ -10,7 +10,7 @@ const routeValidationModel: IRouteValidationModel = {
     routeNameSw: 'required|min:1|max:60|string',
     lineId: 'required|min:4|max:6|string',
     modifiedBy: '',
-    modifiedOn: ''
+    modifiedOn: '',
 };
 
 export default routeValidationModel;

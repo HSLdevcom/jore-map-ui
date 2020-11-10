@@ -15,8 +15,6 @@ import StopForm from './StopForm';
 interface IStopViewProps {
     node: INode;
     isNewStop: boolean;
-    nodeInvalidPropertiesMap: object;
-    onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
     nodeStore?: NodeStore;
     codeListStore?: CodeListStore;
     alertStore?: AlertStore;
@@ -68,7 +66,13 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         this.nodeListener();
     }
 
-    private saveHastusArea = async ({ isNewHastusArea }: { isNewHastusArea: boolean }) => {
+    private saveHastusArea = async ({
+        isNewHastusArea,
+        isHastusAreaSavedToNode,
+    }: {
+        isNewHastusArea: boolean;
+        isHastusAreaSavedToNode: boolean;
+    }) => {
         const nodeStore = this.props.nodeStore!;
         try {
             if (isNewHastusArea) {
@@ -83,6 +87,12 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 });
             }
             nodeStore.updateStopProperty('hastusId', nodeStore.hastusArea.id);
+            if (isHastusAreaSavedToNode) {
+                nodeStore.updateOldStopProperty('hastusId', nodeStore.hastusArea.id);
+            } else {
+                // Make sure editing is enabled so that user will see unsaved changes
+                nodeStore.setIsEditingDisabled(false);
+            }
             nodeStore.setOldHastusArea(nodeStore.hastusArea);
             const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
             this.setState({
@@ -90,7 +100,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
             });
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
         }
     };
 
@@ -117,7 +127,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     render() {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const invalidPropertiesMap = this.props.nodeStore!.stopInvalidPropertiesMap;
-        const { node, isNewStop, onNodePropertyChange } = this.props;
+        const { node, isNewStop } = this.props;
 
         if (this.state.isLoading) {
             return <Loader size='small' />;
@@ -133,9 +143,7 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
                 hastusAreas={this.state.hastusAreas}
                 saveHastusArea={this.saveHastusArea}
                 stopInvalidPropertiesMap={invalidPropertiesMap}
-                nodeInvalidPropertiesMap={this.props.nodeInvalidPropertiesMap}
                 updateStopProperty={this.updateStopProperty}
-                onNodePropertyChange={onNodePropertyChange}
                 setCurrentStateIntoNodeCache={this.setCurrentStateIntoNodeCache}
             />
         );

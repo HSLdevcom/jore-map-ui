@@ -1,6 +1,8 @@
+import { isEmpty } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import IError from '~/models/IError';
+import AlertStore, { AlertType } from './alertStore';
 
 class ErrorStore {
     @observable private _errors: string[];
@@ -24,11 +26,28 @@ class ErrorStore {
 
     @action
     public addError(message: string, error?: IError) {
+        if (error && error.errorCode === 409) {
+            AlertStore!.setNotificationMessage({
+                message: httpStatusDescriptionCodeList[409],
+                onClose: () => {
+                    window.location.reload();
+                },
+                closeButtonText: 'Päivitä sivu',
+                type: AlertType.Info,
+            });
+            return;
+        }
         let msg = message;
         if (error && error.errorCode && httpStatusDescriptionCodeList[error.errorCode]) {
-            msg += `, ${httpStatusDescriptionCodeList[error.errorCode]}`;
-        } else if (error && error.message) {
-            msg += `, ${error.message}`;
+            if (!isEmpty(msg)) {
+                msg += `, `;
+            }
+            msg += `${httpStatusDescriptionCodeList[error.errorCode]}`;
+        } else if (error && !isEmpty(error.message)) {
+            if (!isEmpty(msg)) {
+                msg += `, `;
+            }
+            msg += `${error.message}`;
         }
         this._errors.push(msg);
         // tslint:disable-next-line:no-console

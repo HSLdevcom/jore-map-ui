@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { observable } from 'mobx';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
@@ -55,15 +55,47 @@ class ValidationStore<ValidationObject, ValidationModel> {
     ) => {
         const validatorRule = this._validationModel![property];
         const value = this._validationObject![property];
-        let validatorResult: IValidationResult | undefined = this.validateWithCustomValidator(
-            property,
-            value
-        );
-        if (!validatorResult || (validatorResult && validatorResult.isValid)) {
-            if (!_.isEmpty(validatorRule)) {
-                validatorResult = FormValidator.validateProperty(validatorRule, value);
+        let validatorResult: IValidationResult | undefined;
+        const customValidationResult:
+            | IValidationResult
+            | undefined = this.validateWithCustomValidator(property, value);
+        const defaultValidationResult: IValidationResult | undefined = validatorRule
+            ? FormValidator.validateProperty(validatorRule, value)
+            : undefined;
+
+        if (customValidationResult && defaultValidationResult) {
+            // There are 3 types of validationResults severities, rank them with scores of
+            // 1 = "isValid, 2 = isWarning, 3 = isErrored"
+            const getValidationResultSeverity = (validationResult: IValidationResult) => {
+                return !validationResult.isValid
+                    ? 3
+                    : // ValidationResult is warning if it is valid and it has an error message
+                    !isEmpty(validationResult.errorMessage)
+                    ? 2
+                    : 1;
+            };
+            const defaultValidationResultSeverity = getValidationResultSeverity(
+                defaultValidationResult
+            );
+            const customValidationResultSeverity = getValidationResultSeverity(
+                customValidationResult
+            );
+
+            // We always want to output the worst validationResult as the validationResult
+            // If custom and default validation severities are equivalent, we want to use customValidationResult
+            if (customValidationResultSeverity > defaultValidationResultSeverity) {
+                validatorResult = customValidationResult;
+            } else if (customValidationResultSeverity === defaultValidationResultSeverity) {
+                validatorResult = customValidationResult;
+            } else {
+                validatorResult = defaultValidationResult;
             }
+        } else if (customValidationResult) {
+            validatorResult = customValidationResult;
+        } else if (defaultValidationResult) {
+            validatorResult = defaultValidationResult;
         }
+
         if (validatorResult) {
             this._invalidPropertiesMap[property] = validatorResult;
         }

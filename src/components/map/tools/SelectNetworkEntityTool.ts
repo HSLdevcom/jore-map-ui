@@ -1,29 +1,39 @@
 import { LatLng } from 'leaflet';
 import constants from '~/constants/constants';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
-import navigator from '~/routing/navigator';
-import routeBuilder from '~/routing/routeBuilder';
-import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
 import MapStore from '~/stores/mapStore';
 import NetworkStore from '~/stores/networkStore';
 import PopupStore, { IPopupProps } from '~/stores/popupStore';
+import ToolbarStore from '~/stores/toolbarStore';
 import { isNetworkLinkHidden, isNetworkNodeHidden } from '~/utils/networkUtils';
 import { ISelectNetworkEntityPopupData } from '../layers/popups/SelectNetworkEntityPopup';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectNetworkEntity';
+
 class SelectNetworkEntityTool implements BaseTool {
     public toolType = ToolbarToolType.SelectNetworkEntity;
-    public activate() {
-        EventHelper.on('mapClick', this.onMapClick);
-    }
-    public deactivate() {
-        EventHelper.off('mapClick', this.onMapClick);
-    }
+
+    public activate = () => {
+        EventListener.on('mapClick', this.onMapClick);
+    };
+
+    public deactivate = () => {
+        EventListener.off('mapClick', this.onMapClick);
+    };
+
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        ToolbarStore.setToolPhase(toolPhase);
+    };
 
     private onMapClick = async (clickEvent: any) => {
         const zoomLevel = MapStore.zoom;
@@ -35,7 +45,7 @@ class SelectNetworkEntityTool implements BaseTool {
         }
 
         const leafletLatLng = clickEvent.detail.latlng as LatLng;
-        const latLng = new LatLng(leafletLatLng.lng, leafletLatLng.lat);
+        const latLng = new LatLng(leafletLatLng.lat, leafletLatLng.lng);
 
         // TODO: fix these hard coded values to use pixel count per meter (that depend on map's zoom level) instead
         let bufferSize;
@@ -78,7 +88,7 @@ class SelectNetworkEntityTool implements BaseTool {
                 !isNetworkNodeHidden({
                     nodeId: node.id,
                     transitTypeCodes: node.transitTypes.join(','),
-                    dateRangesString: node.dateRanges
+                    dateRangesString: node.dateRanges,
                 })
         );
 
@@ -92,23 +102,14 @@ class SelectNetworkEntityTool implements BaseTool {
                     transitType: link.transitType,
                     startNodeId: link.startNodeId,
                     endNodeId: link.endNodeId,
-                    dateRangesString: link.dateRanges
+                    dateRangesString: link.dateRanges,
                 })
         );
 
         if (nodes.length === 0 && links.length === 0) return;
-        if (nodes.length === 1 && links.length === 0) {
-            _redirectToNode(nodes[0]);
-            return;
-        }
-        if (links.length === 1 && nodes.length === 0) {
-            _redirectToLink(links[0]);
-            return;
-        }
-
         const popupData: ISelectNetworkEntityPopupData = {
             nodes,
-            links
+            links,
         };
         const popup: IPopupProps = {
             type: 'selectNetworkEntityPopup',
@@ -116,34 +117,10 @@ class SelectNetworkEntityTool implements BaseTool {
             coordinates: leafletLatLng,
             isCloseButtonVisible: true,
             isAutoCloseOn: false,
-            hasOpacity: true
+            hasOpacity: true,
         };
         PopupStore.showPopup(popup);
     };
 }
-
-const _redirectToNode = (node: INodeMapHighlight) => {
-    const nodeViewLink = routeBuilder
-        .to(SubSites.node)
-        .toTarget(':id', node.id)
-        .toLink();
-    navigator.goTo({
-        link: nodeViewLink,
-        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata solmun ${
-            node.id
-        }? Tallentamattomat muutokset kumotaan.`
-    });
-};
-
-const _redirectToLink = (link: ILinkMapHighlight) => {
-    const linkViewLink = routeBuilder
-        .to(SubSites.link)
-        .toTarget(':id', [link.startNodeId, link.endNodeId, link.transitType].join(','))
-        .toLink();
-    navigator.goTo({
-        link: linkViewLink,
-        unsavedChangesPromptMessage: `Sinulla on tallentamattomia muutoksia. Haluatko varmasti avata linkin? Tallentamattomat muutokset kumotaan.`
-    });
-};
 
 export default SelectNetworkEntityTool;

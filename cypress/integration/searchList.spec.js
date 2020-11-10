@@ -17,6 +17,7 @@ describe('Search list tests', () => {
         cy.getTestElement('lineSearch')
             .clear()
             .type('110');
+        cy.wait(1000);
 
         cy.getTestElement('nodeItemP')
             .first()

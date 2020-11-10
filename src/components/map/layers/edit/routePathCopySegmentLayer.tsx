@@ -18,22 +18,22 @@ const HIGHLIGHTED_LINK_NOT_TO_COPY_COLOR = '#f7e200';
 @observer
 class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProps> {
     private renderHighlightedRoutePath = () => {
-        const copySegmentStore = this.props.routePathCopySegmentStore;
-        const startNode = copySegmentStore!.startNode;
-        const endNode = copySegmentStore!.endNode;
+        const routePathCopySegmentStore = this.props.routePathCopySegmentStore;
+        const startSegmentPoint = routePathCopySegmentStore!.startSegmentPoint;
+        const endSegmentPoint = routePathCopySegmentStore!.endSegmentPoint;
 
-        const highlightedRoutePath = copySegmentStore!.highlightedRoutePath;
-        if (!highlightedRoutePath || !startNode || !endNode) return null;
+        const highlightedRoutePath = routePathCopySegmentStore!.highlightedRoutePath;
+        if (!highlightedRoutePath || !startSegmentPoint || !endSegmentPoint) return null;
 
-        const segmentsToCopy = copySegmentStore!.getSegmentLinksToCopy(
+        const segmentsToCopy = routePathCopySegmentStore!.getSegmentLinksToCopy(
             highlightedRoutePath,
-            startNode.id,
-            endNode.id
+            startSegmentPoint.nodeId,
+            endSegmentPoint.nodeId
         );
-        const segmentsNotToCopy = copySegmentStore!.getSegmentLinksNotToCopy(
+        const segmentsNotToCopy = routePathCopySegmentStore!.getSegmentLinksNotToCopy(
             highlightedRoutePath,
-            startNode.id,
-            endNode.id
+            startSegmentPoint.nodeId,
+            endSegmentPoint.nodeId
         );
         return (
             <>
@@ -58,21 +58,21 @@ class RoutePathCopySegmentLayer extends Component<IRoutePathCopySegmentLayerProp
     };
 
     render() {
-        const startNode = this.props.routePathCopySegmentStore!.startNode;
-        const endNode = this.props.routePathCopySegmentStore!.endNode;
+        const startSegmentPoint = this.props.routePathCopySegmentStore!.startSegmentPoint;
+        const endSegmentPoint = this.props.routePathCopySegmentStore!.endSegmentPoint;
 
         return (
             <>
-                {startNode && (
+                {startSegmentPoint && (
                     <Marker
-                        latLng={startNode!.coordinates}
+                        latLng={startSegmentPoint.coordinates}
                         color={START_MARKER_COLOR}
                         isClickDisabled={true}
                     />
                 )}
-                {endNode && (
+                {endSegmentPoint && (
                     <Marker
-                        latLng={endNode!.coordinates}
+                        latLng={endSegmentPoint.coordinates}
                         color={END_MARKER_COLOR}
                         isClickDisabled={true}
                     />

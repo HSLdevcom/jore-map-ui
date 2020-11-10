@@ -2,7 +2,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
 import { IDropdownItem } from '~/components/controls/Dropdown';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
@@ -20,6 +20,7 @@ import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import { StopAreaStore } from '~/stores/stopAreaStore';
 import { Dropdown, TransitToggleButtonBar } from '../../../controls';
 import InputContainer from '../../../controls/InputContainer';
@@ -37,6 +38,7 @@ interface IStopAreaViewProps {
     errorStore?: ErrorStore;
     alertStore?: AlertStore;
     confirmStore?: ConfirmStore;
+    searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
 }
 
@@ -52,6 +54,7 @@ interface IStopAreaViewState {
     'alertStore',
     'codeListStore',
     'confirmStore',
+    'searchResultStore',
     'mapStore'
 )
 @observer
@@ -161,12 +164,20 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                 }
             } else {
                 await StopAreaService.updateStopArea(this.props.stopAreaStore!.stopArea);
+                // Update stopNames in search results
+                this.props.stopAreaStore!.stopItems.forEach((item) => {
+                    this.props.searchResultStore!.updateSearchNodeStopName(
+                        item.nodeId,
+                        this.props.stopAreaStore!.stopArea.nameFi
+                    );
+                });
                 this.props.stopAreaStore!.setIsEditingDisabled(true);
                 this.initExistingStopArea();
             }
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
+            this.setState({ isLoading: false });
         }
     };
 
@@ -195,9 +206,11 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
             oldData: oldRoute,
             model: 'stopArea',
         };
+        const savePromptSection = { models: [saveModel] };
         confirmStore.openConfirm({
             confirmNotification,
-            content: <SavePrompt models={[saveModel]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },

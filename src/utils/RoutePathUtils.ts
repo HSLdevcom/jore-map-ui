@@ -1,12 +1,36 @@
 import NodeType from '~/enums/nodeType';
 import { IRoutePathLink } from '~/models';
 
-class RoutePathValidator {
+class RoutePathUtils {
     public static validateRoutePathLinkCoherency = (routePathLinks: IRoutePathLink[]) => {
         return routePathLinks.every(
             (rpLink, index) =>
                 index === 0 || routePathLinks[index - 1].endNode.id === rpLink.startNode.id
         );
+    };
+
+    // Split routePathLinks into sub lists with coherent routePathLinks
+    public static getCoherentRoutePathLinksList = (
+        routePathLinks: IRoutePathLink[]
+    ): IRoutePathLink[][] => {
+        const coherentRoutePathLinksList: IRoutePathLink[][] = [];
+        let index = 0;
+        routePathLinks.forEach((currentRpLink) => {
+            const currentList = coherentRoutePathLinksList[index];
+            if (!currentList && index === 0) {
+                coherentRoutePathLinksList[index] = [currentRpLink];
+                return;
+            }
+            const lastRpLink = currentList[currentList.length - 1];
+            if (lastRpLink.endNode.id === currentRpLink.startNode.id) {
+                currentList.push(currentRpLink);
+            } else {
+                const newList = [currentRpLink];
+                coherentRoutePathLinksList.push(newList);
+                index += 1;
+            }
+        });
+        return coherentRoutePathLinksList;
     };
 
     // validate that stop can't appear twice (at least one must be set as disabled)
@@ -45,8 +69,6 @@ class RoutePathValidator {
 
         return firstNode.id === lastNode.id;
     };
-
-    // routePath can't have the same start / end node
 }
 
-export default RoutePathValidator;
+export default RoutePathUtils;

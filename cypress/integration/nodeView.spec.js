@@ -93,6 +93,8 @@ describe('NodeView tests - write access user', () => {
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
+
+        cy.getTestElement('confirmButton').click();
         cy.getTestElement('savePromptView').should('exist');
     });
 
@@ -109,6 +111,8 @@ describe('NodeView tests - write access user', () => {
         cy.saveButtonShouldBeActive();
 
         cy.getTestElement('saveButton').click();
+
+        cy.getTestElement('confirmButton').click();
         cy.getTestElement('savePromptView').should('exist');
     });
 
@@ -180,6 +184,7 @@ const _openCrossroad = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').clear().type('101');
+    cy.wait(1000);
 
     cy.getTestElement('nodeItemX').first().click();
     cy.getTestElement('nodeView').should('exist');
@@ -189,6 +194,7 @@ const _openMunicipality = () => {
     cy.getTestElement('nodeToggle').click();
     cy.getTestElement('lineSearch').click();
     cy.getTestElement('lineSearch').clear().type('101');
+    cy.wait(1000);
 
     cy.getTestElement('nodeItem-').first().click();
     cy.getTestElement('nodeView').should('exist');

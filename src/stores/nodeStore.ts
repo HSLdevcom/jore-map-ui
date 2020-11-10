@@ -55,6 +55,7 @@ class NodeStore {
     @observable private _stopAreas: IStopArea[];
     @observable private _isNodeIdEditable: boolean;
     @observable private _isNodeIdQueryLoading: boolean;
+    @observable private _isAddressQueryLoading: boolean;
     @observable private _nodeIdSuffixOptions: IDropdownItem[];
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _nodeValidationStore: ValidationStore<INode, INodeValidationModel>;
@@ -72,6 +73,7 @@ class NodeStore {
         this._isEditingDisabled = true;
         this._isNodeIdEditable = false;
         this._isNodeIdQueryLoading = false;
+        this._isAddressQueryLoading = false;
         this._nodeIdSuffixOptions = [];
         this._nodeCache = {
             newNodeCache: null,
@@ -148,6 +150,11 @@ class NodeStore {
     @computed
     get isNodeIdQueryLoading() {
         return this._isNodeIdQueryLoading;
+    }
+
+    @computed
+    get isAddressQueryLoading() {
+        return this._isAddressQueryLoading;
     }
 
     @computed
@@ -295,7 +302,9 @@ class NodeStore {
 
         newNode[nodeLocationType] = roundLatLng(newCoordinates);
 
-        if (nodeLocationType === 'coordinates') this.mirrorCoordinates(newNode);
+        if (this._node.type !== NodeType.STOP) {
+            this.mirrorCoordinates(newNode);
+        }
 
         const coordinatesProjection = newNode.coordinatesProjection;
         // Update the first link geometry of startNodes to coordinatesProjection
@@ -319,7 +328,7 @@ class NodeStore {
             this.updateNodeProperty(coordinateName, newNode[coordinateName])
         );
 
-        if (nodeLocationType === 'coordinatesProjection') {
+        if (this._node.type === NodeType.STOP && nodeLocationType === 'coordinatesProjection') {
             this.updateStopPropertiesAccordingToNodeLocation();
         }
     };
@@ -341,14 +350,14 @@ class NodeStore {
 
     @action
     public mirrorCoordinates = (node: INode) => {
-        if (node.type !== NodeType.STOP) {
-            node.coordinatesProjection = node.coordinates;
-        }
+        node.coordinates = node.coordinatesProjection;
     };
 
     @action
     public updateAddressData = async (features: IGeoJSONFeature[] | null) => {
         if (!this.node || !this.node.stop) return;
+
+        this.setIsAddressQueryLoading(true);
 
         const coordinates = this.node.coordinatesProjection;
         const addressFi: string = await GeocodingService.fetchStreetNameFromCoordinates(
@@ -367,7 +376,13 @@ class NodeStore {
         this.updateStopProperty('addressFi', addressFi);
         this.updateStopProperty('addressSw', addressSw);
         this.updateStopProperty('postalNumber', postalNumber);
+        this.setIsAddressQueryLoading(false);
     };
+
+    @action
+    public setIsAddressQueryLoading = (isLoading: boolean) => {
+        this._isAddressQueryLoading = isLoading;
+    }
 
     @action
     public updateMunicipality = (features: IGeoJSONFeature[] | null) => {
@@ -408,6 +423,7 @@ class NodeStore {
 
     @action
     public updateNodeProperty = (property: keyof INode, value: string | Date | LatLng | null) => {
+        if (!this._node) return;
         (this._node as any)[property] = value;
         this._nodeValidationStore.updateProperty(property, value);
     };
@@ -420,20 +436,30 @@ class NodeStore {
     };
 
     @action
+    public updateOldStopProperty = (property: string, value?: string | number | Date) => {
+        if (!this.node) return;
+        this._oldNode!.stop![property] = value;
+    };
+
+    @action
     public updateNodeType = (type: NodeType) => {
         this._node!.type = type;
         this._nodeValidationStore.updateProperty('type', type);
 
-        this.mirrorCoordinates(this._node!);
+        if (this._node!.type !== NodeType.STOP) {
+            this.mirrorCoordinates(this._node!);
+        }
 
         if (this._node!.type === NodeType.STOP && !this._node!.stop) {
             const stop = NodeStopFactory.createNewStop();
             this._node!.stop = stop;
             this._stopValidationStore.init(stop, stopValidationModel);
         } else {
-            // Only node which type is stop has measurementType and measurementDate, remove them if type is not stop
+            // Remove properties of node which does not belong to a node which type is not stop
             this.updateNodeProperty('measurementType', '');
             this.updateNodeProperty('measurementDate', '');
+            this.updateNodeProperty('shortIdLetter', null);
+            this.updateNodeProperty('shortIdString', null);
         }
     };
 
@@ -634,9 +660,9 @@ class NodeStore {
         // Call updateNodeProperty trigger validation for these properties related to nodeId:
         this.updateNodeProperty(
             'beginningOfNodeId',
-            this._node.beginningOfNodeId ? this._node.beginningOfNodeId : null
+            this._node?.beginningOfNodeId ? this._node.beginningOfNodeId : null
         );
-        this.updateNodeProperty('idSuffix', this._node.idSuffix ? this._node.idSuffix : null);
+        this.updateNodeProperty('idSuffix', this._node?.idSuffix ? this._node.idSuffix : null);
 
         this.setIsNodeIdQueryLoading(false);
     };

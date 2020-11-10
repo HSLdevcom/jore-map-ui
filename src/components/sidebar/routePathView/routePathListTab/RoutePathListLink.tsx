@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
@@ -5,38 +6,43 @@ import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
 import { MapStore } from '~/stores/mapStore';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import TextContainer from '../../../controls/TextContainer';
-import RoutePathListItem from './RoutePathListItem';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListLinkProps {
-    reference: React.RefObject<HTMLDivElement>;
+    isExtended: boolean;
+    isHovered: boolean;
     routePathLink: IRoutePathLink;
-    mapStore?: MapStore;
     routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     codeListStore?: CodeListStore;
+    mapStore?: MapStore;
 }
 
-@inject('routePathStore', 'codeListStore', 'mapStore')
+@inject('routePathStore', 'routePathLayerStore', 'codeListStore', 'mapStore')
 @observer
 class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
     private renderHeader = () => {
         const id = this.props.routePathLink.id;
         const orderNumber = this.props.routePathLink.orderNumber;
-        const isExtended = this.props.routePathStore!.extendedListItemId === id;
+        const isExtended = this.props.routePathLayerStore!.extendedListItemId === id;
         return (
             <div
                 className={s.itemHeader}
                 onClick={this.toggleExtendedListItemId}
                 data-cy='itemHeader'
             >
-                <div className={s.headerSubtopicContainer}>Reitinlinkki {orderNumber}</div>
+                <div className={classnames(s.headerSubtopicContainer, s.smallFontSize)}>
+                    Reitinlinkki {orderNumber}
+                </div>
                 <div className={s.headerContent}>
                     <div className={s.itemToggle}>
                         {isExtended && <FaAngleDown />}
@@ -49,11 +55,11 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
 
     private toggleExtendedListItemId = () => {
         const currentListItemId = this.props.routePathLink.id;
-        const routePathStore = this.props.routePathStore;
-        if (currentListItemId === routePathStore!.extendedListItemId) {
-            this.props.routePathStore!.setExtendedListItemId(null);
+        const routePathLayerStore = this.props.routePathLayerStore;
+        if (currentListItemId === routePathLayerStore!.extendedListItemId) {
+            routePathLayerStore!.setExtendedListItemId(null);
         } else {
-            this.props.routePathStore!.setExtendedListItemId(currentListItemId);
+            routePathLayerStore!.setExtendedListItemId(currentListItemId);
             this.props.mapStore!.setMapBounds(this.getBounds());
         }
     };
@@ -117,14 +123,53 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
         );
     };
 
+    private onMouseEnterLinkIcon = () => {
+        this.props.routePathLayerStore!.setHoveredItemId(this.props.routePathLink.id);
+    };
+
+    private onMouseLeaveLinkIcon = () => {
+        if (this.props.isHovered) {
+            this.props.routePathLayerStore!.setHoveredItemId(null);
+        }
+    };
+
+    private onClickLinkIcon = () => {
+        const clickParams: IRoutePathLinkClickParams = {
+            routePathLinkId: this.props.routePathLink.id,
+        };
+        EventListener.trigger('routePathLinkClick', clickParams);
+    };
     render() {
+        const isExtended = this.props.isExtended;
+        const isHovered = this.props.isHovered;
         return (
-            <RoutePathListItem
-                id={this.props.routePathLink.id}
-                reference={this.props.reference}
-                header={this.renderHeader()}
-                body={this.renderBody()}
-            />
+            <div className={classnames(s.routePathListItem)}>
+                <div
+                    className={s.listIconWrapper}
+                    onMouseEnter={this.onMouseEnterLinkIcon}
+                    onMouseLeave={this.onMouseLeaveLinkIcon}
+                    onClick={this.onClickLinkIcon}
+                >
+                    <div
+                        className={classnames(
+                            s.borderContainer,
+                            isHovered
+                                ? s.hoveredIconHighlight
+                                : isExtended
+                                ? s.extendedIconHighlight
+                                : undefined
+                        )}
+                        data-cy='rpListLink'
+                    >
+                        <div className={s.borderLeftContainer} />
+                        <div />
+                    </div>
+                </div>
+                <div className={s.contentWrapper}>
+                    {this.renderHeader()}
+                    {isExtended && <div className={s.itemContent}>{this.renderBody()}</div>}
+                </div>
+            </div>
         );
     }
 }

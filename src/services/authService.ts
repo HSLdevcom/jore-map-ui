@@ -15,25 +15,25 @@ interface IAuthorizationResponse {
 
 class AuthService {
     public static async authenticate(onSuccess: () => void, onError: () => void) {
-        const code = navigator.getQueryParam(QueryParams.code);
-        const isTesting = navigator.getQueryParam(QueryParams.testing);
+        const code = navigator.getQueryParam(QueryParams.code) as string;
+        const isTesting = Boolean(navigator.getQueryParam(QueryParams.testing));
         let authorizationResponse: IAuthorizationResponse;
         try {
             authorizationResponse = (await HttpUtils.authorizeUsingCode({
                 code,
-                isTesting
+                isTesting,
             })) as IAuthorizationResponse;
         } catch (error) {
             const errorResponse = JSON.parse(error.message) as IAuthorizationResponse;
             authorizationResponse = {
                 isOk: errorResponse.isOk,
-                hasWriteAccess: errorResponse.hasWriteAccess
+                hasWriteAccess: errorResponse.hasWriteAccess,
             };
             if (errorResponse.errorTextKey) {
                 let errorMessage;
                 if (errorResponse.email) {
                     errorMessage = getText(errorResponse.errorTextKey, {
-                        email: errorResponse.email
+                        email: errorResponse.email,
                     });
                 } else {
                     errorMessage = getText(errorResponse.errorTextKey);

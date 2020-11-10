@@ -11,7 +11,7 @@ import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './lineHeaderForm.scss';
 
-interface ILineHeaderViewProps {
+interface ILineHeaderFormProps {
     lineHeader: ILineHeader;
     isEditingDisabled: boolean;
     invalidPropertiesMap: object;
@@ -24,7 +24,7 @@ interface ILineHeaderViewProps {
 
 @inject('lineHeaderMassEditStore', 'alertStore', 'errorStore')
 @observer
-class LineHeaderView extends React.Component<ILineHeaderViewProps> {
+class LineHeaderForm extends React.Component<ILineHeaderFormProps> {
     private onChangeLineHeaderProperty = (property: keyof ILineHeader) => (value: any) => {
         this.props.onChangeLineHeaderProperty(property, value);
     };
@@ -144,4 +144,4 @@ class LineHeaderView extends React.Component<ILineHeaderViewProps> {
     }
 }
 
-export default LineHeaderView;
+export default LineHeaderForm;

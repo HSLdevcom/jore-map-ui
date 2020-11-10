@@ -6,6 +6,7 @@ type eventName =
     | 'enter'
     | 'arrowUp'
     | 'arrowDown'
+    | 'escape'
     | 'undo'
     | 'redo'
     | 'mapClick'
@@ -13,10 +14,11 @@ type eventName =
     | 'networkNodeClick'
     | 'networkLinkClick'
     | 'geometryChange'
-    | 'editRoutePathLayerNodeClick'
+    | 'routePathNodeClick'
+    | 'routePathLinkClick'
     | 'editRoutePathNeighborLinkClick';
 
-class EventHelper {
+class EventListener {
     public trigger(eventName: eventName, data?: any) {
         const event = new CustomEvent(eventName, {
             bubbles: true,
@@ -34,35 +36,34 @@ class EventHelper {
 }
 
 interface INodeClickParams {
-    node: INode;
-}
-
-interface INetworkNodeClickParams {
     nodeId: string;
-    nodeType: NodeType;
 }
 
-interface INetworkLinkClickParams {
+interface ILinkClickParams {
     startNodeId: string;
     endNodeId: NodeType;
     transitType: TransitType;
 }
 
-interface IEditRoutePathLayerNodeClickParams {
+interface IRoutePathNodeClickParams {
     node: INode;
     linkOrderNumber: number;
+}
+
+interface IRoutePathLinkClickParams {
+    routePathLinkId: string;
 }
 
 interface IEditRoutePathNeighborLinkClickParams {
     neighborLink: INeighborLink;
 }
 
-export default new EventHelper();
+export default new EventListener();
 
 export {
     INodeClickParams,
-    INetworkNodeClickParams,
-    INetworkLinkClickParams,
-    IEditRoutePathLayerNodeClickParams,
+    ILinkClickParams,
+    IRoutePathNodeClickParams,
+    IRoutePathLinkClickParams,
     IEditRoutePathNeighborLinkClickParams,
 };

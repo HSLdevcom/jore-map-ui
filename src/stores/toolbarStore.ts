@@ -13,7 +13,7 @@ import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathLinkMassEditStore from '~/stores/routePathLinkMassEditStore';
 import RoutePathStore from '~/stores/routePathStore';
 
-const defaultTool = new SelectNetworkEntityTool();
+const DEFAULT_TOOL_TYPE = ToolbarToolType.SelectNetworkEntity;
 
 const TOOL_LIST = [
     SelectNetworkEntityTool,
@@ -36,6 +36,7 @@ const DEFAULT_DISABLED_TOOLS = [ToolbarToolType.Print];
 
 class ToolbarStore {
     @observable private _selectedTool: BaseTool | null;
+    @observable private _toolPhase: string | null; // This property would be better inside each tool but then mobx listeners don't react to it's changes. TODO: find a way to achieve this.
     @observable private _disabledTools: ToolbarToolType[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
     @observable private _areUndoButtonsDisabled: boolean;
@@ -49,6 +50,11 @@ class ToolbarStore {
     @computed
     get selectedTool(): BaseTool | null {
         return this._selectedTool;
+    }
+
+    @computed
+    get toolPhase(): string | null {
+        return this._toolPhase;
     }
 
     @computed
@@ -67,6 +73,11 @@ class ToolbarStore {
     }
 
     @action
+    public setToolPhase = (phase: string | null) => {
+        this._toolPhase = phase;
+    };
+
+    @action
     public selectTool = (tool: ToolbarToolType | null) => {
         if (this._selectedTool) {
             this._selectedTool.deactivate();
@@ -78,12 +89,8 @@ class ToolbarStore {
             tool === ToolbarToolType.SelectNetworkEntity ||
             (this._selectedTool && this._selectedTool.toolType === tool)
         ) {
-            // Network click event also triggers mapClick event
-            // Prevents bugs where deselecting tool after a click on map also triggers map click event.
-            // TODO: find a better way of achieving this.
-            setTimeout(() => {
-                this.selectDefaultTool();
-            }, 0);
+            this._selectedTool = TOOLS[DEFAULT_TOOL_TYPE];
+            this._selectedTool!.activate();
             return;
         }
         this._selectedTool = TOOLS[tool];
@@ -114,8 +121,7 @@ class ToolbarStore {
 
     @action
     public selectDefaultTool() {
-        this._selectedTool = defaultTool;
-        this._selectedTool.activate();
+        this.selectTool(DEFAULT_TOOL_TYPE);
     }
 
     @action
@@ -131,7 +137,7 @@ class ToolbarStore {
             disabledTools.splice(toolToRemoveIndex, 1);
         };
 
-        const isAddNewRoutePathLinkToolDisabled =
+        const isExtendRoutePathToolDisabled =
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
         const isRemoveRoutePathLinkToolDisabled =
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
@@ -139,15 +145,15 @@ class ToolbarStore {
             (RoutePathStore.routePath && RoutePathStore.routePath.routePathLinks.length === 0) ||
             RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
 
-        isAddNewRoutePathLinkToolDisabled
-            ? addTool(ToolbarToolType.AddNewRoutePathLink)
-            : removeTool(ToolbarToolType.AddNewRoutePathLink);
+        isExtendRoutePathToolDisabled
+            ? addTool(ToolbarToolType.ExtendRoutePath)
+            : removeTool(ToolbarToolType.ExtendRoutePath);
         isRemoveRoutePathLinkToolDisabled
             ? addTool(ToolbarToolType.RemoveRoutePathLink)
             : removeTool(ToolbarToolType.RemoveRoutePathLink);
         isCopyRoutePathSegmentToolDisabled
-            ? addTool(ToolbarToolType.CopyRoutePathSegmentTool)
-            : removeTool(ToolbarToolType.CopyRoutePathSegmentTool);
+            ? addTool(ToolbarToolType.CopyRoutePathSegment)
+            : removeTool(ToolbarToolType.CopyRoutePathSegment);
 
         this._disabledTools = disabledTools;
 

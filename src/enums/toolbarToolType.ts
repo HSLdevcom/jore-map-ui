@@ -1,13 +1,13 @@
 enum ToolbarToolType {
-    AddNetworkNode = 1,
-    AddNetworkLink,
-    AddNewRoutePathLink,
-    CopyRoutePathSegmentTool,
-    RemoveRoutePathLink,
-    EditNetworkNode,
-    Print,
-    SelectNetworkEntity,
-    SplitLink
+    AddNetworkNode = 'AddNetworkNode',
+    AddNetworkLink = 'AddNetworkLink',
+    ExtendRoutePath = 'ExtendRoutePath',
+    CopyRoutePathSegment = 'CopyRoutePathSegment',
+    RemoveRoutePathLink = 'RemoveRoutePathLink',
+    EditNetworkNode = 'EditNetworkNode',
+    Print = 'Print',
+    SelectNetworkEntity = 'SelectNetworkEntity',
+    SplitLink = 'SplitLink',
 }
 
 export default ToolbarToolType;

@@ -1,4 +1,5 @@
 import * as L from 'leaflet';
+import StartNodeType from '~/enums/startNodeType';
 import TransitType from '~/enums/transitType';
 import INode from './INode';
 import IViaName from './IViaName';
@@ -15,7 +16,7 @@ interface IRoutePathLink extends IRoutePathLinkPrimaryKey, IViaName, IViaShieldN
     startNode: INode;
     endNode: INode;
     startNodeUsage?: string;
-    startNodeType: string;
+    startNodeType: StartNodeType;
     startNodeTimeAlignmentStop?: string;
     isStartNodeHastusStop?: boolean;
     isStartNodeUsingBookSchedule?: boolean;

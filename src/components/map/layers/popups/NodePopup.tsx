@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 import SidebarHeader from '~/components/sidebar/SidebarHeader';
 import NodeForm from '~/components/sidebar/nodeView/NodeForm';
 import StopForm from '~/components/sidebar/nodeView/StopForm';
+import NodeType from '~/enums/nodeType';
 import { INode } from '~/models';
 import { PopupStore } from '~/stores/popupStore';
+import NodeUtils from '~/utils/NodeUtils';
 import * as s from './nodePopup.scss';
 
 interface INodePopupData {
@@ -32,7 +34,13 @@ class NodePopup extends Component<INodePopupProps> {
                             this.props.popupStore!.closePopup(popupId);
                         }}
                     >
-                        Solmu {node.id}
+                        {`${NodeUtils.getNodeTypeName(node.type)} ${node.id}`}
+                        {node.type === NodeType.STOP && node.shortIdString && (
+                            <div className={s.headerShortId}>
+                                {node.shortIdLetter}
+                                {node.shortIdString}
+                            </div>
+                        )}
                     </SidebarHeader>
                 </div>
                 <div className={s.nodeFormWrapper}>
@@ -51,7 +59,6 @@ class NodePopup extends Component<INodePopupProps> {
                             stopSections={[]}
                             hastusAreas={[]}
                             stopInvalidPropertiesMap={{}}
-                            nodeInvalidPropertiesMap={{}}
                             updateStopProperty={() => () => void 0}
                             isReadOnly={true}
                         />

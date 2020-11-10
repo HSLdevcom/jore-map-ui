@@ -12,7 +12,7 @@ interface IViewOnlyRoutePathProperties {
     internalId: string;
     color?: string;
     isVisible?: boolean;
-    transitType?: TransitType;
+    transitType?: TransitType; // Same as ILine's transitType (not the same as IRoutePathLink's transitType)
     lineId?: string;
 }
 
@@ -52,17 +52,25 @@ interface IRoutePathSegment extends IRoutePathPrimaryKey {
     links: IRoutePathSegmentLink[];
 }
 
-interface IRoutePathSaveModel {
-    originalPrimaryKey: IRoutePathPrimaryKey; // Used when editing primarykey or copying routePaths
+interface ISingleRoutePathSaveModel {
     routePath: Omit<IRoutePath, 'routePathLinks'>;
-    routePathLinkSaveModel: IRoutePathLinkSaveModel;
+    routePathLinkSaveModel?: IRoutePathLinkSaveModel;
 }
 
-interface IMultipleRoutePathSaveModel {
+interface IBackendMassEditRoutePath extends IRoutePathPrimaryKey {
+    endDate: Date; // No other data should be needed (only primary key and endDate can be changed in mass edit)
+}
+
+interface IMassEditRoutePathSaveModel {
+    originalPrimaryKey: IRoutePathPrimaryKey;
+    massEditRoutePath: IBackendMassEditRoutePath;
+}
+
+interface IMassEditRoutePathSaveModels {
     routeId: string;
-    added: IRoutePathSaveModel[];
-    modified: IRoutePathSaveModel[];
-    originals: IRoutePathSaveModel[];
+    added: IMassEditRoutePathSaveModel[];
+    modified: IMassEditRoutePathSaveModel[];
+    originals: IMassEditRoutePathSaveModel[];
 }
 
 export default IRoutePath;
@@ -72,6 +80,8 @@ export {
     IViewOnlyRoutePathProperties,
     IMassEditRoutePath,
     IRoutePathSegment,
-    IRoutePathSaveModel,
-    IMultipleRoutePathSaveModel,
+    ISingleRoutePathSaveModel,
+    IBackendMassEditRoutePath,
+    IMassEditRoutePathSaveModel,
+    IMassEditRoutePathSaveModels,
 };

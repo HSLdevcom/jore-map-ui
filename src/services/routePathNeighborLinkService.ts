@@ -1,4 +1,5 @@
 import { ApolloQueryResult } from 'apollo-client';
+import TransitType from '~/enums/transitType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import ApolloClient from '~/helpers/ApolloClient';
@@ -9,7 +10,7 @@ import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import IGraphqlList from '~/models/externals/graphqlModelHelpers/IGraphqlList';
 import ErrorStore from '~/stores/errorStore';
-import { NeighborToAddType } from '~/stores/routePathStore';
+import { NeighborToAddType } from '~/stores/routePathLayerStore';
 import GraphqlQueries from './graphqlQueries';
 
 interface IExtendedExternalNode extends IExternalNode {
@@ -50,9 +51,13 @@ const _parseNeighborLinks = (
                 (rp: IExternalRoutePath) => {
                     const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
                     const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;
-                    return RoutePathFactory.mapExternalRoutePath(rp, lineId, transitType);
+                    return RoutePathFactory.mapExternalRoutePath({
+                        lineId,
+                        transitType,
+                        externalRoutePath: rp,
+                    });
                 }
-            )
+            ),
         })
     );
 };
@@ -71,20 +76,21 @@ class RoutePathNeighborLinkService {
         if (neighborToAddType === NeighborToAddType.AfterNode) {
             const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByStartNodeQuery(),
-                variables: { nodeId, date }
+                variables: { nodeId, date },
             });
             res = getNeighborLinks(queryResult, orderNumber, 'startNode');
             // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByEndNodeQuery(),
-                variables: { nodeId, date }
+                variables: { nodeId, date },
             });
             res = getNeighborLinks(queryResult, orderNumber, 'endNode');
         } else {
             throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
         }
-        return res.filter(rpLink => rpLink.routePathLink.transitType === routePath.transitType);
+        const transitType: TransitType = _getTransitType(routePath);
+        return res.filter((rpLink) => rpLink.routePathLink.transitType === transitType);
     };
 
     public static fetchNeighborRoutePathLinks = async (
@@ -93,8 +99,8 @@ class RoutePathNeighborLinkService {
         linkOrderNumber: number
     ): Promise<IFetchNeighborLinksResponse | null> => {
         const routePathLinks = routePath.routePathLinks;
-        const startNodeCount = routePathLinks.filter(link => link.startNode.id === nodeId).length;
-        const endNodeCount = routePathLinks.filter(link => link.endNode.id === nodeId).length;
+        const startNodeCount = routePathLinks.filter((link) => link.startNode.id === nodeId).length;
+        const endNodeCount = routePathLinks.filter((link) => link.endNode.id === nodeId).length;
         let neighborToAddType;
         let orderNumber;
         if (startNodeCount <= endNodeCount) {
@@ -120,7 +126,7 @@ class RoutePathNeighborLinkService {
             } else {
                 return {
                     neighborToAddType,
-                    neighborLinks
+                    neighborLinks,
                 };
             }
         } catch (e) {
@@ -129,5 +135,13 @@ class RoutePathNeighborLinkService {
         return null;
     };
 }
+
+// Returns rpLinks' transitType if rpLinks exist
+const _getTransitType = (routePath: IRoutePath) => {
+    const rpLinks = routePath.routePathLinks;
+    if (rpLinks.length === 0) return routePath.transitType!;
+
+    return rpLinks[0].transitType;
+};
 
 export default RoutePathNeighborLinkService;

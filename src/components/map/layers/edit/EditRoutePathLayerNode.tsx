@@ -1,157 +1,85 @@
 import { inject, observer } from 'mobx-react';
-import React, { Component, ReactNode } from 'react';
-import StartNodeType from '~/enums/startNodeType';
-import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, {
-    IEditRoutePathLayerNodeClickParams,
-    INodeClickParams,
-} from '~/helpers/EventHelper';
+import React from 'react';
+import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
 import INode from '~/models/INode';
-import { MapStore } from '~/stores/mapStore';
-import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
-import { RoutePathStore } from '~/stores/routePathStore';
-import { ToolbarStore } from '~/stores/toolbarStore';
+import { NodeLabel } from '~/stores/mapStore';
 import NodeUtils from '~/utils/NodeUtils';
-import Marker from '../markers/Marker';
-import NodeMarker, { NodeHighlightColor } from '../markers/NodeMarker';
+import NodeMarker from '../markers/NodeMarker';
 
-const START_MARKER_COLOR = '#00df0b';
-
-interface IRoutePathLayerProps {
-    routePathStore?: RoutePathStore;
-    routePathCopySegmentStore?: RoutePathCopySegmentStore;
-    toolbarStore?: ToolbarStore;
-    mapStore?: MapStore;
-    setExtendedListItem: (id: string) => void;
+interface IRoutePathLayerNodeProps {
+    node: INode;
+    isDisabled: boolean;
+    linkOrderNumber: number;
+    isHighlightedByTool: boolean;
+    isHovered: boolean;
+    isExtended: boolean;
+    visibleNodeLabels: NodeLabel[];
+    setHoveredItemId: (id: string | null) => void;
 }
 
-@inject('routePathStore', 'toolbarStore', 'mapStore', 'routePathCopySegmentStore')
-@observer
-class EditRoutePathLayer extends Component<IRoutePathLayerProps> {
-    private renderRoutePathNodes = () => {
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length < 1) return;
-        const res: ReactNode[] = routePathLinks.map((rpLink, index) => {
-            const isDisabled = rpLink.startNodeType === StartNodeType.DISABLED;
-            return this.renderNode({
-                isDisabled,
-                node: rpLink.startNode,
-                linkOrderNumber: rpLink.orderNumber,
-                key: `node-${index}`,
-            });
-        });
+const EditRoutePathLayerNode = inject()(
+    observer((props: IRoutePathLayerNodeProps) => {
+        const renderNode = ({ node, isDisabled }: { node: INode; isDisabled: boolean }) => {
+            const isHighlightedByTool = props.isHighlightedByTool;
+            const isExtended = props.isExtended;
+            const isHovered = props.isHovered;
+            const isHighlighted = isHighlightedByTool || isExtended || isHovered;
+            const highlightColor = isHovered
+                ? 'yellow'
+                : isHighlightedByTool
+                ? 'green'
+                : isExtended
+                ? 'blue'
+                : undefined;
 
-        const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
-        res.push(
-            this.renderNode({
-                isDisabled: false, // Last routePath node can't be disabled
-                node: lastRoutePathLink.endNode,
-                linkOrderNumber: lastRoutePathLink.orderNumber,
-                key: 'lastNode',
-            })
-        );
+            return (
+                <NodeMarker
+                    coordinates={node.coordinates}
+                    nodeType={node.type}
+                    transitTypes={node.transitTypes ? node.transitTypes : []}
+                    visibleNodeLabels={props.visibleNodeLabels}
+                    nodeLocationType={'coordinates'}
+                    nodeId={node.id}
+                    shortId={NodeUtils.getShortId(node)}
+                    hastusId={node.stop ? node.stop.hastusId : undefined}
+                    isHighlighted={isHighlighted}
+                    highlightColor={highlightColor}
+                    isDisabled={isDisabled}
+                    onClick={onNodeClick}
+                    onMouseOver={onMouseEnterNode}
+                    onMouseOut={onMouseLeaveNode}
+                />
+            );
+        };
 
-        return res;
-    };
-
-    private renderNode = ({
-        node,
-        linkOrderNumber,
-        isDisabled,
-        key,
-    }: {
-        node: INode;
-        linkOrderNumber: number;
-        isDisabled: boolean;
-        key: string;
-    }) => {
-        const routePathStore = this.props.routePathStore;
-        const toolHighlightedNodeIds = routePathStore!.toolHighlightedNodeIds;
-        const isNodeHighlightedByTool = toolHighlightedNodeIds.includes(node.id);
-        let isNodeHighlighted;
-        if (routePathStore!.highlightedListItemId) {
-            isNodeHighlighted = routePathStore!.highlightedListItemId === node.internalId;
-        } else {
-            isNodeHighlighted = routePathStore!.extendedListItemId === node.internalId;
-        }
-
-        // Click is disabled, if there are nodes highlighted by tool and the current node is not highlighted
-        const isClickDisabled = toolHighlightedNodeIds.length > 0 && !isNodeHighlightedByTool;
-
-        let onNodeClick;
-        if (isNodeHighlightedByTool) {
-            onNodeClick = () => {
-                const clickParams: IEditRoutePathLayerNodeClickParams = {
-                    node,
-                    linkOrderNumber,
-                };
-                EventHelper.trigger('editRoutePathLayerNodeClick', clickParams);
+        const onNodeClick = () => {
+            const { node, linkOrderNumber } = props;
+            const clickParams: IRoutePathNodeClickParams = {
+                node,
+                linkOrderNumber,
             };
-        } else {
-            onNodeClick = () => {
-                this.props.setExtendedListItem(node.internalId);
-                const clickParams: INodeClickParams = { node };
-                EventHelper.trigger('nodeClick', clickParams);
-            };
-        }
+            EventListener.trigger('routePathNodeClick', clickParams);
+        };
 
-        let isHighlighted = false;
-        let highlightColor;
-        if (isNodeHighlightedByTool) {
-            isHighlighted = true;
-            highlightColor = NodeHighlightColor.GREEN;
-        } else if (isNodeHighlighted) {
-            isHighlighted = true;
-            highlightColor = NodeHighlightColor.BLUE;
-        }
+        const onMouseEnterNode = () => {
+            props.setHoveredItemId(props.node.internalId);
+        };
 
-        return (
-            <NodeMarker
-                key={key}
-                coordinates={node.coordinates}
-                nodeType={node.type}
-                nodeLocationType={'coordinates'}
-                nodeId={node.id}
-                shortId={NodeUtils.getShortId(node)}
-                hastusId={node.stop ? node.stop.hastusId : undefined}
-                isHighlighted={isHighlighted}
-                highlightColor={highlightColor}
-                isDisabled={isDisabled}
-                onClick={onNodeClick}
-                isClickDisabled={isClickDisabled}
-            />
-        );
-    };
-
-    private renderStartMarker = () => {
-        if (this.props.toolbarStore!.isSelected(ToolbarToolType.AddNewRoutePathLink)) {
-            // Hiding start marker if we set target node adding new links.
-            // Due to the UI otherwise getting messy
-            return null;
-        }
-
-        const routePathLinks = this.props.routePathStore!.routePath!.routePathLinks;
-        if (!routePathLinks || routePathLinks.length === 0 || !routePathLinks[0].startNode) {
-            return null;
-        }
-
-        return (
-            <Marker
-                latLng={routePathLinks[0].startNode.coordinates}
-                color={START_MARKER_COLOR}
-                isClickDisabled={true}
-            />
-        );
-    };
-
-    render() {
+        const onMouseLeaveNode = () => {
+            if (props.isHovered) {
+                props.setHoveredItemId(null);
+            }
+        };
+        const { node, isDisabled } = props;
         return (
             <>
-                {this.renderRoutePathNodes()}
-                {this.renderStartMarker()}
+                {renderNode({
+                    node,
+                    isDisabled,
+                })}
             </>
         );
-    }
-}
+    })
+);
 
-export default EditRoutePathLayer;
+export default EditRoutePathLayerNode;

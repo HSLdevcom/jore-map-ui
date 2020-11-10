@@ -1,11 +1,13 @@
 @import '../../shared/styles/common.scss';
 @import '../../shared/styles/form.scss';
 
+$sidebarWidth: $sidebarWide;
+
 .routeListView {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: $sidebarWide;
+    width: $sidebarWidth;
     background-color: #eef1f3;
 
     .contentWrapper {

@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
 import InputContainer from '~/components/controls/InputContainer';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
@@ -142,8 +142,8 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             this.initExistingLineHeaders();
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            return;
+            this.props.errorStore!.addError('', e);
+            this._setState({ isLoading: false });
         }
     };
 
@@ -210,9 +210,10 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 model: 'lineHeader',
             });
         });
-
+        const savePromptSection = { models: saveModels };
         confirmStore!.openConfirm({
-            content: <SavePrompt models={saveModels} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.save();
             },
@@ -244,7 +245,6 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                   )
                 : null;
         const activeLineHeaderName = this.getActiveLineHeaderName();
-
         const isSaveButtonDisabled =
             isEditingDisabled ||
             !lineHeaderMassEditStore!.isDirty ||

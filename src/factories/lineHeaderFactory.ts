@@ -22,14 +22,14 @@ class LineHeaderFactory {
             modifiedBy: externalLineHeader.linkuka,
             modifiedOn: externalLineHeader.linviimpvm
                 ? new Date(externalLineHeader.linviimpvm)
-                : undefined
+                : undefined,
         };
     };
 
     public static createNewLineHeader = ({
         lineId,
         startDate,
-        endDate
+        endDate,
     }: {
         lineId: string;
         startDate: Date;
@@ -49,7 +49,7 @@ class LineHeaderFactory {
             lineStartPlace2Fi: '',
             lineStartPlace2Sw: '',
             modifiedBy: '',
-            modifiedOn: new Date()
+            modifiedOn: new Date(),
         };
     };
 }

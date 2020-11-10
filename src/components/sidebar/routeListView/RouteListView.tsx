@@ -98,7 +98,7 @@ class RouteListView extends React.Component<IRouteListViewProps> {
         const isDirty = isEditingRoutePaths ? routePathMassEditStore.isDirty : routeStore.isDirty;
         if (routeListStore.routeIdToEdit === route.id && isDirty) {
             this.props.confirmStore!.openConfirm({
-                content: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat sulkea reitin? Tallentamattomat muutokset kumotaan.`,
+                confirmData: `Sinulla on tallentamattomia muutoksia. Oletko varma, että haluat sulkea reitin? Tallentamattomat muutokset kumotaan.`,
                 onConfirm: () => {
                     this.closeRoute(route, isEditingRoutePaths);
                 },
@@ -159,7 +159,7 @@ class RouteListView extends React.Component<IRouteListViewProps> {
         }
 
         confirmStore.openConfirm({
-            content: promptMessage,
+            confirmData: promptMessage,
             onConfirm: () => {
                 this.toggleEdit({ route, newRouteId, isEditingRoutePaths });
             },
@@ -184,7 +184,6 @@ class RouteListView extends React.Component<IRouteListViewProps> {
         // Start editing
         if (isEditing) {
             if (isEditingRoutePaths) {
-                routeListStore.setAllRoutePathsVisible(route.id);
                 routePathMassEditStore.init({ routePaths: route.routePaths, routeId: route.id });
             } else {
                 routeStore.init({ route, isNewRoute: false });

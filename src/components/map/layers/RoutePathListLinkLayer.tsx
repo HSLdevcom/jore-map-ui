@@ -3,11 +3,11 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { FeatureGroup, Polyline } from 'react-leaflet';
 import StartNodeType from '~/enums/startNodeType';
-import EventHelper, { INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import { INode, IRoutePath } from '~/models';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import NavigationUtils from '~/utils/NavigationUtils';
 import NodeUtils from '~/utils/NodeUtils';
 import { createCoherentLinesFromPolylines } from '~/utils/geomUtils';
@@ -16,7 +16,7 @@ import NodeMarker from './markers/NodeMarker';
 import * as s from './routePathLinkLayer.scss';
 import ArrowDecorator from './utils/ArrowDecorator';
 
-interface RoutePathLinkLayerProps {
+interface RoutePathListLinkLayerProps {
     internalId: string;
     routePath: IRoutePath;
     onClick: (target: any, id: string) => void;
@@ -24,7 +24,7 @@ interface RoutePathLinkLayerProps {
     onMouseOut: (target: any, id: string) => void;
     popupStore?: PopupStore;
     mapStore?: MapStore;
-    routePathLayerStore?: RoutePathLayerStore;
+    routePathLayerListStore?: RoutePathLayerListStore;
 }
 
 const OPACITY_HIGHLIGHTED = 1;
@@ -32,12 +32,12 @@ const OPACITY_UNHIGHLIGHTED = 0.6;
 const WEIGHT_HIGHLIGHTED = 8;
 const WEIGHT_UNHIGHLIGHTED = 6;
 
-@inject('popupStore', 'mapStore', 'routePathLayerStore')
+@inject('popupStore', 'mapStore', 'routePathLayerListStore')
 @observer
-class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
+class RoutePathListLinkLayer extends Component<RoutePathListLinkLayerProps> {
     private layerRef: React.Ref<any>;
 
-    constructor(props: RoutePathLinkLayerProps) {
+    constructor(props: RoutePathListLinkLayerProps) {
         super(props);
         this.layerRef = React.createRef<any>();
     }
@@ -56,7 +56,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     private renderPopup = (node: INode) => (popupId: number) => {
         return (
             <div className={s.popupContainer}>
-                <div onClick={this.openNode(node, popupId)}>Avaa kohde</div>
+                <div onClick={this.openNode(node, popupId)} className={s.popupOption}>
+                    Avaa solmunäkymässä
+                </div>
             </div>
         );
     };
@@ -84,9 +86,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     };
     private renderNodes = () => {
         const routePathLinks = this.props.routePath.routePathLinks;
-        const triggerNodeClick = (node: INode) => () => {
-            const clickParams: INodeClickParams = { node };
-            EventHelper.trigger('nodeClick', clickParams);
+        const triggerNodeClick = (nodeId: string) => () => {
+            const clickParams: INodeClickParams = { nodeId };
+            EventListener.trigger('nodeClick', clickParams);
         };
 
         const nodes = routePathLinks.map((routePathLink, index) => {
@@ -97,7 +99,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled: routePathLink.startNodeType === StartNodeType.DISABLED,
                 isTimeAlignmentStop: routePathLink.startNodeTimeAlignmentStop !== '0',
                 openPopup: this.openPopup(routePathLink.startNode),
-                triggerNodeClick: triggerNodeClick(node),
+                triggerNodeClick: triggerNodeClick(node.id),
             });
         });
         const lastRoutePathLink = routePathLinks[routePathLinks.length - 1];
@@ -109,7 +111,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 isDisabled: false, // Last node can't be disabled
                 isTimeAlignmentStop: false, // Last node can't be a time alignment stop
                 openPopup: this.openPopup(lastRoutePathLink.endNode),
-                triggerNodeClick: triggerNodeClick(node),
+                triggerNodeClick: triggerNodeClick(node.id),
             })
         );
         return nodes;
@@ -135,6 +137,8 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
                 key={key}
                 coordinates={node.coordinates}
                 nodeType={node.type}
+                transitTypes={node.transitTypes ? node.transitTypes : []}
+                visibleNodeLabels={this.props.mapStore!.visibleNodeLabels}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
@@ -170,6 +174,7 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const routePath = this.props.routePath;
         const routePathLinks = routePath.routePathLinks;
         const geoms = routePathLinks.map((routePathLink) => routePathLink.geometry);
+        // TODO: instead, call RoutePathListLinkLayer with routePathLink?
         return createCoherentLinesFromPolylines(geoms).map((geom, index) => (
             <ArrowDecorator
                 key={index}
@@ -187,9 +192,9 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
         const routePath = this.props.routePath;
         if (!routePath.isVisible || routePath.routePathLinks.length === 0) return null;
         const isSelected =
-            this.props.routePathLayerStore!.selectedRoutePathId === routePath.internalId;
+            this.props.routePathLayerListStore!.selectedRoutePathId === routePath.internalId;
         const isHighlighted =
-            this.props.routePathLayerStore!.highlightedRoutePathId === routePath.internalId;
+            this.props.routePathLayerListStore!.highlightedRoutePathId === routePath.internalId;
         return (
             <>
                 <FeatureGroup
@@ -207,4 +212,4 @@ class RoutePathLinkLayer extends Component<RoutePathLinkLayerProps> {
     }
 }
 
-export default RoutePathLinkLayer;
+export default RoutePathListLinkLayer;

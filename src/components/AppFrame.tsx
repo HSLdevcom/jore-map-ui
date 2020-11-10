@@ -1,8 +1,8 @@
 import React from 'react';
 import ErrorBar from './ErrorBar';
-import NavigationBar from './NavigationBar';
 import * as s from './appFrame.scss';
 import Map from './map/Map';
+import NavigationBar from './navigationBar/NavigationBar';
 import OverlayContainer from './overlays/OverlayContainer';
 import Sidebar from './sidebar/Sidebar';
 

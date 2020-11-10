@@ -1,7 +1,10 @@
+import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import TransitType from '~/enums/transitType';
+import RouteFactory from '~/factories/routeFactory';
 import { ISearchLine } from '~/models/ILine';
 import { ISearchNode } from '~/models/INode';
+import IRoute, { ISearchRoute } from '~/models/IRoute';
 import NodeUtils from '~/utils/NodeUtils';
 import SearchStore from './searchStore';
 
@@ -63,8 +66,75 @@ class SearchResultStore {
     };
 
     @action
-    public setAllNodes = (nodes: ISearchNode[]) => {
+    public updateSearchLine = (line: ISearchLine) => {
+        const existingIndex = this._allLines.findIndex((n) => n.id === line.id);
+        if (existingIndex === -1) {
+            // Need to do concat (instead of push) to trigger observable reaction
+            this._allLines = this._allLines.concat([line]).sort((a, b) => (a.id < b.id ? -1 : 1));
+        } else {
+            // Update existing line
+            this._allLines = this._allLines.map((n) => (n.id === line.id ? line : n));
+        }
+        this.search();
+    };
+
+    @action
+    public updateSearchRoute = (lineId: string, route: IRoute) => {
+        const searchLineToUpdate = _.cloneDeep(this.allLines.find((line) => line.id === lineId));
+        if (!searchLineToUpdate) {
+            throw `SearchLine to update was not found by lineId: ${lineId}`;
+        }
+        const existingIndex = searchLineToUpdate.routes.findIndex((r) => r.id === route.id);
+        if (existingIndex === -1) {
+            const searchRoute = RouteFactory.createSearchRoute({ route, isUsedByRoutePath: false });
+            searchLineToUpdate.routes = searchLineToUpdate.routes
+                .concat([searchRoute])
+                .sort((a, b) => (a.id < b.id ? -1 : 1));
+        } else {
+            // Get isUsedByRoutePath from existing searchRoute (we dont want to overwrite that)
+            const existingSearchRoute = searchLineToUpdate.routes[existingIndex];
+            const searchRoute = RouteFactory.createSearchRoute({
+                route,
+                isUsedByRoutePath: existingSearchRoute.isUsedByRoutePath,
+            });
+            // Update existing searchRoute
+            searchLineToUpdate.routes = searchLineToUpdate.routes.map((r: ISearchRoute) =>
+                r.id === searchRoute.id ? searchRoute : r
+            );
+        }
+        // Update searchLine with new the updated searchRoute
+        this._allLines = this._allLines.map((n) => (n.id === lineId ? searchLineToUpdate : n));
+        this.search();
+    };
+
+    @action
+    public setAllSearchNodes = (nodes: ISearchNode[]) => {
         this._allNodes = nodes.sort((a, b) => (a.id > b.id ? 1 : -1));
+    };
+
+    @action
+    public updateSearchNode = (node: ISearchNode) => {
+        const existingIndex = this._allNodes.findIndex((n) => n.id === node.id);
+        if (existingIndex === -1) {
+            // Need to do concat (instead of push) to trigger observable reaction
+            this._allNodes = this._allNodes.concat([node]);
+        } else {
+            // Update existing node
+            this._allNodes = this._allNodes.map((n) => (n.id === node.id ? node : n));
+        }
+        this.search();
+    };
+
+    @action
+    public updateSearchNodeStopName = (id: string, stopName: string) => {
+        this._allNodes = this.allNodes.map((n) => {
+            if (n.id === id) {
+                n.stopName = stopName;
+                return n;
+            }
+            return n;
+        });
+        this.search();
     };
 
     private matchWildcard(text: string, rule: string) {

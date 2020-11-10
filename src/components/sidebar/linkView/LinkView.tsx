@@ -1,16 +1,18 @@
 import L from 'leaflet';
+import { isEqual } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { RouteComponentProps } from 'react-router-dom';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel, ISavePromptProps } from '~/components/overlays/SavePrompt';
 import RoutePathList from '~/components/shared/RoutePathList';
 import SaveButton from '~/components/shared/SaveButton';
+import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import Loader from '~/components/shared/loader/Loader';
 import ButtonType from '~/enums/buttonType';
 import TransitType from '~/enums/transitType';
 import LinkFactory from '~/factories/linkFactory';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import { ILink, INode } from '~/models';
 import IRoutePath from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
@@ -50,6 +52,7 @@ interface ILinkViewState {
 @inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
 @observer
 class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
+    private _isMounted: boolean;
     private existingTransitTypes: TransitType[] = [];
 
     constructor(props: ILinkViewProps) {
@@ -60,14 +63,21 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         };
     }
 
+    private _setState = (newState: object) => {
+        if (this._isMounted) {
+            this.setState(newState);
+        }
+    };
+
     async componentDidMount() {
+        this._isMounted = true;
         if (this.props.isNewLink) {
             await this.initNewLink();
         } else {
             await this.initExistingLink();
         }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
-        EventHelper.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
+        EventListener.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
     }
 
     async componentDidUpdate(prevProps: ILinkViewProps) {
@@ -82,11 +92,14 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     componentWillUnmount() {
         this.props.linkStore!.clear();
-        EventHelper.off('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
+        EventListener.off('geometryChange', () =>
+            this.props.linkStore!.setIsEditingDisabled(false)
+        );
+        this._isMounted = false;
     }
 
     private initExistingLink = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
@@ -115,13 +128,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 link.endNode.id,
                 link.transitType!
             );
-            this.setState({ routePathsUsingLink: routePaths });
+            this._setState({ routePathsUsingLink: routePaths });
         }
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
     };
 
     private initNewLink = async () => {
-        this.setState({ isLoading: true });
+        this._setState({ isLoading: true });
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId] = this.props.match!.params.id.split(',');
@@ -142,7 +155,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             this.existingTransitTypes = existingLinks.map((link) => link.transitType!);
         }
 
-        this.setState({ isLoading: false });
+        this._setState({ isLoading: false });
     };
 
     private createNewLink = (startNode: INode, endNode: INode) => {
@@ -156,21 +169,29 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.mapStore!.setMapBounds(bounds);
     };
 
-    private save = async () => {
-        this.setState({ isLoading: true });
+    private save = async ({
+        shouldChangeStopGapMeasurementType,
+    }: {
+        shouldChangeStopGapMeasurementType: boolean;
+    }) => {
+        this._setState({ isLoading: true });
         try {
             if (this.props.isNewLink) {
                 await LinkService.createLink(this.props.linkStore!.link);
                 this.navigateToCreatedLink();
             } else {
-                await LinkService.updateLink(this.props.linkStore!.link);
+                await LinkService.updateLink(
+                    this.props.linkStore!.link,
+                    shouldChangeStopGapMeasurementType
+                );
                 this.props.linkStore!.setOldLink(this.props.linkStore!.link);
                 this.props.linkStore!.setIsEditingDisabled(true);
                 this.initExistingLink();
             }
             await this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
+            this._setState({ isLoading: false });
         }
     };
 
@@ -184,12 +205,40 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             oldData: oldLink,
             model: 'link',
         };
-        confirmStore!.openConfirm({
-            content: <SavePrompt models={[saveModel]} />,
-            onConfirm: () => {
-                this.save();
-            },
-        });
+        const savePromptSection = { models: [saveModel] };
+        const hasLinksGeometryChanged = !isEqual(currentLink.geometry, oldLink.geometry);
+        const openSavePrompt = (shouldChangeStopGapMeasurementType: boolean) => {
+            const notification = shouldChangeStopGapMeasurementType
+                ? 'Huom. koska linkin geometriaa on muutettu ja vastasit "kyllä" edelliseen kysymykseen, tallennetaan linkkiä käyttävien pysäkkivälien mittaustavat laskeituksi.'
+                : '';
+            const savePromptProps: ISavePromptProps = {
+                notification,
+                savePromptSections: [savePromptSection],
+            };
+            confirmStore!.openConfirm({
+                confirmComponentName: 'savePrompt',
+                confirmData: savePromptProps,
+                onConfirm: () => {
+                    this.save({ shouldChangeStopGapMeasurementType });
+                },
+            });
+        };
+        if (hasLinksGeometryChanged) {
+            this.props.confirmStore!.openConfirm({
+                confirmData:
+                    'Linkin geometriaa muutettu. Haluatko muuttaa kaikkien linkkiä käyttävien pysäkkivälien pituuksien saantitavan lasketuksi?',
+                onConfirm: () => {
+                    openSavePrompt(true);
+                },
+                confirmButtonText: 'Kyllä',
+                onCancel: () => {
+                    openSavePrompt(false);
+                },
+                cancelButtonText: 'En halua',
+            });
+        } else {
+            openSavePrompt(false);
+        }
     };
 
     private navigateToCreatedLink = () => {
@@ -213,6 +262,15 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     private onChangeLinkProperty = (property: keyof ILink) => (value: any) => {
         this.props.linkStore!.updateLinkProperty(property, value);
+    };
+
+    private renderHeaderNodeContainer = (node: INode) => {
+        return (
+            <div className={s.headerNodeContainer}>
+                <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
+                <div className={s.nodeId}>{node.id}</div>
+            </div>
+        );
     };
 
     render() {
@@ -260,7 +318,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                         onEditButtonClick={this.props.linkStore!.toggleIsEditingDisabled}
                         isCloseButtonVisible={true}
                     >
-                        Linkki
+                        Linkki{' '}
+                        <div className={s.headerNodesContainer}>
+                            {this.renderHeaderNodeContainer(link.startNode)} -{' '}
+                            {this.renderHeaderNodeContainer(link.endNode)}
+                        </div>
                     </SidebarHeader>
                     <div className={s.formSection}>
                         <div className={s.flexRow}>
@@ -379,7 +441,11 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                     </Button>
                 </div>
                 <SaveButton
-                    onClick={() => (this.props.isNewLink ? this.save() : this.showSavePrompt())}
+                    onClick={() =>
+                        this.props.isNewLink
+                            ? this.save({ shouldChangeStopGapMeasurementType: false })
+                            : this.showSavePrompt()
+                    }
                     disabled={isSaveButtonDisabled}
                     savePreventedNotification={''}
                 >

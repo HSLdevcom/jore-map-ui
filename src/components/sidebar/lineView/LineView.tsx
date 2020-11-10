@@ -1,7 +1,7 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { match } from 'react-router';
-import SavePrompt, { ISaveModel } from '~/components/overlays/SavePrompt';
+import { ISaveModel } from '~/components/overlays/SavePrompt';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import Loader from '~/components/shared/loader/Loader';
 import LineFactory from '~/factories/lineFactory';
@@ -15,6 +15,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import { MapStore } from '~/stores/mapStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import SidebarHeader from '../SidebarHeader';
 import LineInfoTab from './LineInfoTab';
 import LineRoutesTab from './LineRoutesTab';
@@ -28,6 +29,7 @@ interface ILineViewProps {
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
     confirmStore?: ConfirmStore;
+    searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
 }
 
@@ -42,7 +44,8 @@ interface ILineViewState {
     'errorStore',
     'alertStore',
     'mapStore',
-    'confirmStore'
+    'confirmStore',
+    'searchResultStore'
 )
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
@@ -134,8 +137,20 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             }
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
+            this._setState({ isLoading: false });
+            return;
         }
+        // Need to refresh line in search result store
+        const searchLine = LineFactory.createSearchLineFromLine(line!, []);
+        if (!this.props.isNewLine) {
+            // Find possibly existing searchRoutes, add them to searchLine
+            const searchRoutes = this.props.searchResultStore!.allLines.find(
+                (l) => l.id === line!.id
+            )!.routes;
+            searchLine.routes = searchRoutes;
+        }
+        this.props.searchResultStore!.updateSearchLine(searchLine);
     };
 
     private showSavePrompt = () => {
@@ -149,11 +164,20 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
             model: 'line',
         };
 
+        const savePromptSection = { models: [saveModel] };
         confirmStore!.openConfirm({
-            content: <SavePrompt models={[saveModel]} />,
+            confirmComponentName: 'savePrompt',
+            confirmData: { savePromptSections: [savePromptSection] },
             onConfirm: () => {
                 this.saveLine();
             },
+            doubleConfirmText:
+                !this.props.isNewLine &&
+                oldLine &&
+                currentLine &&
+                oldLine.transitType !== currentLine.transitType
+                    ? 'Linjan verkkoa muutettu. Oletko täysin varma, että haluat tallentaa?'
+                    : undefined,
         });
     };
 

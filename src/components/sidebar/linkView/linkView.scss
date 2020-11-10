@@ -7,6 +7,25 @@
     flex-direction: column;
     width: $sidebarWide;
 
+    .headerNodesContainer {
+        display: flex;
+        margin-left: 5px;
+        font-size: $mediumFontSize;
+        align-items: center;
+
+        .headerNodeContainer  {
+            display: flex;
+            align-items: center;
+            line-height: 23px;
+            margin-left: 5px;
+            margin-right: 5px;
+
+            .nodeId {
+                margin-left: 3px;
+            }
+        }
+    }
+
     .content {
         padding: 20px;
         overflow-y: auto;

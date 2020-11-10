@@ -1,4 +1,3 @@
-import { LatLng } from 'leaflet';
 import Validator from 'validatorjs';
 import ruleTranslations from './validationRuleTranslations';
 
@@ -12,7 +11,7 @@ const LATITUDE_MAX = 62;
 const LONGITUDE_MIN = 23;
 const LONGITUDE_MAX = 27;
 
-const validateLatLngs = (latLng: LatLng) => {
+const validateLatLngs = (latLng: any) => {
     return (
         latLng.lat >= LATITUDE_MIN &&
         latLng.lat <= LATITUDE_MAX &&
@@ -29,12 +28,17 @@ Validator.register(
 
 class FormValidator {
     public static validate = (value: any, rule: string): IValidationResult => {
+        if (rule.length === 0) {
+            return {
+                isValid: true,
+            };
+        }
         const validator = new Validator(
             {
-                value
+                value,
             },
             {
-                value: rule
+                value: rule,
             },
             ruleTranslations
         );
@@ -44,7 +48,7 @@ class FormValidator {
 
         return {
             isValid,
-            errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : ''
+            errorMessage: typeof firstErrorMessage === 'string' ? firstErrorMessage : '',
         };
     };
 
@@ -63,18 +67,13 @@ class FormValidator {
         return invalidPropertiesMap;
     };
 
-    public static validateProperty = (
-        validatorRule: string,
-        value: any
-    ): IValidationResult | undefined => {
-        if (!validatorRule) return;
-
+    public static validateProperty = (validatorRule: string, value: any): IValidationResult => {
         return FormValidator.validate(value, validatorRule);
     };
 
     public static isInvalidPropertiesMapValid = (invalidPropertiesMap: object) => {
         return !Object.values(invalidPropertiesMap).some(
-            validatorResult => !validatorResult.isValid
+            (validatorResult) => !validatorResult.isValid
         );
     };
 }

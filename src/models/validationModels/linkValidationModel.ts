@@ -12,7 +12,7 @@ const linkValidationModel: ILinkValidationModel = {
     length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     measuredLength: `min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     modifiedBy: '',
-    modifiedOn: ''
+    modifiedOn: '',
 };
 
 export default linkValidationModel;

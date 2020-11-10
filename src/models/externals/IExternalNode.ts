@@ -1,6 +1,6 @@
 import IExternalStop from './IExternalStop';
 
-export default interface IExternalNode {
+interface IExternalNode {
     soltunnus: string;
     soltyyppi: string;
     sollistunnus: string;
@@ -17,3 +17,25 @@ export default interface IExternalNode {
     geojsonProjection: string;
     dateRanges?: string;
 }
+
+interface IExternalSearchNode {
+    soltunnus: string;
+    soltyyppi: string;
+    sollistunnus: string;
+    solkirjain?: string;
+    pysakkiBySoltunnus?: IExternalSearchStop;
+    transitTypes: string;
+    geojson?: string;
+    geojsonManual: string;
+    geojsonProjection: string;
+    dateRanges?: string;
+}
+
+interface IExternalSearchStop {
+    soltunnus: string;
+    pysnimi: string;
+}
+
+export default IExternalNode;
+
+export { IExternalSearchNode };

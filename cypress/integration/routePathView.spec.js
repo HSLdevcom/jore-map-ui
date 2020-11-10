@@ -2,8 +2,6 @@ import constants from '../constants';
 
 describe('RoutePathView tests - read access user', () => {
     it('Can open routePath and close it to return home page', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
-
         cy.hslLoginReadAccess();
 
         _openRoutePath();
@@ -18,7 +16,6 @@ describe('RoutePathView tests - read access user', () => {
 
 describe('RoutePathView tests - write access user', () => {
     it('Can save routePath', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
         cy.hslLoginWriteAccess();
 
         _openRoutePath();
@@ -38,18 +35,13 @@ describe('RoutePathView tests - write access user', () => {
                 }
                 cy.getTestElement('nameFi').clear().type(newInputValue);
 
-                cy.saveButtonShouldBeActive('routePathSaveButton');
-
-                cy.getTestElement('routePathSaveButton').click();
-                cy.getTestElement('savePromptView').should('exist');
-                cy.getTestElement('confirmButton').click();
+                _saveRoutePath();
 
                 cy.getTestElement('nameFi').contains(newInputValue);
             });
     });
 
     it('Can save routePath links', () => {
-        if (constants.IS_ROUTE_PATH_SAVING_PREVENTED) return true;
         cy.hslLoginWriteAccess();
 
         _openRoutePath();
@@ -66,11 +58,8 @@ describe('RoutePathView tests - write access user', () => {
         cy.incrementInputValue('destinationFi1').then((newInputValueDestinationFi1) => {
             cy.incrementInputValue('destinationShieldFi').then(
                 (newInputValueDestinationShieldFi) => {
-                    cy.saveButtonShouldBeActive();
 
-                    cy.getTestElement('routePathSaveButton').click();
-                    cy.getTestElement('savePromptView').should('exist');
-                    cy.getTestElement('confirmButton').click();
+                    _saveRoutePath();
 
                     cy.getTestElement('itemHeader').first().click();
 
@@ -82,7 +71,51 @@ describe('RoutePathView tests - write access user', () => {
             );
         });
     });
+
+    it('Can remove routePathLink and use copy routePath segment tool', () => {
+        cy.hslLoginWriteAccess();
+
+        _openRoutePath();
+
+        cy.getTestElement('routePathView').should('exist');
+        cy.getTestElement('editButton').should('exist');
+
+        cy.getTestElement('tab').contains('Solmut ja linkit').click();
+
+        cy.getTestElement('linksToggle').click();
+
+        cy.getTestElement('RemoveRoutePathLinkTool').click();
+
+        cy.getTestElement('rpListLink').eq(3).click();
+        cy.getTestElement('CopyRoutePathSegmentTool').click();
+        cy.wait(100);
+        cy.getTestElement('rpListNode').eq(3).click();
+        cy.wait(100);
+        cy.getTestElement('rpListNode').eq(4).click();
+
+        cy.getTestElement('rpSegmentRowHeader').first().click();
+        cy.getTestElement('copyRoutePathSegmentButton').first().click();
+
+        cy.getTestElement('routePathSaveButton').click();
+
+        cy.getTestElement('modalContainer').should('exist');
+    });
 });
+
+const _saveRoutePath = () => {
+    cy.saveButtonShouldBeActive();
+
+    cy.getTestElement('routePathSaveButton').click();
+
+    cy.getTestElement('modalContainer').then((modal) => {
+        // unmeasuredStopGapPrompt is not guaranteed to show up
+        if (modal[0].innerHTML.includes('unmeasuredStopGapPrompt')) {
+            cy.getTestElement('confirmButton').click();
+        }
+        cy.getTestElement('savePromptView').should('exist');
+        cy.getTestElement('confirmButton').click();
+    });
+}
 
 const _openRoutePath = () => {
     cy.getTestElement('lineToggle').click();

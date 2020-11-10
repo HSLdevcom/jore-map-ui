@@ -29,7 +29,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     constructor(props: IStopFormProps) {
         super(props);
         this.state = {
-            availableShortIdDropdownItems: []
+            availableShortIdDropdownItems: [],
         };
     }
 
@@ -60,7 +60,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
             this.setState({
                 availableShortIdDropdownItems: this.createAvailableShortIdDropdownItems(
                     availableShortIds
-                )
+                ),
             });
         }
     };
@@ -71,7 +71,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         return availableShortIds.map((shortId: string) => {
             const item: IDropdownItem = {
                 value: `${shortId}`,
-                label: `${shortId}`
+                label: `${shortId}`,
             };
             return item;
         });
@@ -109,6 +109,10 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
                         label={shortIdLabel}
                         onChange={this.onNodeShortIdChange}
                         items={this.state.availableShortIdDropdownItems}
+                        emptyItem={{
+                            value: '',
+                            label: '',
+                        }}
                         selected={node.shortIdString}
                         disabled={isEditingDisabled}
                         isBackgroundGrey={this.props.isBackgroundGrey}

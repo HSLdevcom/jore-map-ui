@@ -1,5 +1,5 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper, { INetworkNodeClickParams, INodeClickParams } from '~/helpers/EventHelper';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -10,34 +10,52 @@ import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectStartNode' | 'selectEndNode';
+
 class AddNetworkLinkTool implements BaseTool {
-    private startNodeId: string | null = null;
-    private endNodeId: string | null = null;
     public toolType = ToolbarToolType.AddNetworkLink;
     public toolHelpHeader = 'Luo uusi linkki';
-    public toolHelpText =
-        'Valitse kartalta ensin linkin alkusolmu, jonka jälkeen valitse linkin loppusolmu.';
-    public activate() {
+    public toolHelpPhasesMap = {
+        selectStartNode: {
+            phaseTopic: 'Alkusolmun valinta',
+            phaseHelpText: 'Aloita linkin luonti valitsemalla linkin alkusolmu kartalta.',
+        },
+        selectEndNode: {
+            phaseTopic: 'Loppusolmun valinta',
+            phaseHelpText: 'Muodosta linkki valitsemalla linkin loppusolmu kartalta.',
+        },
+    };
+    private startNodeId: string | null = null;
+    private endNodeId: string | null = null;
+
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.unusedNode);
         NetworkStore.showMapLayer(MapLayer.link);
         NetworkStore.showMapLayer(MapLayer.unusedLink);
-        EventHelper.on('nodeClick', this.onNodeClick);
-        EventHelper.on('networkNodeClick', this.onNetworkNodeClick);
-    }
-    public deactivate() {
-        this.resetTool();
-        EventHelper.off('nodeClick', this.onNodeClick);
-        EventHelper.off('networkNodeClick', this.onNetworkNodeClick);
-    }
-    private onNodeClick = async (clickEvent: CustomEvent) => {
-        const nodeClickParams: INodeClickParams = clickEvent.detail;
-        this.setStartOrEndNode(nodeClickParams.node.id);
+        EventListener.on('nodeClick', this.onNodeClick);
+        EventListener.on('networkNodeClick', this.onNodeClick);
+        this.setToolPhase('selectStartNode');
     };
 
-    private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
-        const networkNodeClickParams: INetworkNodeClickParams = clickEvent.detail;
-        this.setStartOrEndNode(networkNodeClickParams.nodeId);
+    public deactivate = () => {
+        this.resetTool();
+        EventListener.off('nodeClick', this.onNodeClick);
+        EventListener.off('networkNodeClick', this.onNodeClick);
+        this.setToolPhase(null);
+    };
+
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        ToolbarStore.setToolPhase(toolPhase);
+    };
+
+    private onNodeClick = async (clickEvent: CustomEvent) => {
+        const params: INodeClickParams = clickEvent.detail;
+        this.setStartOrEndNode(params.nodeId);
     };
 
     private setStartOrEndNode = async (nodeId: string) => {
@@ -46,6 +64,7 @@ class AddNetworkLinkTool implements BaseTool {
             try {
                 const startNode = await NodeService.fetchNode(nodeId);
                 LinkStore.setMarkerCoordinates(startNode!.coordinates);
+                this.setToolPhase('selectEndNode');
             } catch (e) {
                 ErrorStore.addError(`Alkusolmun ${nodeId} haku epäonnistui`);
             }

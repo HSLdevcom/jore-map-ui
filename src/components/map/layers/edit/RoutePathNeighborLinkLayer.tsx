@@ -3,26 +3,24 @@ import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
-import EventHelper, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventHelper';
+import NodeSize from '~/enums/nodeSize';
+import NodeType from '~/enums/nodeType';
+import EventListener, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventListener';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
 import INode from '~/models/INode';
-import { NodeLabel } from '~/stores/mapStore';
+import { MapStore, NodeLabel } from '~/stores/mapStore';
 import { IPopupProps, PopupStore } from '~/stores/popupStore';
-import { NeighborToAddType, RoutePathStore } from '~/stores/routePathStore';
+import { NeighborToAddType, RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from '../markers/NodeMarker';
 import { INodeUsagePopupData } from '../popups/NodeUsagePopup';
 import * as s from './routePathNeighborLinkLayer.scss';
 
-const USED_NEIGHBOR_COLOR = '#0dce0a';
-const USED_NEIGHBOR_COLOR_HIGHLIGHT = '#048c01';
-const UNUSED_NEIGHBOR_COLOR = '#fc383a';
-const UNUSED_NEIGHBOR_COLOR_HIGHLIGHT = '#c40608';
-
 interface IRoutePathLayerProps {
-    routePathStore?: RoutePathStore;
+    routePathLayerStore?: RoutePathLayerStore;
     popupStore?: PopupStore;
+    mapStore?: MapStore;
 }
 
 interface IRoutePathLayerState {
@@ -34,7 +32,7 @@ interface PolylineRefs {
     [key: string]: any;
 }
 
-@inject('routePathStore', 'popupStore')
+@inject('routePathLayerStore', 'popupStore', 'mapStore')
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     private linkListener: IReactionDisposer;
@@ -45,7 +43,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             polylineRefs: {},
         };
         this.linkListener = reaction(
-            () => this.props.routePathStore!.neighborLinks,
+            () => this.props.routePathLayerStore!.neighborLinks,
             () => this.initializePolylineRefs()
         );
     }
@@ -56,7 +54,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
 
     private initializePolylineRefs = () => {
         const polylineRefs = {};
-        this.props.routePathStore!.neighborLinks.forEach((neighborLink) => {
+        this.props.routePathLayerStore!.neighborLinks.forEach((neighborLink) => {
             polylineRefs[neighborLink.routePathLink.id] = React.createRef<any>();
         });
         this.setState({
@@ -85,21 +83,25 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink,
             };
-            EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
+            EventListener.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
+
+        const visibleNodeLabels = _.union(this.props.mapStore!.visibleNodeLabels, [
+            NodeLabel.longNodeId,
+        ]);
 
         return (
             <NodeMarker
                 key={`${key}-${node.id}`}
                 coordinates={node.coordinates}
                 nodeType={node.type}
+                transitTypes={[]}
                 nodeLocationType={'coordinates'}
                 nodeId={node.id}
                 shortId={NodeUtils.getShortId(node)}
                 hastusId={node.stop ? node.stop.hastusId : undefined}
-                markerClasses={[s.neighborMarker]}
-                forcedVisibleNodeLabels={[NodeLabel.longNodeId]}
-                color={this.getNeighborLinkColor(neighborLink)}
+                classNames={[this.getNodeMarkerClassName(node)]}
+                visibleNodeLabels={visibleNodeLabels}
                 onClick={onNeighborLinkClick}
                 onContextMenu={() => this.showNodePopup(node, neighborLink.nodeUsageRoutePaths)}
                 onMouseOver={() =>
@@ -115,8 +117,12 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                     })
                 }
                 hasHighZIndex={this.isNeighborLinkHighlighted(neighborLink)}
+                size={NodeSize.LARGE}
             >
-                <div className={s.usageCount}>
+                <div
+                    className={s.usageCount}
+                    style={{ color: this.getNeighborLinkColor(neighborLink) }}
+                >
                     {neighborLink.nodeUsageRoutePaths.length > 9
                         ? '9+'
                         : neighborLink.nodeUsageRoutePaths.length}
@@ -125,18 +131,17 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         );
     };
 
-    private getNeighborLinkColor = (neighborLink: INeighborLink) => {
-        const isNeighborLinkUsed = neighborLink.nodeUsageRoutePaths.length > 0;
-        if (this.isNeighborLinkHighlighted(neighborLink)) {
-            if (isNeighborLinkUsed) {
-                return USED_NEIGHBOR_COLOR_HIGHLIGHT;
-            }
-            return UNUSED_NEIGHBOR_COLOR_HIGHLIGHT;
+    private getNodeMarkerClassName = (node: INode) => {
+        switch (node.type) {
+            case NodeType.STOP:
+                return s.nodeMarkerStop;
+            case NodeType.CROSSROAD:
+                return s.nodeMarkerCrossroad;
+            case NodeType.MUNICIPALITY_BORDER:
+                return s.nodeMarkerMunicipality;
+            default:
+                throw `NodeType not supported: ${node.type}`;
         }
-        if (isNeighborLinkUsed) {
-            return USED_NEIGHBOR_COLOR;
-        }
-        return UNUSED_NEIGHBOR_COLOR;
     };
 
     private isNeighborLinkHighlighted = (neighborLink: INeighborLink) => {
@@ -148,7 +153,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
                 neighborLink,
             };
-            EventHelper.trigger('editRoutePathNeighborLinkClick', clickParams);
+            EventListener.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
         return (
             <Polyline
@@ -169,10 +174,24 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 key={neighborLink.routePathLink.id}
                 color={this.getNeighborLinkColor(neighborLink)}
                 weight={5}
-                opacity={this.isNeighborLinkHighlighted(neighborLink) ? 1 : 0.8}
+                opacity={this.isNeighborLinkHighlighted(neighborLink) ? 0.8 : 1}
                 onClick={onNeighborLinkClick}
             />
         );
+    };
+
+    private getNeighborLinkColor = (neighborLink: INeighborLink) => {
+        const isNeighborLinkUsed = neighborLink.nodeUsageRoutePaths.length > 0;
+        if (this.isNeighborLinkHighlighted(neighborLink)) {
+            if (isNeighborLinkUsed) {
+                return s.usedNeighborColorHighlight;
+            }
+            return s.unusedNeighborColorHighlight;
+        }
+        if (isNeighborLinkUsed) {
+            return s.usedNeighborColor;
+        }
+        return s.unusedNeighborColor;
     };
 
     private highlightRoutePathLink = ({
@@ -199,9 +218,9 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
     };
 
     render() {
-        const neighborLinks = this.props.routePathStore!.neighborLinks;
+        const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
         return neighborLinks.map((neighborLink, index) => {
-            const neighborToAddType = this.props.routePathStore!.neighborToAddType;
+            const neighborToAddType = this.props.routePathLayerStore!.neighborToAddType;
             const nodeToRender =
                 neighborToAddType === NeighborToAddType.AfterNode
                     ? neighborLink.routePathLink.endNode

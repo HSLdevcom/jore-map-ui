@@ -6,11 +6,17 @@ import HashUtils from '~/utils/HashUtils';
 import RoutePathLinkFactory from './routePathLinkFactory';
 
 class RoutePathFactory {
-    public static mapExternalRoutePath = (
-        externalRoutePath: IExternalRoutePath,
-        lineId?: string,
-        transitType?: TransitType
-    ): IRoutePath => {
+    public static mapExternalRoutePath = ({
+        externalRoutePath,
+        externalRoutePathLinks,
+        lineId,
+        transitType,
+    }: {
+        externalRoutePath: IExternalRoutePath;
+        externalRoutePathLinks?: IExternalRoutePathLink[];
+        lineId?: string;
+        transitType?: TransitType;
+    }): IRoutePath => {
         const internalRoutePathId = HashUtils.getHashFromString(
             [
                 externalRoutePath.reitunnus,
@@ -20,8 +26,8 @@ class RoutePathFactory {
         ).toString();
 
         let routePathLinks: IRoutePathLink[] = [];
-        if (externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta) {
-            routePathLinks = externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes
+        if (externalRoutePathLinks) {
+            routePathLinks = externalRoutePathLinks
                 .map((externalRoutePathLink: IExternalRoutePathLink) => {
                     return RoutePathLinkFactory.mapExternalRoutePathLink(externalRoutePathLink);
                 })
@@ -36,10 +42,10 @@ class RoutePathFactory {
             exceptionPath,
             lineId,
             transitType,
+            routePathLinks,
             routeId: externalRoutePath.reitunnus,
             direction: externalRoutePath.suusuunta,
             startDate: new Date(externalRoutePath.suuvoimast),
-            routePathLinks: routePathLinks ? routePathLinks : [],
             internalId: internalRoutePathId,
             nameFi: externalRoutePath.suunimi,
             nameSw: externalRoutePath.suunimir,
@@ -68,6 +74,7 @@ class RoutePathFactory {
     ): IRoutePath {
         const defaultDate = new Date();
         defaultDate.setHours(0, 0, 0, 0);
+        defaultDate.setDate(defaultDate.getDate() + 1);
 
         return {
             lineId,
@@ -93,17 +100,6 @@ class RoutePathFactory {
             exceptionPath: '0',
             isStartNodeUsingBookSchedule: false,
             startNodeBookScheduleColumnNumber: undefined,
-        };
-    }
-
-    // TODO: remove (this is deprecated)
-    public static createNewRoutePathFromOld(routePath: IRoutePath): IRoutePath {
-        const startDate = routePath.startDate;
-        startDate.setDate(startDate.getDate() + 1);
-        return {
-            ...routePath,
-            // TODO: this is only temporary, but required since startDate is part of ID
-            startDate,
         };
     }
 }

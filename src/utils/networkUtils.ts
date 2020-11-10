@@ -1,9 +1,15 @@
 import { toJS } from 'mobx';
 import Moment from 'moment';
 import TransitType from '~/enums/transitType';
+import { INeighborLink } from '~/models';
+import { IStopItem } from '~/models/IStop';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import NodeStore from '~/stores/nodeStore';
+import RoutePathLayerListStore from '~/stores/routePathLayerListStore';
+import RoutePathLayerStore from '~/stores/routePathLayerStore';
+import RoutePathStore from '~/stores/routePathStore';
+import StopAreaStore from '~/stores/stopAreaStore';
 
 type NetworkElementType = MapLayer.link | MapLayer.linkPoint;
 
@@ -29,7 +35,7 @@ const _isNetworkElementHidden = ({
     transitType,
     startNodeId,
     endNodeId,
-    dateRangesString
+    dateRangesString,
 }: {
     type: NetworkElementType;
     transitType: TransitType;
@@ -76,7 +82,7 @@ const _isNetworkElementHidden = ({
 const isNetworkNodeHidden = ({
     nodeId,
     transitTypeCodes,
-    dateRangesString
+    dateRangesString,
 }: {
     nodeId: string;
     transitTypeCodes: string;
@@ -85,8 +91,15 @@ const isNetworkNodeHidden = ({
     const dateRanges: Moment.Moment[][] | undefined = _parseDateRangesString(dateRangesString);
     const selectedTransitTypes = toJS(NetworkStore.selectedTransitTypes);
 
-    const node = NodeStore.node;
-    if (node && node.id === nodeId) {
+    // TODO: implement a better (more efficient) way of hiding node visible in other layers
+    if (
+        isNodeOpenInNodeView(nodeId) ||
+        isNodeOpenInLinkView(nodeId) ||
+        isNodeOpenInRoutePathView(nodeId) ||
+        isNodeOpenInRouteListView(nodeId) ||
+        isNodeOpenInStopAreaView(nodeId) ||
+        isNodeOpenInNeighborLinkLayer(nodeId)
+    ) {
         return true;
     }
 
@@ -95,7 +108,7 @@ const isNetworkNodeHidden = ({
             return true;
         }
         const nodeTransitTypes = transitTypeCodes.split(',');
-        if (!selectedTransitTypes.some(type => nodeTransitTypes.includes(type))) {
+        if (!selectedTransitTypes.some((type) => nodeTransitTypes.includes(type))) {
             return true;
         }
     } else {
@@ -103,6 +116,7 @@ const isNetworkNodeHidden = ({
             return true;
         }
     }
+
     const selectedDate = NetworkStore.selectedDate;
     if (!dateRanges || !selectedDate) {
         return false;
@@ -111,13 +125,51 @@ const isNetworkNodeHidden = ({
     return !selectedDate || !_isDateInRanges(selectedDate, dateRanges);
 };
 
+const isNodeOpenInNodeView = (nodeId: string) => {
+    const node = NodeStore.node;
+    return node && node.id === nodeId;
+};
+
+const isNodeOpenInLinkView = (nodeId: string) => {
+    const link = LinkStore.link;
+    return link && (nodeId === link.startNode.id || nodeId === link.endNode.id);
+};
+
+const isNodeOpenInRoutePathView = (nodeId: string) => {
+    return RoutePathStore.isNodeFound(nodeId);
+};
+
+const isNodeOpenInRouteListView = (nodeId: string) => {
+    return RoutePathLayerListStore.isNodeFound(nodeId);
+};
+
+const isNodeOpenInStopAreaView = (nodeId: string) => {
+    const stopItems = StopAreaStore.stopItems;
+    return (
+        stopItems.length > 0 &&
+        Boolean(stopItems.find((stopItem: IStopItem) => stopItem.nodeId === nodeId))
+    );
+};
+
+const isNodeOpenInNeighborLinkLayer = (nodeId: string) => {
+    return Boolean(
+        RoutePathLayerStore.neighborLinks.find(
+            (link: INeighborLink) =>
+                link.routePathLink.startNode.id === nodeId ||
+                link.routePathLink.endNode.id === nodeId
+        )
+    );
+};
+
 const _parseDateRangesString = (dateRangesString?: string) => {
     if (!dateRangesString) return undefined;
-    return dateRangesString.split(',').map((dr: string) => dr.split('/').map(date => Moment(date)));
+    return dateRangesString
+        .split(',')
+        .map((dr: string) => dr.split('/').map((date) => Moment(date)));
 };
 
 const _isDateInRanges = (selectedDate: Moment.Moment, dateRanges: Moment.Moment[][]): Boolean => {
-    return dateRanges.some(dr => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
+    return dateRanges.some((dr) => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
 };
 
 export { isNetworkLinkHidden, isNetworkNodeHidden, isNetworkLinkPointHidden };

@@ -2,9 +2,12 @@ import classnames from 'classnames';
 import Moment from 'moment';
 import React from 'react';
 import { FiExternalLink } from 'react-icons/fi';
+import InputContainer from '~/components/controls/InputContainer';
 import IRoutePath from '~/models/IRoutePath';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { Dropdown } from '../controls';
+import { IDropdownItem } from '../controls/Dropdown';
 import TransitIcon from './TransitIcon';
 import * as s from './routePathList.scss';
 
@@ -16,8 +19,11 @@ interface IRoutePathListProps {
 
 interface IRoutePathListState {
     searchInputValue: string;
+    searchOrder: searchOrderOption;
     areAllRoutePathsVisible: boolean;
 }
+
+type searchOrderOption = 'date' | 'routeId';
 
 const ROUTE_PATH_SHOW_LIMIT = 10;
 
@@ -27,6 +33,7 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
 
         this.state = {
             searchInputValue: '',
+            searchOrder: 'date',
             areAllRoutePathsVisible: false,
         };
     }
@@ -81,10 +88,15 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         window.open(routePathLink, '_blank');
     };
 
-    private onSearchInputChange = (event: React.FormEvent<HTMLInputElement>) => {
-        const newValue = event.currentTarget.value;
+    private onSearchInputChange = (value: string) => {
         this.setState({
-            searchInputValue: newValue,
+            searchInputValue: value,
+        });
+    };
+
+    private onOrderChange = (value: searchOrderOption) => {
+        this.setState({
+            searchOrder: value,
         });
     };
 
@@ -120,18 +132,51 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
             return false;
         });
 
+        const searchOrder = this.state.searchOrder;
+        if (searchOrder === 'date') {
+            filteredRoutePaths.sort((a, b) =>
+                a.startDate.getTime() < b.startDate.getTime() ? 1 : -1
+            );
+        } else {
+            filteredRoutePaths.sort((a, b) => (a.routeId < b.routeId ? -1 : 1));
+        }
+
         const hasNoSearchResults = filteredRoutePaths.length === 0;
+
+        const filterOptions: IDropdownItem[] = [
+            {
+                value: 'date',
+                label: 'Pvm mukaan',
+            },
+            {
+                value: 'routeId',
+                label: 'Reitin mukaan',
+            },
+        ];
 
         return (
             <div className={classnames(s.routePathList, className ? className : undefined)}>
                 <div className={s.topic}>{topic}</div>
                 {routePaths.length > 0 && (
-                    <input
-                        placeholder='Suodata reitinsuuntia (reitin tunnus, lähtö- / päätepaikka)'
-                        type='text'
-                        value={this.state.searchInputValue}
-                        onChange={this.onSearchInputChange}
-                    />
+                    <div className={s.filtersContainer}>
+                        <div className={s.filterContainer}>
+                            <Dropdown
+                                label='Järjestä'
+                                selected={this.state.searchOrder}
+                                items={filterOptions}
+                                onChange={this.onOrderChange}
+                            />
+                        </div>
+                        <div className={s.filterContainer}>
+                            <InputContainer
+                                placeholder='Reitin tunnus, lähtö- / päätepaikka'
+                                type='text'
+                                label='Suodata tuloksia'
+                                value={this.state.searchInputValue}
+                                onChange={this.onSearchInputChange}
+                            />
+                        </div>
+                    </div>
                 )}
                 {hasNoSearchResults ? (
                     <div className={s.noSearchResultsText}>Reitinsuuntia ei löytynyt.</div>

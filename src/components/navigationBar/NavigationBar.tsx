@@ -1,10 +1,9 @@
 import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
-import { IoMdContact, IoMdRefresh } from 'react-icons/io';
+import { IoMdContact } from 'react-icons/io';
 import hslLogo from '~/assets/hsl-logo.png';
 import constants from '~/constants/constants';
-import EndpointPath from '~/enums/endpointPath';
 import Environment from '~/enums/environment';
 import TransitType from '~/enums/transitType';
 import LoginIcon from '~/icons/icon-login';
@@ -15,11 +14,11 @@ import AuthService from '~/services/authService';
 import { AlertStore } from '~/stores/alertStore';
 import { LoginStore } from '~/stores/loginStore';
 import { UserStore } from '~/stores/userStore';
-import HttpUtils from '~/utils/HttpUtils';
-import packageVersion from '../project/version.json';
+import packageVersion from '../../project/version.json';
+import TransitIcon from '../shared/TransitIcon';
+import Loader from '../shared/loader/Loader';
+import SyncView from './SyncView';
 import * as s from './navigationBar.scss';
-import TransitIcon from './shared/TransitIcon';
-import Loader from './shared/loader/Loader';
 
 interface INavigationBarProps {
     alertStore?: AlertStore;
@@ -38,28 +37,13 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
     constructor(props: INavigationBarProps) {
         super(props);
         this.state = {
-            isSyncLoading: false
+            isSyncLoading: false,
         };
     }
 
     private goToHomeView = () => {
         const homeViewLink = routeBuilder.to(SubSites.home).toLink();
         navigator.goTo({ link: homeViewLink });
-    };
-
-    private syncLocalDatabase = async () => {
-        this.setState({
-            isSyncLoading: true
-        });
-        const response = await HttpUtils.postRequest(EndpointPath.SYNC_LOCAL_DB, {});
-        if (response && response.isDbSyncing) {
-            this.props.alertStore!.setFadeMessage({
-                message: 'Sisäisen JORE-tietokannan päivitys on jo käynnissä.'
-            });
-        }
-        this.setState({
-            isSyncLoading: false
-        });
     };
 
     private toggleUserType = () => {
@@ -102,17 +86,7 @@ class NavigationBar extends Component<INavigationBarProps, INavigationBarState> 
                                     </div>
                                 </div>
                             ) : (
-                                <div
-                                    className={s.refreshIconWrapper}
-                                    title={
-                                        'Päivitä sisäinen JORE-tietokanta (vie noin 10 min). Käytä, jos vanhalla käyttöliittymällä on tehty muutoksia eivätkä ne näy tässä uudessa käyttöliittymässä. Päivittää linjojen, linjaotsikoiden, reittien, pysäkkien ja pysäkkialueiden. Huom. päivittää vain muokatut tiedot eli lisätyt tai poistetut tiedot eivät päivity.'
-                                    }
-                                >
-                                    <IoMdRefresh
-                                        className={classnames(s.navigationBarIcon, s.refreshIcon)}
-                                        onClick={this.syncLocalDatabase}
-                                    />
-                                </div>
+                                <SyncView />
                             )}
                         </>
                     )}

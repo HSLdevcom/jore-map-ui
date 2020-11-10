@@ -2,18 +2,20 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import SaveButton from '~/components/shared/SaveButton';
-import constants from '~/constants/constants';
+import Loader from '~/components/shared/loader/Loader';
 import RouteFactory from '~/factories/routeFactory';
 import { IRoute } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import LineService from '~/services/lineService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
 import { RouteStore } from '~/stores/routeStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import SidebarHeader from '../SidebarHeader';
 import RouteForm from './RouteForm';
 import * as s from './newRouteView.scss';
@@ -27,14 +29,13 @@ interface IRouteViewProps {
     isNewRoute: boolean;
     route?: IRoute;
     routeStore?: RouteStore;
+    searchResultStore?: SearchResultStore;
     mapStore?: MapStore;
     alertStore?: AlertStore;
     errorStore?: ErrorStore;
 }
 
-const ENVIRONMENT = constants.ENVIRONMENT;
-
-@inject('routeStore', 'mapStore', 'alertStore', 'errorStore')
+@inject('routeStore', 'searchResultStore', 'mapStore', 'alertStore', 'errorStore')
 @observer
 class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
     constructor(props: IRouteViewProps) {
@@ -72,11 +73,20 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         this.props.mapStore!.initCoordinates();
 
         try {
-            const lineId = navigator.getQueryParam(QueryParams.lineId);
-            const newRoute = RouteFactory.createNewRoute(lineId);
+            const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
+            const line = await LineService.fetchLine(lineId);
+            const basicRoute = await RouteService.fetchRoute({
+                routeId: line.lineBasicRoute,
+                areRoutePathLinksExcluded: true,
+            });
+            const nameFi = basicRoute ? basicRoute.routeName : '';
+            const nameSw = basicRoute ? basicRoute.routeNameSw : '';
+            const newRoute = RouteFactory.createNewRoute({ lineId, nameFi, nameSw });
             this.props.routeStore!.init({ route: newRoute, isNewRoute: true });
         } catch (e) {
-            this.props.errorStore!.addError('Uuden reitin luonti epäonnistui', e);
+            this.props.errorStore!.addError(`Uuden reitin luonti epäonnistui. ${e}`);
+            const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+            navigator.goTo({ link: homeViewLink });
         }
 
         this.setState({
@@ -92,15 +102,28 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         try {
             await RouteService.createRoute(route!);
             this.props.alertStore!.setFadeMessage({ message: 'Tallennettu!' });
+            this.redirectToNewRouteview(route.id);
+
+            // Update line search results
+            this.props.searchResultStore!.updateSearchRoute(route.lineId, route!);
         } catch (e) {
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
-            return;
+            this.props.errorStore!.addError('', e);
+            this.setState({ isLoading: false });
+            this.redirectToLineView();
         }
-        this.redirectToLineView();
+    };
+
+    private redirectToNewRouteview = (routeId: string) => {
+        const routeViewLink = routeBuilder
+            .to(SubSites.routes)
+            .append(QueryParams.routes, routeId)
+            .toLink();
+
+        navigator.goTo({ link: routeViewLink });
     };
 
     private redirectToLineView = () => {
-        const lineId = navigator.getQueryParam(QueryParams.lineId);
+        const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
         const lineViewLink = routeBuilder.to(SubSites.line).toTarget(':id', lineId).toLink();
         navigator.goTo({ link: lineViewLink, shouldSkipUnsavedChangesPrompt: true });
     };
@@ -116,12 +139,14 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         const invalidPropertiesMap = isEditingDisabled ? {} : routeStore.invalidPropertiesMap;
         const route = isEditingDisabled ? this.props.route : routeStore.route;
         const lineId = navigator.getQueryParam(QueryParams.lineId);
-        if (!route) return null;
+        if (!route) {
+            return (
+                <div className={s.routeView}>
+                    <Loader />
+                </div>
+            );
+        }
         const isRouteFormValid = routeStore.isRouteFormValid;
-        const isSaveAllowed = ENVIRONMENT !== 'prod' && ENVIRONMENT !== 'stage';
-        const savePreventedNotification = isSaveAllowed
-            ? ''
-            : 'Uuden reitin tallentamista ei vielä tueta, sillä vanha käyttöliittymä ei näytä reittiä ellei sillä ole olemassa olevaa reitinsuuntaa eikä reitinsuuntia voi vielä luoda uudella käyttöliittymällä. Voit kokeilla reitin luontia dev-ympäristössä. Jos haluat luoda reittejä tuotannossa, joudut käyttämään vanhaa JORE-ympäristöä.';
         return (
             <div className={classnames(s.routeView, s.form)}>
                 <SidebarHeader
@@ -143,8 +168,8 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
                 <SaveButton
                     onClick={this.save}
                     disabled={!isRouteFormValid}
-                    savePreventedNotification={savePreventedNotification}
-                    type={!isSaveAllowed ? 'warningButton' : 'saveButton'}
+                    savePreventedNotification={''}
+                    type={'saveButton'}
                 >
                     Luo uusi reitti
                 </SaveButton>

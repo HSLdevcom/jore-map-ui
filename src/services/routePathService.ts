@@ -2,14 +2,29 @@ import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
+import TransitType from '~/enums/transitType';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath } from '~/models';
-import { IRoutePathPrimaryKey, IRoutePathSaveModel } from '~/models/IRoutePath';
+import { IRoutePathPrimaryKey, ISingleRoutePathSaveModel } from '~/models/IRoutePath';
 import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
+
+interface IRoutePathLengthResponse {
+    length: number;
+    isCalculatedFromMeasuredStopGapsOnly: boolean;
+    unmeasuredStopGapsList: string[][];
+    missingStopGapsList: string[][];
+}
+
+interface IGetRoutePathLengthRequest {
+    lineId: string;
+    routeId: string;
+    transitType: TransitType;
+    routePathLinks: IRoutePathLink[];
+}
 
 class RoutePathService {
     public static fetchRoutePath = async (
@@ -29,7 +44,13 @@ class RoutePathService {
         if (!externalRoutePath) return null;
         const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
         const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-        return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+        return RoutePathFactory.mapExternalRoutePath({
+            externalRoutePath,
+            lineId,
+            transitType,
+            externalRoutePathLinks:
+                externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+        });
     };
 
     public static fetchFirstAndLastStopNamesOfRoutePath = async (
@@ -83,7 +104,13 @@ class RoutePathService {
         return queryResult.data.routePaths.nodes.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath({
+                externalRoutePath,
+                lineId,
+                transitType,
+                externalRoutePathLinks:
+                    externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
+            });
         });
     };
 
@@ -123,7 +150,12 @@ class RoutePathService {
         return externalRoutePathLinks.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath({
+                externalRoutePath,
+                lineId,
+                transitType,
+                externalRoutePathLinks: [],
+            });
         });
     };
 
@@ -137,15 +169,26 @@ class RoutePathService {
         return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
             const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
             const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath(externalRoutePath, lineId, transitType);
+            return RoutePathFactory.mapExternalRoutePath({
+                externalRoutePath,
+                lineId,
+                transitType,
+                externalRoutePathLinks: [],
+            });
         });
+    };
+
+    public static fetchRoutePathLength = async (
+        requestBody: IGetRoutePathLengthRequest
+    ): Promise<IRoutePathLengthResponse> => {
+        return await HttpUtils.postRequest(EndpointPath.ROUTE_PATH_LENGTH, requestBody);
     };
 }
 
 const _createRoutePathSaveModel = (
     newRoutePath: IRoutePath,
     oldRoutePath: IRoutePath | null
-): IRoutePathSaveModel => {
+): ISingleRoutePathSaveModel => {
     const added: IRoutePathLink[] = [];
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];
@@ -193,11 +236,6 @@ const _createRoutePathSaveModel = (
 
     return {
         routePathLinkSaveModel,
-        originalPrimaryKey: {
-            routeId: routePathToSave.routeId,
-            direction: routePathToSave.direction,
-            startDate: routePathToSave.startDate,
-        },
         routePath: routePathToSave,
     };
 };
@@ -216,3 +254,5 @@ const _findRoutePathLink = (
 };
 
 export default RoutePathService;
+
+export { IRoutePathLengthResponse, IGetRoutePathLengthRequest };

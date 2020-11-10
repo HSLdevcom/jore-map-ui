@@ -11,11 +11,14 @@ import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
 class LineService {
-    public static fetchLine = async (lintunnus: string): Promise<ILine> => {
+    public static fetchLine = async (lineId: string): Promise<ILine> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getLineQuery(),
-            variables: { lineId: lintunnus },
+            variables: { lineId },
         });
+        if (!queryResult.data.linjaByLintunnus) {
+            throw `Linjaa ${lineId} ei löytynyt.`;
+        }
         return LineFactory.mapExternalLine(queryResult.data.linjaByLintunnus);
     };
 
@@ -23,8 +26,8 @@ class LineService {
         const lines: ILine[] = [];
         const promises: Promise<void>[] = lineIds.map((lineId: string) => {
             const createPromise = async () => {
-                const route = await LineService.fetchLine(lineId);
-                lines.push(route);
+                const line = await LineService.fetchLine(lineId);
+                lines.push(line);
             };
             return createPromise();
         });

@@ -2,7 +2,6 @@ import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePath, IRoutePathLink } from '~/models';
-import INeighborLink from '~/models/INeighborLink';
 import routePathLinkValidationModel, {
     IRoutePathLinkValidationModel,
 } from '~/models/validationModels/routePathLinkValidationModel';
@@ -10,20 +9,15 @@ import routePathValidationModel, {
     IRoutePathValidationModel,
 } from '~/models/validationModels/routePathValidationModel';
 import GeometryUndoStore from '~/stores/geometryUndoStore';
-import RoutePathValidator from '~/utils/RoutePathValidator';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import { toDateString } from '~/utils/dateUtils';
 import { getText } from '~/utils/textUtils';
 import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import RoutePathCopySegmentStore from './routePathCopySegmentStore';
+import RoutePathLayerStore from './routePathLayerStore';
 import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
-
-// Is the neighbor to add either startNode or endNode
-enum NeighborToAddType {
-    AfterNode,
-    BeforeNode,
-}
 
 interface UndoState {
     routePathLinks: IRoutePathLink[];
@@ -37,20 +31,24 @@ enum ListFilter {
     link,
 }
 
+interface IRoutePathNodes {
+    [nodeId: string]: string;
+}
+
 class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
     @observable private _isNewRoutePath: boolean;
     @observable private _existingRoutePaths: IRoutePath[];
-    @observable private _neighborRoutePathLinks: INeighborLink[];
-    @observable private _neighborToAddType: NeighborToAddType;
     @observable private _listFilters: ListFilter[];
     @observable private _invalidLinkOrderNumbers: number[];
-    @observable private _extendedListItemId: string | null;
-    @observable private _highlightedListItemId: string | null;
-    @observable private _toolHighlightedNodeIds: string[]; // node's highlighted (to indicate that they can be clicked)
     @observable private _isEditingDisabled: boolean;
     @observable private _selectedTabIndex: number;
+    @observable private _calculatedRoutePathLength: number | null;
+    @observable private _isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean;
+    @observable private _unmeasuredStopGapsList: string[][];
+    @observable private _missingStopGapsList: string[][];
+    private _routePathNodes: IRoutePathNodes | null;
     private _geometryUndoStore: GeometryUndoStore<UndoState>;
     private _validationStore: ValidationStore<IRoutePath, IRoutePathValidationModel>;
     private _routePathLinkValidationStoreMap: Map<
@@ -59,17 +57,17 @@ class RoutePathStore {
     >;
 
     constructor() {
-        this._neighborRoutePathLinks = [];
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
-        this._extendedListItemId = null;
-        this._highlightedListItemId = null;
-        this._toolHighlightedNodeIds = [];
+        this._existingRoutePaths = [];
         this._isEditingDisabled = true;
         this._selectedTabIndex = 0;
+        this._routePathNodes = null;
         this._geometryUndoStore = new GeometryUndoStore();
         this._validationStore = new ValidationStore();
         this._routePathLinkValidationStoreMap = new Map();
+        this._calculatedRoutePathLength = null;
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = false;
 
         reaction(
             () => this.isDirty && !this._isEditingDisabled,
@@ -79,6 +77,10 @@ class RoutePathStore {
         reaction(
             () => this._routePath && this._routePath.routePathLinks.length,
             _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+        );
+        reaction(
+            () => this.routePath && this.routePath.routePathLinks.length,
+            () => this.updateRoutePathNodes()
         );
     }
 
@@ -96,14 +98,8 @@ class RoutePathStore {
         return this._isNewRoutePath;
     }
 
-    @computed
-    get neighborLinks(): INeighborLink[] {
-        return this._neighborRoutePathLinks;
-    }
-
-    @computed
-    get neighborToAddType(): NeighborToAddType {
-        return this._neighborToAddType;
+    get existingRoutePaths(): IRoutePath[] {
+        return this._existingRoutePaths;
     }
 
     @computed
@@ -127,21 +123,6 @@ class RoutePathStore {
     }
 
     @computed
-    get extendedListItemId() {
-        return this._extendedListItemId;
-    }
-
-    @computed
-    get highlightedListItemId() {
-        return this._highlightedListItemId;
-    }
-
-    @computed
-    get toolHighlightedNodeIds() {
-        return this._toolHighlightedNodeIds;
-    }
-
-    @computed
     get invalidPropertiesMap() {
         return this._validationStore.getInvalidPropertiesMap();
     }
@@ -162,6 +143,26 @@ class RoutePathStore {
         return this._isEditingDisabled;
     }
 
+    @computed
+    get calculatedRoutePathLength() {
+        return this._calculatedRoutePathLength;
+    }
+
+    @computed
+    get isCalculatedRoutePathLengthFormedByMeasuredLengths() {
+        return this._isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    }
+
+    @computed
+    get unmeasuredStopGapsList() {
+        return this._unmeasuredStopGapsList;
+    }
+
+    @computed
+    get missingStopGapsList() {
+        return this._missingStopGapsList;
+    }
+
     @action
     public init = ({
         routePath,
@@ -171,18 +172,18 @@ class RoutePathStore {
         isNewRoutePath: boolean;
     }) => {
         this.clear();
-        this._routePath = routePath;
+        this._routePath = _.cloneDeep(routePath);
+        this._oldRoutePath = _.cloneDeep(routePath);
+
         this._isNewRoutePath = isNewRoutePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
-        this.setRoutePathLinks(routePathLinks);
+        this.initRoutePathLinks(routePathLinks);
         const currentUndoState: UndoState = {
             routePathLinks,
             isStartNodeUsingBookSchedule: Boolean(this.routePath!.isStartNodeUsingBookSchedule),
             startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
         };
         this._geometryUndoStore.addItem(currentUndoState);
-
-        this.setOldRoutePath(this._routePath);
 
         const validateRoutePathPrimaryKey = (routePath: IRoutePath) => {
             if (!this.isNewRoutePath) return;
@@ -239,6 +240,15 @@ class RoutePathStore {
             };
         };
 
+        const validateRoutePathLength = () => {
+            return {
+                isValid: true, // let default routePathValidation will catch the error (in case it's not valid)
+                errorMessage: this.isRoutePathLengthFormedByMeasuredLengths()
+                    ? ''
+                    : 'Reitinsuunnan pituutta ei ole laskettu pelkästään mitatuilla pysäkkiväleillä.',
+            };
+        };
+
         const customValidatorMap: ICustomValidatorMap = {
             // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
             routePathPrimaryKey: {
@@ -256,12 +266,15 @@ class RoutePathStore {
                 validators: [],
                 dependentProperties: ['routePathPrimaryKey'],
             },
+            length: {
+                validators: [validateRoutePathLength],
+            },
         };
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
     };
 
     @action
-    public setRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
+    public initRoutePathLinks = (routePathLinks: IRoutePathLink[]) => {
         this._routePath!.routePathLinks = routePathLinks;
 
         // Need to recalculate orderNumbers to ensure that they are correct
@@ -310,7 +323,7 @@ class RoutePathStore {
     @action
     public undo = () => {
         this._geometryUndoStore.undo((nextUndoState: UndoState) => {
-            this._neighborRoutePathLinks = [];
+            RoutePathLayerStore.setNeighborLinks([]);
 
             const undoRoutePathLinks = nextUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
@@ -326,14 +339,14 @@ class RoutePathStore {
             });
 
             this.restoreBookScheduleProperties(nextUndoState);
-            this.setRoutePathLinks(newRoutePathLinks);
+            this.initRoutePathLinks(newRoutePathLinks);
         });
     };
 
     @action
     public redo = () => {
         this._geometryUndoStore.redo((previousUndoState: UndoState) => {
-            this._neighborRoutePathLinks = [];
+            RoutePathLayerStore.setNeighborLinks([]);
 
             const redoRoutePathLinks = previousUndoState.routePathLinks;
             const oldRoutePathLinks = this._routePath!.routePathLinks;
@@ -349,45 +362,8 @@ class RoutePathStore {
             });
 
             this.restoreBookScheduleProperties(previousUndoState);
-            this.setRoutePathLinks(newRoutePathLinks);
+            this.initRoutePathLinks(newRoutePathLinks);
         });
-    };
-
-    @action
-    public setExtendedListItemId = (id: string | null) => {
-        this._extendedListItemId = id;
-    };
-
-    @action
-    public setHighlightedListItemId = (id: string | null) => {
-        this._highlightedListItemId = id;
-    };
-
-    // TODO: nodeIds should be node.internalIds (overlapping nodes are different with different internalId but have the same nodeId)
-    @action
-    public setToolHighlightedNodeIds = (nodeIds: string[]) => {
-        return (this._toolHighlightedNodeIds = nodeIds);
-    };
-
-    @action
-    public setRoutePath = (routePath: IRoutePath) => {
-        this._routePath = routePath;
-
-        const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
-        this.setRoutePathLinks(routePathLinks);
-        const currentUndoState: UndoState = {
-            routePathLinks,
-            isStartNodeUsingBookSchedule: Boolean(this.routePath!.isStartNodeUsingBookSchedule),
-            startNodeBookScheduleColumnNumber: this.routePath!.startNodeBookScheduleColumnNumber,
-        };
-        this._geometryUndoStore.addItem(currentUndoState);
-
-        this.setOldRoutePath(this._routePath);
-    };
-
-    @action
-    public setOldRoutePath = (routePath: IRoutePath) => {
-        this._oldRoutePath = _.cloneDeep(routePath);
     };
 
     @action
@@ -415,42 +391,60 @@ class RoutePathStore {
             ?.updateProperty(property, value);
     };
 
-    @action
-    public setNeighborRoutePathLinks = (neighborLinks: INeighborLink[]) => {
-        this._neighborRoutePathLinks = neighborLinks;
-    };
-
-    @action
-    public setNeighborToAddType = (neighborToAddType: NeighborToAddType) => {
-        this._neighborToAddType = neighborToAddType;
-    };
-
     /**
      * Uses given routePathLink's orderNumber to place given routePathLink in the correct position
      * in routePath.routePathLinks array
      */
     @action
-    public addLink = (routePathLink: IRoutePathLink) => {
-        routePathLink.viaNameId = routePathLink.id;
+    public addLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
+        const rpLinkToAdd = _.cloneDeep(routePathLink);
         const rpLinks = this._routePath!.routePathLinks;
-
+        const rpLinkToAddClone = _.cloneDeep(rpLinkToAdd);
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(
             // Order numbers start from 1
-            routePathLink.orderNumber - 1,
+            rpLinkToAdd.orderNumber - 1,
             0,
-            routePathLink
+            rpLinkToAdd
         );
 
-        // Copy bookSchedule properties from routePath to last routePathLink
-        if (this.isLastRoutePathLink(routePathLink) && rpLinks.length > 1) {
-            const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
+        /**
+         * Last routePathLinkNode's book schedule data is stored at routePath (this is because of routePathLinkNode model is missing in jore)
+         *
+         * Example of adding rp link to the end of rpLink list
+         * 1. node <- data stored at routePathLink
+         * link
+         * 2. node <- data stored at routePath
+         *
+         * after a link is added (to the end of routePath)
+         * 1. node
+         * link
+         * 2. node <- data at routePathLink (data copied from routePath to this link)
+         * link
+         * 3. node <- data at routePath (from new link)
+         *
+         * Adding to the end of routePathList
+         * rpLinkToAddClone = rpLinkToAdd
+         * <add rpLink to the end of the list>
+         * lastRpLink.data = routePath.data
+         * routePath.data = rpLinkToAddClone.data
+         */
+        if (this.isLastRoutePathLink(rpLinkToAdd) && rpLinks.length > 1) {
+            const lastRpLink = rpLinks[rpLinks.length - 1];
             this.copyPropertyToRoutePathLinkFromRoutePath(
-                routePathLinkToCopyFor,
+                lastRpLink,
                 'isStartNodeUsingBookSchedule'
             );
             this.copyPropertyToRoutePathLinkFromRoutePath(
-                routePathLinkToCopyFor,
+                lastRpLink,
+                'startNodeBookScheduleColumnNumber'
+            );
+            this.copyPropertyToRoutePathFromRoutePathLink(
+                rpLinkToAddClone,
+                'isStartNodeUsingBookSchedule'
+            );
+            this.copyPropertyToRoutePathFromRoutePathLink(
+                rpLinkToAddClone,
                 'startNodeBookScheduleColumnNumber'
             );
         }
@@ -458,7 +452,27 @@ class RoutePathStore {
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
 
-        this.initRoutePathLinkValidationStore(routePathLink);
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
+    };
+
+    // Same as addLink() but doesnt support cloning routePath's bookSchedule properties.
+    // TODO: if needed, copy those bookSchedule properties from segment's routePath if segment to copy ends into routePath's last node
+    @action
+    public cloneLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
+        const rpLinkToAdd = _.cloneDeep(routePathLink);
+        const rpLinks = this._routePath!.routePathLinks;
+        // Need to do splice to trigger ReactionDisposer watcher
+        rpLinks.splice(
+            // Order numbers start from 1
+            rpLinkToAdd.orderNumber - 1,
+            0,
+            rpLinkToAdd
+        );
+
+        this.recalculateOrderNumbers();
+        this.addCurrentStateToUndoStore();
+
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
     };
 
     @action
@@ -466,22 +480,37 @@ class RoutePathStore {
         const rpLinks = this._routePath!.routePathLinks;
 
         const linkToRemoveIndex = rpLinks.findIndex((link) => link.id === id);
-        const routePathLinkToCopyFor = rpLinks[rpLinks.length - 1];
 
-        // Need to do splice to trigger ReactionDisposer watcher
-        rpLinks.splice(linkToRemoveIndex, 1);
+        /**
+         * Last routePathLinkNode's book schedule data is stored at routePath (this is because of routePathLinkNode model is missing in jore)
+         *
+         * Example of adding rp link to the end of rpLink list
+         * 1. node <- data stored at routePathLink
+         * link
+         * 2. node <- data stored at routePath
+         *
+         * after a link is removed
+         * 1. node <- data stored at routePath (data from rpLink was copied into routePath)
+         *
+         * Last routePath link removal
+         * routePath.data = last rpLink.data
+         * <remove last link>
+         */
+        if (linkToRemoveIndex === rpLinks.length - 1) {
+            const rpLinkToRemoveClone = _.cloneDeep(rpLinks[rpLinks.length - 1]);
 
-        // Copy bookSchedule properties from last routePathLink to routePath
-        if (linkToRemoveIndex === this._routePath!.routePathLinks.length) {
             this.copyPropertyToRoutePathFromRoutePathLink(
-                routePathLinkToCopyFor,
+                rpLinkToRemoveClone,
                 'isStartNodeUsingBookSchedule'
             );
             this.copyPropertyToRoutePathFromRoutePathLink(
-                routePathLinkToCopyFor,
+                rpLinkToRemoveClone,
                 'startNodeBookScheduleColumnNumber'
             );
         }
+
+        // Need to do splice to trigger ReactionDisposer watcher
+        rpLinks.splice(linkToRemoveIndex, 1);
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
@@ -491,7 +520,7 @@ class RoutePathStore {
 
     @action
     public addCurrentStateToUndoStore() {
-        this._neighborRoutePathLinks = [];
+        RoutePathLayerStore.setNeighborLinks([]);
 
         const routePathLinks =
             this._routePath && this._routePath.routePathLinks ? this._routePath.routePathLinks : [];
@@ -521,20 +550,42 @@ class RoutePathStore {
     };
 
     @action
+    public setCalculatedRoutePathLength = (calculatedRoutePathLength: number | null) => {
+        this._calculatedRoutePathLength = calculatedRoutePathLength;
+    };
+
+    @action
+    public setIsRoutePathLengthFormedByMeasuredLengths = (
+        isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean
+    ) => {
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    };
+
+    @action
+    public setUnmeasuredStopGapsList = (unmeasuredStopGapsList: string[][]) => {
+        this._unmeasuredStopGapsList = unmeasuredStopGapsList;
+    };
+    @action
+    public setMissingStopGapsList = (missingStopGapsList: string[][]) => {
+        this._missingStopGapsList = missingStopGapsList;
+    };
+
+    @action
     public clear = () => {
         this._routePath = null;
         this._oldRoutePath = null;
-        this._neighborRoutePathLinks = [];
         this._invalidLinkOrderNumbers = [];
+        this._routePathNodes = null;
         this._listFilters = [ListFilter.link];
         this._geometryUndoStore.clear();
         this._validationStore.clear();
         this._routePathLinkValidationStoreMap = new Map();
+        RoutePathLayerStore.clear();
     };
 
     @action
     public resetChanges = () => {
-        if (this._oldRoutePath) {
+        if (this.isDirty && this._oldRoutePath) {
             this.init({ routePath: this._oldRoutePath, isNewRoutePath: this._isNewRoutePath });
         }
         RoutePathCopySegmentStore.clear();
@@ -552,6 +603,22 @@ class RoutePathStore {
         );
     }
 
+    @action
+    private updateRoutePathNodes = () => {
+        const routePathNodes: IRoutePathNodes = {};
+        if (!this.routePath) return;
+        this.routePath.routePathLinks.forEach((rpLink) => {
+            routePathNodes[rpLink.startNode.id] = rpLink.startNode.id;
+            routePathNodes[rpLink.endNode.id] = rpLink.endNode.id;
+        });
+        this._routePathNodes = routePathNodes;
+    };
+
+    @action
+    public validateRoutePathLength = () => {
+        this._validationStore.validateProperty('length');
+    };
+
     public getSavePreventedText = (): string => {
         const routePathLinks = this.routePath!.routePathLinks;
         if (this.isEditingDisabled) {
@@ -560,16 +627,16 @@ class RoutePathStore {
         if (routePathLinks.length === 0) {
             return getText('routePath_savePrevented_routePathLinksMissing');
         }
-        if (!RoutePathValidator.validateRoutePathLinkCoherency(routePathLinks)) {
+        if (!RoutePathUtils.validateRoutePathLinkCoherency(routePathLinks)) {
             return getText('routePath_savePrevented_geometryInvalid');
         }
-        const stopIdAppearingTwice = RoutePathValidator.getStopIdThatAppearsTwice(routePathLinks);
+        const stopIdAppearingTwice = RoutePathUtils.getStopIdThatAppearsTwice(routePathLinks);
         if (stopIdAppearingTwice) {
             return getText('routePath_savePrevented_stopAppearingTwice', {
                 stopId: stopIdAppearingTwice,
             });
         }
-        if (RoutePathValidator.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
+        if (RoutePathUtils.isRoutePathStartNodeTheSameAsEndNode(routePathLinks)) {
             return getText('routePath_savePrevented_startNodeTheSameAsEndNode');
         }
         if (!this.isFormValid) {
@@ -612,11 +679,25 @@ class RoutePathStore {
         return [];
     };
 
-    public hasNodeOddAmountOfNeighbors = (nodeId: string): boolean => {
+    // O(1) way to know if node is found or not
+    public isNodeFound = (nodeId: string): Boolean => {
+        if (!this._routePathNodes) return false;
+        return Boolean(this._routePathNodes[nodeId] !== undefined);
+    };
+
+    public hasNodeOddAmountOfNeighbors = (nodeInternalId: string): boolean => {
         const routePath = this.routePath;
         return (
-            routePath!.routePathLinks.filter((x) => x.startNode.id === nodeId).length !==
-            routePath!.routePathLinks.filter((x) => x.endNode.id === nodeId).length
+            routePath!.routePathLinks.filter((x) => x.startNode.internalId === nodeInternalId)
+                .length !==
+            routePath!.routePathLinks.filter((x) => x.endNode.internalId === nodeInternalId).length
+        );
+    };
+
+    public isRoutePathLengthFormedByMeasuredLengths = (): boolean => {
+        return (
+            this.calculatedRoutePathLength === this.routePath!.length &&
+            this.isCalculatedRoutePathLengthFormedByMeasuredLengths
         );
     };
 
@@ -639,7 +720,7 @@ class RoutePathStore {
         routePathLink: IRoutePathLink,
         property: keyof IRoutePathLink | keyof IRoutePath
     ) => {
-        const valueToCopy = routePathLink[property];
+        const valueToCopy = _.cloneDeep(routePathLink[property]);
         this.updateRoutePathProperty(property, valueToCopy);
     };
 
@@ -648,21 +729,20 @@ class RoutePathStore {
         routePathLink: IRoutePathLink,
         property: keyof IRoutePathLink
     ) => {
-        const valueToCopy = this.routePath![property];
+        const valueToCopy = _.cloneDeep(this.routePath![property]);
         this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, valueToCopy);
         this.updateRoutePathProperty(property, null);
     };
 
     private onChangeIsEditingDisabled = () => {
-        this.setNeighborRoutePathLinks([]);
         if (this._isEditingDisabled) {
             this.resetChanges();
             const selectedTool = ToolbarStore.selectedTool;
             if (
                 selectedTool &&
-                (selectedTool.toolType === ToolbarToolType.AddNewRoutePathLink ||
+                (selectedTool.toolType === ToolbarToolType.ExtendRoutePath ||
                     selectedTool.toolType === ToolbarToolType.RemoveRoutePathLink ||
-                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegmentTool)
+                    selectedTool.toolType === ToolbarToolType.CopyRoutePathSegment)
             ) {
                 ToolbarStore.selectDefaultTool();
             }
@@ -702,4 +782,4 @@ const _areDateRangesOverlapping = ({
 
 export default new RoutePathStore();
 
-export { RoutePathStore, NeighborToAddType, UndoState, ListFilter };
+export { RoutePathStore, UndoState, ListFilter };

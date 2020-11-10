@@ -1,17 +1,35 @@
 @import '../../../shared/styles/common';
 
-.neighborMarker {
-    position: absolute;
-    width: 24px !important;
-    height: 24px !important;
-    top: -4px;
-    left: -4px;
+$usedNeighborColor: #0dce0a;
+$usedNeighborColorHighlight: #048c01;
+$unusedNeighborColor: #fc383a;
+$unusedNeighborColorHighlight: #c40608;
 
-    .usageCount {
-        font-size: 17px;
-        font-weight: 900;
-        text-align: center;
-        color: white;
-        line-height: 24px;
-    }
+.usageCount {
+    font-size: 17px;
+    font-weight: 900;
+    text-align: center;
+    line-height: 24px;
+}
+
+.nodeMarkerStop {
+    background-color: #fff;
+    border-color: $busBlue;
+}
+
+.nodeMarkerCrossroad {
+    background-color: #fff;
+    border-color: $crossroadBorder;
+}
+
+.nodeMarkerMunicipality {
+    background-color: #fff;
+    border-color: $municipalityBorder;
+}
+
+:export {
+    usedNeighborColor: $usedNeighborColor;
+    usedNeighborColorHighlight: $usedNeighborColorHighlight;
+    unusedNeighborColor: $unusedNeighborColor;
+    unusedNeighborColorHighlight: $unusedNeighborColorHighlight;
 }

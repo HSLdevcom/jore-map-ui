@@ -1,0 +1,55 @@
+@import '../shared/styles/common.scss';
+
+.syncViewContainer {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    text-align: center;
+    margin: 15px 70px;
+    padding: 10px;
+    width: 350px;
+    height: 270px; // We want a static height so that it doesn't change when content changes
+    color: $fontColorDefault;
+
+    .loaderContainer  {
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        align-items: center;
+
+        .loadingText {
+            padding-bottom: 10px;
+        }
+    }
+
+    .checkboxContainer {
+        padding-top: 10px;
+
+        .checkbox {
+            margin: 5px 0px 5px 0px;
+        }
+        .checkbox:last-of-type {
+            margin-bottom: 15px;
+        }
+    }
+
+    .syncButtonContainer {
+        display: flex;
+        padding-top: 10px;
+        border-top: 1px solid $borderLightGrey;
+    }
+}
+
+.openSyncViewButton {
+    display: flex;
+    margin: 6px;
+    cursor: pointer;
+    padding: 3px;
+
+    .icon {
+        font-size: 24px;
+    }
+}
+.openSyncViewButton:hover {
+    background-color: #0064a5;
+}

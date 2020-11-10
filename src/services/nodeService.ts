@@ -6,7 +6,7 @@ import NodeFactory from '~/factories/nodeFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { ILink, INode } from '~/models';
 import { INodeMapHighlight, INodePrimaryKey, ISearchNode } from '~/models/INode';
-import IExternalNode from '~/models/externals/IExternalNode';
+import IExternalNode, { IExternalSearchNode } from '~/models/externals/IExternalNode';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 
@@ -38,30 +38,34 @@ class NodeService {
         );
     };
 
-    public static fetchAllNodes = async (): Promise<ISearchNode[]> => {
+    public static fetchSearchNode = async (nodeId: string): Promise<ISearchNode | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
-            query: GraphqlQueries.getAllNodesQuery(),
+            query: GraphqlQueries.getSearchNodeQuery(),
+            variables: { nodeId },
+            fetchPolicy: 'no-cache',
         });
-        return queryResult.data.allNodes.nodes.map((node: IExternalNode) => {
-            const searchNode: ISearchNode = NodeFactory.createSearchNode(
-                node,
-                node.pysakkiBySoltunnus ? node.pysakkiBySoltunnus.pysnimi : undefined
-            );
-            return searchNode;
+        return queryResult.data.node ? NodeFactory.createSearchNode(queryResult.data.node) : null;
+    };
+
+    public static fetchAllSearchNodes = async (): Promise<ISearchNode[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getAllSearchNodesQuery(),
+        });
+        return queryResult.data.allNodes.nodes.map((node: IExternalSearchNode) => {
+            return NodeFactory.createSearchNode(node);
         });
     };
 
-    public static updateNode = async (node: INode, links: ILink[]) => {
-        interface INodeSaveModel {
-            node: INode;
-            links: ILink[];
-        }
-        const requestBody: INodeSaveModel = {
+    public static updateNode = async (
+        node: INode,
+        links: ILink[],
+        shouldChangeStopGapMeasurementType: boolean
+    ) => {
+        await HttpUtils.updateObject(EndpointPath.NODE, {
             node,
             links,
-        };
-
-        await HttpUtils.updateObject(EndpointPath.NODE, requestBody);
+            shouldChangeStopGapMeasurementType,
+        });
     };
 
     public static createNode = async (node: INode) => {

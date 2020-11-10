@@ -1,7 +1,6 @@
-import SplitConfirmContent from '~/components/sidebar/splitLinkView/SplitConfirmContent';
 import NodeType from '~/enums/nodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventHelper from '~/helpers/EventHelper';
+import EventListener from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -14,20 +13,36 @@ import ToolbarStore from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import BaseTool from './BaseTool';
 
+type toolPhase = 'selectNodeToSplitLinkWith';
+
 class SplitLinkTool implements BaseTool {
     public toolType = ToolbarToolType.SplitLink;
     public toolHelpHeader = 'Jaa linkki solmulla';
-    public toolHelpText = 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.';
+    public toolHelpPhasesMap = {
+        selectNodeToSplitLinkWith: {
+            phaseHelpText: 'Valitse kartalta solmu, jolla haluat jakaa avattuna olevan linkin.',
+        },
+    };
 
-    public activate() {
+    public activate = () => {
         NetworkStore.showMapLayer(MapLayer.node);
         NetworkStore.showMapLayer(MapLayer.unusedNode);
-        EventHelper.on('networkNodeClick', this.openNodeConfirm);
-    }
+        EventListener.on('networkNodeClick', this.openNodeConfirm);
+        this.setToolPhase('selectNodeToSplitLinkWith');
+    };
 
-    public deactivate() {
-        EventHelper.off('networkNodeClick', this.openNodeConfirm);
-    }
+    public deactivate = () => {
+        this.setToolPhase(null);
+        EventListener.off('networkNodeClick', this.openNodeConfirm);
+    };
+
+    public getToolPhase = () => {
+        return ToolbarStore.toolPhase;
+    };
+
+    public setToolPhase = (toolPhase: toolPhase | null) => {
+        ToolbarStore.setToolPhase(toolPhase);
+    };
 
     navigateToSplitLink = (nodeId: string) => {
         const link = LinkStore.link;
@@ -49,34 +64,35 @@ class SplitLinkTool implements BaseTool {
             ErrorStore.addError(`Solmua (soltunnus ${nodeId}) ei löytynyt`);
             return;
         }
-        let confirmContent: React.ReactNode = null;
+        let confirmData: Object = {};
         if (node.type === NodeType.STOP) {
-            confirmContent = SplitConfirmContent({
+            confirmData = {
                 message: 'Oletko varma, että haluat jakaa linkin pysäkillä?',
                 itemList: [
                     { label: 'Lyhyt ID', value: NodeUtils.getShortId(node) },
                     { label: 'Nimi', value: node.stop!.nameFi },
-                    { label: 'Soltunnus', value: node.id }
-                ]
-            });
+                    { label: 'Soltunnus', value: node.id },
+                ],
+            };
         } else {
-            confirmContent = SplitConfirmContent({
+            confirmData = {
                 message: 'Oletko varma, että haluat jakaa linkin solmulla?',
                 itemList: [
                     {
                         label: 'Tyyppi',
-                        value: NodeUtils.getNodeTypeName(node.type)
+                        value: NodeUtils.getNodeTypeName(node.type),
                     },
-                    { label: 'Soltunnus', value: node.id }
-                ]
-            });
+                    { label: 'Soltunnus', value: node.id },
+                ],
+            };
         }
         ConfirmStore.openConfirm({
-            content: confirmContent,
+            confirmData,
+            confirmComponentName: 'splitConfirm',
             onConfirm: () => {
                 ToolbarStore.selectTool(null);
                 this.navigateToSplitLink(nodeId);
-            }
+            },
         });
     };
 }

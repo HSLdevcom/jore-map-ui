@@ -1,29 +1,30 @@
-name: Test dev
+name: Test stage
 
 on:
   pull_request:
     branches:
-      - master
+      - release-prod
 
 jobs:
-  test-dev:
+  test-stage:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Cypress run
         uses: cypress-io/github-action@v1
-        # with:
-        #  record: true
+        with:
+          record: true
         env:
-          CYPRESS_BASE_URL: https://dev.jore-map.hsl.fi
+          CYPRESS_E2E: true # Needed to tell babel.config to not load cypress breaking presets
+          CYPRESS_BASE_URL: https://stage.jore-map.hsl.fi
           CYPRESS_HSLID_CLIENT_ID: ${{ secrets.CYPRESS_HSLID_CLIENT_ID }}
           CYPRESS_HSLID_CLIENT_SECRET: ${{ secrets.CYPRESS_HSLID_CLIENT_SECRET }}
           CYPRESS_HSLID_WRITE_ACCESS_USERNAME: ${{ secrets.CYPRESS_HSLID_WRITE_ACCESS_USERNAME }}
           CYPRESS_HSLID_WRITE_ACCESS_PASSWORD: ${{ secrets.CYPRESS_HSLID_WRITE_ACCESS_PASSWORD }}
           CYPRESS_HSLID_READ_ACCESS_USERNAME: ${{ secrets.CYPRESS_HSLID_READ_ACCESS_USERNAME }}
           CYPRESS_HSLID_READ_ACCESS_PASSWORD: ${{ secrets.CYPRESS_HSLID_READ_ACCESS_PASSWORD }}
-          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # Only prod updates to record into Cypress.io
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
       - name: Upload screenshot artifacts
         uses: actions/upload-artifact@v1
         if: failure()
@@ -41,7 +42,7 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          text: Jore-map DEV E2E test status
+          text: Jore-map STAGE E2E test status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
