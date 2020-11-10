@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set current date to be accessible later with steps.date.outputs.date
+        uses: actions/set-timezone-action@v1.1
+        with:
+          timezoneLinux: "Europe/Helsinki"
         id: date
         run: echo "::set-output name=date::$(date +'%d.%m.%Y_%H:%M')"
       - uses: actions/checkout@v2
