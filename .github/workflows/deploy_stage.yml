@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Set current date to be accessible later with steps.date.outputs.date
         id: date
-        run: echo "::set-output name=date::$(date +'%d.%m.%Y %H:%M')"
+        run: echo "::set-output name=date::$(date +'%d.%m.%Y_%H:%M')"
       - uses: actions/checkout@v2
         with:
           ref: master
