@@ -21,6 +21,7 @@ $iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
         position: absolute;
         font-weight: 600;
         text-shadow: 0 0 5px white, 0 0 5px white;
+        color: $fontColorDefault;
     }
 }
 
