@@ -231,6 +231,9 @@ class RoutePathMassEditStore {
 
         this._massEditRoutePaths = this._massEditRoutePaths!.concat(newMassEditRoutePaths);
         this._newRoutePathIdCounter = idCounter;
+        if (routePathsWithNewId.length === 2) {
+            this.addSelectedRoutePathPair(routePathsWithNewId);
+        }
         this.validateMassEditRoutePaths();
     };
 
@@ -306,6 +309,9 @@ class RoutePathMassEditStore {
 
     @action
     public addSelectedRoutePathPair = (routePathPair: IRoutePath[]) => {
+        // A valid pair has different directions
+        if (routePathPair[0].direction === routePathPair[1].direction) return;
+
         // Remove routePath pair from this._selectedRoutePathIdPairs, if found
         const routePathId1 = routePathPair[0].internalId;
         const routePathId2 = routePathPair[1].internalId;
