@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { action, computed, observable } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import IError from '~/models/IError';
@@ -38,9 +39,15 @@ class ErrorStore {
         }
         let msg = message;
         if (error && error.errorCode && httpStatusDescriptionCodeList[error.errorCode]) {
-            msg += `, ${httpStatusDescriptionCodeList[error.errorCode]}`;
-        } else if (error && error.message) {
-            msg += `, ${error.message}`;
+            if (!isEmpty(msg)) {
+                msg += `, `;
+            }
+            msg += `${httpStatusDescriptionCodeList[error.errorCode]}`;
+        } else if (error && !isEmpty(error.message)) {
+            if (!isEmpty(msg)) {
+                msg += `, `;
+            }
+            msg += `${error.message}`;
         }
         this._errors.push(msg);
         // tslint:disable-next-line:no-console

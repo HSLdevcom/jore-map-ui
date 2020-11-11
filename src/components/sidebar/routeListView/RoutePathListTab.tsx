@@ -360,7 +360,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             wasSaveSuccesful = true;
         } catch (e) {
             this.props.alertStore!.close();
-            this.props.errorStore!.addError(`Tallennus epäonnistui`, e);
+            this.props.errorStore!.addError('', e);
         }
         this.props.routePathMassEditStore!.clear();
         this.props.routeListStore!.setRouteIdToEdit(null);

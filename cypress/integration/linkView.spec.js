@@ -30,7 +30,7 @@ describe('LinkView tests - write access user', () => {
         cy.getTestElement('measuredLength')
             .invoke('val')
             .then((value) => {
-                const newInputValue = parseInt(value) + 1;
+                const newInputValue = parseInt(value ? value : 50) + 1;
                 cy.getTestElement('measuredLength').clear().type(newInputValue);
 
                 cy.saveButtonShouldBeActive();
