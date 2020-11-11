@@ -1,0 +1,18 @@
+@import './nodeMarker.scss';
+
+$markerHeight: 14px;
+
+.clusterNodeMarker {
+    display: flex;
+    background-color: white;
+}
+
+.clusterNodeMarkerContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: $markerHeight;
+    line-height: 100%;
+    width: $markerHeight;
+}
