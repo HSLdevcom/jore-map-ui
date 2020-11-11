@@ -26,26 +26,32 @@ $iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
 
 .bus {
     border-color: $busBlue;
+    color: $busBlue;
 }
 
 .tram {
     border-color: $tramGreen;
+    color: $tramGreen;
 }
 
 .train {
     border-color: $trainPurple;
+    color: $trainPurple;
 }
 
 .subway {
     border-color: $subwayOrange;
+    color: $subwayOrange;
 }
 
 .ferry {
     border-color: $ferryBlue;
+    color: $ferryBlue;
 }
 
 .unusedStop {
     border-color: $unusedNodeColor;
+    color: $unusedNodeColor;
 }
 
 .smallSize {
