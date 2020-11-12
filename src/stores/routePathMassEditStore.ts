@@ -234,6 +234,7 @@ class RoutePathMassEditStore {
         if (routePathsWithNewId.length === 2) {
             this.addSelectedRoutePathPair(routePathsWithNewId);
         }
+
         this.validateMassEditRoutePaths();
     };
 
