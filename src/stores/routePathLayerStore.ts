@@ -13,13 +13,17 @@ class RoutePathLayerStore {
     @observable private _neighborToAddType: NeighborToAddType;
     @observable private _extendedListItemId: string | null; // node.internalId, link.id
     @observable private _hoveredItemId: string | null; // node.internalId, link.id
+    @observable private _highlightedNeighborLinkId: string;
     @observable private _toolHighlightedNodeIds: string[]; // node.internalId
+    @observable private _gapClosingNeighborLink: INeighborLink | null; // Visualizes that by selecting this neighborLink, a gap in routePath will be closed
 
     constructor() {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
+        this._highlightedNeighborLinkId = '';
         this._toolHighlightedNodeIds = [];
+        this._gapClosingNeighborLink = null;
     }
 
     @computed
@@ -43,8 +47,18 @@ class RoutePathLayerStore {
     }
 
     @computed
+    get highlightedNeighborLinkId() {
+        return this._highlightedNeighborLinkId;
+    }
+
+    @computed
     get toolHighlightedNodeIds() {
         return this._toolHighlightedNodeIds;
+    }
+
+    @computed
+    get gapClosingNeighborLink() {
+        return this._gapClosingNeighborLink;
     }
 
     @action
@@ -68,8 +82,18 @@ class RoutePathLayerStore {
     };
 
     @action
+    public setHighlightedNeighborLinkId = (id: string) => {
+        this._highlightedNeighborLinkId = id;
+    };
+
+    @action
     public setToolHighlightedNodeIds = (ids: string[]) => {
         this._toolHighlightedNodeIds = ids;
+    };
+
+    @action
+    public setGapClosingNeighborLink = (neighborLink: INeighborLink | null) => {
+        this._gapClosingNeighborLink = neighborLink;
     };
 
     @action
@@ -77,6 +101,7 @@ class RoutePathLayerStore {
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;
+        this._gapClosingNeighborLink = null;
     };
 }
 

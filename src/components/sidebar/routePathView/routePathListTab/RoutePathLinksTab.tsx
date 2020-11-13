@@ -5,7 +5,7 @@ import { IoIosRadioButtonOn } from 'react-icons/io';
 import { TiLink } from 'react-icons/ti';
 import ToggleView, { ToggleItem } from '~/components/shared/ToggleView';
 import NodeType from '~/enums/nodeType';
-import { INode, IRoutePath, IRoutePathLink } from '~/models';
+import { INeighborLink, INode, IRoutePath, IRoutePathLink } from '~/models';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { MapStore } from '~/stores/mapStore';
@@ -16,6 +16,7 @@ import { ToolbarStore } from '~/stores/toolbarStore';
 import RoutePathUtils from '~/utils/RoutePathUtils';
 import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
+import RoutePathListNeighborLink from './RoutePathListNeighborLink';
 import RoutePathListNode from './RoutePathListNode';
 import s from './routePathLinksTab.scss';
 
@@ -92,17 +93,23 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
     private renderRpListNode = ({
         routePathLink,
+        key,
         node,
         isFirstNode,
         isLastNode,
-        key,
+        upperGapClosingNeighborLink,
+        bottomGapClosingNeighborLink,
     }: {
         routePathLink: IRoutePathLink;
+        key: string;
         node: INode;
         isFirstNode: boolean;
         isLastNode: boolean;
-        key: string;
+        upperGapClosingNeighborLink: INeighborLink | null;
+        bottomGapClosingNeighborLink: INeighborLink | null;
     }) => {
+        if (!this.isNodeVisible(node)) return null;
+
         const routePathLayerStore = this.props.routePathLayerStore!;
         const routePathLinkMassEditStore = this.props.routePathLinkMassEditStore!;
 
@@ -113,6 +120,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const startNodeBookScheduleColumnNumber = isLastNode
             ? routePath!.startNodeBookScheduleColumnNumber
             : routePathLink.startNodeBookScheduleColumnNumber;
+        const isNeighborLinkHighlighted = upperGapClosingNeighborLink
+            ? upperGapClosingNeighborLink.routePathLink.id ===
+              routePathLayerStore.highlightedNeighborLinkId
+            : bottomGapClosingNeighborLink
+            ? bottomGapClosingNeighborLink.routePathLink.id ===
+              routePathLayerStore.highlightedNeighborLinkId
+            : false;
         return (
             <div key={key} ref={this.listObjectReferences[node.internalId]}>
                 <RoutePathListNode
@@ -131,6 +145,9 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                     selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
                         routePathLink
                     )}
+                    isNeighborLinkHighlighted={isNeighborLinkHighlighted}
+                    upperGapClosingNeighborLink={upperGapClosingNeighborLink}
+                    bottomGapClosingNeighborLink={bottomGapClosingNeighborLink}
                 />
             </div>
         );
@@ -143,6 +160,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         routePathLink: IRoutePathLink;
         key: string;
     }) => {
+        if (!this.areLinksVisible) return null;
         const routePathLayerStore = this.props.routePathLayerStore!;
         return (
             <div key={key} ref={this.listObjectReferences[routePathLink.id]}>
@@ -200,45 +218,71 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                             return routePathLinks.map((routePathLink, index) => {
                                 const startNode = routePathLink.startNode;
                                 const endNode = routePathLink.endNode;
+                                const shouldRenderLastNode = index === routePathLinks.length - 1;
+                                const gapClosingNeighborLink = this.props.routePathLayerStore!
+                                    .gapClosingNeighborLink;
+                                const isEndNodeAttachedToGapClosingNeighborLink =
+                                    gapClosingNeighborLink &&
+                                    routePathLink.endNode.id ===
+                                        gapClosingNeighborLink.routePathLink.startNode.id;
+                                const isStartNodeAttachedToGapClosingNeighborLink =
+                                    gapClosingNeighborLink &&
+                                    routePathLink.startNode.id ===
+                                        gapClosingNeighborLink.routePathLink.endNode.id;
+                                const isNeighborLinkHighlighted =
+                                    gapClosingNeighborLink?.routePathLink.id ===
+                                    this.props.routePathLayerStore!.highlightedNeighborLinkId;
+
                                 // Use node.internalId as key instead of id because there might be nodes with the same id
                                 this.listObjectReferences[startNode.internalId] = React.createRef();
                                 this.listObjectReferences[routePathLink.id] = React.createRef();
-                                const result = [
-                                    this.isNodeVisible(startNode)
-                                        ? this.renderRpListNode({
-                                              routePathLink,
-                                              node: routePathLink.startNode,
-                                              isFirstNode: index === 0,
-                                              isLastNode: false,
-                                              key: `${routePathLink.id}-${index}-startNode`,
-                                          })
-                                        : null,
-                                    this.areLinksVisible()
-                                        ? this.renderRpListLink({
-                                              routePathLink,
-                                              key: `${routePathLink.id}-${index}-link`,
-                                          })
-                                        : null,
-                                ];
-
-                                if (index === routePathLinks.length - 1) {
-                                    if (this.isNodeVisible(endNode)) {
-                                        // Use node.internalId as key instead of id because there might be nodes with the same id
-                                        this.listObjectReferences[
-                                            endNode.internalId
-                                        ] = React.createRef();
-                                        result.push(
-                                            this.renderRpListNode({
-                                                routePathLink,
-                                                node: routePathLink.endNode,
-                                                isFirstNode: false,
-                                                isLastNode: true,
-                                                key: `${routePathLink.id}-${index}-endNode`,
-                                            })
-                                        );
-                                    }
+                                if (shouldRenderLastNode) {
+                                    this.listObjectReferences[
+                                        endNode.internalId
+                                    ] = React.createRef();
                                 }
-                                return result;
+                                return (
+                                    <div key={index}>
+                                        {this.renderRpListNode({
+                                            routePathLink,
+                                            key: `${routePathLink.id}-${index}-startNode`,
+                                            node: routePathLink.startNode,
+                                            isFirstNode: index === 0,
+                                            isLastNode: false,
+                                            upperGapClosingNeighborLink: isStartNodeAttachedToGapClosingNeighborLink
+                                                ? gapClosingNeighborLink
+                                                : null,
+                                            bottomGapClosingNeighborLink: null,
+                                        })}
+                                        {this.renderRpListLink({
+                                            routePathLink,
+                                            key: `${routePathLink.id}-${index}-link`,
+                                        })}
+                                        {shouldRenderLastNode && (
+                                            <>
+                                                {this.renderRpListNode({
+                                                    routePathLink,
+                                                    key: `${routePathLink.id}-${index}-endNode`,
+                                                    node: routePathLink.endNode,
+                                                    isFirstNode: false,
+                                                    isLastNode: true,
+                                                    upperGapClosingNeighborLink: null,
+                                                    bottomGapClosingNeighborLink: isEndNodeAttachedToGapClosingNeighborLink
+                                                        ? gapClosingNeighborLink
+                                                        : null,
+                                                })}
+                                                {isEndNodeAttachedToGapClosingNeighborLink && (
+                                                    <RoutePathListNeighborLink
+                                                        neighborLink={gapClosingNeighborLink!}
+                                                        isNeighborLinkHighlighted={
+                                                            isNeighborLinkHighlighted
+                                                        }
+                                                    />
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                );
                             });
                         })}
                     </div>

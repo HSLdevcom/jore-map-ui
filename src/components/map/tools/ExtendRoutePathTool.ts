@@ -7,7 +7,7 @@ import EventListener, {
     INodeClickParams,
     IRoutePathNodeClickParams,
 } from '~/helpers/EventListener';
-import { IRoutePathLink } from '~/models';
+import { INeighborLink, IRoutePathLink } from '~/models';
 import NodeService from '~/services/nodeService';
 import RoutePathNeighborLinkService from '~/services/routePathNeighborLinkService';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
@@ -66,6 +66,7 @@ class ExtendRoutePathTool implements BaseTool {
     public deactivate = () => {
         this.setToolPhase(null);
         RoutePathLayerStore.setNeighborLinks([]);
+        RoutePathLayerStore.setGapClosingNeighborLink(null);
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.off('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
@@ -194,11 +195,40 @@ class ExtendRoutePathTool implements BaseTool {
             if (isFirstNodeClick || isNodeIdFound) {
                 RoutePathLayerStore.setNeighborLinks(queryResult.neighborLinks);
                 RoutePathLayerStore.setNeighborToAddType(queryResult.neighborToAddType);
+                _setGapClosingNeighborLink(queryResult.neighborLinks);
             }
         } else {
             this.refreshToolPhase();
         }
     };
 }
+
+const _setGapClosingNeighborLink = (neighborLinks: INeighborLink[]) => {
+    const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
+        RoutePathStore.routePath!.routePathLinks
+    );
+    let prevList: IRoutePathLink[] | null = null;
+    let foundGapCloserNeighborLink = false;
+    coherentRoutePathLinksList.forEach((rpList) => {
+        if (prevList) {
+            const gapStartNodeId = prevList[prevList.length - 1].endNode.id;
+            const gapEndNodeId = rpList[0].startNode.id;
+            const gapCloserNeighborLink = neighborLinks.find(
+                (n) =>
+                    n.routePathLink.startNode.id === gapStartNodeId &&
+                    n.routePathLink.endNode.id === gapEndNodeId
+            );
+            if (gapCloserNeighborLink) {
+                foundGapCloserNeighborLink = true;
+                RoutePathLayerStore.setGapClosingNeighborLink(gapCloserNeighborLink);
+            }
+        }
+
+        prevList = rpList;
+    });
+    if (!foundGapCloserNeighborLink) {
+        RoutePathLayerStore.setGapClosingNeighborLink(null);
+    }
+};
 
 export default ExtendRoutePathTool;

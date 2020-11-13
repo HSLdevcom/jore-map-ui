@@ -146,9 +146,16 @@
             display: flex;
             height: 100%;
 
-            .borderLeftContainer {
+            .borderLeft {
                 border-right: 4px solid rgba(0, 0, 0, 0.7); // border width & color
                 width: calc(50% - 2px); // needs to be half of the border width
+            }
+            .neighborBorderLeft {
+                @extend .borderLeft;
+                border-color: unset;
+            }
+            .neighborBorderLeftHeight {
+                height: 30px;
             }
         }
         .listIcon {
