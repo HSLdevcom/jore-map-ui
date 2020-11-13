@@ -9,13 +9,14 @@ import { Button, Checkbox } from '~/components/controls';
 import Dropdown from '~/components/controls/Dropdown';
 import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
+import { getNeighborLinkColor } from '~/components/map/layers/edit/RoutePathNeighborLinkLayer';
 import TransitTypeNodeIcon from '~/components/shared/TransitTypeNodeIcon';
 import ButtonType from '~/enums/buttonType';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { IRoutePathNodeClickParams } from '~/helpers/EventListener';
-import { INode, IRoutePathLink, IStop } from '~/models';
+import { INeighborLink, INode, IRoutePathLink, IStop } from '~/models';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import { CodeListStore } from '~/stores/codeListStore';
@@ -40,6 +41,9 @@ interface IRoutePathListNodeProps {
     isStartNodeUsingBookSchedule?: boolean;
     startNodeBookScheduleColumnNumber?: number;
     selectedRoutePathLinkIndex: number;
+    isNeighborLinkHighlighted: boolean;
+    upperGapClosingNeighborLink: INeighborLink | null;
+    bottomGapClosingNeighborLink: INeighborLink | null;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
@@ -440,7 +444,23 @@ const RoutePathListNode = inject(
                     onClick={onClickNodeIcon}
                 >
                     <div className={s.borderContainer}>
-                        <div className={!isFirstNode ? s.borderLeftContainer : undefined} />
+                        <div
+                            className={
+                                !isFirstNode
+                                    ? s.borderLeft
+                                    : props.upperGapClosingNeighborLink
+                                    ? s.neighborBorderLeft
+                                    : undefined
+                            }
+                            style={{
+                                borderColor: props.upperGapClosingNeighborLink
+                                    ? getNeighborLinkColor(
+                                          props.upperGapClosingNeighborLink,
+                                          props.isNeighborLinkHighlighted
+                                      )
+                                    : undefined,
+                            }}
+                        />
                         <div />
                     </div>
                     <div className={s.listIcon} data-cy='rpListNode'>
@@ -459,7 +479,23 @@ const RoutePathListNode = inject(
                         />
                     </div>
                     <div className={s.borderContainer}>
-                        <div className={!isLastNode ? s.borderLeftContainer : undefined} />
+                        <div
+                            className={
+                                !isLastNode
+                                    ? s.borderLeft
+                                    : props.bottomGapClosingNeighborLink
+                                    ? s.neighborBorderLeft
+                                    : undefined
+                            }
+                            style={{
+                                borderColor: props.bottomGapClosingNeighborLink
+                                    ? getNeighborLinkColor(
+                                          props.bottomGapClosingNeighborLink,
+                                          props.isNeighborLinkHighlighted
+                                      )
+                                    : undefined,
+                            }}
+                        />
                         <div />
                     </div>
                 </div>

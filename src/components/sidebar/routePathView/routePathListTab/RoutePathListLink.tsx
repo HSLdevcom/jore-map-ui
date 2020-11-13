@@ -161,7 +161,7 @@ class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
                         )}
                         data-cy='rpListLink'
                     >
-                        <div className={s.borderLeftContainer} />
+                        <div className={s.borderLeft} />
                         <div />
                     </div>
                 </div>
