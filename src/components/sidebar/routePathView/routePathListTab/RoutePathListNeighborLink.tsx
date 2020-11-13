@@ -3,17 +3,46 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { getNeighborLinkColor } from '~/components/map/layers/edit/RoutePathNeighborLinkLayer';
 import { INeighborLink } from '~/models';
+import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
+import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNeighborLinkProps {
     neighborLink: INeighborLink;
     isNeighborLinkHighlighted: boolean;
+    routePathLayerStore?: RoutePathLayerStore;
+    routePathStore?: RoutePathStore;
+    toolbarStore?: ToolbarStore;
 }
 
-const RoutePathListNeighborLink = inject()(
+const RoutePathListNeighborLink = inject(
+    'routePathLayerStore',
+    'routePathStore',
+    'toolbarStore'
+)(
     observer((props: IRoutePathListNeighborLinkProps) => {
+        const toggleNeighborLinkHighlight = (isHovered: boolean) => {
+            props.routePathLayerStore!.setHighlightedNeighborLinkId(
+                isHovered ? props.neighborLink.routePathLink.id : ''
+            );
+        };
+
+        const onRoutePathListItemClick = () => {
+            props.toolbarStore!.selectTool(null);
+            props.routePathStore!.addLink({
+                routePathLink: props.neighborLink.routePathLink,
+            });
+        };
+
         return (
-            <div className={s.routePathListItem}>
+            <div
+                className={classnames(s.routePathListItem, s.neighborRoutePathListItem)}
+                title={'Sulje reitinsuunnan väli'}
+                onMouseEnter={() => toggleNeighborLinkHighlight(true)}
+                onMouseLeave={() => toggleNeighborLinkHighlight(false)}
+                onClick={onRoutePathListItemClick}
+            >
                 <div className={s.listIconWrapper}>
                     <div className={s.borderContainer}>
                         <div
