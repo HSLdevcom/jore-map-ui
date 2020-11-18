@@ -22,12 +22,14 @@ import { SearchStore } from '~/stores/searchStore';
 import HttpUtils from '~/utils/HttpUtils';
 import '~/utils/KeyEventHandler';
 import AppFrame from './AppFrame';
+import AppLoadingPage from './AppLoadingPage';
 import * as s from './app.scss';
 import Login from './login/Login';
 
 interface IAppState {
     isLoginInProgress: boolean;
     isAppInitializationInProgress: boolean;
+    hasBackendConnectionError: boolean;
 }
 
 interface IAppProps {
@@ -50,6 +52,7 @@ class App extends React.Component<IAppProps, IAppState> {
         this.state = {
             isLoginInProgress: true,
             isAppInitializationInProgress: false,
+            hasBackendConnectionError: false,
         };
     }
 
@@ -59,15 +62,21 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private initLogin = async () => {
         const isAfterLogin = Boolean(matchPath(navigator.getPathName(), SubSites.afterLogin));
+        let hasBackendConnectionError = false;
         if (!isAfterLogin) {
-            const response = (await HttpUtils.getRequest(
-                EndpointPath.EXISTING_SESSION
-            )) as IAuthorizationResponse;
-            if (response.isOk) {
+            let response;
+            try {
+                response = (await HttpUtils.getRequest(
+                    EndpointPath.EXISTING_SESSION
+                )) as IAuthorizationResponse;
+            } catch (e) {
+                hasBackendConnectionError = true;
+            }
+            if (response && response.isOk) {
                 // Auth was ok, keep the current site as it is
                 this.props.loginStore!.setAuthenticationInfo(response);
                 await this.initApp();
-            } else {
+            } else if (!hasBackendConnectionError) {
                 // Redirect to login
                 LocalStorageHelper.setItem('origin_url', navigator.getFullPath());
                 navigator.goTo({ link: SubSites.login });
@@ -75,6 +84,7 @@ class App extends React.Component<IAppProps, IAppState> {
         }
 
         this.setState({
+            hasBackendConnectionError,
             isLoginInProgress: false,
         });
     };
@@ -149,12 +159,18 @@ class App extends React.Component<IAppProps, IAppState> {
                 return null;
             }
         );
-        return <div>Kirjaudutaan sisään...</div>;
+        return <AppLoadingPage state={'isLoggingIn'} />;
     };
 
     render() {
-        if (this.state.isLoginInProgress || this.state.isAppInitializationInProgress) {
-            return <div>Ladataan sovellusta...</div>;
+        if (this.state.isLoginInProgress) {
+            return <AppLoadingPage state={'isLoggingIn'} />;
+        }
+        if (this.state.isAppInitializationInProgress) {
+            return <AppLoadingPage state={'isLoading'} />;
+        }
+        if (this.state.hasBackendConnectionError) {
+            return <AppLoadingPage state={'hasBackendConnectionError'} />;
         }
         return (
             <div className={s.appView}>

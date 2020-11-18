@@ -24,7 +24,16 @@ class AuthService {
                 isTesting,
             })) as IAuthorizationResponse;
         } catch (error) {
-            const errorResponse = JSON.parse(error.message) as IAuthorizationResponse;
+            let errorResponse;
+            try {
+                errorResponse = JSON.parse(error.message) as IAuthorizationResponse;
+            } catch (e) {
+                ErrorStore.addError(
+                    'Taustajärjestelmään ei saatu yhteyttä. Ongelman jatkuessa ota yhteyttä sovelluksen ylläpitäjään.'
+                );
+                onError();
+                return;
+            }
             authorizationResponse = {
                 isOk: errorResponse.isOk,
                 hasWriteAccess: errorResponse.hasWriteAccess,
@@ -47,8 +56,6 @@ class AuthService {
     }
 
     public static async logout() {
-        // TODO: Implement full logout clearing session in backend
-        // https://github.com/HSLdevcom/jore-map-ui/issues/669
         await HttpUtils.postRequest(EndpointPath.LOGOUT, {});
         LoginStore.clear();
     }
