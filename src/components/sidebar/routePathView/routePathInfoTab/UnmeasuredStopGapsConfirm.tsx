@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { FaExclamationCircle } from 'react-icons/fa';
 import * as s from './unmeasuredStopGapsConfirm.scss';
 
 interface IUnmeasuredStopGapsConfirmProps {
@@ -16,8 +17,11 @@ const UnmeasuredStopGapsConfirm = inject()(
                 <div>Haluatko varmasti edetä reitinsuunnan tallentamiseen?</div>
                 {props.routePathLength !== props.calculatedRoutePathLength && (
                     <div className={s.header}>
-                        Reitinsuunnan tämänhetkinen pituus ei ole sama kuin pysäkkivälien ja
-                        linkkien pituuksista muodostettu summa.
+                        <FaExclamationCircle className={s.exclamationMark} />
+                        <div>
+                            Reitinsuunnan tämänhetkinen pituus ei ole sama kuin pysäkkivälien ja
+                            linkkien pituuksista muodostettu summa.
+                        </div>
                     </div>
                 )}
                 {props.missingStopGapsList.length > 0 && (
