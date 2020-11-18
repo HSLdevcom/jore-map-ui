@@ -19,6 +19,7 @@ enum SyncModels {
     ROUTE = 'route',
     NODE_AND_LINK = 'nodeAndLink',
     STOP_AREA = 'stopArea',
+    ROUTE_PATH = 'routePath',
 }
 
 const SyncView = inject('alertStore')(
@@ -79,8 +80,8 @@ const SyncView = inject('alertStore')(
                                     <>
                                         <div className={s.loaderContainer}>
                                             <div className={s.loadingText}>
-                                                Tietoja päivitetään, voit sulkea tämän ikkunan, jos
-                                                haluat.
+                                                Tietojen haku käynnissä. Voit halutessasi sulkea
+                                                tämän ikkunan, haku jatkuu taustalla.
                                             </div>
                                             <Loader hasNoMargin={true} />
                                         </div>
@@ -125,6 +126,14 @@ const SyncView = inject('alertStore')(
                                             checked={selectedModels.includes(SyncModels.STOP_AREA)}
                                             onClick={() =>
                                                 toggleSelectedModel(SyncModels.STOP_AREA)
+                                            }
+                                        />
+                                        <Checkbox
+                                            className={s.checkbox}
+                                            content='Reitinsuunnat'
+                                            checked={selectedModels.includes(SyncModels.ROUTE_PATH)}
+                                            onClick={() =>
+                                                toggleSelectedModel(SyncModels.ROUTE_PATH)
                                             }
                                         />
                                     </div>
