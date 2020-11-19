@@ -18,8 +18,7 @@ const NodeItem = inject('mapStore')(observer((props: INodeItemProps) => {
     const { node } = props;
 
     const centerMapToNode = () => {
-        const coordinates = props.node.coordinatesProjection ? props.node.coordinatesProjection : props.node.coordinates;
-        const latLngs: L.LatLng[] = [coordinates];
+        const latLngs: L.LatLng[] = [props.node.coordinates];
         const bounds = latLngBounds(latLngs);
         props.mapStore!.setMapBounds(bounds);
     }
