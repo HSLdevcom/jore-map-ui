@@ -114,6 +114,7 @@ class RoutePathCopySegmentStore {
         this._endSegmentPoint = null;
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
+        this._routesUsingLink = [];
     };
 
     public getSegmentLinksToCopy = (
