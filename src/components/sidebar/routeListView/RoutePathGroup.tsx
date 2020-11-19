@@ -72,7 +72,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 return;
             }
             if (selectedRoutePath && selectedRoutePath.direction !== routePathToSelect.direction) {
-                routePathMassEditStore.addSelectedRoutePathPair([
+                routePathMassEditStore.addSelectedRoutePathIdGroup([
                     selectedRoutePath,
                     routePathToSelect,
                 ]);
