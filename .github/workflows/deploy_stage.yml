@@ -28,7 +28,7 @@ jobs:
           buildargs: APP_ENVIRONMENT=stage, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=${{ steps.date.outputs.date }}
           tags: stage
       - name: Notify of deployment
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         if: always()
         with:
           status: ${{ job.status }}
