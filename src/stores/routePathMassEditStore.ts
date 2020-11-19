@@ -54,6 +54,9 @@ class RoutePathMassEditStore {
 
     @computed
     get isDirty() {
+        const isAnyRpNew = Boolean(this._massEditRoutePaths?.find((massEditRp) => massEditRp.isNew));
+        if (isAnyRpNew) return true;
+
         return Boolean(
             this._massEditRoutePaths?.find(
                 (massEditRp) =>
