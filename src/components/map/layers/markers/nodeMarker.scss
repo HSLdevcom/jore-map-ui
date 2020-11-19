@@ -21,31 +21,38 @@ $iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
         position: absolute;
         font-weight: 600;
         text-shadow: 0 0 5px white, 0 0 5px white;
+        color: $fontColorDefault;
     }
 }
 
 .bus {
     border-color: $busBlue;
+    color: $busBlue;
 }
 
 .tram {
     border-color: $tramGreen;
+    color: $tramGreen;
 }
 
 .train {
     border-color: $trainPurple;
+    color: $trainPurple;
 }
 
 .subway {
     border-color: $subwayOrange;
+    color: $subwayOrange;
 }
 
 .ferry {
     border-color: $ferryBlue;
+    color: $ferryBlue;
 }
 
 .unusedStop {
     border-color: $unusedNodeColor;
+    color: $unusedNodeColor;
 }
 
 .smallSize {

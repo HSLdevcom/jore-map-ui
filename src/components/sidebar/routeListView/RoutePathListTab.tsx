@@ -91,7 +91,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.fetchStopNames();
         this.selectedGroupsListener = reaction(
             () =>
-                this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdPairs,
+                this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdGroups,
             () => this.updateGroupedRoutePathsToDisplay()
         );
         this.routePathsListener = reaction(
@@ -171,33 +171,32 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
      */
     private getGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
         let routePathsToGroup = _.cloneDeep(routePaths);
-        const selectedRoutePathIdPairs = this.props.routePathMassEditStore!
-            .selectedRoutePathIdPairs;
+        const selectedRoutePathIdGroups: string[][] = this.props.routePathMassEditStore!
+            .selectedRoutePathIdGroups;
 
         // Take out selectedRoutePaths out from routePathsToGroup
-        // Note: selectedRoutePaths have no start date
-        const selectedRoutePathGroups: IRoutePath[][] = [];
+        const selectedRoutePaths: IRoutePath[] = []; // RoutePaths that are filtered from routePathsToGroup
         routePathsToGroup = routePathsToGroup.filter((rp: IRoutePath) => {
-            const idPair = selectedRoutePathIdPairs.find((idPair: string[]) => {
-                return idPair.includes(rp.internalId);
+            const idGroup = selectedRoutePathIdGroups.find((idGroup: string[]) => {
+                return idGroup.includes(rp.internalId);
             })!;
-            const isFoundFromSelectedIdPairs = Boolean(idPair);
-            if (isFoundFromSelectedIdPairs) {
-                const rp2Id = idPair.find((id) => id !== rp.internalId);
-                let existingGroup = null;
-                if (rp2Id) {
-                    existingGroup = selectedRoutePathGroups.find((group) =>
-                        Boolean(group.find((rp) => rp.internalId === rp2Id))
-                    );
-                }
-                if (existingGroup) {
-                    existingGroup.push(rp);
-                } else {
-                    selectedRoutePathGroups.push([rp]);
-                }
+            const isFoundFromSelectedIdGroups = Boolean(idGroup);
+            if (isFoundFromSelectedIdGroups) {
+                selectedRoutePaths.push(rp);
             }
-            return !isFoundFromSelectedIdPairs;
+            return !isFoundFromSelectedIdGroups;
         });
+
+        // Transform selectedRoutePathIdGroups: string[][] into selectedRoutePathGroups: IRoutePath[][]
+        const selectedRoutePathGroups: IRoutePath[][] = [];
+        selectedRoutePathIdGroups.forEach((idGroup: string[]) => {
+            const newRpGroup: IRoutePath[] = [];
+            idGroup.forEach((id: string) => {
+                const rp = selectedRoutePaths.find(_rp => _rp.internalId === id);
+                newRpGroup.push(rp!);
+            })
+            selectedRoutePathGroups.push(newRpGroup);
+        })
 
         // Take out new routePaths with unselected date from routePathsToGroup
         const newRoutePathGroups: IRoutePath[][] = [];

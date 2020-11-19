@@ -92,7 +92,7 @@ describe('RouteListView tests - write access user', () => {
             .type('{ctrl}', { release: false })
             .then(() => {
                 cy.getTestElement('routePathRow').first().click();
-                cy.getTestElement('routePathRow').eq(2).click();
+                cy.getTestElement('routePathRow').eq(1).click();
             });
         // The first group should have 2 routePaths
         cy.getTestElement('rpGroup-0').find('[data-cy=routePathRow]').should('have.length', 2);
