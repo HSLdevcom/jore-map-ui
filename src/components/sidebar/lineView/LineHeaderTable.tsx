@@ -7,7 +7,6 @@ import InputContainer from '~/components/controls/InputContainer';
 import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
-import ButtonType from '~/enums/buttonType';
 import LineHeaderFactory from '~/factories/lineHeaderFactory';
 import ILineHeader from '~/models/ILineHeader';
 import LineHeaderService from '~/services/lineHeaderService';
@@ -23,11 +22,13 @@ import FormValidator from '~/validation/FormValidator';
 import SidebarHeader from '../SidebarHeader';
 import LineHeaderForm from './LineHeaderForm';
 import LineHeaderTableRows from './LineHeaderTableRows';
+import SearchLineHeadersToCopy from './SearchLineHeadersToCopy';
 import * as s from './lineHeaderTable.scss';
 
 interface ILineHeaderState {
     isLoading: boolean;
     lineHeaders: ILineHeader[] | null;
+    isSearchLineHeadersToCopyViewVisible: boolean;
 }
 
 interface ILineHeaderListProps {
@@ -58,6 +59,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         this.state = {
             isLoading: true,
             lineHeaders: null,
+            isSearchLineHeadersToCopyViewVisible: false,
         };
     }
 
@@ -227,6 +229,13 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         this.props.lineHeaderMassEditStore!.toggleIsEditingDisabled();
     };
 
+    private setIsSearchLineHeadersCopyViewOpen = ({ isOpen }: { isOpen: boolean }) => {
+        this.props.lineHeaderMassEditStore!.setSelectedLineHeaderId(null);
+        this._setState({
+            isSearchLineHeadersToCopyViewVisible: isOpen,
+        });
+    };
+
     render() {
         if (this.state.isLoading) {
             return <Loader size='small' />;
@@ -299,15 +308,19 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     <div>Linjalle {this.props.lineId} ei löytynyt otsikoita.</div>
                 )}
                 {this.props.loginStore!.hasWriteAccess && (
-                    <Button
-                        className={s.createNewLineHeaderButton}
-                        type={ButtonType.SQUARE}
-                        disabled={false}
-                        hasPadding={true}
-                        onClick={() => this.createNewLineHeader()}
-                    >
-                        Luo uusi linjan otsikko
-                    </Button>
+                    <div className={s.lineHeaderButtonContainer}>
+                        <Button isWide={true} onClick={() => this.createNewLineHeader()}>
+                            Luo uusi linjan otsikko
+                        </Button>
+                        <Button
+                            isWide={true}
+                            onClick={() =>
+                                this.setIsSearchLineHeadersCopyViewOpen({ isOpen: true })
+                            }
+                        >
+                            Kopioi linjan otsikoita
+                        </Button>
+                    </div>
                 )}
                 {selectedMassEditLineHeader && (
                     <LineHeaderForm
@@ -315,6 +328,13 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         isEditingDisabled={isEditingDisabled}
                         invalidPropertiesMap={selectedMassEditLineHeader!.invalidPropertiesMap}
                         onChangeLineHeaderProperty={this.onChangeLineHeaderProperty}
+                    />
+                )}
+                {this.state.isSearchLineHeadersToCopyViewVisible && (
+                    <SearchLineHeadersToCopy
+                        closeLineHeadersCopyView={() =>
+                            this.setIsSearchLineHeadersCopyViewOpen({ isOpen: false })
+                        }
                     />
                 )}
                 <SaveButton
