@@ -29,11 +29,11 @@ $cellPadding: 10px;
                 }
 
                 .selectedRow {
-                    background-color: #adf;
+                    background-color: $highlightedItemColor;
                 }
 
                 .tableRow:hover {
-                    background-color: #adf;
+                    background-color: $highlightedItemColor;
                 }
 
                 .tableCell {
