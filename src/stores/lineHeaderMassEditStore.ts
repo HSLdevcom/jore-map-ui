@@ -180,7 +180,13 @@ class LineHeaderMassEditStore {
     };
 
     @action
-    public copyLineHeaders = (lineHeaders: ILineHeader[]) => {
+    public copyLineHeaders = ({
+        lineId,
+        lineHeaders,
+    }: {
+        lineId: string;
+        lineHeaders: ILineHeader[];
+    }) => {
         const firstLineHeader = this.getFirstLineHeader();
         let currentDate: Date = new Date();
         if (firstLineHeader) {
@@ -190,6 +196,7 @@ class LineHeaderMassEditStore {
         const lineHeadersToAdd: IMassEditLineHeader[] = [];
         lineHeaders.forEach((lineHeader) => {
             const newLineHeader = cloneDeep(lineHeader);
+            newLineHeader.lineId = lineId;
             newLineHeader.startDate = cloneDeep(currentDate);
             newLineHeader.endDate = cloneDeep(currentDate);
             newLineHeader.originalStartDate = undefined; // new lineHeader has no originalStartDate

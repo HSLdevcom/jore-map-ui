@@ -120,6 +120,7 @@ interface ILineHeaderRowsProps {
     lineHeaders: ILineHeader[];
     selectedLineId: string;
     closeLineHeadersCopyView: Function;
+    lineStore?: LineStore;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
 }
 
@@ -144,7 +145,10 @@ const LineHeaderTable = inject(
             selectedRowIndexes.forEach((index) => {
                 lineHeadersToCopy.push(props.lineHeaders[index]);
             });
-            props.lineHeaderMassEditStore!.copyLineHeaders(lineHeadersToCopy);
+            props.lineHeaderMassEditStore!.copyLineHeaders({
+                lineId: props.lineStore!.line!.id,
+                lineHeaders: lineHeadersToCopy,
+            });
             props.closeLineHeadersCopyView();
         };
         return (
