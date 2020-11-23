@@ -17,6 +17,7 @@ import * as s from './searchLineHeadersToCopy.scss';
 
 interface ISearchLineHeadersToCopyProps {
     closeLineHeadersCopyView: Function;
+    scrollToTheBottomOfLineView: Function;
     lineStore?: LineStore;
 }
 
@@ -66,51 +67,62 @@ const SearchLineHeadersToCopy = inject('lineStore')(
             fetchLineHeaders();
         }, [selectedLineId]);
 
-        if (isLoadingLines) return <Loader />;
+        useEffect(() => {
+            // When loading the component for the first time, we want to scroll to the bottom of the page
+            props.scrollToTheBottomOfLineView();
+        }, []);
 
         return (
             <div className={s.searchLineHeadersCopy}>
-                <SidebarHeader
-                    isEditPromptHidden={true}
-                    isCloseButtonVisible={true}
-                    onCloseButtonClick={() => props.closeLineHeadersCopyView()}
-                >
-                    <div>Etsi kopioitavia linjan otsikoita</div>
-                </SidebarHeader>
-                <div className={classnames(s.form, s.lineHeadersToCopyForm)}>
-                    <div className={s.flexRow}>
-                        <Checkbox
-                            content='Näytä vain aktiiviset linjat'
-                            checked={areInactiveLinesHidden}
-                            onClick={() => setAreInactiveLinesHidden(!areInactiveLinesHidden)}
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        <Dropdown
-                            label='LINJA'
-                            selected={selectedLineId}
-                            items={lineDropdownItems}
-                            onChange={(newLineId) => setSelectedLineId(newLineId)}
-                            validationResult={
-                                selectedLineId.length === 0
-                                    ? { isValid: false, errorMessage: 'Valitse linja' }
-                                    : undefined
-                            }
-                            data-cy='lineDropdown'
-                        />
-                    </div>
-                    <div className={s.flexRow}>
-                        {isLoadingLineHeaders ? (
-                            <Loader />
-                        ) : (
-                            <LineHeaderTable
-                                lineHeaders={lineHeaders}
-                                selectedLineId={selectedLineId}
-                                closeLineHeadersCopyView={props.closeLineHeadersCopyView}
-                            />
-                        )}
-                    </div>
-                </div>
+                {isLoadingLines ? (
+                    <Loader />
+                ) : (
+                    <>
+                        <SidebarHeader
+                            isEditPromptHidden={true}
+                            isCloseButtonVisible={true}
+                            onCloseButtonClick={() => props.closeLineHeadersCopyView()}
+                        >
+                            <div>Etsi kopioitavia linjan otsikoita</div>
+                        </SidebarHeader>
+                        <div className={classnames(s.form, s.lineHeadersToCopyForm)}>
+                            <div className={s.flexRow}>
+                                <Checkbox
+                                    content='Näytä vain aktiiviset linjat'
+                                    checked={areInactiveLinesHidden}
+                                    onClick={() =>
+                                        setAreInactiveLinesHidden(!areInactiveLinesHidden)
+                                    }
+                                />
+                            </div>
+                            <div className={s.flexRow}>
+                                <Dropdown
+                                    label='LINJA'
+                                    selected={selectedLineId}
+                                    items={lineDropdownItems}
+                                    onChange={(newLineId) => setSelectedLineId(newLineId)}
+                                    validationResult={
+                                        selectedLineId.length === 0
+                                            ? { isValid: false, errorMessage: 'Valitse linja' }
+                                            : undefined
+                                    }
+                                    data-cy='lineDropdown'
+                                />
+                            </div>
+                            <div className={s.flexRow}>
+                                {isLoadingLineHeaders ? (
+                                    <Loader />
+                                ) : (
+                                    <LineHeaderTable
+                                        lineHeaders={lineHeaders}
+                                        selectedLineId={selectedLineId}
+                                        closeLineHeadersCopyView={props.closeLineHeadersCopyView}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         );
     })

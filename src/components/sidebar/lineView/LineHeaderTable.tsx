@@ -33,6 +33,7 @@ interface ILineHeaderState {
 
 interface ILineHeaderListProps {
     lineId: string;
+    scrollToTheBottomOfLineView: Function;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
     lineStore?: LineStore;
     confirmStore?: ConfirmStore;
@@ -63,9 +64,11 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
         };
     }
 
-    private _setState = (newState: object) => {
+    private _setState = (newState: object, callback?: Function) => {
         if (this._isMounted) {
-            this.setState(newState);
+            this.setState(newState, () => {
+                if (callback) callback();
+            });
         }
     };
 
@@ -230,7 +233,11 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     };
 
     private setIsSearchLineHeadersCopyViewOpen = ({ isOpen }: { isOpen: boolean }) => {
-        this.props.lineHeaderMassEditStore!.setSelectedLineHeaderId(null);
+        // If already open and we try opening again, scroll to the bottom of lineView
+        if (this.state.isSearchLineHeadersToCopyViewVisible && isOpen) {
+            this.props.scrollToTheBottomOfLineView();
+            return;
+        }
         this._setState({
             isSearchLineHeadersToCopyViewVisible: isOpen,
         });
@@ -335,6 +342,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                         closeLineHeadersCopyView={() =>
                             this.setIsSearchLineHeadersCopyViewOpen({ isOpen: false })
                         }
+                        scrollToTheBottomOfLineView={this.props.scrollToTheBottomOfLineView}
                     />
                 )}
                 <SaveButton
