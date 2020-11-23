@@ -155,12 +155,14 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
 
     private renderRpListLink = ({
         routePathLink,
+        areLinksVisible,
         key,
     }: {
         routePathLink: IRoutePathLink;
+        areLinksVisible: boolean;
         key: string;
     }) => {
-        if (!this.areLinksVisible) return null;
+        if (!areLinksVisible) return null;
         const routePathLayerStore = this.props.routePathLayerStore!;
         return (
             <div key={key} ref={this.listObjectReferences[routePathLink.id]}>
@@ -181,6 +183,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
             routePathLinks
         );
+        const areLinksVisible = this.areLinksVisible();
         return (
             <div className={s.routePathLinksTabView}>
                 <ToggleView>
@@ -256,6 +259,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                         })}
                                         {this.renderRpListLink({
                                             routePathLink,
+                                            areLinksVisible,
                                             key: `${routePathLink.id}-${index}-link`,
                                         })}
                                         {shouldRenderLastNode && (
