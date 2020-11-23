@@ -79,10 +79,10 @@ $routePathTablePadding: 15px;
             }
 
             .selectedRow {
-                background-color: #adf;
+                background-color: $highlightedItemColor;
             }
             .tableRow:hover {
-                background-color: #adf !important;
+                background-color: $highlightedItemColor !important;
             }
 
             .circle {

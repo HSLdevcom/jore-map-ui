@@ -50,12 +50,14 @@ interface ILineViewState {
 @observer
 class LineView extends React.Component<ILineViewProps, ILineViewState> {
     private _isMounted: boolean;
+    private contentListRef: React.RefObject<HTMLDivElement>;
     constructor(props: ILineViewProps) {
         super(props);
         this.state = {
             isLoading: true,
             selectedTabIndex: 0,
         };
+        this.contentListRef = React.createRef();
     }
 
     private _setState = (newState: object) => {
@@ -181,6 +183,12 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
         });
     };
 
+    private scrollToTheBottomOfLineView = () => {
+        if (this.contentListRef && this.contentListRef.current) {
+            this.contentListRef.current.scrollTo(0, this.contentListRef.current.scrollHeight);
+        }
+    };
+
     render() {
         const lineStore = this.props.lineStore;
         if (this.state.isLoading) {
@@ -218,13 +226,17 @@ class LineView extends React.Component<ILineViewProps, ILineViewState> {
                             <div>Reitit</div>
                         </Tab>
                     </TabList>
-                    <ContentList selectedTabIndex={this.state.selectedTabIndex}>
+                    <ContentList
+                        selectedTabIndex={this.state.selectedTabIndex}
+                        ref={this.contentListRef}
+                    >
                         <ContentItem>
                             <LineInfoTab
                                 isEditingDisabled={isEditingDisabled}
                                 saveLine={this.showSavePrompt}
                                 isLineSaveButtonDisabled={isSaveButtonDisabled}
                                 isNewLine={this.props.isNewLine}
+                                scrollToTheBottomOfLineView={this.scrollToTheBottomOfLineView}
                             />
                         </ContentItem>
                         <ContentItem>

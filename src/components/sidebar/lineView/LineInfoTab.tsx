@@ -20,15 +20,16 @@ interface ILineInfoTabState {
 }
 
 interface ILineInfoTabProps {
-    lineStore?: LineStore;
-    codeListStore?: CodeListStore;
-    errorStore?: ErrorStore;
-    lineHeaderMassEditStore?: LineHeaderMassEditStore;
-    navigationStore?: NavigationStore;
     isEditingDisabled: boolean;
     isLineSaveButtonDisabled: boolean;
     saveLine: () => void;
     isNewLine: boolean;
+    scrollToTheBottomOfLineView: Function;
+    lineHeaderMassEditStore?: LineHeaderMassEditStore;
+    navigationStore?: NavigationStore;
+    lineStore?: LineStore;
+    codeListStore?: CodeListStore;
+    errorStore?: ErrorStore;
 }
 
 const transitTypeDefaultValueMap = {
@@ -206,7 +207,10 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                 </div>
                 <div className={s.sectionDivider} />
                 {!this.props.lineStore!.isNewLine && (
-                    <LineHeaderTable lineId={this.props.lineStore!.line!.id} />
+                    <LineHeaderTable
+                        lineId={this.props.lineStore!.line!.id}
+                        scrollToTheBottomOfLineView={this.props.scrollToTheBottomOfLineView}
+                    />
                 )}
             </div>
         );
