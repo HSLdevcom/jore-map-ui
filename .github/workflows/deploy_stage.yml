@@ -27,10 +27,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
           buildargs: APP_ENVIRONMENT=stage, APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=${{ steps.date.outputs.date }}
           tags: stage
-      - name: Deploy with Gitlab CI
-        run: curl -X POST -F token=${{ secrets.GITLAB_TRIGGER_TOKEN }} -F ref=master -F "variables[TARGET_ENV_STAGE]=TARGET_ENV_STAGE" https://gitlab.hsl.fi/api/v4/projects/231/trigger/pipeline
       - name: Notify of deployment
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         if: always()
         with:
           status: ${{ job.status }}

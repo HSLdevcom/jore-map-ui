@@ -1,4 +1,6 @@
-.unmeasuredStopGapPrompt  {
+@import '../../../shared/styles/common';
+
+.unmeasuredStopGapPrompt {
     padding: 20px;
 
     div {
@@ -9,6 +11,16 @@
     }
 
     .header {
+        display: flex;
         padding-top: 20px;
+        align-items: center;
+
+        .exclamationMark {
+            display: flex;
+            margin-right: 10px;
+            color: $fontColorDefault;
+            min-width: 25px;
+            height: 25px;
+        }
     }
 }

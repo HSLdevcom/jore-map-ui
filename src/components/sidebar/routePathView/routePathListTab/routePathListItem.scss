@@ -146,9 +146,16 @@
             display: flex;
             height: 100%;
 
-            .borderLeftContainer {
+            .borderLeft {
                 border-right: 4px solid rgba(0, 0, 0, 0.7); // border width & color
                 width: calc(50% - 2px); // needs to be half of the border width
+            }
+            .neighborBorderLeft {
+                @extend .borderLeft;
+                border-color: unset;
+            }
+            .neighborBorderLeftHeight {
+                height: 30px;
             }
         }
         .listIcon {
@@ -172,10 +179,18 @@
         box-shadow: -1px 0px 2px 0px $busBlue; // -1 to center highlight
     }
 }
+
 .routePathListItem:last-of-type {
     .contentWrapper {
         border-bottom: none;
     }
+}
+
+.neighborRoutePathListItem {
+    cursor: pointer;
+}
+.neighborRoutePathListItem:hover {
+    background-color: darken($backgroundlightGrey, 5%);
 }
 
 .highlightedItem {

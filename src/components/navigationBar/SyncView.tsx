@@ -17,9 +17,9 @@ enum SyncModels {
     LINE = 'line',
     LINE_HEADER = 'lineHeader',
     ROUTE = 'route',
-    STOP = 'stop',
+    NODE_AND_LINK = 'nodeAndLink',
     STOP_AREA = 'stopArea',
-    LINK = 'link',
+    ROUTE_PATH = 'routePath',
 }
 
 const SyncView = inject('alertStore')(
@@ -80,8 +80,8 @@ const SyncView = inject('alertStore')(
                                     <>
                                         <div className={s.loaderContainer}>
                                             <div className={s.loadingText}>
-                                                Tietoja päivitetään, voit sulkea tämän ikkunan, jos
-                                                haluat.
+                                                Tietojen haku käynnissä. Voit halutessasi sulkea
+                                                tämän ikkunan, haku jatkuu taustalla.
                                             </div>
                                             <Loader hasNoMargin={true} />
                                         </div>
@@ -90,13 +90,13 @@ const SyncView = inject('alertStore')(
                                     <div className={s.checkboxContainer}>
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Linja'
+                                            content='Linjat'
                                             checked={selectedModels.includes(SyncModels.LINE)}
                                             onClick={() => toggleSelectedModel(SyncModels.LINE)}
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Linjan otsikko'
+                                            content='Linjan otsikot'
                                             checked={selectedModels.includes(
                                                 SyncModels.LINE_HEADER
                                             )}
@@ -106,19 +106,23 @@ const SyncView = inject('alertStore')(
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Reitti'
+                                            content='Reitit'
                                             checked={selectedModels.includes(SyncModels.ROUTE)}
                                             onClick={() => toggleSelectedModel(SyncModels.ROUTE)}
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Pysäkki'
-                                            checked={selectedModels.includes(SyncModels.STOP)}
-                                            onClick={() => toggleSelectedModel(SyncModels.STOP)}
+                                            content='Pysäkit, risteykset, linkit'
+                                            checked={selectedModels.includes(
+                                                SyncModels.NODE_AND_LINK
+                                            )}
+                                            onClick={() =>
+                                                toggleSelectedModel(SyncModels.NODE_AND_LINK)
+                                            }
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Pysäkkialue'
+                                            content='Pysäkkialueet'
                                             checked={selectedModels.includes(SyncModels.STOP_AREA)}
                                             onClick={() =>
                                                 toggleSelectedModel(SyncModels.STOP_AREA)
@@ -126,9 +130,11 @@ const SyncView = inject('alertStore')(
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Linkki'
-                                            checked={selectedModels.includes(SyncModels.LINK)}
-                                            onClick={() => toggleSelectedModel(SyncModels.LINK)}
+                                            content='Reitinsuunnat'
+                                            checked={selectedModels.includes(SyncModels.ROUTE_PATH)}
+                                            onClick={() =>
+                                                toggleSelectedModel(SyncModels.ROUTE_PATH)
+                                            }
                                         />
                                     </div>
                                 )}
