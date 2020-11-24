@@ -1,25 +1,33 @@
 @import '../../shared/styles/common.scss';
 
+$nodeItemPadding: 4px;
+
 .nodeItem {
     display: flex;
     align-items: center;
     cursor: pointer;
-    padding: 5px 10px 5px 10px;
+    padding: 0px 5px 0px 5px;
     border-radius: 4px;
 
     > svg {
         margin-right: 10px;
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .nodeIconWrapper {
+        padding: $nodeItemPadding;
         margin-right: 5px;
+    }
+    .nodeIconWrapper:hover {
+        background-color: $backgroundHoverColor;
+        transition: 0.5s;
     }
 
     .nodeItemTextContainer {
         font-size: $largeFontSize;
         display: flex;
         width: 100%;
+        padding: $nodeItemPadding;
         align-items: center;
 
         > div {
@@ -38,7 +46,8 @@
         }
 
         .stopName {
-            width: 100px;
+            max-width: 90px;
+            width: 100%;
             font-size: 10px;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -46,9 +55,9 @@
             display: inline-block;
         }
     }
+    .nodeItemTextContainer:hover {
+        background-color: $backgroundHoverColor;
+        transition: 0.5s;
+    }
 }
 
-.nodeItem:hover {
-    background-color: $backgroundHoverColor;
-    transition: 0.5s;
-}
