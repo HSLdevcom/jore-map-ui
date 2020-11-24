@@ -1,0 +1,56 @@
+@import '../../shared/styles/common';
+@import '../../shared/styles/flexbox';
+@import '../../shared/styles/form';
+
+$cellPadding: 10px;
+
+.searchLineHeadersCopy {
+    padding-top: 10px;
+    min-height: 400px;
+
+    .lineHeadersToCopyForm {
+        padding: 10px;
+
+        .lineHeaderTableContainer {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+
+            .lineHeaderTable {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: $smallFontSize;
+                margin-top: 10px;
+
+                .columnHeader {
+                    white-space: nowrap;
+                    text-align: start;
+                    padding: 0px $cellPadding 0px $cellPadding;
+                }
+
+                .selectedRow {
+                    background-color: $highlightedItemColor;
+                }
+
+                .tableRow:hover {
+                    background-color: $highlightedItemColor;
+                }
+
+                .tableCell {
+                    padding: $cellPadding;
+                }
+            }
+
+            tr:nth-child(even) {
+                background-color: #ebedee;
+            }
+            td {
+                cursor: pointer;
+            }
+
+            .copyLineHeadersButton {
+                margin-top: 10px;
+            }
+        }
+    }
+}

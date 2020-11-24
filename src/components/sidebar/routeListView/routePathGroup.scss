@@ -118,7 +118,7 @@ $newHighlightBackgroundColor: #e0fde2;
         }
 
         .highlightAsSelected {
-            background-color: #adf;
+            background-color: $highlightedItemColor;
         }
     }
 }
