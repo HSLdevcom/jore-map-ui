@@ -1,3 +1,18 @@
+## <small>1.0.1 (2020-11-23)</small>
+
+* 1141 sync route path and related models (#1785) ([0f53c5a](https://github.com/HSLdevcom/jore-map-ui/commit/0f53c5a)), closes [#1785](https://github.com/HSLdevcom/jore-map-ui/issues/1785)
+* 1653 display nodes that are on top of each other (#1774) ([ad710ad](https://github.com/HSLdevcom/jore-map-ui/commit/ad710ad)), closes [#1774](https://github.com/HSLdevcom/jore-map-ui/issues/1774)
+* 1660 highlight neighbor node that is closing route path gap (#1778) ([83ab058](https://github.com/HSLdevcom/jore-map-ui/commit/83ab058)), closes [#1778](https://github.com/HSLdevcom/jore-map-ui/issues/1778)
+* 1788 minor bug fixes (#1789) ([fddf80f](https://github.com/HSLdevcom/jore-map-ui/commit/fddf80f)), closes [#1789](https://github.com/HSLdevcom/jore-map-ui/issues/1789)
+* Implemented app status display page when loading the app (#1786) ([eb1bae2](https://github.com/HSLdevcom/jore-map-ui/commit/eb1bae2)), closes [#1786](https://github.com/HSLdevcom/jore-map-ui/issues/1786)
+* No longer automatically deploying after build ([1708e07](https://github.com/HSLdevcom/jore-map-ui/commit/1708e07))
+* Node & stop sync is now done with link sync (#1783) ([655be90](https://github.com/HSLdevcom/jore-map-ui/commit/655be90)), closes [#1783](https://github.com/HSLdevcom/jore-map-ui/issues/1783)
+* Set routePathId pair when copying dir 1 and dir 2 routePath (#1775) ([8788119](https://github.com/HSLdevcom/jore-map-ui/commit/8788119)), closes [#1775](https://github.com/HSLdevcom/jore-map-ui/issues/1775)
+* Trigger build ([cab2a06](https://github.com/HSLdevcom/jore-map-ui/commit/cab2a06))
+* Upgraded github actions libraries ([edbab53](https://github.com/HSLdevcom/jore-map-ui/commit/edbab53))
+
+
+
 ## 1.0.0 (2020-11-10)
 
 * 1472 node icon for link start and end node (#1616) ([65b30d5](https://github.com/HSLdevcom/jore-map-ui/commit/65b30d5)), closes [#1616](https://github.com/HSLdevcom/jore-map-ui/issues/1616)
