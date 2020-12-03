@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { chain, cloneDeep, isEqual } from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { ILineHeader } from '~/models';
 import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
@@ -48,7 +48,7 @@ class LineHeaderMassEditStore {
 
     @computed
     get currentLineHeaders(): ILineHeader[] {
-        return _.chain(this._massEditLineHeaders)
+        return chain(this._massEditLineHeaders)
             .filter((massEditLineHeader) => !massEditLineHeader.isRemoved)
             .map((massEditLineHeader) => massEditLineHeader.lineHeader)
             .value();
@@ -56,7 +56,7 @@ class LineHeaderMassEditStore {
 
     @computed
     get removedLineHeaders(): ILineHeader[] {
-        return _.chain(this._massEditLineHeaders)
+        return chain(this._massEditLineHeaders)
             .filter((massEditLineHeader) => massEditLineHeader.isRemoved)
             .map((massEditLineHeader) => massEditLineHeader.lineHeader)
             .value();
@@ -69,10 +69,10 @@ class LineHeaderMassEditStore {
         for (const massEditLineHeader of this._massEditLineHeaders) {
             if (massEditLineHeader.isRemoved) return true;
         }
-        const currentLineHeaders = _.chain(this._massEditLineHeaders)
+        const currentLineHeaders = chain(this._massEditLineHeaders)
             .map((massEditLineHeader) => massEditLineHeader.lineHeader)
             .value();
-        return !_.isEqual(currentLineHeaders, this._oldlineHeaders);
+        return !isEqual(currentLineHeaders, this._oldlineHeaders);
     }
 
     @computed
@@ -112,7 +112,7 @@ class LineHeaderMassEditStore {
 
     @action
     public setOldLineHeaders = (lineHeaders: ILineHeader[]) => {
-        this._oldlineHeaders = _.cloneDeep(lineHeaders);
+        this._oldlineHeaders = cloneDeep(lineHeaders);
     };
 
     @action
@@ -169,7 +169,7 @@ class LineHeaderMassEditStore {
             isRemoved: false,
         };
 
-        this._massEditLineHeaders = _.chain(this.massEditLineHeaders!)
+        this._massEditLineHeaders = chain(this.massEditLineHeaders!)
             .concat([newMassEditLineHeader])
             .sort(_sortMassEditLineHeaders)
             .value();
@@ -177,6 +177,50 @@ class LineHeaderMassEditStore {
         this.validateDates();
         this.setIsEditingDisabled(false);
         this.setSelectedLineHeaderId(id);
+    };
+
+    @action
+    public copyLineHeaders = ({
+        lineId,
+        lineHeaders,
+    }: {
+        lineId: string;
+        lineHeaders: ILineHeader[];
+    }) => {
+        const firstLineHeader = this.getFirstLineHeader();
+        let currentDate: Date = new Date();
+        if (firstLineHeader) {
+            currentDate = new Date(firstLineHeader.endDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        const lineHeadersToAdd: IMassEditLineHeader[] = [];
+        lineHeaders.forEach((lineHeader) => {
+            const newLineHeader = cloneDeep(lineHeader);
+            newLineHeader.lineId = lineId;
+            newLineHeader.startDate = cloneDeep(currentDate);
+            newLineHeader.endDate = cloneDeep(currentDate);
+            newLineHeader.originalStartDate = undefined; // new lineHeader has no originalStartDate
+            const invalidPropertiesMap = FormValidator.validateAllProperties(
+                lineHeaderValidationModel,
+                newLineHeader
+            );
+            const newMassEditLineHeader: IMassEditLineHeader = {
+                invalidPropertiesMap,
+                lineHeader: newLineHeader,
+                id: nextAvailableLineHeaderId,
+                isRemoved: false,
+            };
+            lineHeadersToAdd.push(newMassEditLineHeader);
+            currentDate.setDate(currentDate.getDate() + 1);
+            nextAvailableLineHeaderId += 1;
+        });
+        this._massEditLineHeaders = chain(this.massEditLineHeaders!)
+            .concat(lineHeadersToAdd)
+            .sort(_sortMassEditLineHeaders)
+            .value();
+
+        this.validateDates();
+        this.setIsEditingDisabled(false);
     };
 
     @action
@@ -287,7 +331,7 @@ class LineHeaderMassEditStore {
 
     @action
     private getMassEditLineHeader = (id: number) => {
-        return this._massEditLineHeaders!.find((m) => _.isEqual(m.id, id));
+        return this._massEditLineHeaders!.find((m) => isEqual(m.id, id));
     };
 }
 

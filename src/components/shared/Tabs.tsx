@@ -25,7 +25,7 @@ const TabList = observer((props: ITabListProps) => {
                 return React.cloneElement(child, {
                     isActive,
                     index,
-                    setSelectedTabIndex: props.setSelectedTabIndex
+                    setSelectedTabIndex: props.setSelectedTabIndex,
                 });
             })}
         </div>
@@ -63,18 +63,17 @@ interface IContentListProps {
     children: JSX.Element[];
     selectedTabIndex: number;
 }
-
-const ContentList = observer((props: IContentListProps) => {
-    return (
-        <div className={s.contentList}>
+const ContentList = observer(
+    React.forwardRef((props: IContentListProps, ref: React.RefObject<HTMLDivElement>) => (
+        <div className={s.contentList} ref={ref}>
             {React.Children.map(props.children, (child, index) => {
                 const isActive = props.selectedTabIndex === index;
                 if (!isActive) return null;
                 return React.cloneElement(child);
             })}
         </div>
-    );
-});
+    ))
+);
 
 interface IContentItemProps {
     children: JSX.Element;
