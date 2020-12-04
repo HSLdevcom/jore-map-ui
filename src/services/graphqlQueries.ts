@@ -118,14 +118,35 @@ const getRoutePathLinkQuery = () => {
         }`;
 };
 
-const getRoutePathSegmentQuery = () => {
+const getRoutePathLinksFromRoutePathSegment = () => {
     return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String, $routeId: String) {
-            links_with_route_path_info: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType, routeid: $routeId) {
+            get_route_path_links_from_route_path_segment: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType, routeid: $routeId) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
             }
         }`;
+};
+
+const getRoutesUsingRoutePathSegment = () => {
+    return gql`
+        query getRoutesUsingRoutePathSegment(
+            $startNodeId: String
+            $endNodeId: String
+            $transitType: String
+        ) {
+            get_routes_using_route_path_segment: getRoutesUsingRoutePathSegment(
+                startnodeid: $startNodeId
+                endnodeid: $endNodeId
+                transittype: $transitType
+            ) {
+                nodes {
+                    lintunnus
+                    reitunnus
+                }
+            }
+        }
+    `;
 };
 
 const getRoutePathsUsingLinkQuery = () => {
@@ -828,7 +849,8 @@ export default {
     getFirstStopNameOfRoutePath,
     getLastStopNameOfRoutePath,
     getRoutePathLinkQuery,
-    getRoutePathSegmentQuery,
+    getRoutePathLinksFromRoutePathSegment,
+    getRoutesUsingRoutePathSegment,
     getRoutePathsUsingLinkQuery,
     getRoutePathsUsingNodeQuery,
     getLinksByStartNodeQuery,
