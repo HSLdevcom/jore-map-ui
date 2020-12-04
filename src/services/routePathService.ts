@@ -26,6 +26,11 @@ interface IGetRoutePathLengthRequest {
     routePathLinks: IRoutePathLink[];
 }
 
+interface IRouteUsingRoutePathSegment {
+    lineId: string;
+    routeId: string;
+}
+
 class RoutePathService {
     public static fetchRoutePath = async (
         routeId: string,
@@ -159,6 +164,29 @@ class RoutePathService {
         });
     };
 
+    public static fetchRoutesUsingLinkSegment = async (
+        startNodeId: string,
+        endNodeId: string,
+        transitType: string
+    ): Promise<IRouteUsingRoutePathSegment[]> => {
+        const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
+            query: GraphqlQueries.getRoutesUsingRoutePathSegment(),
+            variables: { startNodeId, endNodeId, transitType },
+        });
+        interface IRouteUsingRoutePathSegmentQueryResult {
+            lintunnus: string;
+            reitunnus: string;
+        }
+        return queryResult.data.get_routes_using_route_path_segment.nodes.map(
+            (queryResultRow: IRouteUsingRoutePathSegmentQueryResult) => {
+                return {
+                    lineId: queryResultRow.lintunnus,
+                    routeId: queryResultRow.reitunnus,
+                };
+            }
+        );
+    };
+
     public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
@@ -255,4 +283,4 @@ const _findRoutePathLink = (
 
 export default RoutePathService;
 
-export { IRoutePathLengthResponse, IGetRoutePathLengthRequest };
+export { IRoutePathLengthResponse, IGetRoutePathLengthRequest, IRouteUsingRoutePathSegment };

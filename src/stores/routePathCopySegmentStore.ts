@@ -12,7 +12,7 @@ interface ISegmentPoint {
     coordinates: L.LatLng;
 }
 
-interface IRoutesUsingLink {
+interface IRoutesToCopyFrom {
     lineId: string;
     routeId: string;
     isExpanded: boolean;
@@ -23,7 +23,7 @@ class RoutePathCopySegmentStore {
     @observable private _isLoading: boolean;
     @observable private _startSegmentPoint: ISegmentPoint | null;
     @observable private _endSegmentPoint: ISegmentPoint | null;
-    @observable private _routesUsingLink: IRoutesUsingLink[];
+    @observable private _routesToCopyFrom: IRoutesToCopyFrom[];
     @observable private _highlightedRoutePath: IRoutePathSegment | null;
     @observable private _setNodeType: setNodeType;
     @observable private _areNodePositionsValid: boolean;
@@ -32,7 +32,7 @@ class RoutePathCopySegmentStore {
         this._isLoading = true;
         this._startSegmentPoint = null;
         this._endSegmentPoint = null;
-        this._routesUsingLink = [];
+        this._routesToCopyFrom = [];
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
         this._areNodePositionsValid = true;
@@ -54,8 +54,8 @@ class RoutePathCopySegmentStore {
     }
 
     @computed
-    get routesUsingLink(): IRoutesUsingLink[] {
-        return this._routesUsingLink;
+    get routesToCopyFrom(): IRoutesToCopyFrom[] {
+        return this._routesToCopyFrom;
     }
 
     @computed
@@ -89,8 +89,8 @@ class RoutePathCopySegmentStore {
     };
 
     @action
-    public setRoutesUsingLink = (routesUsingLink: IRoutesUsingLink[]) => {
-        this._routesUsingLink = routesUsingLink;
+    public setRoutesToCopyFrom = (routesToCopyFrom: IRoutesToCopyFrom[]) => {
+        this._routesToCopyFrom = routesToCopyFrom;
     };
 
     @action
@@ -114,7 +114,7 @@ class RoutePathCopySegmentStore {
         this._endSegmentPoint = null;
         this._highlightedRoutePath = null;
         this._setNodeType = 'startNode';
-        this._routesUsingLink = [];
+        this._routesToCopyFrom = [];
     };
 
     public getSegmentLinksToCopy = (
@@ -158,4 +158,4 @@ class RoutePathCopySegmentStore {
 
 export default new RoutePathCopySegmentStore();
 
-export { RoutePathCopySegmentStore, setNodeType, ISegmentPoint, IRoutesUsingLink };
+export { RoutePathCopySegmentStore, setNodeType, ISegmentPoint, IRoutesToCopyFrom };
