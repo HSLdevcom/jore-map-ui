@@ -1,3 +1,23 @@
+## <small>1.0.2 (2020-12-04)</small>
+
+* 1141 sync route path and related models (#1785) ([0f53c5a](https://github.com/HSLdevcom/jore-map-ui/commit/0f53c5a)), closes [#1785](https://github.com/HSLdevcom/jore-map-ui/issues/1785)
+* 1653 display nodes that are on top of each other (#1774) ([ad710ad](https://github.com/HSLdevcom/jore-map-ui/commit/ad710ad)), closes [#1774](https://github.com/HSLdevcom/jore-map-ui/issues/1774)
+* 1660 highlight neighbor node that is closing route path gap (#1778) ([83ab058](https://github.com/HSLdevcom/jore-map-ui/commit/83ab058)), closes [#1778](https://github.com/HSLdevcom/jore-map-ui/issues/1778)
+* 1706 ability to copy line header info from any line (#1792) ([ec9584d](https://github.com/HSLdevcom/jore-map-ui/commit/ec9584d)), closes [#1792](https://github.com/HSLdevcom/jore-map-ui/issues/1792)
+* 1729 stop search center map functionality (#1791) ([f2001be](https://github.com/HSLdevcom/jore-map-ui/commit/f2001be)), closes [#1791](https://github.com/HSLdevcom/jore-map-ui/issues/1791)
+* 1788 minor bug fixes (#1789) ([fddf80f](https://github.com/HSLdevcom/jore-map-ui/commit/fddf80f)), closes [#1789](https://github.com/HSLdevcom/jore-map-ui/issues/1789)
+* Implemented app status display page when loading the app (#1786) ([eb1bae2](https://github.com/HSLdevcom/jore-map-ui/commit/eb1bae2)), closes [#1786](https://github.com/HSLdevcom/jore-map-ui/issues/1786)
+* Link visibility fixg (#1793) ([0e917fa](https://github.com/HSLdevcom/jore-map-ui/commit/0e917fa)), closes [#1793](https://github.com/HSLdevcom/jore-map-ui/issues/1793)
+* No longer automatically deploying after build ([1708e07](https://github.com/HSLdevcom/jore-map-ui/commit/1708e07))
+* Node & stop sync is now done with link sync (#1783) ([655be90](https://github.com/HSLdevcom/jore-map-ui/commit/655be90)), closes [#1783](https://github.com/HSLdevcom/jore-map-ui/issues/1783)
+* Release 1.0.1 (#1794) ([be19c9b](https://github.com/HSLdevcom/jore-map-ui/commit/be19c9b)), closes [#1794](https://github.com/HSLdevcom/jore-map-ui/issues/1794)
+* Set routePathId pair when copying dir 1 and dir 2 routePath (#1775) ([8788119](https://github.com/HSLdevcom/jore-map-ui/commit/8788119)), closes [#1775](https://github.com/HSLdevcom/jore-map-ui/issues/1775)
+* Trigger build ([cab2a06](https://github.com/HSLdevcom/jore-map-ui/commit/cab2a06))
+* Update master (#1796) ([184cfa7](https://github.com/HSLdevcom/jore-map-ui/commit/184cfa7)), closes [#1796](https://github.com/HSLdevcom/jore-map-ui/issues/1796)
+* Upgraded github actions libraries ([edbab53](https://github.com/HSLdevcom/jore-map-ui/commit/edbab53))
+
+
+
 ## <small>1.0.1 (2020-11-23)</small>
 
 * 1141 sync route path and related models (#1785) ([0f53c5a](https://github.com/HSLdevcom/jore-map-ui/commit/0f53c5a)), closes [#1785](https://github.com/HSLdevcom/jore-map-ui/issues/1785)
