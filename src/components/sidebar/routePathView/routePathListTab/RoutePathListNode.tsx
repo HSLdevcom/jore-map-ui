@@ -189,6 +189,10 @@ const RoutePathListNode = inject(
 
         const onIsStartNodeUsingBookScheduleChange = (value: boolean) => () => {
             onRoutePathBookSchedulePropertyChange('isStartNodeUsingBookSchedule')(value);
+            // When changing isStartNodeUsingBookSchedule as false, we want to clear input of startNodeBookScheduleColumnNumber
+            if (!value) {
+                onRoutePathBookSchedulePropertyChange('startNodeBookScheduleColumnNumber')('');
+            }
         };
 
         const renderStopView = (stop: IStop) => {
