@@ -12,7 +12,6 @@ type eventName =
     | 'mapClick'
     | 'nodeClick'
     | 'networkNodeClick'
-    | 'networkLinkClick'
     | 'geometryChange'
     | 'routePathNodeClick'
     | 'routePathLinkClick'
