@@ -53,6 +53,7 @@ class AddNetworkNodeTool implements BaseTool {
             confirmData: 'Haluatko avata solmun luontinäkymän uudessa ikkunassa?',
             confirmButtonText: 'Kyllä',
             onConfirm: () => {
+                ToolbarStore.selectTool(null);
                 window.open(newNodeViewLink, '_blank');
             },
             onCancel: () => {

@@ -6,8 +6,10 @@ import { IoMdMap } from 'react-icons/io';
 import { Checkbox, TransitToggleButtonBar } from '~/components/controls/';
 import InputContainer from '~/components/controls/InputContainer';
 import TransitType from '~/enums/transitType';
+import NodeService from '~/services/nodeService';
 import MapStore, { MapBaseLayer, MapFilter, NodeLabel } from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
+import SearchResultStore from '~/stores/searchResultStore';
 import { RadioButton } from '../../controls';
 import * as s from './mapLayersControl.scss';
 
@@ -48,6 +50,16 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
 
     private showControls = (show: boolean) => (e: MouseEvent<HTMLDivElement>) => {
         this.setState({ show });
+    };
+
+    private onNodeLayerVisibilityToggle = (mapLayer: MapLayer) => () => {
+        this.toggleMapLayerVisibility(mapLayer)();
+        // If the toggled layer is visible, re-fetch nodes without using cache
+        if (NetworkStore.isMapLayerVisible(mapLayer)) {
+            NodeService.fetchAllSearchNodes({ shouldUseCache: false }).then((nodes: any) => {
+                SearchResultStore!.setAllSearchNodes(nodes);
+            });
+        }
     };
 
     render() {
@@ -92,7 +104,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                     <div className={s.inputTitle}>SOLMUT</div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.node)}
+                            onClick={this.onNodeLayerVisibilityToggle(MapLayer.node)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.node)}
                             content='Alueen solmut'
                             data-cy='showNodes'
@@ -100,7 +112,7 @@ class MapLayersControl extends React.Component<IMapLayersControlProps, IMapLayer
                     </div>
                     <div className={s.checkboxContainer}>
                         <Checkbox
-                            onClick={this.toggleMapLayerVisibility(MapLayer.unusedNode)}
+                            onClick={this.onNodeLayerVisibilityToggle(MapLayer.unusedNode)}
                             checked={NetworkStore.isMapLayerVisible(MapLayer.unusedNode)}
                             content='Käyttämättömät solmut'
                         />

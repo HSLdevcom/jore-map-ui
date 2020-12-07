@@ -96,6 +96,7 @@ class AddNetworkLinkTool implements BaseTool {
             confirmData: 'Haluatko avata linkin luontinäkymän uudessa ikkunassa?',
             confirmButtonText: 'Kyllä',
             onConfirm: () => {
+                ToolbarStore.selectTool(null);
                 window.open(newLinkViewLink, '_blank');
             },
             onCancel: () => {

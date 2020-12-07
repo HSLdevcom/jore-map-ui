@@ -110,6 +110,7 @@ class SearchResultStore {
     @action
     public setAllSearchNodes = (nodes: ISearchNode[]) => {
         this._allNodes = nodes.sort((a, b) => (a.id > b.id ? 1 : -1));
+        this.search();
     };
 
     @action
