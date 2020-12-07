@@ -3,6 +3,7 @@ import EventListener from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import RouteBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import ConfirmStore from '~/stores/confirmStore';
 import MapStore from '~/stores/mapStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
 import ToolbarStore from '~/stores/toolbarStore';
@@ -43,12 +44,22 @@ class AddNetworkNodeTool implements BaseTool {
     };
 
     private onMapClick = async (clickEvent: CustomEvent) => {
-        ToolbarStore.selectTool(null);
         const coordinate = roundLatLng(clickEvent.detail.latlng);
         const newNodeViewLink = RouteBuilder.to(SubSites.newNode)
             .toTarget(':id', `${coordinate.lat}:${coordinate.lng}`)
             .toLink();
-        navigator.goTo({ link: newNodeViewLink });
+
+        ConfirmStore!.openConfirm({
+            confirmData: 'Haluatko avata solmun luontinäkymän uudessa ikkunassa?',
+            confirmButtonText: 'Kyllä',
+            onConfirm: () => {
+                window.open(newNodeViewLink, '_blank');
+            },
+            onCancel: () => {
+                ToolbarStore.selectTool(null);
+                navigator.goTo({ link: newNodeViewLink });
+            },
+        });
     };
 }
 

@@ -4,6 +4,7 @@ import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import NodeService from '~/services/nodeService';
+import ConfirmStore from '~/stores/confirmStore';
 import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
@@ -80,8 +81,18 @@ class AddNetworkLinkTool implements BaseTool {
             .to(SubSites.newLink)
             .toTarget(':id', [this.startNodeId, this.endNodeId].join(','))
             .toLink();
-        navigator.goTo({ link: newLinkViewLink });
-        ToolbarStore.selectTool(null);
+
+        ConfirmStore!.openConfirm({
+            confirmData: 'Haluatko avata linkin luontinäkymän uudessa ikkunassa?',
+            confirmButtonText: 'Kyllä',
+            onConfirm: () => {
+                window.open(newLinkViewLink, '_blank');
+            },
+            onCancel: () => {
+                ToolbarStore.selectTool(null);
+                navigator.goTo({ link: newLinkViewLink });
+            },
+        });
     };
 
     private resetTool = () => {
