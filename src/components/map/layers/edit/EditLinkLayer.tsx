@@ -1,13 +1,15 @@
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { withLeaflet, Marker as LeafletMarker } from 'react-leaflet';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import { ILink, INode } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
 import { LeafletContext } from '../../Map';
@@ -24,14 +26,17 @@ interface IEditLinkLayerProps {
     mapStore?: MapStore;
     leaflet: LeafletContext;
     loginStore?: LoginStore;
+    toolbarStore?: ToolbarStore;
 }
 const EditLinkLayer = inject(
     'linkStore',
     'mapStore',
-    'loginStore'
+    'loginStore',
+    'toolbarStore'
 )(
     observer((props: IEditLinkLayerProps) => {
         const [editableLinks, setEditableLinks] = useState<L.Polyline[]>([]);
+        const enableSelectNetworkEntityToolTimeout = useRef<number>();
 
         useEffect(() => {
             editableLinks.forEach((editableLink) => {
@@ -48,8 +53,20 @@ const EditLinkLayer = inject(
         useEffect(() => {
             const map = props.leaflet.map;
             if (!map) return;
-            map.on('editable:vertex:dragend', () => {
+            map.on('editable:vertex:dragend', (e: any) => {
                 updateLinkGeometry();
+
+                // Disable SelectNetworkEntity tool for a while so that a entity selection box wouldnt appear on screen
+                if (props.toolbarStore!.isSelected(ToolbarToolType.SelectNetworkEntity)) {
+                    props.toolbarStore!.selectedTool!.deactivate();
+
+                    if (enableSelectNetworkEntityToolTimeout.current) {
+                        clearTimeout(enableSelectNetworkEntityToolTimeout.current);
+                    }
+                    enableSelectNetworkEntityToolTimeout.current = window.setTimeout(() => {
+                        props.toolbarStore!.selectedTool!.activate();
+                    }, 500);
+                }
             });
             map.on('editable:vertex:deleted', () => {
                 updateLinkGeometry();

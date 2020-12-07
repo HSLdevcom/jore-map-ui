@@ -1,10 +1,11 @@
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { withLeaflet } from 'react-leaflet';
 import { matchPath } from 'react-router';
 import NodeType from '~/enums/nodeType';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import { ILink } from '~/models';
 import navigator from '~/routing/navigator';
@@ -12,6 +13,7 @@ import SubSites from '~/routing/subSites';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import { LeafletContext } from '../../Map';
@@ -20,19 +22,22 @@ import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
 
 interface IEditNodeLayerProps {
+    leaflet: LeafletContext;
     nodeStore?: NodeStore;
     mapStore?: MapStore;
     loginStore?: LoginStore;
-    leaflet: LeafletContext;
+    toolbarStore?: ToolbarStore;
 }
 
 const EditNodeLayer = inject(
     'mapStore',
     'nodeStore',
-    'loginStore'
+    'loginStore',
+    'toolbarStore'
 )(
     observer((props: IEditNodeLayerProps) => {
         const [editableLinks, setEditableLinks] = useState<L.Polyline[]>([]);
+        const enableSelectNetworkEntityToolTimeout = useRef<number>();
 
         useEffect(() => {
             editableLinks.forEach((editableLink) => {
@@ -62,6 +67,18 @@ const EditNodeLayer = inject(
             if (!map) return;
             map.on('editable:vertex:dragend', (data: any) => {
                 updateLinkGeometry(data.layer._leaflet_id);
+
+                // Disable SelectNetworkEntity tool for a while so that a entity selection box wouldnt appear on screen
+                if (props.toolbarStore!.isSelected(ToolbarToolType.SelectNetworkEntity)) {
+                    props.toolbarStore!.selectedTool!.deactivate();
+
+                    if (enableSelectNetworkEntityToolTimeout.current) {
+                        clearTimeout(enableSelectNetworkEntityToolTimeout.current);
+                    }
+                    enableSelectNetworkEntityToolTimeout.current = window.setTimeout(() => {
+                        props.toolbarStore!.selectedTool!.activate();
+                    }, 500);
+                }
             });
             map.on('editable:vertex:deleted', (data: any) => {
                 updateLinkGeometry(data.layer._leaflet_id);

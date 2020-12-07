@@ -4,7 +4,7 @@ import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import constants from '~/constants/constants';
 import TransitType from '~/enums/transitType';
-import EventListener, { ILinkClickParams, INodeClickParams } from '~/helpers/EventListener';
+import EventListener, { INodeClickParams } from '~/helpers/EventListener';
 import NodeService from '~/services/nodeService';
 import { LinkStore } from '~/stores/linkStore';
 import { MapStore } from '~/stores/mapStore';
@@ -143,16 +143,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
         EventListener.trigger('networkNodeClick', clickParams);
     };
 
-    private onNetworkLinkClick = (clickEvent: any) => {
-        const properties = clickEvent.sourceTarget.properties;
-        const clickParams: ILinkClickParams = {
-            startNodeId: properties.lnkalkusolmu,
-            endNodeId: properties.lnkloppusolmu,
-            transitType: properties.lnkverkko,
-        };
-        EventListener.trigger('networkLinkClick', clickParams);
-    };
-
     /**
      * Sets a reaction object for GeoserverLayer (replaces existing one) so
      * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
@@ -176,7 +166,6 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
                         key={GeoserverLayer.Link}
-                        onClick={this.onNetworkLinkClick}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
                             GeoserverLayer.Link
                         )}
