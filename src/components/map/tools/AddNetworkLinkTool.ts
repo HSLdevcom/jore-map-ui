@@ -1,5 +1,8 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventListener, { INodeClickParams } from '~/helpers/EventListener';
+import EventListener, {
+    INodeClickParams,
+    IRoutePathNodeClickParams,
+} from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
@@ -35,6 +38,7 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.link);
         NetworkStore.showMapLayer(MapLayer.unusedLink);
         EventListener.on('nodeClick', this.onNodeClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.on('networkNodeClick', this.onNodeClick);
         this.setToolPhase('selectStartNode');
     };
@@ -42,6 +46,7 @@ class AddNetworkLinkTool implements BaseTool {
     public deactivate = () => {
         this.resetTool();
         EventListener.off('nodeClick', this.onNodeClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.off('networkNodeClick', this.onNodeClick);
         this.setToolPhase(null);
     };
@@ -57,6 +62,11 @@ class AddNetworkLinkTool implements BaseTool {
     private onNodeClick = async (clickEvent: CustomEvent) => {
         const params: INodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(params.nodeId);
+    };
+
+    private onRoutePathNodeClick = (clickEvent: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = clickEvent.detail;
+        this.setStartOrEndNode(params.node.id);
     };
 
     private setStartOrEndNode = async (nodeId: string) => {
