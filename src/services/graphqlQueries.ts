@@ -668,14 +668,6 @@ const nodeSearchQueryFields = `
     }
 `;
 
-const startNodeQueryFields = `
-    ${nodeQueryFields}
-`;
-
-const endNodeQueryFields = `
-    ${nodeQueryFields}
-`;
-
 const routePathLinkQueryFields = `
     relid
     lnkalkusolmu
@@ -697,10 +689,10 @@ const routePathLinkQueryFields = `
         geojson
     }
     solmuByLnkalkusolmu {
-        ${startNodeQueryFields}
+        ${nodeQueryFields}
     }
     solmuByLnkloppusolmu {
-        ${endNodeQueryFields}
+        ${nodeQueryFields}
     }
 `;
 
@@ -766,10 +758,10 @@ const linkQueryFields = `
     lnkkuka
     lnkviimpvm
     solmuByLnkalkusolmu {
-        ${startNodeQueryFields}
+        ${nodeQueryFields}
     }
     solmuByLnkloppusolmu {
-        ${endNodeQueryFields}
+        ${nodeQueryFields}
     }
 `;
 
@@ -778,10 +770,10 @@ linkkisByLnkalkusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
                     ${routeForRoutePathQuery}
@@ -797,7 +789,7 @@ linkkisByLnkloppusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
                     ${routeForRoutePathQuery}
@@ -806,7 +798,7 @@ linkkisByLnkloppusolmu {
             }
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
         }
     }
 }`;
@@ -816,10 +808,10 @@ linkkisByLnkalkusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
         }
     }
 }`;
@@ -829,10 +821,10 @@ linkkisByLnkloppusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
         }
     }
 }`;
