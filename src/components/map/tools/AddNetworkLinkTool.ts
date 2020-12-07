@@ -1,9 +1,13 @@
 import ToolbarToolType from '~/enums/toolbarToolType';
-import EventListener, { INodeClickParams } from '~/helpers/EventListener';
+import EventListener, {
+    INodeClickParams,
+    IRoutePathNodeClickParams,
+} from '~/helpers/EventListener';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import NodeService from '~/services/nodeService';
+import ConfirmStore from '~/stores/confirmStore';
 import ErrorStore from '~/stores/errorStore';
 import LinkStore from '~/stores/linkStore';
 import NetworkStore, { MapLayer } from '~/stores/networkStore';
@@ -34,6 +38,7 @@ class AddNetworkLinkTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.link);
         NetworkStore.showMapLayer(MapLayer.unusedLink);
         EventListener.on('nodeClick', this.onNodeClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.on('networkNodeClick', this.onNodeClick);
         this.setToolPhase('selectStartNode');
     };
@@ -41,6 +46,7 @@ class AddNetworkLinkTool implements BaseTool {
     public deactivate = () => {
         this.resetTool();
         EventListener.off('nodeClick', this.onNodeClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.off('networkNodeClick', this.onNodeClick);
         this.setToolPhase(null);
     };
@@ -56,6 +62,11 @@ class AddNetworkLinkTool implements BaseTool {
     private onNodeClick = async (clickEvent: CustomEvent) => {
         const params: INodeClickParams = clickEvent.detail;
         this.setStartOrEndNode(params.nodeId);
+    };
+
+    private onRoutePathNodeClick = (clickEvent: CustomEvent) => {
+        const params: IRoutePathNodeClickParams = clickEvent.detail;
+        this.setStartOrEndNode(params.node.id);
     };
 
     private setStartOrEndNode = async (nodeId: string) => {
@@ -80,8 +91,19 @@ class AddNetworkLinkTool implements BaseTool {
             .to(SubSites.newLink)
             .toTarget(':id', [this.startNodeId, this.endNodeId].join(','))
             .toLink();
-        navigator.goTo({ link: newLinkViewLink });
-        ToolbarStore.selectTool(null);
+
+        ConfirmStore!.openConfirm({
+            confirmData: 'Haluatko avata linkin luontinäkymän uudessa ikkunassa?',
+            confirmButtonText: 'Kyllä',
+            onConfirm: () => {
+                ToolbarStore.selectTool(null);
+                window.open(newLinkViewLink, '_blank');
+            },
+            onCancel: () => {
+                ToolbarStore.selectTool(null);
+                navigator.goTo({ link: newLinkViewLink });
+            },
+        });
     };
 
     private resetTool = () => {

@@ -51,21 +51,21 @@ class Navigator {
     /**
      * @return {String} for example /routePath/new
      */
-    public getPathName = () => {
+    public getPathName = (): string => {
         return this.store.location.pathname;
     };
 
     /**
      * @return {String} for example ?routes=0033
      */
-    public getSearch = () => {
+    public getSearch = (): string => {
         return this.store.location.search;
     };
 
     /**
      * @return {String} for example /routePath/new?routes=0033
      */
-    public getFullPath = () => {
+    public getFullPath = (): string => {
         return `${this.store.location.pathname}${this.store.location.search}`;
     };
 

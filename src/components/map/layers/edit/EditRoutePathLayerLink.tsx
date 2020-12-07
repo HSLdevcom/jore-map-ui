@@ -41,7 +41,7 @@ const EditRoutePathLayerLink = inject()(
                     }
                     weight={15}
                     opacity={isLinkHovered || isLinkExtended ? 0.6 : 0}
-                    onClick={handleLinkClick(routePathLink)}
+                    onClick={onLinkClick(routePathLink)}
                     onMouseOver={() => onMouseOver(routePathLink.id)}
                     onMouseOut={onMouseOut}
                     interactive={true}
@@ -65,7 +65,7 @@ const EditRoutePathLayerLink = inject()(
             props.setHoveredItemId(null);
         };
 
-        const handleLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
+        const onLinkClick = (routePathLink: IRoutePathLink) => (e: L.LeafletMouseEvent) => {
             const clickParams: IRoutePathLinkClickParams = {
                 routePathLinkId: routePathLink.id,
             };
@@ -86,7 +86,7 @@ const EditRoutePathLayerLink = inject()(
                 <ArrowDecorator
                     color={DEFAULT_LINK_COLOR}
                     geometry={routePathLink.geometry}
-                    onClick={handleLinkClick(routePathLink)}
+                    onClick={onLinkClick(routePathLink)}
                     onMouseOver={() => onMouseOver(routePathLink.id)}
                     onMouseOut={onMouseOut}
                 />
