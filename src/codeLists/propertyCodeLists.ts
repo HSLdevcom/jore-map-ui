@@ -57,6 +57,7 @@ const linkPropertyCodeList: ILinkPropertyCodeList = {
     length: 'LASKETTU PITUUS (m)',
     measuredLength: 'MITATTU PITUUS (m)',
     speed: 'NOPEUS (km/h)',
+    dateRanges: '',
     modifiedBy: 'MUOKANNUT',
     modifiedOn: 'MUOKATTU PVM',
 };

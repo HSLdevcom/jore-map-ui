@@ -41,9 +41,8 @@ const _isNetworkElementHidden = ({
     transitType: TransitType;
     startNodeId: string;
     endNodeId: string;
-    dateRangesString: string;
+    dateRangesString?: string;
 }) => {
-    const dateRanges = _parseDateRangesString(dateRangesString);
     const selectedTransitTypes = NetworkStore.selectedTransitTypes;
     const selectedDate = NetworkStore.selectedDate;
     const link = LinkStore.link;
@@ -53,7 +52,7 @@ const _isNetworkElementHidden = ({
         return true;
     }
 
-    if (!dateRanges) {
+    if (!dateRangesString || dateRangesString.length === 0) {
         return !NetworkStore.isMapLayerVisible(MapLayer.unusedLink);
     }
     if (type === MapLayer.link && !NetworkStore!.isMapLayerVisible(MapLayer.link)) {
@@ -76,7 +75,7 @@ const _isNetworkElementHidden = ({
     // the element is related to a link that is related to an opened node
     const isLinkRelatedToOpenedNode = node && (node.id === startNodeId || node.id === endNodeId);
 
-    return !_isDateInRanges(selectedDate, dateRanges) || isLinkOpen || isLinkRelatedToOpenedNode;
+    return isLinkOpen || isLinkRelatedToOpenedNode || isNetworkElementOld(dateRangesString);
 };
 
 const isNetworkNodeHidden = ({
@@ -88,7 +87,6 @@ const isNetworkNodeHidden = ({
     transitTypeCodes: string;
     dateRangesString?: string;
 }) => {
-    const dateRanges: Moment.Moment[][] | undefined = _parseDateRangesString(dateRangesString);
     const selectedTransitTypes = toJS(NetworkStore.selectedTransitTypes);
 
     // TODO: implement a better (more efficient) way of hiding node visible in other layers
@@ -117,12 +115,19 @@ const isNetworkNodeHidden = ({
         }
     }
 
+    return isNetworkElementOld(dateRangesString);
+};
+
+const isNetworkElementOld = (dateRanges?: string) => {
     const selectedDate = NetworkStore.selectedDate;
     if (!dateRanges || !selectedDate) {
         return false;
     }
+    const parsedDateRanges: Moment.Moment[][] | undefined = dateRanges
+        .split(',')
+        .map((dr: string) => dr.split('/').map((date) => Moment(date)));
 
-    return !selectedDate || !_isDateInRanges(selectedDate, dateRanges);
+    return !selectedDate || !_isDateInRanges(selectedDate, parsedDateRanges);
 };
 
 const isNodeOpenInNodeView = (nodeId: string) => {
@@ -161,15 +166,8 @@ const isNodeOpenInNeighborLinkLayer = (nodeId: string) => {
     );
 };
 
-const _parseDateRangesString = (dateRangesString?: string) => {
-    if (!dateRangesString) return undefined;
-    return dateRangesString
-        .split(',')
-        .map((dr: string) => dr.split('/').map((date) => Moment(date)));
-};
-
 const _isDateInRanges = (selectedDate: Moment.Moment, dateRanges: Moment.Moment[][]): Boolean => {
     return dateRanges.some((dr) => selectedDate.isBetween(dr[0], dr[1], 'day', '[]'));
 };
 
-export { isNetworkLinkHidden, isNetworkNodeHidden, isNetworkLinkPointHidden };
+export { isNetworkLinkHidden, isNetworkNodeHidden, isNetworkLinkPointHidden, isNetworkElementOld };

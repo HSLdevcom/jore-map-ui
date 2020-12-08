@@ -9,9 +9,11 @@ import { ILink, INode } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
+import { NetworkStore } from '~/stores/networkStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';
+import { isNetworkElementOld } from '~/utils/networkUtils';
 import { LeafletContext } from '../../Map';
 import Marker from '../markers/Marker';
 import NodeMarker from '../markers/NodeMarker';
@@ -20,6 +22,8 @@ import DashedLine from '../utils/DashedLine';
 import * as s from './editLinkLayer.scss';
 
 const START_MARKER_COLOR = '#00df0b';
+const OLD_LINK_COLOR = '#8c8c8c';
+const ACTIVE_LINK_COLOR = '#000';
 
 interface IEditLinkLayerProps {
     linkStore?: LinkStore;
@@ -27,12 +31,15 @@ interface IEditLinkLayerProps {
     leaflet: LeafletContext;
     loginStore?: LoginStore;
     toolbarStore?: ToolbarStore;
+    networkStore?: NetworkStore;
 }
+
 const EditLinkLayer = inject(
     'linkStore',
     'mapStore',
     'loginStore',
-    'toolbarStore'
+    'toolbarStore',
+    'networkStore'
 )(
     observer((props: IEditLinkLayerProps) => {
         const [editableLinks, setEditableLinks] = useState<L.Polyline[]>([]);
@@ -43,7 +50,7 @@ const EditLinkLayer = inject(
                 editableLink.remove();
             });
             drawEditableLink();
-        }, [props.linkStore!.link?.geometry]);
+        }, [props.linkStore!.link?.geometry, props.networkStore!.selectedDate]);
 
         const updateLinkGeometry = useCallback(() => {
             const latLngs = editableLinks[0].getLatLngs()[0] as L.LatLng[];
@@ -94,9 +101,10 @@ const EditLinkLayer = inject(
         const drawLinkToMap = (link: ILink, isEditable: boolean) => {
             const map = props.leaflet.map;
             if (map) {
+                const isLinkOld = isNetworkElementOld(link.dateRanges);
                 const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
                     interactive: false,
-                    color: '#000',
+                    color: isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR,
                 }).addTo(map);
 
                 if (isEditable) {
@@ -123,9 +131,10 @@ const EditLinkLayer = inject(
                 return null;
             }
             const link = props.linkStore!.link;
+            const isLinkOld = isNetworkElementOld(link.dateRanges);
             return (
                 <ArrowDecorator
-                    color='#000'
+                    color={isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR}
                     geometry={link!.geometry}
                     hideOnEventName='editable:vertex:drag'
                     showOnEventName='editable:vertex:dragend'
