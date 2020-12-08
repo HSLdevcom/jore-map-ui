@@ -53,6 +53,12 @@ interface IRoutePathListNodeProps {
     codeListStore?: CodeListStore;
 }
 
+const ROUTE_PATH_TOOLS = [
+    ToolbarToolType.ExtendRoutePath,
+    ToolbarToolType.RemoveRoutePathLink,
+    ToolbarToolType.CopyRoutePathSegment,
+];
+
 const RoutePathListNode = inject(
     'routePathStore',
     'routePathLayerStore',
@@ -80,7 +86,9 @@ const RoutePathListNode = inject(
                     >
                         <div
                             className={s.headerContent}
-                            onClick={toggleExtendedListItemId}
+                            onClick={onClickNodeItem}
+                            onMouseEnter={onMouseEnterNodeItem}
+                            onMouseLeave={onMouseLeaveNodeItem}
                             data-cy='itemHeader'
                         >
                             <div className={s.headerContainer} title={subTopic}>
@@ -120,7 +128,7 @@ const RoutePathListNode = inject(
                                     : ''}
                             </div>
                         </div>
-                        <div className={s.itemToggle}>
+                        <div className={s.itemToggle} onClick={toggleExtendedListItemId}>
                             {isExtended && <FaAngleDown />}
                             {!isExtended && <FaAngleRight />}
                         </div>
@@ -134,6 +142,24 @@ const RoutePathListNode = inject(
                     props.node.type === NodeType.STOP &&
                     props.selectedRoutePathLinkIndex > -1
                 );
+            };
+
+            const onClickNodeItem = (event: React.MouseEvent) => {
+                const selectedTool = props.toolbarStore!.selectedTool;
+                // Action depends on whether a routePathTool is selected or not
+                if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
+                    onClickNodeIcon();
+                } else {
+                    toggleExtendedListItemId(event);
+                }
+            };
+
+            const onClickNodeIcon = () => {
+                const clickParams: IRoutePathNodeClickParams = {
+                    node: props.node,
+                    linkOrderNumber: props.routePathLink.orderNumber,
+                };
+                EventListener.trigger('routePathNodeClick', clickParams);
             };
 
             const toggleExtendedListItemId = (event: React.MouseEvent) => {
@@ -434,22 +460,14 @@ const RoutePathListNode = inject(
                 return shadowClass;
             };
 
-            const onMouseEnterNodeIcon = () => {
+            const onMouseEnterNodeItem = () => {
                 props.routePathLayerStore!.setHoveredItemId(props.node.internalId);
             };
 
-            const onMouseLeaveNodeIcon = () => {
+            const onMouseLeaveNodeItem = () => {
                 if (props.isHovered) {
                     props.routePathLayerStore!.setHoveredItemId(null);
                 }
-            };
-
-            const onClickNodeIcon = () => {
-                const clickParams: IRoutePathNodeClickParams = {
-                    node: props.node,
-                    linkOrderNumber: props.routePathLink.orderNumber,
-                };
-                EventListener.trigger('routePathNodeClick', clickParams);
             };
 
             const { node, routePathLink, isFirstNode, isLastNode } = props;
@@ -476,9 +494,9 @@ const RoutePathListNode = inject(
                 >
                     <div
                         className={s.listIconWrapper}
-                        onMouseEnter={onMouseEnterNodeIcon}
-                        onMouseLeave={onMouseLeaveNodeIcon}
-                        onClick={onClickNodeIcon}
+                        onMouseEnter={onMouseEnterNodeItem}
+                        onMouseLeave={onMouseLeaveNodeItem}
+                        onClick={onClickNodeItem}
                     >
                         <div className={s.borderContainer}>
                             <div

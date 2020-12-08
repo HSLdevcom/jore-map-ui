@@ -6,6 +6,7 @@ import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
@@ -14,6 +15,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import TextContainer from '../../../controls/TextContainer';
 import * as s from './routePathListItem.scss';
 
@@ -25,13 +27,21 @@ interface IRoutePathListLinkProps {
     routePathLayerStore?: RoutePathLayerStore;
     codeListStore?: CodeListStore;
     mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
 }
+
+const ROUTE_PATH_TOOLS = [
+    ToolbarToolType.ExtendRoutePath,
+    ToolbarToolType.RemoveRoutePathLink,
+    ToolbarToolType.CopyRoutePathSegment,
+];
 
 const RoutePathListLink = inject(
     'routePathStore',
     'routePathLayerStore',
     'codeListStore',
-    'mapStore'
+    'mapStore',
+    'toolbarStore'
 )(
     observer(
         React.forwardRef((props: IRoutePathListLinkProps, ref: React.RefObject<HTMLDivElement>) => {
@@ -40,20 +50,39 @@ const RoutePathListLink = inject(
                 const orderNumber = props.routePathLink.orderNumber;
                 const isExtended = props.routePathLayerStore!.extendedListItemId === id;
                 return (
-                    <div
-                        className={s.itemHeader}
-                        onClick={toggleExtendedListItemId}
-                        data-cy='itemHeader'
-                    >
-                        <div className={s.headerContent}>
+                    <div className={s.itemHeader}>
+                        <div
+                            className={s.headerContent}
+                            onClick={onClickNodeItem}
+                            onMouseEnter={onMouseEnterLinkItem}
+                            onMouseLeave={onMouseLeaveLinkItem}
+                            data-cy='itemHeader'
+                        >
                             <div className={s.headerContainer}>Reitinlinkki {orderNumber}</div>
                         </div>
-                        <div className={s.itemToggle}>
+                        <div className={s.itemToggle} onClick={toggleExtendedListItemId}>
                             {isExtended && <FaAngleDown />}
                             {!isExtended && <FaAngleRight />}
                         </div>
                     </div>
                 );
+            };
+
+            const onClickNodeItem = () => {
+                const selectedTool = props.toolbarStore!.selectedTool;
+                // Action depends on whether a routePathTool is selected or not
+                if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
+                    onClickLinkIcon();
+                } else {
+                    toggleExtendedListItemId();
+                }
+            };
+
+            const onClickLinkIcon = () => {
+                const clickParams: IRoutePathLinkClickParams = {
+                    routePathLinkId: props.routePathLink.id,
+                };
+                EventListener.trigger('routePathLinkClick', clickParams);
             };
 
             const toggleExtendedListItemId = () => {
@@ -128,21 +157,14 @@ const RoutePathListLink = inject(
                 );
             };
 
-            const onMouseEnterLinkIcon = () => {
+            const onMouseEnterLinkItem = () => {
                 props.routePathLayerStore!.setHoveredItemId(props.routePathLink.id);
             };
 
-            const onMouseLeaveLinkIcon = () => {
+            const onMouseLeaveLinkItem = () => {
                 if (props.isHovered) {
                     props.routePathLayerStore!.setHoveredItemId(null);
                 }
-            };
-
-            const onClickLinkIcon = () => {
-                const clickParams: IRoutePathLinkClickParams = {
-                    routePathLinkId: props.routePathLink.id,
-                };
-                EventListener.trigger('routePathLinkClick', clickParams);
             };
 
             const isExtended = props.isExtended;
@@ -151,9 +173,9 @@ const RoutePathListLink = inject(
                 <div ref={ref} className={classnames(s.routePathListItem)}>
                     <div
                         className={s.listIconWrapper}
-                        onMouseEnter={onMouseEnterLinkIcon}
-                        onMouseLeave={onMouseLeaveLinkIcon}
-                        onClick={onClickLinkIcon}
+                        onMouseEnter={onMouseEnterLinkItem}
+                        onMouseLeave={onMouseLeaveLinkItem}
+                        onClick={onClickNodeItem}
                     >
                         <div
                             className={classnames(
