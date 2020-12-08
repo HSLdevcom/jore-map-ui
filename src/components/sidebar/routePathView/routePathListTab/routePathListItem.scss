@@ -2,6 +2,8 @@
 @import '../../../shared/styles/common';
 @import '../../../shared/styles/form';
 
+$borderContainerWidth: 16px;
+
 .timeAlignmentIcon {
     background: url('~/icons/time.svg');
     background-color: white;
@@ -135,14 +137,14 @@
     .listIconWrapper {
         display: flex;
         flex-direction: column;
-        width: 30px;
-        padding-left: 5px;
-        padding-right: 5px;
+        padding-left: 8px;
+        padding-right: 8px;
         cursor: pointer;
 
         .borderContainer {
             display: flex;
             height: 100%;
+            width: $borderContainerWidth;
 
             .borderLeft {
                 border-right: 4px solid rgba(0, 0, 0, 0.7); // border width & color
@@ -159,22 +161,19 @@
         .listIcon {
             display: flex;
             justify-content: center;
+            width: $borderContainerWidth;
         }
     }
     .hoveredIcon {
-        margin-left: 8px;
-        margin-right: 8px;
         border-radius: 5px;
     }
     .hoveredIconHighlight {
         @extend .hoveredIcon;
         background-color: rgba(223, 211, 0, 0.7);
-        box-shadow: -1px 0px 2px 0px #dfd300; // -1 to center highlight
     }
     .extendedIconHighlight {
         @extend .hoveredIcon;
         background-color: rgba(0, 122, 201, 0.7);
-        box-shadow: -1px 0px 2px 0px $busBlue; // -1 to center highlight
     }
 }
 
