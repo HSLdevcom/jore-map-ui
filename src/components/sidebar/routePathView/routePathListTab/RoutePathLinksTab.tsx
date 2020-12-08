@@ -128,28 +128,28 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
               routePathLayerStore.highlightedNeighborLinkId
             : false;
         return (
-            <div key={key} ref={this.listObjectReferences[node.internalId]}>
-                <RoutePathListNode
-                    node={node}
-                    routePathLink={routePathLink}
-                    isEditingDisabled={this.props.isEditingDisabled}
-                    isFirstNode={isFirstNode}
-                    isLastNode={isLastNode}
-                    isHighlightedByTool={routePathLayerStore.toolHighlightedNodeIds.includes(
-                        node.internalId
-                    )}
-                    isExtended={routePathLayerStore.extendedListItemId === node.internalId}
-                    isHovered={routePathLayerStore.hoveredItemId === node.internalId}
-                    isStartNodeUsingBookSchedule={isStartNodeUsingBookSchedule}
-                    startNodeBookScheduleColumnNumber={startNodeBookScheduleColumnNumber}
-                    selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
-                        routePathLink
-                    )}
-                    isNeighborLinkHighlighted={isNeighborLinkHighlighted}
-                    upperGapClosingNeighborLink={upperGapClosingNeighborLink}
-                    bottomGapClosingNeighborLink={bottomGapClosingNeighborLink}
-                />
-            </div>
+            <RoutePathListNode
+                key={key}
+                ref={this.listObjectReferences[node.internalId]}
+                node={node}
+                routePathLink={routePathLink}
+                isEditingDisabled={this.props.isEditingDisabled}
+                isFirstNode={isFirstNode}
+                isLastNode={isLastNode}
+                isHighlightedByTool={routePathLayerStore.toolHighlightedNodeIds.includes(
+                    node.internalId
+                )}
+                isExtended={routePathLayerStore.extendedListItemId === node.internalId}
+                isHovered={routePathLayerStore.hoveredItemId === node.internalId}
+                isStartNodeUsingBookSchedule={isStartNodeUsingBookSchedule}
+                startNodeBookScheduleColumnNumber={startNodeBookScheduleColumnNumber}
+                selectedRoutePathLinkIndex={routePathLinkMassEditStore!.getSelectedRoutePathLinkIndex(
+                    routePathLink
+                )}
+                isNeighborLinkHighlighted={isNeighborLinkHighlighted}
+                upperGapClosingNeighborLink={upperGapClosingNeighborLink}
+                bottomGapClosingNeighborLink={bottomGapClosingNeighborLink}
+            />
         );
     };
 
@@ -165,13 +165,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         if (!areLinksVisible) return null;
         const routePathLayerStore = this.props.routePathLayerStore!;
         return (
-            <div key={key} ref={this.listObjectReferences[routePathLink.id]}>
-                <RoutePathListLink
-                    routePathLink={routePathLink}
-                    isExtended={routePathLayerStore.extendedListItemId === routePathLink.id}
-                    isHovered={routePathLayerStore.hoveredItemId === routePathLink.id}
-                />
-            </div>
+            <RoutePathListLink
+                key={key}
+                ref={this.listObjectReferences[routePathLink.id]}
+                routePathLink={routePathLink}
+                isExtended={routePathLayerStore.extendedListItemId === routePathLink.id}
+                isHovered={routePathLayerStore.hoveredItemId === routePathLink.id}
+            />
         );
     };
 
