@@ -1,6 +1,7 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/common';
 @import '../../../shared/styles/form';
+@import './routePathLinksTab.scss';
 
 $borderContainerWidth: 16px;
 
@@ -27,7 +28,6 @@ $borderContainerWidth: 16px;
         display: flex;
         flex-direction: column;
         width: 100%;
-        border-bottom: 1px solid #e0dddd;
 
         .itemHeader {
             display: flex;
@@ -57,52 +57,49 @@ $borderContainerWidth: 16px;
                     overflow: hidden;
                     cursor: pointer;
                     font-size: 0.9em;
-                    width: 117px;
+                    width: 100px;
                     font-size: $smallFontSize;
                 }
                 .hastusId {
-                    width: 50px;
+                    width: $hastusIdColumnWidth;
                 }
                 .longId {
-                    width: 60px;
+                    width: $longIdColumnWidth;
                 }
                 .shortId {
-                    width: 45px;
+                    width: $shortIdColumnWidth;
                 }
                 .viaWrapper {
                     padding: 0px 5px 0px 5px;
                     display: block;
-                    width: 100px;
+                    width: $viaColumnWidth;
                     text-overflow: ellipsis;
                     overflow: hidden;
                     .via {
                         padding: 0px;
                         display: block;
-                        width: 100px;
+                        width: $viaColumnWidth;
                         text-overflow: ellipsis;
                         overflow: hidden;
                     }
                 }
                 .viaShield {
                     display: block;
-                    width: 100px;
+                    width: $viaColumnWidth;
                     text-overflow: ellipsis;
                     overflow: hidden;
                 }
-
-                .itemToggle {
-                    font-size: 16px;
-                    transition: 0.5s;
-                    padding: 0px;
-                    text-align: end;
-                    align-self: center;
-                    color: $mediumGrey;
-
-                    :hover {
-                        color: darken($mediumGrey, 10);
-                        transition: 0.5s;
-                    }
-                }
+            }
+            .itemToggle {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 30px;
+                height: 30px;
+                color: $darkGrey;
+            }
+            .itemToggle:hover {
+                color: darken($darkGrey, 20);
             }
         }
 
@@ -174,12 +171,6 @@ $borderContainerWidth: 16px;
     .extendedIconHighlight {
         @extend .hoveredIcon;
         background-color: rgba(0, 122, 201, 0.7);
-    }
-}
-
-.routePathListItem:last-of-type {
-    .contentWrapper {
-        border-bottom: none;
     }
 }
 
