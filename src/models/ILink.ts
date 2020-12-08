@@ -26,6 +26,7 @@ interface ILink extends ILinkPrimaryKey {
     length: number;
     speed: number;
     measuredLength?: number;
+    dateRanges: string;
     modifiedBy?: string;
     modifiedOn?: Date;
 }

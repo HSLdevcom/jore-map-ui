@@ -757,6 +757,7 @@ const linkQueryFields = `
     speed
     lnkkuka
     lnkviimpvm
+    dateRanges
     solmuByLnkalkusolmu {
         ${nodeQueryFields}
     }

@@ -12,14 +12,19 @@ import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
+import { NetworkStore } from '~/stores/networkStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
+import { isNetworkElementOld } from '~/utils/networkUtils';
 import { LeafletContext } from '../../Map';
 import NodeMarker from '../markers/NodeMarker';
 import ArrowDecorator from '../utils/ArrowDecorator';
 import DashedLine from '../utils/DashedLine';
+
+const OLD_LINK_COLOR = '#8c8c8c';
+const ACTIVE_LINK_COLOR = '#000';
 
 interface IEditNodeLayerProps {
     leaflet: LeafletContext;
@@ -27,13 +32,15 @@ interface IEditNodeLayerProps {
     mapStore?: MapStore;
     loginStore?: LoginStore;
     toolbarStore?: ToolbarStore;
+    networkStore?: NetworkStore;
 }
 
 const EditNodeLayer = inject(
     'mapStore',
     'nodeStore',
     'loginStore',
-    'toolbarStore'
+    'toolbarStore',
+    'networkStore'
 )(
     observer((props: IEditNodeLayerProps) => {
         const [editableLinks, setEditableLinks] = useState<L.Polyline[]>([]);
@@ -44,7 +51,7 @@ const EditNodeLayer = inject(
                 editableLink.remove();
             });
             drawEditableLinks();
-        }, [props.nodeStore!.links]);
+        }, [props.nodeStore!.links, props.networkStore!.selectedDate]);
 
         const updateLinkGeometry = useCallback(
             (leafletId: number) => {
@@ -186,9 +193,10 @@ const EditNodeLayer = inject(
         const drawEditableLink = (link: ILink) => {
             const map = props.leaflet.map;
             if (map) {
+                const isLinkOld = isNetworkElementOld(link.dateRanges);
                 const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
                     interactive: false,
-                    color: '#000',
+                    color: isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR,
                 }).addTo(map);
 
                 if (props.loginStore!.hasWriteAccess) {
@@ -216,15 +224,18 @@ const EditNodeLayer = inject(
                 return null;
             }
 
-            return props.nodeStore!.links.map((link, index) => (
-                <ArrowDecorator
-                    key={index}
-                    color='#000'
-                    geometry={link!.geometry}
-                    hideOnEventName='editable:vertex:drag'
-                    showOnEventName='editable:vertex:dragend'
-                />
-            ));
+            return props.nodeStore!.links.map((link, index) => {
+                const isLinkOld = isNetworkElementOld(link.dateRanges);
+                return (
+                    <ArrowDecorator
+                        key={index}
+                        color={isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR}
+                        geometry={link!.geometry}
+                        hideOnEventName='editable:vertex:drag'
+                        showOnEventName='editable:vertex:dragend'
+                    />
+                );
+            });
         };
 
         const renderDashedLine = (link: ILink, index: number) => {
