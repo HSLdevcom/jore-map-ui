@@ -21,12 +21,14 @@ class RemoveRoutePathLinkTool implements BaseTool {
     public activate = () => {
         RoutePathStore.setIsEditingDisabled(false);
         EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
+        EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         this.setToolPhase('selectRoutePathLinkToRemove');
     };
 
     public deactivate = () => {
         this.setToolPhase(null);
         EventListener.off('routePathLinkClick', this.onRoutePathLinkClick);
+        EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
     };
 
     public getToolPhase = () => {
@@ -40,6 +42,10 @@ class RemoveRoutePathLinkTool implements BaseTool {
     private onRoutePathLinkClick = (clickEvent: CustomEvent) => {
         const params: IRoutePathLinkClickParams = clickEvent.detail;
         RoutePathStore.removeLink(params.routePathLinkId);
+    };
+
+    private onRoutePathNodeClick = () => {
+        ToolbarStore.setShouldBlinkToolHelp(true);
     };
 }
 
