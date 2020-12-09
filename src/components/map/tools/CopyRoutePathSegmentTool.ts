@@ -47,6 +47,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         NetworkStore.showMapLayer(MapLayer.link);
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
         EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
+        EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
         RoutePathStore.setIsEditingDisabled(false);
         this.refreshToolPhaseListener = reaction(
             () => [
@@ -62,6 +63,7 @@ class CopyRoutePathSegmentTool implements BaseTool {
         this.setToolPhase(null);
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
+        EventListener.off('routePathLinkClick', this.onRoutePathLinkClick);
         RoutePathCopySegmentStore.clear();
         this.refreshToolPhaseListener();
     };
@@ -114,7 +116,13 @@ class CopyRoutePathSegmentTool implements BaseTool {
                 coordinates: node.coordinates,
             };
             this.setSegmentPoint(segmentPoint);
+        } else {
+            ToolbarStore.setShouldBlinkToolHelp(true);
         }
+    };
+
+    private onRoutePathLinkClick = () => {
+        ToolbarStore.setShouldBlinkToolHelp(true);
     };
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {

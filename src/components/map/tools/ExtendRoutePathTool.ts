@@ -51,6 +51,7 @@ class ExtendRoutePathTool implements BaseTool {
         EventListener.on('networkNodeClick', this.onNetworkNodeClick);
         EventListener.on('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.on('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
+        EventListener.on('routePathLinkClick', this.onRoutePathLinkClick);
         RoutePathStore.setIsEditingDisabled(false);
         EventListener.on('escape', this.onEscapePress);
         this.refreshToolPhaseListener = reaction(
@@ -70,6 +71,7 @@ class ExtendRoutePathTool implements BaseTool {
         EventListener.off('networkNodeClick', this.onNetworkNodeClick);
         EventListener.off('routePathNodeClick', this.onRoutePathNodeClick);
         EventListener.off('editRoutePathNeighborLinkClick', this.onEditRoutePathNeighborLinkClick);
+        EventListener.off('routePathLinkClick', this.onRoutePathLinkClick);
         EventListener.off('escape', this.onEscapePress);
         this.refreshToolPhaseListener();
     };
@@ -125,9 +127,12 @@ class ExtendRoutePathTool implements BaseTool {
                 isFirstNodeClick: false,
             });
         } else {
-            const clickParams: INodeClickParams = { nodeId };
-            EventListener.trigger('nodeClick', clickParams);
+            ToolbarStore.setShouldBlinkToolHelp(true);
         }
+    };
+
+    private onRoutePathLinkClick = () => {
+        ToolbarStore.setShouldBlinkToolHelp(true);
     };
 
     private onNetworkNodeClick = async (clickEvent: CustomEvent) => {
