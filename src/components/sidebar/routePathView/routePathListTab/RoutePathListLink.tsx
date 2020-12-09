@@ -72,17 +72,13 @@ const RoutePathListLink = inject(
                 const selectedTool = props.toolbarStore!.selectedTool;
                 // Action depends on whether a routePathTool is selected or not
                 if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
-                    onClickLinkIcon();
+                    const clickParams: IRoutePathLinkClickParams = {
+                        routePathLinkId: props.routePathLink.id,
+                    };
+                    EventListener.trigger('routePathLinkClick', clickParams);
                 } else {
                     toggleExtendedListItemId();
                 }
-            };
-
-            const onClickLinkIcon = () => {
-                const clickParams: IRoutePathLinkClickParams = {
-                    routePathLinkId: props.routePathLink.id,
-                };
-                EventListener.trigger('routePathLinkClick', clickParams);
             };
 
             const toggleExtendedListItemId = () => {

@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
@@ -32,11 +33,21 @@ const renderToolbarHelpContent = (
     phaseTopic?: string,
     phaseHelpText?: string
 ) => {
+    const shouldBlinkToolHelp = ToolbarStore.shouldBlinkToolHelp;
     return (
         <div>
             <div className={s.toolbarHelpHeader}>{toolHelpHeader}</div>
             {phaseTopic && <div className={s.phaseTopic}>{phaseTopic}</div>}
-            {phaseHelpText && <div className={s.phaseHelpText}>{phaseHelpText}</div>}
+            {phaseHelpText && (
+                <div
+                    className={classnames(
+                        s.phaseHelpText,
+                        shouldBlinkToolHelp ? s.blink : undefined
+                    )}
+                >
+                    {phaseHelpText}
+                </div>
+            )}
         </div>
     );
 };

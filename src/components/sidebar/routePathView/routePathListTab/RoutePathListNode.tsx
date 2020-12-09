@@ -148,18 +148,14 @@ const RoutePathListNode = inject(
                 const selectedTool = props.toolbarStore!.selectedTool;
                 // Action depends on whether a routePathTool is selected or not
                 if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
-                    onClickNodeIcon();
+                    const clickParams: IRoutePathNodeClickParams = {
+                        node: props.node,
+                        linkOrderNumber: props.routePathLink.orderNumber,
+                    };
+                    EventListener.trigger('routePathNodeClick', clickParams);
                 } else {
                     toggleExtendedListItemId(event);
                 }
-            };
-
-            const onClickNodeIcon = () => {
-                const clickParams: IRoutePathNodeClickParams = {
-                    node: props.node,
-                    linkOrderNumber: props.routePathLink.orderNumber,
-                };
-                EventListener.trigger('routePathNodeClick', clickParams);
             };
 
             const toggleExtendedListItemId = (event: React.MouseEvent) => {

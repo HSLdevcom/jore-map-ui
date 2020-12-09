@@ -40,6 +40,7 @@ class ToolbarStore {
     @observable private _disabledTools: ToolbarToolType[];
     @observable private _shouldShowEntityOpenPrompt: boolean;
     @observable private _areUndoButtonsDisabled: boolean;
+    @observable private _shouldBlinkToolHelp: boolean;
 
     constructor() {
         this._disabledTools = DEFAULT_DISABLED_TOOLS;
@@ -65,6 +66,11 @@ class ToolbarStore {
     @computed
     get areUndoButtonsDisabled(): boolean {
         return this._areUndoButtonsDisabled;
+    }
+
+    @computed
+    get shouldBlinkToolHelp(): boolean {
+        return this._shouldBlinkToolHelp;
     }
 
     @computed
@@ -117,6 +123,16 @@ class ToolbarStore {
     @action
     public setUndoButtonsDisabled = (areDisabled: boolean) => {
         this._areUndoButtonsDisabled = areDisabled;
+    };
+
+    @action
+    public setShouldBlinkToolHelp = (shouldBlinkToolHelp: boolean) => {
+        this._shouldBlinkToolHelp = shouldBlinkToolHelp;
+        if (shouldBlinkToolHelp) {
+            window.setTimeout(() => {
+                this.setShouldBlinkToolHelp(false);
+            }, 750);
+        }
     };
 
     @action
