@@ -118,14 +118,35 @@ const getRoutePathLinkQuery = () => {
         }`;
 };
 
-const getRoutePathSegmentQuery = () => {
+const getRoutePathLinksFromRoutePathSegment = () => {
     return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String, $routeId: String) {
-            links_with_route_path_info: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType, routeid: $routeId) {
+            get_route_path_links_from_route_path_segment: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType, routeid: $routeId) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
             }
         }`;
+};
+
+const getRoutesUsingRoutePathSegment = () => {
+    return gql`
+        query getRoutesUsingRoutePathSegment(
+            $startNodeId: String
+            $endNodeId: String
+            $transitType: String
+        ) {
+            get_routes_using_route_path_segment: getRoutesUsingRoutePathSegment(
+                startnodeid: $startNodeId
+                endnodeid: $endNodeId
+                transittype: $transitType
+            ) {
+                nodes {
+                    lintunnus
+                    reitunnus
+                }
+            }
+        }
+    `;
 };
 
 const getRoutePathsUsingLinkQuery = () => {
@@ -647,14 +668,6 @@ const nodeSearchQueryFields = `
     }
 `;
 
-const startNodeQueryFields = `
-    ${nodeQueryFields}
-`;
-
-const endNodeQueryFields = `
-    ${nodeQueryFields}
-`;
-
 const routePathLinkQueryFields = `
     relid
     lnkalkusolmu
@@ -676,10 +689,10 @@ const routePathLinkQueryFields = `
         geojson
     }
     solmuByLnkalkusolmu {
-        ${startNodeQueryFields}
+        ${nodeQueryFields}
     }
     solmuByLnkloppusolmu {
-        ${endNodeQueryFields}
+        ${nodeQueryFields}
     }
 `;
 
@@ -744,11 +757,12 @@ const linkQueryFields = `
     speed
     lnkkuka
     lnkviimpvm
+    dateRanges
     solmuByLnkalkusolmu {
-        ${startNodeQueryFields}
+        ${nodeQueryFields}
     }
     solmuByLnkloppusolmu {
-        ${endNodeQueryFields}
+        ${nodeQueryFields}
     }
 `;
 
@@ -757,10 +771,10 @@ linkkisByLnkalkusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
                     ${routeForRoutePathQuery}
@@ -776,7 +790,7 @@ linkkisByLnkloppusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
                 nodes {
                     ${routeForRoutePathQuery}
@@ -785,7 +799,7 @@ linkkisByLnkloppusolmu {
             }
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
         }
     }
 }`;
@@ -795,10 +809,10 @@ linkkisByLnkalkusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
         }
     }
 }`;
@@ -808,10 +822,10 @@ linkkisByLnkloppusolmu {
     nodes {
         ${linkQueryFields}
         solmuByLnkalkusolmu {
-            ${startNodeQueryFields}
+            ${nodeQueryFields}
         }
         solmuByLnkloppusolmu {
-            ${endNodeQueryFields}
+            ${nodeQueryFields}
         }
     }
 }`;
@@ -828,7 +842,8 @@ export default {
     getFirstStopNameOfRoutePath,
     getLastStopNameOfRoutePath,
     getRoutePathLinkQuery,
-    getRoutePathSegmentQuery,
+    getRoutePathLinksFromRoutePathSegment,
+    getRoutesUsingRoutePathSegment,
     getRoutePathsUsingLinkQuery,
     getRoutePathsUsingNodeQuery,
     getLinksByStartNodeQuery,

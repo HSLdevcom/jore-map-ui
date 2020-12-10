@@ -6,6 +6,7 @@ import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
 import ButtonType from '~/enums/buttonType';
+import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { IRoutePathLinkClickParams } from '~/helpers/EventListener';
 import IRoutePathLink from '~/models/IRoutePathLink';
 import routeBuilder from '~/routing/routeBuilder';
@@ -14,6 +15,7 @@ import { CodeListStore } from '~/stores/codeListStore';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { ToolbarStore } from '~/stores/toolbarStore';
 import TextContainer from '../../../controls/TextContainer';
 import * as s from './routePathListItem.scss';
 
@@ -25,153 +27,175 @@ interface IRoutePathListLinkProps {
     routePathLayerStore?: RoutePathLayerStore;
     codeListStore?: CodeListStore;
     mapStore?: MapStore;
+    toolbarStore?: ToolbarStore;
 }
 
-@inject('routePathStore', 'routePathLayerStore', 'codeListStore', 'mapStore')
-@observer
-class RoutePathListLink extends React.Component<IRoutePathListLinkProps> {
-    private renderHeader = () => {
-        const id = this.props.routePathLink.id;
-        const orderNumber = this.props.routePathLink.orderNumber;
-        const isExtended = this.props.routePathLayerStore!.extendedListItemId === id;
-        return (
-            <div
-                className={s.itemHeader}
-                onClick={this.toggleExtendedListItemId}
-                data-cy='itemHeader'
-            >
-                <div className={classnames(s.headerSubtopicContainer, s.smallFontSize)}>
-                    Reitinlinkki {orderNumber}
-                </div>
-                <div className={s.headerContent}>
-                    <div className={s.itemToggle}>
-                        {isExtended && <FaAngleDown />}
-                        {!isExtended && <FaAngleRight />}
+const ROUTE_PATH_TOOLS = [
+    ToolbarToolType.ExtendRoutePath,
+    ToolbarToolType.RemoveRoutePathLink,
+    ToolbarToolType.CopyRoutePathSegment,
+];
+
+const RoutePathListLink = inject(
+    'routePathStore',
+    'routePathLayerStore',
+    'codeListStore',
+    'mapStore',
+    'toolbarStore'
+)(
+    observer(
+        React.forwardRef((props: IRoutePathListLinkProps, ref: React.RefObject<HTMLDivElement>) => {
+            const renderHeader = () => {
+                const id = props.routePathLink.id;
+                const orderNumber = props.routePathLink.orderNumber;
+                const isExtended = props.routePathLayerStore!.extendedListItemId === id;
+                return (
+                    <div className={s.itemHeader}>
+                        <div
+                            className={s.headerContent}
+                            onClick={onClickNodeItem}
+                            onMouseEnter={onMouseEnterLinkItem}
+                            onMouseLeave={onMouseLeaveLinkItem}
+                            data-cy='itemHeader'
+                        >
+                            <div className={s.headerContainer}>Reitinlinkki {orderNumber}</div>
+                        </div>
+                        <div className={s.itemToggle} onClick={toggleExtendedListItemId}>
+                            {isExtended && <FaAngleDown />}
+                            {!isExtended && <FaAngleRight />}
+                        </div>
                     </div>
-                </div>
-            </div>
-        );
-    };
+                );
+            };
 
-    private toggleExtendedListItemId = () => {
-        const currentListItemId = this.props.routePathLink.id;
-        const routePathLayerStore = this.props.routePathLayerStore;
-        if (currentListItemId === routePathLayerStore!.extendedListItemId) {
-            routePathLayerStore!.setExtendedListItemId(null);
-        } else {
-            routePathLayerStore!.setExtendedListItemId(currentListItemId);
-            this.props.mapStore!.setMapBounds(this.getBounds());
-        }
-    };
+            const onClickNodeItem = () => {
+                const selectedTool = props.toolbarStore!.selectedTool;
+                // Action depends on whether a routePathTool is selected or not
+                if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
+                    const clickParams: IRoutePathLinkClickParams = {
+                        routePathLinkId: props.routePathLink.id,
+                    };
+                    EventListener.trigger('routePathLinkClick', clickParams);
+                } else {
+                    toggleExtendedListItemId();
+                }
+            };
 
-    private getBounds = () => {
-        const geometry = this.props.routePathStore!.getLinkGeom(this.props.routePathLink.id);
-        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
-        return bounds;
-    };
+            const toggleExtendedListItemId = () => {
+                const currentListItemId = props.routePathLink.id;
+                const routePathLayerStore = props.routePathLayerStore;
+                if (currentListItemId === routePathLayerStore!.extendedListItemId) {
+                    routePathLayerStore!.setExtendedListItemId(null);
+                } else {
+                    routePathLayerStore!.setExtendedListItemId(currentListItemId);
+                    props.mapStore!.setMapBounds(getBounds());
+                }
+            };
 
-    private renderBody = () => {
-        return (
-            <>
-                {this.renderRoutePathLinkView(this.props.routePathLink)}
-                <div className={s.footer}>
-                    <Button onClick={() => this.openLinkInNewTab()} type={ButtonType.SQUARE}>
-                        Avaa linkki
-                        <FiExternalLink />
-                    </Button>
-                </div>
-            </>
-        );
-    };
+            const getBounds = () => {
+                const geometry = props.routePathStore!.getLinkGeom(props.routePathLink.id);
+                const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+                geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+                return bounds;
+            };
 
-    private openLinkInNewTab = () => {
-        const routeLink = this.props.routePathLink;
-        const linkViewLink = routeBuilder
-            .to(SubSites.link)
-            .toTarget(
-                ':id',
-                [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(',')
-            )
-            .toLink();
-        window.open(linkViewLink, '_blank');
-    };
+            const renderBody = () => {
+                return (
+                    <>
+                        {renderRoutePathLinkView(props.routePathLink)}
+                        <div className={s.footer}>
+                            <Button onClick={() => openLinkInNewTab()} type={ButtonType.SQUARE}>
+                                Avaa linkki
+                                <FiExternalLink />
+                            </Button>
+                        </div>
+                    </>
+                );
+            };
 
-    private renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
-        return (
-            <div>
-                <div className={s.flexRow}>
-                    <TextContainer
-                        label='ALKUSOLMU'
-                        value={rpLink.startNode.id}
-                        isInputLabelDarker={true}
-                    />
-                    <TextContainer
-                        label='LOPPUSOLMU'
-                        value={rpLink.endNode.id}
-                        isInputLabelDarker={true}
-                    />
-                </div>
-                <div className={s.flexRow}>
-                    <TextContainer
-                        label='JÄRJESTYSNUMERO'
-                        value={rpLink.orderNumber.toString()}
-                        isInputLabelDarker={true}
-                    />
-                </div>
-            </div>
-        );
-    };
+            const openLinkInNewTab = () => {
+                const routeLink = props.routePathLink;
+                const linkViewLink = routeBuilder
+                    .to(SubSites.link)
+                    .toTarget(
+                        ':id',
+                        [routeLink.startNode.id, routeLink.endNode.id, routeLink.transitType].join(
+                            ','
+                        )
+                    )
+                    .toLink();
+                window.open(linkViewLink, '_blank');
+            };
 
-    private onMouseEnterLinkIcon = () => {
-        this.props.routePathLayerStore!.setHoveredItemId(this.props.routePathLink.id);
-    };
+            const renderRoutePathLinkView = (rpLink: IRoutePathLink) => {
+                return (
+                    <div>
+                        <div className={s.flexRow}>
+                            <TextContainer
+                                label='ALKUSOLMU'
+                                value={rpLink.startNode.id}
+                                isInputLabelDarker={true}
+                            />
+                            <TextContainer
+                                label='LOPPUSOLMU'
+                                value={rpLink.endNode.id}
+                                isInputLabelDarker={true}
+                            />
+                        </div>
+                        <div className={s.flexRow}>
+                            <TextContainer
+                                label='JÄRJESTYSNUMERO'
+                                value={rpLink.orderNumber.toString()}
+                                isInputLabelDarker={true}
+                            />
+                        </div>
+                    </div>
+                );
+            };
 
-    private onMouseLeaveLinkIcon = () => {
-        if (this.props.isHovered) {
-            this.props.routePathLayerStore!.setHoveredItemId(null);
-        }
-    };
+            const onMouseEnterLinkItem = () => {
+                props.routePathLayerStore!.setHoveredItemId(props.routePathLink.id);
+            };
 
-    private onClickLinkIcon = () => {
-        const clickParams: IRoutePathLinkClickParams = {
-            routePathLinkId: this.props.routePathLink.id,
-        };
-        EventListener.trigger('routePathLinkClick', clickParams);
-    };
-    render() {
-        const isExtended = this.props.isExtended;
-        const isHovered = this.props.isHovered;
-        return (
-            <div className={classnames(s.routePathListItem)}>
-                <div
-                    className={s.listIconWrapper}
-                    onMouseEnter={this.onMouseEnterLinkIcon}
-                    onMouseLeave={this.onMouseLeaveLinkIcon}
-                    onClick={this.onClickLinkIcon}
-                >
+            const onMouseLeaveLinkItem = () => {
+                if (props.isHovered) {
+                    props.routePathLayerStore!.setHoveredItemId(null);
+                }
+            };
+
+            const isExtended = props.isExtended;
+            const isHovered = props.isHovered;
+            return (
+                <div ref={ref} className={classnames(s.routePathListItem)}>
                     <div
-                        className={classnames(
-                            s.borderContainer,
-                            isHovered
-                                ? s.hoveredIconHighlight
-                                : isExtended
-                                ? s.extendedIconHighlight
-                                : undefined
-                        )}
-                        data-cy='rpListLink'
+                        className={s.listIconWrapper}
+                        onMouseEnter={onMouseEnterLinkItem}
+                        onMouseLeave={onMouseLeaveLinkItem}
+                        onClick={onClickNodeItem}
                     >
-                        <div className={s.borderLeft} />
-                        <div />
+                        <div
+                            className={classnames(
+                                s.borderContainer,
+                                isHovered
+                                    ? s.hoveredIconHighlight
+                                    : isExtended
+                                    ? s.extendedIconHighlight
+                                    : undefined
+                            )}
+                            data-cy='rpListLink'
+                        >
+                            <div className={s.borderLeft} />
+                            <div />
+                        </div>
+                    </div>
+                    <div className={s.contentWrapper}>
+                        {renderHeader()}
+                        {isExtended && <div className={s.itemContent}>{renderBody()}</div>}
                     </div>
                 </div>
-                <div className={s.contentWrapper}>
-                    {this.renderHeader()}
-                    {isExtended && <div className={s.itemContent}>{this.renderBody()}</div>}
-                </div>
-            </div>
-        );
-    }
-}
+            );
+        })
+    )
+);
 
 export default RoutePathListLink;

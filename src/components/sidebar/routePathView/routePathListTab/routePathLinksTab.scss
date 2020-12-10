@@ -2,6 +2,11 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
+$hastusIdColumnWidth: 48px;
+$longIdColumnWidth: 56px;
+$shortIdColumnWidth: 48px;
+$viaColumnWidth: 100px;
+
 .routePathLinksTabView  {
     height: 100%;
     flex-direction: column;
@@ -22,19 +27,19 @@
         }
 
         .name {
-            width: 145px;
+            width: 133px; /* routePathListItem.scss .listIconWrapper width + .headerContainer width */
         }
         .hastusId {
-            width: 50px;
+            width: $hastusIdColumnWidth;
         }
         .longId {
-            width: 60px;
+            width: $longIdColumnWidth;
         }
         .shortId {
-            width: 45px;
+            width: $shortIdColumnWidth;
         }
         .via {
-            width: 100px;
+            width: $viaColumnWidth;
         }
     }
 

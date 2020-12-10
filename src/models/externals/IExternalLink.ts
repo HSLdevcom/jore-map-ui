@@ -18,7 +18,7 @@ interface IExternalLink {
     speed?: number;
     lnkkuka?: string;
     lnkviimpvm?: Date;
-    dateRanges?: string;
+    dateRanges: string;
 }
 
 interface IExternalRoutePathSegmentLink {

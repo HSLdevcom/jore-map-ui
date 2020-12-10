@@ -103,13 +103,13 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
     };
 
     private renderResults = () => {
-        const routesUsingLink = this.props.routePathCopySegmentStore!.routesUsingLink;
+        const routesToCopyFrom = this.props.routePathCopySegmentStore!.routesToCopyFrom;
 
         const startNodeId = this.props.routePathCopySegmentStore!.startSegmentPoint!.nodeId;
         const endNodeId = this.props.routePathCopySegmentStore!.endSegmentPoint!.nodeId;
         return (
             <div className={s.routePathList}>
-                {routesUsingLink.length === 0 ? (
+                {routesToCopyFrom.length === 0 ? (
                     <div className={s.messageContainer}>
                         {`Kopioitavia reitinsuunnan segmenttejä ei löytynyt valitulta alku- ja
                         loppusolmun väliltä (${startNodeId} - ${endNodeId}). Kokeile muuttaa kopioitavaa väliä, esimerkiksi asettaa
@@ -117,7 +117,7 @@ class RoutePathCopySegmentView extends React.Component<IRoutePathCopySegmentView
                     </div>
                 ) : (
                     <>
-                        {routesUsingLink.map((routeUsingLink, index) => {
+                        {routesToCopyFrom.map((routeUsingLink, index) => {
                             return (
                                 <RoutePathCopySegmentRow
                                     key={`routeUsingLink-${index}`}
