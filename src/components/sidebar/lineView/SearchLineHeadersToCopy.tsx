@@ -202,6 +202,7 @@ const LineHeaderTable = inject(
                                                                 : undefined
                                                         )}
                                                         key={`lineHeaderRow-${index}`}
+                                                        data-cy='lineHeaderRow'
                                                         onClick={() => toggleSelectedRow({ index })}
                                                     >
                                                         <td className={s.tableCell}>
@@ -223,6 +224,7 @@ const LineHeaderTable = inject(
                                     className={s.copyLineHeadersButton}
                                     disabled={selectedRowIndexes.length === 0}
                                     onClick={copyLineHeaders}
+                                    data-cy='copySelectedLineHeaders'
                                 >
                                     Kopioi valitut linjan otsikot
                                 </Button>
