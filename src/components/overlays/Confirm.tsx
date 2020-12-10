@@ -77,6 +77,7 @@ class Confirm extends React.Component<IConfirmProps> {
                                 type={ButtonType.SQUARE}
                                 onClick={confirmStore!.cancel}
                                 isWide={true}
+                                data-cy='cancelButton'
                             >
                                 {confirmStore!.cancelButtonText}
                             </Button>
