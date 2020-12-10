@@ -24,6 +24,9 @@ describe('NodeView tests - write access user', () => {
 
         cy.getTestElement('mapView').click(300, 300);
 
+        cy.getTestElement('confirmView').should('exist');
+        cy.getTestElement('confirmView').find('[data-cy=cancelButton]').first().click();
+
         cy.getTestElement('nodeView').find('[data-cy=showBus]').click();
 
         _fillStopRequiredFields();
@@ -41,6 +44,9 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('newNodeTool').click();
 
         cy.getTestElement('mapView').click(300, 300);
+
+        cy.getTestElement('confirmView').should('exist');
+        cy.getTestElement('confirmView').find('[data-cy=cancelButton]').first().click();
 
         cy.getTestElement('nodeView').find('[data-cy=showBus]').click();
 
@@ -66,6 +72,9 @@ describe('NodeView tests - write access user', () => {
         cy.getTestElement('newNodeTool').click();
 
         cy.getTestElement('mapView').click(300, 300);
+
+        cy.getTestElement('confirmView').should('exist');
+        cy.getTestElement('confirmView').find('[data-cy=cancelButton]').first().click();
 
         cy.getTestElement('closeAlertButton').click();
 
