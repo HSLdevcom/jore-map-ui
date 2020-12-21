@@ -47,6 +47,7 @@ interface ILinkClickParams {
 interface IRoutePathNodeClickParams {
     node: INode;
     linkOrderNumber: number;
+    isCtrlOrShiftPressed: boolean;
 }
 
 interface IRoutePathLinkClickParams {
