@@ -132,9 +132,8 @@ class App extends React.Component<IAppProps, IAppState> {
         if (this.props.searchResultStore!.allNodes.length > 0) return;
 
         try {
-            await NodeService.fetchAllSearchNodes().then((nodes: any) => {
+            await NodeService.fetchAllSearchNodes({ shouldUseCache: true }).then((nodes: any) => {
                 this.props.searchResultStore!.setAllSearchNodes(nodes);
-                this.props.searchResultStore!.search();
             });
         } catch (e) {
             this.props.errorStore!.addError('Solmujen haku ei onnistunut', e);

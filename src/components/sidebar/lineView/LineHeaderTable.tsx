@@ -267,7 +267,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
             !this.isFormValid() ||
             !activeLineHeaderName;
         return (
-            <div className={s.lineHeaderTableView}>
+            <div className={s.lineHeaderTableView} data-cy='lineHeaderTableView'>
                 <SidebarHeader
                     isEditing={!isEditingDisabled}
                     onEditButtonClick={this.editLineHeaderPrompt}
@@ -324,6 +324,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                             onClick={() =>
                                 this.setIsSearchLineHeadersCopyViewOpen({ isOpen: true })
                             }
+                            data-cy='copyLineHeadersButton'
                         >
                             Kopioi linjan otsikoita
                         </Button>

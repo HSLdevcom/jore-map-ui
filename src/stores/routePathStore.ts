@@ -483,6 +483,7 @@ class RoutePathStore {
 
         /**
          * Last routePathLinkNode's book schedule data is stored at routePath (this is because of routePathLinkNode model is missing in jore)
+         * Note: better would be to add a routePathLinkNode model to jore-map-ui and when saving routePath, extract data from routePathLinkNode model and save it to routePath and routePathLink models
          *
          * Example of adding rp link to the end of rpLink list
          * 1. node <- data stored at routePathLink

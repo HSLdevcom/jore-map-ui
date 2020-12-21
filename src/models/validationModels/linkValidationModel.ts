@@ -11,6 +11,7 @@ const linkValidationModel: ILinkValidationModel = {
     speed: 'required|min:5|max:100|numeric',
     length: `required|min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
     measuredLength: `min:0|max:${constants.INTEGER_MAX_VALUE}|numeric`,
+    dateRanges: '',
     modifiedBy: '',
     modifiedOn: '',
 };
