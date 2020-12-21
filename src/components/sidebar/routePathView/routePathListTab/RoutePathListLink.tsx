@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import * as L from 'leaflet';
 import { inject, observer } from 'mobx-react';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button } from '~/components/controls';
@@ -45,6 +45,14 @@ const RoutePathListLink = inject(
 )(
     observer(
         React.forwardRef((props: IRoutePathListLinkProps, ref: React.RefObject<HTMLDivElement>) => {
+            const isExtendedRef = useRef(props.isExtended);
+            isExtendedRef.current = props.isExtended;
+            useEffect(() => {
+                EventListener.on('routePathLinkClick', onRoutePathLinkClick);
+                return () => {
+                    EventListener.off('routePathLinkClick', onRoutePathLinkClick);
+                };
+            }, []);
             const renderHeader = () => {
                 const id = props.routePathLink.id;
                 const orderNumber = props.routePathLink.orderNumber;
@@ -53,14 +61,14 @@ const RoutePathListLink = inject(
                     <div className={s.itemHeader}>
                         <div
                             className={s.headerContent}
-                            onClick={onClickNodeItem}
+                            onClick={onClickLinkItem}
                             onMouseEnter={onMouseEnterLinkItem}
                             onMouseLeave={onMouseLeaveLinkItem}
                             data-cy='itemHeader'
                         >
                             <div className={s.headerContainer}>Reitinlinkki {orderNumber}</div>
                         </div>
-                        <div className={s.itemToggle} onClick={toggleExtendedListItemId}>
+                        <div className={s.itemToggle} onClick={toggleExtendedListItem}>
                             {isExtended && <FaAngleDown />}
                             {!isExtended && <FaAngleRight />}
                         </div>
@@ -68,23 +76,32 @@ const RoutePathListLink = inject(
                 );
             };
 
-            const onClickNodeItem = () => {
+            const onClickLinkItem = () => {
+                const clickParams: IRoutePathLinkClickParams = {
+                    routePathLinkId: props.routePathLink.id,
+                };
+                EventListener.trigger('routePathLinkClick', clickParams);
+            };
+
+            const onRoutePathLinkClick = (clickEvent: CustomEvent) => {
                 const selectedTool = props.toolbarStore!.selectedTool;
                 // Action depends on whether a routePathTool is selected or not
                 if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
-                    const clickParams: IRoutePathLinkClickParams = {
-                        routePathLinkId: props.routePathLink.id,
-                    };
-                    EventListener.trigger('routePathLinkClick', clickParams);
-                } else {
-                    toggleExtendedListItemId();
+                    return;
                 }
+                const clickParams: IRoutePathLinkClickParams = clickEvent.detail;
+                if (clickParams.routePathLinkId !== props.routePathLink.id) {
+                    return;
+                }
+
+                toggleExtendedListItem();
             };
 
-            const toggleExtendedListItemId = () => {
+            const toggleExtendedListItem = () => {
                 const currentListItemId = props.routePathLink.id;
                 const routePathLayerStore = props.routePathLayerStore;
-                if (currentListItemId === routePathLayerStore!.extendedListItemId) {
+                const isExtended = isExtendedRef.current;
+                if (isExtended) {
                     routePathLayerStore!.setExtendedListItemId(null);
                 } else {
                     routePathLayerStore!.setExtendedListItemId(currentListItemId);
@@ -171,7 +188,7 @@ const RoutePathListLink = inject(
                         className={s.listIconWrapper}
                         onMouseEnter={onMouseEnterLinkItem}
                         onMouseLeave={onMouseLeaveLinkItem}
-                        onClick={onClickNodeItem}
+                        onClick={onClickLinkItem}
                     >
                         <div
                             className={classnames(
