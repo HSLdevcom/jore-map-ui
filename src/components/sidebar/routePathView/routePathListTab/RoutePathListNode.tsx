@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import * as L from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
 import { FiExternalLink } from 'react-icons/fi';
 import { Button, Checkbox } from '~/components/controls';
@@ -70,6 +70,15 @@ const RoutePathListNode = inject(
 )(
     observer(
         React.forwardRef((props: IRoutePathListNodeProps, ref: React.RefObject<HTMLDivElement>) => {
+            const isExtendedRef = useRef(props.isExtended);
+            isExtendedRef.current = props.isExtended;
+            useEffect(() => {
+                EventListener.on('routePathNodeClick', onRoutePathNodeClick);
+                return () => {
+                    EventListener.off('routePathNodeClick', onRoutePathNodeClick);
+                };
+            }, []);
+
             const renderHeader = () => {
                 const node = props.node;
                 const routePathLink = props.routePathLink;
@@ -128,7 +137,7 @@ const RoutePathListNode = inject(
                                     : ''}
                             </div>
                         </div>
-                        <div className={s.itemToggle} onClick={toggleExtendedListItemId}>
+                        <div className={s.itemToggle} onClick={toggleExtendedListItem}>
                             {isExtended && <FaAngleDown />}
                             {!isExtended && <FaAngleRight />}
                         </div>
@@ -145,22 +154,28 @@ const RoutePathListNode = inject(
             };
 
             const onClickNodeItem = (event: React.MouseEvent) => {
+                const clickParams: IRoutePathNodeClickParams = {
+                    node: props.node,
+                    linkOrderNumber: props.routePathLink.orderNumber,
+                    isCtrlOrShiftPressed: Boolean(event.ctrlKey) || Boolean(event.shiftKey),
+                };
+                EventListener.trigger('routePathNodeClick', clickParams);
+            };
+
+            // React to routePathClick via event (to support listening click events from the map)
+            const onRoutePathNodeClick = (clickEvent: CustomEvent) => {
                 const selectedTool = props.toolbarStore!.selectedTool;
                 // Action depends on whether a routePathTool is selected or not
                 if (selectedTool && ROUTE_PATH_TOOLS.includes(selectedTool.toolType)) {
-                    const clickParams: IRoutePathNodeClickParams = {
-                        node: props.node,
-                        linkOrderNumber: props.routePathLink.orderNumber,
-                    };
-                    EventListener.trigger('routePathNodeClick', clickParams);
-                } else {
-                    toggleExtendedListItemId(event);
+                    return;
                 }
-            };
+                const clickParams: IRoutePathNodeClickParams = clickEvent.detail;
 
-            const toggleExtendedListItemId = (event: React.MouseEvent) => {
-                const currentListItemId = props.node.internalId;
-                const isCtrlOrShiftPressed = Boolean(event.ctrlKey) || Boolean(event.shiftKey);
+                if (clickParams.node.internalId !== props.node.internalId) {
+                    return;
+                }
+
+                const isCtrlOrShiftPressed = clickParams.isCtrlOrShiftPressed;
                 // Mass edit routePathLinks toggle
                 if (
                     !props.isLastNode &&
@@ -183,15 +198,21 @@ const RoutePathListNode = inject(
                     );
                     // List item toggle
                 } else {
-                    if (props.isExtended) {
-                        props.routePathLayerStore!.setExtendedListItemId(null);
-                    } else {
-                        props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
-                        const geometry = props.routePathStore!.getLinkGeom(routePathLink.id);
-                        const bounds: L.LatLngBounds = new L.LatLngBounds([]);
-                        geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
-                        props.mapStore!.setMapBounds(bounds);
-                    }
+                    toggleExtendedListItem();
+                }
+            };
+
+            const toggleExtendedListItem = () => {
+                const currentListItemId = props.node.internalId;
+                const isExtended = isExtendedRef.current;
+                if (isExtended) {
+                    props.routePathLayerStore!.setExtendedListItemId(null);
+                } else {
+                    props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
+                    const geometry = props.routePathStore!.getLinkGeom(routePathLink.id);
+                    const bounds: L.LatLngBounds = new L.LatLngBounds([]);
+                    geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+                    props.mapStore!.setMapBounds(bounds);
                 }
             };
 

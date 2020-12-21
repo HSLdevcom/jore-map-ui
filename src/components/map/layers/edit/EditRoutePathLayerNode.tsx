@@ -57,6 +57,7 @@ const EditRoutePathLayerNode = inject()(
             const clickParams: IRoutePathNodeClickParams = {
                 node,
                 linkOrderNumber,
+                isCtrlOrShiftPressed: false,
             };
             EventListener.trigger('routePathNodeClick', clickParams);
         };
