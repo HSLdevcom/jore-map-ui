@@ -16,6 +16,7 @@ import LinkView from './linkView/LinkView';
 import NodeView from './nodeView/NodeView';
 import StopAreaView from './nodeView/stopAreaView/StopAreaView';
 import RouteListView from './routeListView/RouteListView';
+import RoutePathComparisonView from './routePathView/RoutePathComparisonView/RoutePathComparisonView';
 import RoutePathView from './routePathView/RoutePathView';
 import NewRouteView from './routeView/NewRouteView';
 import * as s from './sidebar.scss';
@@ -45,7 +46,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     private renderView = ({
         editPath,
         newPath,
-        view
+        view,
     }: {
         editPath: SubSites;
         newPath: SubSites;
@@ -63,7 +64,7 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                 exact={true}
                 path={editPath}
                 component={this.renderComponent({ view, isNew: false })}
-            />
+            />,
         ];
     };
 
@@ -96,30 +97,35 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
                             component={this.renderRouteListView}
                         />
                         <Route exact={true} path={SubSites.splitLink} component={SplitLinkView} />
+                        <Route
+                            exact={true}
+                            path={SubSites.routePathComparison}
+                            component={RoutePathComparisonView}
+                        />
                         {this.renderView({
                             editPath: SubSites.line,
                             newPath: SubSites.newLine,
-                            view: 'line'
+                            view: 'line',
                         })}
                         {this.renderView({
                             editPath: SubSites.link,
                             newPath: SubSites.newLink,
-                            view: 'link'
+                            view: 'link',
                         })}
                         {this.renderView({
                             editPath: SubSites.node,
                             newPath: SubSites.newNode,
-                            view: 'node'
+                            view: 'node',
                         })}
                         {this.renderView({
                             editPath: SubSites.stopArea,
                             newPath: SubSites.newStopArea,
-                            view: 'stopArea'
+                            view: 'stopArea',
                         })}
                         {this.renderView({
                             editPath: SubSites.routePath,
                             newPath: SubSites.newRoutePath,
-                            view: 'routePath'
+                            view: 'routePath',
                         })}
                         <Route exact={true} path={SubSites.route} component={NewRouteView} />
                         <Route path={'*'} component={PageNotFoundView} />

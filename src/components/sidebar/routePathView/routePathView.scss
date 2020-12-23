@@ -20,17 +20,18 @@
     .linkContainer {
         display: flex;
         align-items: center;
-
-        .lineLinkGreaterThanSign {
-            display: flex;
-        }
     }
 
-    .subTopic {
-        padding: 10px;
-        font-weight: bold;
-        color: #898989;
+    .subTopicContainer {
+        display: flex;
+        padding: 5px;
+        font-weight: 500;
+        color: $fontColorDefault;
         font-size: 1rem;
+
+        .openRoutePathComparisonViewButton {
+            margin-left: 10px;
+        }
     }
 
     .staticInfo {

@@ -5,10 +5,11 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
+import { Button } from '~/components/controls';
 import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
-import TransitTypeLink from '~/components/shared/TransitTypeLink';
+import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
 import Loader from '~/components/shared/loader/Loader';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
@@ -37,7 +38,6 @@ import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import RoutePathUtils from '~/utils/RoutePathUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView/RoutePathCopySegmentView';
@@ -407,6 +407,23 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
+    private redirectToRoutePathComparisonView = () => {
+        const routePath = this.props.routePathStore!.routePath!;
+        const routePathComparisonLink = routeBuilder
+            .to(SubSites.routePathComparison)
+            .toTarget(
+                ':id',
+                [
+                    routePath.lineId,
+                    routePath.routeId,
+                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                    routePath.direction,
+                ].join(',')
+            )
+            .toLink();
+        navigator.goTo({ link: routePathComparisonLink });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -444,36 +461,30 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             `Uusi reitinsuunta reitille ${routePath.routeId}`
                         ) : (
                             <div className={s.linkContainer}>
-                                <TransitTypeLink
-                                    transitType={routePath.transitType!}
-                                    shouldShowTransitTypeIcon={true}
-                                    text={routePath.lineId!}
-                                    onClick={() =>
-                                        NavigationUtils.openLineView({ lineId: routePath!.lineId! })
-                                    }
-                                    hoverText={`Avaa linja ${routePath.lineId!}`}
-                                />
-                                <div className={s.lineLinkGreaterThanSign}>&gt;</div>
-                                <TransitTypeLink
+                                <TransitTypeLinks
+                                    lineId={routePath!.lineId!}
+                                    routeId={routePath.routeId}
                                     transitType={transitType}
-                                    shouldShowTransitTypeIcon={false}
-                                    text={routePath.routeId}
-                                    onClick={() =>
-                                        NavigationUtils.openRouteView({
-                                            routeId: routePath.routeId,
-                                        })
-                                    }
-                                    hoverText={`Avaa reitti ${routePath.routeId}`}
                                 />
                             </div>
                         )}
                     </SidebarHeader>
-                    <div className={s.subTopic}>
-                        {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
-                        {Moment(routePath.endDate).format('DD.MM.YYYY')}
-                        <br />
-                        Suunta {routePath.direction}: {routePath.originFi} -{' '}
-                        {routePath.destinationFi}
+                    <div className={s.subTopicContainer}>
+                        <div>
+                            {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
+                            {Moment(routePath.endDate).format('DD.MM.YYYY')}
+                            <br />
+                            Suunta {routePath.direction}: {routePath.originFi} -{' '}
+                            {routePath.destinationFi}
+                        </div>
+                        <Button
+                            className={s.openRoutePathComparisonViewButton}
+                            onClick={() => this.redirectToRoutePathComparisonView()}
+                            disabled={false}
+                            hasBorderRadius={true}
+                        >
+                            Vertaile
+                        </Button>
                     </div>
                 </div>
 
