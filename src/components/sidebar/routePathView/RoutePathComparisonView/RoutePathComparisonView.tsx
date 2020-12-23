@@ -7,7 +7,6 @@ import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
 import { ISearchLine } from '~/models/ILine';
 import LineService from '~/services/lineService';
-import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
 import { createLineDropdownItems } from '~/utils/dropdownUtils';
 import SidebarHeader from '../../SidebarHeader';
 import RoutePathSelector from './RoutePathSelector';
@@ -16,7 +15,6 @@ import * as s from './routePathComparisonView.scss';
 
 interface IRoutePathComparisonViewProps {
     match?: match<any>;
-    routePathComparisonStore: RoutePathComparisonStore;
 }
 
 interface IRoutePathSelection {
@@ -32,7 +30,7 @@ enum RoutePathSelection {
     ROUTEPATH_2 = 2,
 }
 
-const RoutePathComparisonView = inject('routePathComparisonStore')(
+const RoutePathComparisonView = inject()(
     observer((props: IRoutePathComparisonViewProps) => {
         const [isLoading, setIsLoading] = useState<boolean>(false);
         const [lineId, routeId, startDate, direction] = props.match!.params.id.split(',');
