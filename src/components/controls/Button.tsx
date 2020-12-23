@@ -15,6 +15,7 @@ interface IButtonProps {
     hasPadding?: boolean;
     hasReverseColor?: boolean;
     hasNoTransition?: boolean;
+    hasBorderRadius?: boolean;
 }
 
 const Button = observer((props: IButtonProps) => {
@@ -41,6 +42,7 @@ const Button = observer((props: IButtonProps) => {
         hasPadding,
         hasReverseColor,
         hasNoTransition,
+        hasBorderRadius,
         ...attrs
     } = props;
 
@@ -61,7 +63,8 @@ const Button = observer((props: IButtonProps) => {
                 isWide ? s.wide : null,
                 hasPadding ? s.hasPadding : null,
                 hasReverseColor ? s.reverseColor : null,
-                hasNoTransition ? null : s.transition
+                hasNoTransition ? null : s.transition,
+                hasBorderRadius ? s.borderRadius : null
             )}
             onClick={_onClick}
             title={title ? title : ''}

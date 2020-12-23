@@ -1,0 +1,37 @@
+@import '../../../shared/styles/common';
+@import '../../../shared/styles/flexbox';
+
+.selectedRoutePathTabs {
+    display: flex;
+    border-bottom: 1px solid $borderLightGrey;
+
+    .routePathTabWrapper {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        justify-content: center;
+        border-right: 1px solid $borderLightGrey;
+        padding: 0px 15px 0px 15px;
+        height: 75px;
+
+        .transitTypeLinks {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .deselectRoutePathButton  {
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .routePathInfo {
+            padding-left: 10px;
+            font-size: $smallFontSize;
+        }
+    }
+    .routePathTabWrapper:last-of-type {
+        display: flex;
+        width: 50%;
+        border: none;
+    }
+}

@@ -56,6 +56,10 @@ $defaultBackgroundColor: $busBlue;
     transition: 0.5s;
 }
 
+.borderRadius  {
+    border-radius: 10px;
+}
+
 .disabled {
     background-color: $disabledGrey;
     cursor: default;
