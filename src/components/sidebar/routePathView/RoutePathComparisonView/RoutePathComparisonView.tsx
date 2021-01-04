@@ -154,9 +154,9 @@ const RoutePathComparisonView = inject()(
                                         lineQueryResult={lineQueryResult}
                                         lineDropdownItems={lineDropdownItems}
                                         routePathSelection={routePathSelection1}
-                                        setSelectedRoutePath={(routePath: IRoutePathSelection) =>
-                                            setRoutePathSelection1(routePath)
-                                        }
+                                        setSelectedRoutePath={(routePath: IRoutePathSelection) => {
+                                            setRoutePathSelection1(routePath);
+                                        }}
                                     />
                                 </div>
                                 <div className={s.routePathSelectionContainer}>
@@ -164,9 +164,9 @@ const RoutePathComparisonView = inject()(
                                         lineQueryResult={lineQueryResult}
                                         lineDropdownItems={lineDropdownItems}
                                         routePathSelection={routePathSelection2}
-                                        setSelectedRoutePath={(routePath: IRoutePathSelection) =>
-                                            setRoutePathSelection2(routePath)
-                                        }
+                                        setSelectedRoutePath={(routePath: IRoutePathSelection) => {
+                                            setRoutePathSelection2(routePath);
+                                        }}
                                     />
                                 </div>
                             </div>
