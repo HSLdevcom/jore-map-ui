@@ -1,6 +1,6 @@
 $commonColor: #000;
-$diff1Color: #65c300;
-$diff2Color: #c90000;
+$diff1Color: #c90000;
+$diff2Color: #65c300;
 
 .diff1Fill {
     background-color: lighten($diff1Color, 25%);

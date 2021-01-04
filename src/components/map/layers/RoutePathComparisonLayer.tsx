@@ -38,22 +38,21 @@ const RoutePathComparisonLayer = inject(
             type: ROUTE_PATH_TYPE;
         }) => {
             return routePathToRender.routePathLinks.map((rpLink, index) => {
-                const rpLinkToCompare = routePathToCompare.routePathLinks.find(
-                    (_rpLink: IRoutePathLink, index: number) => {
-                        return (
-                            _rpLink.startNode.id === rpLink.startNode.id &&
-                            _rpLink.endNode.id === rpLink.endNode.id
-                        );
-                    }
-                );
-                const rpLinkIsDifferent =
-                    !rpLinkToCompare ||
-                    (rpLinkToCompare && !isEqual(rpLinkToCompare.geometry, rpLink.geometry));
-
-                const renderNode = ({ node, nodeType }: { node: INode; nodeType: string }) => {
+                const renderRoutePathNode = ({
+                    node,
+                    nodeType,
+                }: {
+                    node: INode;
+                    nodeType: string;
+                }) => {
                     const isNodeFound = routePathToCompare.routePathLinks.find(
                         (_rpLink) => _rpLink[nodeType].id === rpLink[nodeType].id
                     );
+
+                    // Prevent rendering duplicate renderRoutePathNode
+                    if (isNodeFound && type === ROUTE_PATH_TYPE.ROUTE_PATH_2) {
+                        return null;
+                    }
                     return (
                         <NodeMarker
                             key={`rpNode-${type}-${node.internalId}`}
@@ -77,9 +76,24 @@ const RoutePathComparisonLayer = inject(
                     );
                 };
 
-                return (
-                    <div key={`row-${index}`}>
-                        {renderNode({ node: rpLink.startNode, nodeType: 'startNode' })}
+                const renderRoutePathLink = () => {
+                    const rpLinkToCompare = routePathToCompare.routePathLinks.find(
+                        (_rpLink: IRoutePathLink, index: number) => {
+                            return (
+                                _rpLink.startNode.id === rpLink.startNode.id &&
+                                _rpLink.endNode.id === rpLink.endNode.id
+                            );
+                        }
+                    );
+                    const rpLinkIsDifferent =
+                        !rpLinkToCompare ||
+                        (rpLinkToCompare && !isEqual(rpLinkToCompare.geometry, rpLink.geometry));
+
+                    // Prevent rendering duplicate renderRoutePathLink
+                    if (!rpLinkIsDifferent && type === ROUTE_PATH_TYPE.ROUTE_PATH_2) {
+                        return null;
+                    }
+                    return (
                         <Polyline
                             positions={rpLink.geometry}
                             key={`rpLink-${rpLink.id}`}
@@ -94,8 +108,15 @@ const RoutePathComparisonLayer = inject(
                             opacity={0.8}
                             interactive={false}
                         />
+                    );
+                };
+
+                return (
+                    <div key={`row-${index}`}>
+                        {renderRoutePathNode({ node: rpLink.startNode, nodeType: 'startNode' })}
+                        {renderRoutePathLink()}
                         {index === routePathToRender.routePathLinks.length - 1 &&
-                            renderNode({ node: rpLink.endNode, nodeType: 'endNode' })}
+                            renderRoutePathNode({ node: rpLink.endNode, nodeType: 'endNode' })}
                     </div>
                 );
             });

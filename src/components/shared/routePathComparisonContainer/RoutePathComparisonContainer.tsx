@@ -37,7 +37,7 @@ interface IComparableRoutePath
 
 const RoutePathComparisonContainer = inject('routePathComparisonStore')(
     observer((props: IRoutePathComparisonContainerProps) => {
-        const [areEqualPropertiesVisible, setEqualPropertiesVisible] = useState<boolean>(true);
+        const [areEqualPropertiesVisible, setEqualPropertiesVisible] = useState<boolean>(false);
         const rp1: IComparableRoutePath = omit(props.routePath1, excludedRoutePathProperties);
         const rp2: IComparableRoutePath = omit(props.routePath2, excludedRoutePathProperties);
         useEffect(() => {
