@@ -28,10 +28,13 @@ const RoutePathTab = inject()(
                         transitType={routePath.transitType}
                         size={'medium'}
                     />
-                    <FiXCircle
+                    <div
                         className={s.deselectRoutePathButton}
+                        title={'Poista valinta'}
                         onClick={props.deselectRoutePath}
-                    />
+                    >
+                        <FiXCircle />
+                    </div>
                 </div>
                 <div className={s.routePathInfo}>
                     Suunta {routePath.direction} {toDateString(routePath.startDate)}

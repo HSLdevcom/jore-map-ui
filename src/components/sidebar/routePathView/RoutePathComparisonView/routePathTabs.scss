@@ -19,9 +19,17 @@
             justify-content: space-between;
         }
 
-        .deselectRoutePathButton  {
+        .deselectRoutePathButton {
             cursor: pointer;
             padding: 5px;
+            align-items: center;
+            display: flex;
+            font-size: $largeFontSize;
+            color: $fontColorLightGrey;
+        }
+        .deselectRoutePathButton:hover {
+            transition: 0.5s;
+            background-color: $backgroundHoverColor;
         }
 
         .routePathInfo {
