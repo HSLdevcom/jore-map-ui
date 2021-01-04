@@ -37,7 +37,7 @@ const RoutePathComparisonLayer = inject(
             routePathToCompare: IRoutePath;
             type: ROUTE_PATH_TYPE;
         }) => {
-            return routePathToRender.routePathLinks.map((rpLink) => {
+            return routePathToRender.routePathLinks.map((rpLink, index) => {
                 const rpLinkToCompare = routePathToCompare.routePathLinks.find(
                     (_rpLink: IRoutePathLink, index: number) => {
                         return (
@@ -54,9 +54,9 @@ const RoutePathComparisonLayer = inject(
                     const isNodeFound = routePathToCompare.routePathLinks.find(
                         (_rpLink) => _rpLink[nodeType].id === rpLink[nodeType].id
                     );
-
                     return (
                         <NodeMarker
+                            key={`rpNode-${type}-${node.internalId}`}
                             coordinates={node.coordinates}
                             nodeType={node.type}
                             transitTypes={node.transitTypes ? node.transitTypes : []}
@@ -78,7 +78,7 @@ const RoutePathComparisonLayer = inject(
                 };
 
                 return (
-                    <>
+                    <div key={`row-${index}`}>
                         {renderNode({ node: rpLink.startNode, nodeType: 'startNode' })}
                         <Polyline
                             positions={rpLink.geometry}
@@ -94,7 +94,9 @@ const RoutePathComparisonLayer = inject(
                             opacity={0.8}
                             interactive={false}
                         />
-                    </>
+                        {index === routePathToRender.routePathLinks.length - 1 &&
+                            renderNode({ node: rpLink.endNode, nodeType: 'endNode' })}
+                    </div>
                 );
             });
         };
