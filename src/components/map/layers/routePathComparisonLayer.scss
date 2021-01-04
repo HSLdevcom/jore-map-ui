@@ -1,0 +1,16 @@
+$commonColor: #000;
+$diff1Color: #65c300;
+$diff2Color: #c90000;
+
+.diff1Fill {
+    background-color: lighten($diff1Color, 25%);
+}
+.diff2Fill {
+    background-color: lighten($diff2Color, 25%);
+}
+
+:export {
+    commonColor: $commonColor;
+    diff1Color: $diff1Color;
+    diff2Color: $diff2Color;
+}

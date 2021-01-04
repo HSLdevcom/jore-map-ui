@@ -3,18 +3,22 @@ import { isEqual } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { useEffect } from 'react';
 import { Polyline } from 'react-leaflet';
-import { IRoutePath } from '~/models';
+import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import { MapStore } from '~/stores/mapStore';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
+import NodeUtils from '~/utils/NodeUtils';
+import NodeMarker from './markers/NodeMarker';
+import * as s from './routePathComparisonLayer.scss';
 
 interface IRoutePathComparisonLayerProps {
     routePathComparisonStore?: RoutePathComparisonStore;
     mapStore?: MapStore;
 }
 
-const DEFAULT_LINK_COLOR = '#000';
-const ROUTE_PATH_1_LINK_DIFFERENCE_COLOR = '#c90000';
-const ROUTE_PATH_2_LINK_DIFFERENCE_COLOR = '#65c300';
+enum ROUTE_PATH_TYPE {
+    ROUTE_PATH_1 = 1,
+    ROUTE_PATH_2 = 2,
+}
 
 const RoutePathComparisonLayer = inject(
     'routePathComparisonStore',
@@ -27,33 +31,70 @@ const RoutePathComparisonLayer = inject(
         const renderRoutePath = ({
             routePathToRender,
             routePathToCompare,
-            differencesVisualizationColor,
+            type,
         }: {
             routePathToRender: IRoutePath;
             routePathToCompare: IRoutePath;
-            differencesVisualizationColor: string;
+            type: ROUTE_PATH_TYPE;
         }) => {
             return routePathToRender.routePathLinks.map((rpLink) => {
-                const rpLinkToCompare = routePathToCompare.routePathLinks.find((_rpLink) => {
-                    return (
-                        _rpLink.startNode.id === rpLink.startNode.id &&
-                        _rpLink.endNode.id === rpLink.endNode.id
-                    );
-                });
+                const rpLinkToCompare = routePathToCompare.routePathLinks.find(
+                    (_rpLink: IRoutePathLink, index: number) => {
+                        return (
+                            _rpLink.startNode.id === rpLink.startNode.id &&
+                            _rpLink.endNode.id === rpLink.endNode.id
+                        );
+                    }
+                );
                 const rpLinkIsDifferent =
                     !rpLinkToCompare ||
                     (rpLinkToCompare && !isEqual(rpLinkToCompare.geometry, rpLink.geometry));
+
+                const renderNode = ({ node, nodeType }: { node: INode; nodeType: string }) => {
+                    const isNodeFound = routePathToCompare.routePathLinks.find(
+                        (_rpLink) => _rpLink[nodeType].id === rpLink[nodeType].id
+                    );
+
+                    return (
+                        <NodeMarker
+                            coordinates={node.coordinates}
+                            nodeType={node.type}
+                            transitTypes={node.transitTypes ? node.transitTypes : []}
+                            fillColorClassName={
+                                isNodeFound
+                                    ? undefined
+                                    : type === ROUTE_PATH_TYPE.ROUTE_PATH_1
+                                    ? s.diff1Fill
+                                    : s.diff2Fill
+                            }
+                            nodeLocationType={'coordinates'}
+                            nodeId={node.id}
+                            isDisabled={false}
+                            visibleNodeLabels={props.mapStore!.visibleNodeLabels}
+                            shortId={NodeUtils.getShortId(node)}
+                            hastusId={node.stop ? node.stop.hastusId : undefined}
+                        />
+                    );
+                };
+
                 return (
-                    <Polyline
-                        positions={rpLink.geometry}
-                        key={`rpLink-${rpLink.id}`}
-                        color={
-                            rpLinkIsDifferent ? differencesVisualizationColor : DEFAULT_LINK_COLOR
-                        }
-                        weight={5}
-                        opacity={0.8}
-                        interactive={false}
-                    />
+                    <>
+                        {renderNode({ node: rpLink.startNode, nodeType: 'startNode' })}
+                        <Polyline
+                            positions={rpLink.geometry}
+                            key={`rpLink-${rpLink.id}`}
+                            color={
+                                rpLinkIsDifferent
+                                    ? type === ROUTE_PATH_TYPE.ROUTE_PATH_1
+                                        ? s.diff1Color
+                                        : s.diff2Color
+                                    : s.commonColor
+                            }
+                            weight={5}
+                            opacity={0.8}
+                            interactive={false}
+                        />
+                    </>
                 );
             });
         };
@@ -81,12 +122,12 @@ const RoutePathComparisonLayer = inject(
                 {renderRoutePath({
                     routePathToRender: rp1,
                     routePathToCompare: rp2,
-                    differencesVisualizationColor: ROUTE_PATH_1_LINK_DIFFERENCE_COLOR,
+                    type: ROUTE_PATH_TYPE.ROUTE_PATH_1,
                 })}
                 {renderRoutePath({
                     routePathToRender: rp2,
                     routePathToCompare: rp1,
-                    differencesVisualizationColor: ROUTE_PATH_2_LINK_DIFFERENCE_COLOR,
+                    type: ROUTE_PATH_TYPE.ROUTE_PATH_2,
                 })}
             </div>
         );
