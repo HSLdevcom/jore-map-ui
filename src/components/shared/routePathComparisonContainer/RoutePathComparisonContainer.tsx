@@ -37,12 +37,13 @@ interface IComparableRoutePath
 
 const RoutePathComparisonContainer = inject('routePathComparisonStore')(
     observer((props: IRoutePathComparisonContainerProps) => {
+        const { routePath1, routePath2 } = props;
         const [areEqualPropertiesVisible, setEqualPropertiesVisible] = useState<boolean>(false);
-        const rp1: IComparableRoutePath = omit(props.routePath1, excludedRoutePathProperties);
-        const rp2: IComparableRoutePath = omit(props.routePath2, excludedRoutePathProperties);
+        const rp1: IComparableRoutePath = omit(routePath1, excludedRoutePathProperties);
+        const rp2: IComparableRoutePath = omit(routePath2, excludedRoutePathProperties);
         useEffect(() => {
-            props.routePathComparisonStore!.setRoutePath1(props.routePath1);
-            props.routePathComparisonStore!.setRoutePath2(props.routePath2);
+            props.routePathComparisonStore!.setRoutePath1(routePath1);
+            props.routePathComparisonStore!.setRoutePath2(routePath2);
             return () => {
                 props.routePathComparisonStore!.clear();
             };
@@ -84,7 +85,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                     </div>
                 </div>
                 <div className={s.differencesContainer}>{renderRoutePathDifference()}</div>
-                <div className={s.subTopic}>Pysäkkien tiedot</div>
+                <div className={s.subTopic}>Solmujen tiedot</div>
             </div>
         );
     })
