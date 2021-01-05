@@ -1,0 +1,38 @@
+@import '../styles/common';
+
+.comparableRow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: $smallFontSize;
+    padding: 2px;
+
+    .label {
+        text-align: center;
+        padding: 2px;
+    }
+
+    .values {
+        display: flex;
+        flex-direction: row;
+        padding: 2px;
+
+        .value {
+            display: flex;
+            width: 50%;
+        }
+
+        .leftValue {
+            justify-content: flex-end;
+            margin-right: 10px;
+        }
+        .rightValue {
+            justify-content: flex-start;
+            margin-left: 10px;
+        }
+    }
+
+    .equalValues {
+        color: $mediumGrey;
+    }
+}

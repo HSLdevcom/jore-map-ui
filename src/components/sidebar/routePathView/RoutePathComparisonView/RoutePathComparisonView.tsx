@@ -1,13 +1,16 @@
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 import { match } from 'react-router';
-import { Button, Checkbox } from '~/components/controls';
+import { Checkbox } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import TransitType from '~/enums/transitType';
+import { IRoutePath } from '~/models';
 import { ISearchLine } from '~/models/ILine';
 import LineService from '~/services/lineService';
+import RoutePathService from '~/services/routePathService';
 import { createLineDropdownItems } from '~/utils/dropdownUtils';
+import RoutePathComparisonContainer from '../../../shared/routePathComparisonContainer/RoutePathComparisonContainer';
 import SidebarHeader from '../../SidebarHeader';
 import RoutePathSelector from './RoutePathSelector';
 import RoutePathTabs from './RoutePathTabs';
@@ -53,6 +56,8 @@ const RoutePathComparisonView = inject()(
             direction,
             transitType: TransitType.BUS, // TODO: change
         });
+        const [routePath1, setRoutePath1] = useState<IRoutePath | null>(null);
+        const [routePath2, setRoutePath2] = useState<IRoutePath | null>(null);
 
         useEffect(() => {
             setIsLoading(true);
@@ -71,11 +76,38 @@ const RoutePathComparisonView = inject()(
             fetch();
         }, [areInactiveLinesHidden]);
 
+        useEffect(() => {
+            const fetchRoutePath = async (
+                routePathSelection: IRoutePathSelection
+            ): Promise<IRoutePath> => {
+                const rp: IRoutePath | null = await RoutePathService.fetchRoutePath(
+                    routePathSelection!.routeId,
+                    routePathSelection!.startDate,
+                    routePathSelection!.direction
+                );
+                if (!rp) {
+                    throw `RoutePath not found: ${routePathSelection.routeId} ${routePathSelection.direction} ${routePathSelection.startDate}`;
+                }
+                return rp;
+            };
+            const fetchRoutePaths = async () => {
+                const rp1 = await fetchRoutePath(routePathSelection1!);
+                const rp2 = await fetchRoutePath(routePathSelection2!);
+                setRoutePath1(rp1);
+                setRoutePath2(rp2);
+            };
+            if (routePathSelection1 && routePathSelection2) {
+                fetchRoutePaths();
+            }
+        }, [routePathSelection1, routePathSelection2]);
+
         const deselectRoutePath = (routePathSelection: RoutePathSelection) => {
             if (routePathSelection === RoutePathSelection.ROUTEPATH_1) {
                 setRoutePathSelection1(null);
+                setRoutePath1(null);
             } else {
                 setRoutePathSelection2(null);
+                setRoutePath2(null);
             }
         };
 
@@ -99,45 +131,42 @@ const RoutePathComparisonView = inject()(
                     routePathSelection2={routePathSelection2}
                     deselectRoutePath={deselectRoutePath}
                 />
-                <div className={s.content}>
-                    <div className={s.flexRow}>
-                        <Checkbox
-                            content='Näytä vain aktiiviset linjat'
-                            checked={areInactiveLinesHidden}
-                            onClick={() => setAreInactiveLinesHidden(!areInactiveLinesHidden)}
-                        />
-                    </div>
+
+                {routePath1 !== null && routePath2 !== null ? (
+                    <RoutePathComparisonContainer routePath1={routePath1} routePath2={routePath2} />
+                ) : (
                     <div className={s.routePathSelectorsWrapper}>
-                        <div className={s.routePathSelectionContainer}>
-                            <RoutePathSelector
-                                lineQueryResult={lineQueryResult}
-                                lineDropdownItems={lineDropdownItems}
-                                routePathSelection={routePathSelection1}
-                                setSelectedRoutePath={(routePath: IRoutePathSelection) =>
-                                    setRoutePathSelection1(routePath)
-                                }
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                content='Näytä vain aktiiviset linjat'
+                                checked={areInactiveLinesHidden}
+                                onClick={() => setAreInactiveLinesHidden(!areInactiveLinesHidden)}
                             />
                         </div>
-                        <div className={s.routePathSelectionContainer}>
-                            <RoutePathSelector
-                                lineQueryResult={lineQueryResult}
-                                lineDropdownItems={lineDropdownItems}
-                                routePathSelection={routePathSelection2}
-                                setSelectedRoutePath={(routePath: IRoutePathSelection) =>
-                                    setRoutePathSelection2(routePath)
-                                }
-                            />
+                        <div className={s.routePathSelectors}>
+                            <div className={s.routePathSelectionContainer}>
+                                <RoutePathSelector
+                                    lineQueryResult={lineQueryResult}
+                                    lineDropdownItems={lineDropdownItems}
+                                    routePathSelection={routePathSelection1}
+                                    setSelectedRoutePath={(routePath: IRoutePathSelection) => {
+                                        setRoutePathSelection1(routePath);
+                                    }}
+                                />
+                            </div>
+                            <div className={s.routePathSelectionContainer}>
+                                <RoutePathSelector
+                                    lineQueryResult={lineQueryResult}
+                                    lineDropdownItems={lineDropdownItems}
+                                    routePathSelection={routePathSelection2}
+                                    setSelectedRoutePath={(routePath: IRoutePathSelection) => {
+                                        setRoutePathSelection2(routePath);
+                                    }}
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <Button
-                    className={s.startCompareButton}
-                    onClick={() => alert('Toimintoa ei vielä ole toteutettu!')}
-                    hasPadding={true}
-                    disabled={!routePathSelection1 || !routePathSelection2}
-                >
-                    Vertaile valittuja reitinsuuntia
-                </Button>
+                )}
             </div>
         );
     })

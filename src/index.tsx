@@ -23,6 +23,7 @@ import NetworkStore from './stores/networkStore';
 import NodeStore from './stores/nodeStore';
 import PopupStore from './stores/popupStore';
 import RouteListStore from './stores/routeListStore';
+import RoutePathComparisonStore from './stores/routePathComparisonStore';
 import RoutePathCopySegmentStore from './stores/routePathCopySegmentStore';
 import RoutePathCopyStore from './stores/routePathCopyStore';
 import RoutePathLayerListStore from './stores/routePathLayerListStore';
@@ -56,6 +57,7 @@ const stores = {
     routePathLayerStore: RoutePathLayerStore,
     routePathCopyStore: RoutePathCopyStore,
     routePathCopySegmentStore: RoutePathCopySegmentStore,
+    routePathComparisonStore: RoutePathComparisonStore,
     searchStore: SearchStore,
     popupStore: PopupStore,
     toolbarStore: ToolbarStore,

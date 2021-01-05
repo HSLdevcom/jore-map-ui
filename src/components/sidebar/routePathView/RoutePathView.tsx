@@ -11,6 +11,7 @@ import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
 import Loader from '~/components/shared/loader/Loader';
+import RoutePathComparisonContainer from '~/components/shared/routePathComparisonContainer/RoutePathComparisonContainer';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener from '~/helpers/EventListener';
@@ -64,6 +65,7 @@ interface IRoutePathViewProps {
 interface IRoutePathViewState {
     isLoading: boolean;
     isRoutePathCalculatedLengthLoading: boolean;
+    isCompareRoutePathsContainerVisible: boolean;
 }
 
 @inject(
@@ -88,6 +90,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             isLoading: true,
             isRoutePathCalculatedLengthLoading: false,
+            isCompareRoutePathsContainerVisible: false,
         };
     }
 
@@ -424,6 +427,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         navigator.goTo({ link: routePathComparisonLink });
     };
 
+    private openCompareRoutePathsContainer = () => {
+        this._setState({
+            isCompareRoutePathsContainerVisible: true,
+        });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -447,6 +456,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             routePath.routePathLinks.length > 0
                 ? routePath.routePathLinks[0].transitType
                 : routePath.transitType!;
+
         return (
             <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
@@ -492,54 +502,75 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <RoutePathCopySegmentView />
                 ) : (
                     <>
-                        <Tabs>
-                            <TabList
-                                selectedTabIndex={routePathStore!.selectedTabIndex}
-                                setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
-                            >
-                                <Tab>
-                                    <div>Reitinsuunnan tiedot</div>
-                                </Tab>
-                                <Tab>
-                                    <div>Solmut ja linkit</div>
-                                </Tab>
-                            </TabList>
-                            <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
-                                <ContentItem>
-                                    <RoutePathInfoTab
-                                        isEditingDisabled={isEditingDisabled}
-                                        isRoutePathCalculatedLengthLoading={
-                                            this.state.isRoutePathCalculatedLengthLoading
-                                        }
-                                    />
-                                </ContentItem>
-                                <ContentItem>
-                                    <RoutePathLinksTab
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        isEditingDisabled={isEditingDisabled}
-                                    />
-                                </ContentItem>
-                            </ContentList>
-                        </Tabs>
-                        <SaveButton
-                            onClick={() => {
-                                if (routePathStore!.isRoutePathLengthFormedByMeasuredLengths()) {
-                                    this.showSavePrompt();
-                                } else {
-                                    this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                        {this.state.isCompareRoutePathsContainerVisible ? (
+                            <RoutePathComparisonContainer
+                                routePath1={routePathStore!.oldRoutePath!}
+                                routePath2={routePath}
+                            />
+                        ) : (
+                            <Tabs>
+                                <TabList
+                                    selectedTabIndex={routePathStore!.selectedTabIndex}
+                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                                >
+                                    <Tab>
+                                        <div>Reitinsuunnan tiedot</div>
+                                    </Tab>
+                                    <Tab>
+                                        <div>Solmut ja linkit</div>
+                                    </Tab>
+                                </TabList>
+                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                                    <ContentItem>
+                                        <RoutePathInfoTab
+                                            isEditingDisabled={isEditingDisabled}
+                                            isRoutePathCalculatedLengthLoading={
+                                                this.state.isRoutePathCalculatedLengthLoading
+                                            }
+                                        />
+                                    </ContentItem>
+                                    <ContentItem>
+                                        <RoutePathLinksTab
+                                            routePath={this.props.routePathStore!.routePath!}
+                                            isEditingDisabled={isEditingDisabled}
+                                        />
+                                    </ContentItem>
+                                </ContentList>
+                            </Tabs>
+                        )}
+                        {this.state.isCompareRoutePathsContainerVisible ? (
+                            <SaveButton
+                                onClick={() => {
+                                    if (
+                                        routePathStore!.isRoutePathLengthFormedByMeasuredLengths()
+                                    ) {
+                                        this.showSavePrompt();
+                                    } else {
+                                        this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                                    }
+                                }}
+                                disabled={savePreventedNotification.length > 0}
+                                savePreventedNotification={savePreventedNotification}
+                                type={
+                                    savePreventedNotification.length > 0
+                                        ? 'warningButton'
+                                        : 'saveButton'
                                 }
-                            }}
-                            disabled={savePreventedNotification.length > 0}
-                            savePreventedNotification={savePreventedNotification}
-                            type={
-                                savePreventedNotification.length > 0
-                                    ? 'warningButton'
-                                    : 'saveButton'
-                            }
-                            data-cy='routePathSaveButton'
-                        >
-                            {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                        </SaveButton>
+                                data-cy='routePathSaveButton'
+                            >
+                                {this.props.isNewRoutePath
+                                    ? 'Luo reitinsuunta'
+                                    : 'Tallenna muutokset'}
+                            </SaveButton>
+                        ) : (
+                            <Button
+                                onClick={this.openCompareRoutePathsContainer}
+                                disabled={savePreventedNotification.length > 0}
+                                hasPadding={true}
+                            >
+                                Vertaile muutoksia
+                            </Button>
+                        )}
                     </>
                 )}
             </div>

@@ -1,0 +1,41 @@
+@import '../styles/common';
+
+.routePathComparisonContainer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px;
+
+    .subTopic {
+        font-size: $mediumFontSize;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .firstSubTopicContainer {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .hideEqualInformationButton {
+            text-decoration: underline;
+            font-size: $smallFontSize;
+            cursor: pointer;
+        }
+        .hideEqualInformationButton:hover {
+            transition: 0.5s;
+            color: $fontColorLightGrey;
+            height: 100%;
+        }
+    }
+
+    .differencesContainer {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .noResults  {
+        font-style: italic;
+    }
+}

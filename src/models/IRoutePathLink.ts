@@ -9,18 +9,21 @@ interface IRoutePathLinkPrimaryKey {
     id: string;
 }
 
-interface IRoutePathLink extends IRoutePathLinkPrimaryKey, IViaName, IViaShieldName {
+interface IRoutePathNode extends IRoutePathLinkPrimaryKey, IViaName, IViaShieldName {
+    startNodeUsage?: string;
+    startNodeTimeAlignmentStop?: string;
+    isStartNodeHastusStop?: boolean;
+    isStartNodeUsingBookSchedule?: boolean;
+    startNodeBookScheduleColumnNumber?: number;
+    startNodeType?: StartNodeType;
+}
+
+interface IRoutePathLink extends IRoutePathNode {
     geometry: L.LatLng[];
     orderNumber: number;
     transitType: TransitType;
     startNode: INode;
     endNode: INode;
-    startNodeUsage?: string;
-    startNodeType: StartNodeType;
-    startNodeTimeAlignmentStop?: string;
-    isStartNodeHastusStop?: boolean;
-    isStartNodeUsingBookSchedule?: boolean;
-    startNodeBookScheduleColumnNumber?: number;
     modifiedBy?: string;
     modifiedOn?: Date;
 }
@@ -42,4 +45,4 @@ interface IRoutePathLinkSaveModel {
 
 export default IRoutePathLink;
 
-export { IRoutePathLinkPrimaryKey, IRoutePathSegmentLink, IRoutePathLinkSaveModel };
+export { IRoutePathLinkPrimaryKey, IRoutePathSegmentLink, IRoutePathNode, IRoutePathLinkSaveModel };
