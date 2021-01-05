@@ -23,8 +23,8 @@ interface IRoutePathComparisonViewProps {
 interface IRoutePathSelection {
     lineId: string;
     routeId: string;
-    startDate: Date;
-    direction: string;
+    startDate?: Date;
+    direction?: string;
     transitType: TransitType;
 }
 
@@ -35,33 +35,31 @@ enum RoutePathSelection {
 
 const RoutePathComparisonView = inject()(
     observer((props: IRoutePathComparisonViewProps) => {
-        const [isLoading, setIsLoading] = useState<boolean>(false);
+        const [isLoading, setIsLoading] = useState<boolean>(true);
         const [lineId, routeId, startDate, direction] = props.match!.params.id.split(',');
         const [lineQueryResult, setLineQueryResult] = useState<ISearchLine[]>([]);
         const [lineDropdownItems, setLineDropdownItems] = useState<IDropdownItem[]>([]);
         const [areInactiveLinesHidden, setAreInactiveLinesHidden] = useState<boolean>(true);
         // TODO: get selectedRoutePath2 from URL too. Maybe use ?routePath1=...&routePath2=... syntax
 
-        const [routePathSelection1, setRoutePathSelection1] = useState<IRoutePathSelection | null>({
+        const [routePathSelection1, setRoutePathSelection1] = useState<IRoutePathSelection>({
             lineId,
             routeId,
             startDate,
             direction,
             transitType: TransitType.BUS, // TODO: change
         });
-        const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection | null>({
+        const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection>({
             lineId,
             routeId,
-            startDate,
-            direction,
+            startDate: undefined,
+            direction: undefined,
             transitType: TransitType.BUS, // TODO: change
         });
         const [routePath1, setRoutePath1] = useState<IRoutePath | null>(null);
         const [routePath2, setRoutePath2] = useState<IRoutePath | null>(null);
 
         useEffect(() => {
-            setIsLoading(true);
-
             const fetch = async () => {
                 const lineQueryResult: ISearchLine[] = await LineService.fetchAllSearchLines();
                 // TODO: transitType filtering?
@@ -82,8 +80,8 @@ const RoutePathComparisonView = inject()(
             ): Promise<IRoutePath> => {
                 const rp: IRoutePath | null = await RoutePathService.fetchRoutePath(
                     routePathSelection!.routeId,
-                    routePathSelection!.startDate,
-                    routePathSelection!.direction
+                    routePathSelection!.startDate!,
+                    routePathSelection!.direction!
                 );
                 if (!rp) {
                     throw `RoutePath not found: ${routePathSelection.routeId} ${routePathSelection.direction} ${routePathSelection.startDate}`;
@@ -96,17 +94,25 @@ const RoutePathComparisonView = inject()(
                 setRoutePath1(rp1);
                 setRoutePath2(rp2);
             };
-            if (routePathSelection1 && routePathSelection2) {
+            if (routePathSelection1.startDate && routePathSelection2.startDate) {
                 fetchRoutePaths();
             }
         }, [routePathSelection1, routePathSelection2]);
 
         const deselectRoutePath = (routePathSelection: RoutePathSelection) => {
             if (routePathSelection === RoutePathSelection.ROUTEPATH_1) {
-                setRoutePathSelection1(null);
+                setRoutePathSelection1({
+                    ...routePathSelection1,
+                    startDate: undefined,
+                    direction: undefined,
+                });
                 setRoutePath1(null);
             } else {
-                setRoutePathSelection2(null);
+                setRoutePathSelection2({
+                    ...routePathSelection2,
+                    startDate: undefined,
+                    direction: undefined,
+                });
                 setRoutePath2(null);
             }
         };

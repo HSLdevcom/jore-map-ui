@@ -13,7 +13,7 @@ import * as s from './routePathComparisonView.scss';
 interface IRoutePathSelectorProps {
     lineQueryResult: ISearchLine[];
     lineDropdownItems: IDropdownItem[];
-    routePathSelection: IRoutePathSelection | null;
+    routePathSelection: IRoutePathSelection;
     setSelectedRoutePath: (routePath: IRoutePathSelection) => void;
 }
 
@@ -27,15 +27,36 @@ const RoutePathSelector = inject()(
             routePathSelection ? routePathSelection.routeId : null
         );
         const [routePathItem, setRoutePathItem] = useState<string | null>(
-            routePathSelection
+            routePathSelection.startDate
                 ? _createRoutePathItem({
-                      direction: routePathSelection.direction,
+                      direction: routePathSelection.direction!,
                       startDate: routePathSelection.startDate,
                   })
                 : null
         );
         const [routeDropdownItems, setRouteDropdownItems] = useState<IDropdownItem[]>([]);
         const [routePathDropdownItems, setRoutePathDropdownItems] = useState<IDropdownItem[]>([]);
+
+        useEffect(() => {
+            const fetchRoutePathItems = async () => {
+                const route = await RouteService.fetchRoute({
+                    routeId: routePathSelection.routeId,
+                    areRoutePathLinksExcluded: true,
+                });
+                const routePathDropdownItems: IDropdownItem[] = createDropdownItemsFromList(
+                    route!.routePaths.map((rp) =>
+                        _createRoutePathItem({ direction: rp.direction, startDate: rp.startDate })
+                    )
+                );
+                setRoutePathDropdownItems(routePathDropdownItems);
+
+                const routeDropdownItems: IDropdownItem[] = createDropdownItemsFromList(
+                    props.lineQueryResult.find((s) => s.id === lineId)!.routes.map((r) => r.id)
+                );
+                setRouteDropdownItems(routeDropdownItems);
+            };
+            fetchRoutePathItems();
+        }, [routePathItem]);
 
         useEffect(() => {
             if (!routePathSelection) {
