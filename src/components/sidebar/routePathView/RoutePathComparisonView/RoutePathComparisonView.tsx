@@ -36,24 +36,33 @@ enum RoutePathSelection {
 const RoutePathComparisonView = inject()(
     observer((props: IRoutePathComparisonViewProps) => {
         const [isLoading, setIsLoading] = useState<boolean>(true);
-        const [lineId, routeId, startDate, direction] = props.match!.params.id.split(',');
+        const [
+            lineId1,
+            routeId1,
+            startDate1,
+            direction1,
+            lineId2,
+            routeId2,
+            startDate2,
+            direction2,
+        ] = props.match!.params.id.split(',');
         const [lineQueryResult, setLineQueryResult] = useState<ISearchLine[]>([]);
         const [lineDropdownItems, setLineDropdownItems] = useState<IDropdownItem[]>([]);
         const [areInactiveLinesHidden, setAreInactiveLinesHidden] = useState<boolean>(true);
         // TODO: get selectedRoutePath2 from URL too. Maybe use ?routePath1=...&routePath2=... syntax
 
         const [routePathSelection1, setRoutePathSelection1] = useState<IRoutePathSelection>({
-            lineId,
-            routeId,
-            startDate,
-            direction,
+            lineId: lineId1,
+            routeId: routeId1,
+            startDate: startDate1,
+            direction: direction1,
             transitType: TransitType.BUS, // TODO: change
         });
         const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection>({
-            lineId,
-            routeId,
-            startDate: undefined,
-            direction: undefined,
+            lineId: lineId2 ? lineId2 : lineId1,
+            routeId: routeId2 ? routeId2 : routeId1,
+            startDate: startDate2,
+            direction: direction2,
             transitType: TransitType.BUS, // TODO: change
         });
         const [routePath1, setRoutePath1] = useState<IRoutePath | null>(null);
