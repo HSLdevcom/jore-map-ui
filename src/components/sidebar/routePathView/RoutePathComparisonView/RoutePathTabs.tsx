@@ -7,7 +7,7 @@ import { IRoutePathSelection, RoutePathSelection } from './RoutePathComparisonVi
 import * as s from './routePathTabs.scss';
 
 interface IRoutePathTabProps {
-    routePath: IRoutePathSelection | null;
+    routePath: IRoutePathSelection;
     deselectRoutePath: () => void;
 }
 
@@ -15,7 +15,7 @@ const RoutePathTab = inject()(
     observer((props: IRoutePathTabProps) => {
         const routePath = props.routePath;
 
-        if (!routePath) {
+        if (!routePath.startDate) {
             return <div className={s.routePathTabWrapper}>Ei valittua reitinsuuntaa.</div>;
         }
 
@@ -45,8 +45,8 @@ const RoutePathTab = inject()(
 );
 
 interface ISelectedRoutePathTabsProps {
-    routePathSelection1: IRoutePathSelection | null;
-    routePathSelection2: IRoutePathSelection | null;
+    routePathSelection1: IRoutePathSelection;
+    routePathSelection2: IRoutePathSelection;
     deselectRoutePath: (routePathSelection: RoutePathSelection) => void;
 }
 

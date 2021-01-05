@@ -13,32 +13,32 @@ import * as s from './routePathComparisonView.scss';
 interface IRoutePathSelectorProps {
     lineQueryResult: ISearchLine[];
     lineDropdownItems: IDropdownItem[];
-    routePathSelection: IRoutePathSelection | null;
+    routePathSelection: IRoutePathSelection;
     setSelectedRoutePath: (routePath: IRoutePathSelection) => void;
 }
 
 const RoutePathSelector = inject()(
     observer((props: IRoutePathSelectorProps) => {
         const routePathSelection = props.routePathSelection;
-        const [lineId, setLineId] = useState<string | null>(
-            routePathSelection ? routePathSelection.lineId : null
-        );
-        const [routeId, setRouteId] = useState<string | null>(
-            routePathSelection ? routePathSelection.routeId : null
-        );
-        const [routePathItem, setRoutePathItem] = useState<string | null>(
-            routePathSelection
-                ? _createRoutePathItem({
-                      direction: routePathSelection.direction,
-                      startDate: routePathSelection.startDate,
-                  })
-                : null
-        );
+        const [lineId, setLineId] = useState<string | null>(null);
+        const [routeId, setRouteId] = useState<string | null>(null);
+        const [routePathItem, setRoutePathItem] = useState<string | null>(null);
         const [routeDropdownItems, setRouteDropdownItems] = useState<IDropdownItem[]>([]);
         const [routePathDropdownItems, setRoutePathDropdownItems] = useState<IDropdownItem[]>([]);
 
         useEffect(() => {
-            if (!routePathSelection) {
+            if (routePathSelection) {
+                setLineId(routePathSelection.lineId);
+                setRouteId(routePathSelection.routeId);
+                setRoutePathItem(
+                    routePathSelection.startDate
+                        ? _createRoutePathItem({
+                              direction: routePathSelection.direction!,
+                              startDate: routePathSelection.startDate,
+                          })
+                        : null
+                );
+            } else {
                 setLineId(null);
                 setRouteId(null);
                 setRoutePathItem(null);
@@ -46,6 +46,29 @@ const RoutePathSelector = inject()(
                 setRoutePathDropdownItems([]);
             }
         }, [routePathSelection]);
+
+        useEffect(() => {
+            const fetchRoutePathItems = async () => {
+                const route = await RouteService.fetchRoute({
+                    routeId: routePathSelection.routeId,
+                    areRoutePathLinksExcluded: true,
+                });
+                const routePathDropdownItems: IDropdownItem[] = createDropdownItemsFromList(
+                    route!.routePaths.map((rp) =>
+                        _createRoutePathItem({ direction: rp.direction, startDate: rp.startDate })
+                    )
+                );
+                setRoutePathDropdownItems(routePathDropdownItems);
+
+                const routeDropdownItems: IDropdownItem[] = createDropdownItemsFromList(
+                    props.lineQueryResult
+                        .find((s) => s.id === routePathSelection.lineId)!
+                        .routes.map((r) => r.id)
+                );
+                setRouteDropdownItems(routeDropdownItems);
+            };
+            fetchRoutePathItems();
+        }, [routePathItem]);
 
         const onLineChange = (value: string) => {
             const items: IDropdownItem[] = createDropdownItemsFromList(

@@ -18,6 +18,7 @@ import { IRoutePathStopNames } from '~/stores/routeListStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import { UserStore } from '~/stores/userStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import { isCurrentDateWithinTimeSpan, toDateString, toMidnightDate } from '~/utils/dateUtils';
 import ToggleSwitch from '../../controls/ToggleSwitch';
 import * as s from './routePathGroup.scss';
@@ -30,6 +31,8 @@ interface IRoutePathGroupProps {
     areStopNamesLoading: boolean;
     index: number;
     stopNameMap: Map<string, IRoutePathStopNames>;
+    routePathSelectedToBeCompared: IRoutePath | null;
+    selectRoutePathToBeCompared: (routePath: IRoutePath) => void;
     userStore?: UserStore;
     routePathLayerListStore?: RoutePathLayerListStore;
     routePathMassEditStore?: RoutePathMassEditStore;
@@ -326,6 +329,25 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                                 <FaTrashAlt />
                                             </Button>
                                         </>
+                                    )}
+                                    {!isEditingEnabled && (
+                                        <Button
+                                            className={classnames(
+                                                s.selectRoutePathToBeComparedButton,
+                                                this.props.routePathSelectedToBeCompared &&
+                                                    RoutePathUtils.getAreRoutePathsEqual(
+                                                        routePath,
+                                                        this.props.routePathSelectedToBeCompared
+                                                    )
+                                                    ? s.selectRoutePathToBeComparedButtonActivate
+                                                    : s.selectRoutePathToBeComparedButtonInactive
+                                            )}
+                                            onClick={() =>
+                                                this.props.selectRoutePathToBeCompared(routePath)
+                                            }
+                                        >
+                                            V
+                                        </Button>
                                     )}
                                     <ToggleSwitch
                                         onClick={() =>

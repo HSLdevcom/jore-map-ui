@@ -94,6 +94,23 @@ $newHighlightBackgroundColor: #e0fde2;
                 color: white;
                 background-color: $red;
             }
+
+            .selectRoutePathToBeComparedButton {
+                border-radius: 20px;
+                padding: 5px;
+                width: 20px;
+                height: 20px;
+                border: 1px solid $busBlue;
+            }
+
+            .selectRoutePathToBeComparedButtonInactive {
+                color: $busBlue;
+                background-color: #fff;
+            }
+            .selectRoutePathToBeComparedButtonActivate {
+                color: #fff;
+                background-color: $busBlue;
+            }
         }
 
         .rpNoHighlight {
