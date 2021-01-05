@@ -12,12 +12,12 @@
         border-bottom: 1px solid $borderLightGrey;
     }
 
-    .content {
+    .routePathSelectorsWrapper {
         padding: 20px;
         height: 100%;
         overflow-y: auto;
 
-        .routePathSelectorsWrapper {
+        .routePathSelectors {
             display: flex;
             margin-top: 10px;
             .routePathSelectionContainer {

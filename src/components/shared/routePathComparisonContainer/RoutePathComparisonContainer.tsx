@@ -83,7 +83,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                         {areEqualPropertiesVisible ? 'Piilota samat tiedot' : 'Näytä samat tiedot'}
                     </div>
                 </div>
-                <div>{renderRoutePathDifference()}</div>
+                <div className={s.differencesContainer}>{renderRoutePathDifference()}</div>
                 <div className={s.subTopic}>Pysäkkien tiedot</div>
             </div>
         );

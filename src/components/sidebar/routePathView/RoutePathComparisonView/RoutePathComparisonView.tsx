@@ -131,48 +131,42 @@ const RoutePathComparisonView = inject()(
                     routePathSelection2={routePathSelection2}
                     deselectRoutePath={deselectRoutePath}
                 />
-                <div className={s.content}>
-                    {routePath1 !== null && routePath2 !== null ? (
-                        <RoutePathComparisonContainer
-                            routePath1={routePath1}
-                            routePath2={routePath2}
-                        />
-                    ) : (
-                        <>
-                            <div className={s.flexRow}>
-                                <Checkbox
-                                    content='Näytä vain aktiiviset linjat'
-                                    checked={areInactiveLinesHidden}
-                                    onClick={() =>
-                                        setAreInactiveLinesHidden(!areInactiveLinesHidden)
-                                    }
+
+                {routePath1 !== null && routePath2 !== null ? (
+                    <RoutePathComparisonContainer routePath1={routePath1} routePath2={routePath2} />
+                ) : (
+                    <div className={s.routePathSelectorsWrapper}>
+                        <div className={s.flexRow}>
+                            <Checkbox
+                                content='Näytä vain aktiiviset linjat'
+                                checked={areInactiveLinesHidden}
+                                onClick={() => setAreInactiveLinesHidden(!areInactiveLinesHidden)}
+                            />
+                        </div>
+                        <div className={s.routePathSelectors}>
+                            <div className={s.routePathSelectionContainer}>
+                                <RoutePathSelector
+                                    lineQueryResult={lineQueryResult}
+                                    lineDropdownItems={lineDropdownItems}
+                                    routePathSelection={routePathSelection1}
+                                    setSelectedRoutePath={(routePath: IRoutePathSelection) => {
+                                        setRoutePathSelection1(routePath);
+                                    }}
                                 />
                             </div>
-                            <div className={s.routePathSelectorsWrapper}>
-                                <div className={s.routePathSelectionContainer}>
-                                    <RoutePathSelector
-                                        lineQueryResult={lineQueryResult}
-                                        lineDropdownItems={lineDropdownItems}
-                                        routePathSelection={routePathSelection1}
-                                        setSelectedRoutePath={(routePath: IRoutePathSelection) => {
-                                            setRoutePathSelection1(routePath);
-                                        }}
-                                    />
-                                </div>
-                                <div className={s.routePathSelectionContainer}>
-                                    <RoutePathSelector
-                                        lineQueryResult={lineQueryResult}
-                                        lineDropdownItems={lineDropdownItems}
-                                        routePathSelection={routePathSelection2}
-                                        setSelectedRoutePath={(routePath: IRoutePathSelection) => {
-                                            setRoutePathSelection2(routePath);
-                                        }}
-                                    />
-                                </div>
+                            <div className={s.routePathSelectionContainer}>
+                                <RoutePathSelector
+                                    lineQueryResult={lineQueryResult}
+                                    lineDropdownItems={lineDropdownItems}
+                                    routePathSelection={routePathSelection2}
+                                    setSelectedRoutePath={(routePath: IRoutePathSelection) => {
+                                        setRoutePathSelection2(routePath);
+                                    }}
+                                />
                             </div>
-                        </>
-                    )}
-                </div>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     })
