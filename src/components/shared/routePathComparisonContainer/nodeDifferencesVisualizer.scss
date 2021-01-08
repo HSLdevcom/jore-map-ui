@@ -1,0 +1,15 @@
+.nodeDifferencesVisualizer {
+    display: flex;
+    flex-direction: column;
+
+    .nodeRow {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .node {
+            display: flex;
+            width: 50%;
+        }
+    }
+}
