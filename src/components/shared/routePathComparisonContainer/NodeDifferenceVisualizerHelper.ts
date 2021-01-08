@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
-import { INodeRow } from './NodeDifferencesVisualizer';
+import { IRoutePathLinkRow } from './NodeDifferencesVisualizer';
 
 /**
  * The algorithm behind this file is done with utilizing IComparableRoutePathLink's
@@ -15,13 +15,13 @@ interface IComparableRoutePathLink extends Omit<IRoutePathLink, 'endNode'> {
 }
 
 // Create a simple INodeRow[] list so that the UI component can easilly render it
-const getNodeRows = ({
+const getRpLinkRows = ({
     routePath1,
     routePath2,
 }: {
     routePath1: IRoutePath;
     routePath2: IRoutePath;
-}): INodeRow[] => {
+}): IRoutePathLinkRow[] => {
     const rpLinks1: IComparableRoutePathLink[] = _getComparableRoutePathLinks(
         routePath1.routePathLinks
     );
@@ -29,7 +29,7 @@ const getNodeRows = ({
         routePath2.routePathLinks
     );
 
-    const nodeRows: INodeRow[] = [];
+    const nodeRows: IRoutePathLinkRow[] = [];
     let aIndex = 0;
     let bIndex = 0;
     while (true) {
@@ -41,8 +41,6 @@ const getNodeRows = ({
         }
         const rpLink1: IComparableRoutePathLink | null = rpLinks1[aIndex];
         const rpLink2: IComparableRoutePathLink | null = rpLinks2[bIndex];
-        const node1: INode | null = rpLinks1[aIndex] ? rpLinks1[aIndex].startNode : null;
-        const node2: INode | null = rpLinks2[bIndex] ? rpLinks2[bIndex].startNode : null;
 
         const rpLink1IndexInRpLinks2 = _getRpLinkIndexInGivenRpLinks({
             startIndex: bIndex,
@@ -61,8 +59,8 @@ const getNodeRows = ({
         // If we no longer see node1's (there are less rpLinks1 than rpLinks2), we draw node2
         if (!rpLink1) {
             nodeRows.push({
-                node2,
-                node1: null,
+                rpLink2,
+                rpLink1: null,
                 areNodesEqual: false,
             });
             bIndex += 1;
@@ -71,8 +69,8 @@ const getNodeRows = ({
         // If we no longer see node2's (there are less rpLinks2 than rpLinks1), we draw node1
         if (!rpLink2) {
             nodeRows.push({
-                node1,
-                node2: null,
+                rpLink1,
+                rpLink2: null,
                 areNodesEqual: false,
             });
             aIndex += 1;
@@ -82,8 +80,8 @@ const getNodeRows = ({
         // If links are equal, print both
         if (_areLinksEqual(rpLink1, rpLink2)) {
             nodeRows.push({
-                node1,
-                node2,
+                rpLink1,
+                rpLink2,
                 areNodesEqual: true,
             });
             aIndex += 1;
@@ -91,23 +89,23 @@ const getNodeRows = ({
             // if rpLink1 exists in rpLinks2 and it's closer than rpLink2 index in rpLinks1, draw rpLink1
         } else if (rpLink1IndexInRpLinks2 < rpLink2IndexInRpLinks1) {
             nodeRows.push({
-                node1,
-                node2: null,
+                rpLink1,
+                rpLink2: null,
                 areNodesEqual: false,
             });
             aIndex += 1;
             // if rpLink2 exists in rpLinks1 and it's closer than rpLink1 index in rpLinks2, draw rpLink2
         } else if (rpLink1IndexInRpLinks2 > rpLink2IndexInRpLinks1) {
             nodeRows.push({
-                node2,
-                node1: null,
+                rpLink2,
+                rpLink1: null,
                 areNodesEqual: false,
             });
             bIndex += 1;
         } else {
             nodeRows.push({
-                node1,
-                node2,
+                rpLink1,
+                rpLink2,
                 areNodesEqual: true, // Not true, can also be false.
             });
             aIndex += 1;
@@ -160,4 +158,6 @@ const _areLinksEqual = (
     );
 };
 
-export { getNodeRows };
+export { getRpLinkRows };
+
+export { IComparableRoutePathLink };

@@ -1,8 +1,8 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { INode, IRoutePath } from '~/models';
+import { IRoutePath } from '~/models';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
-import { getNodeRows } from './NodeDifferenceVisualizerHelper';
+import { getRpLinkRows, IComparableRoutePathLink } from './NodeDifferenceVisualizerHelper';
 import * as s from './nodeDifferencesVisualizer.scss';
 
 interface INodeDifferencesVisualizerProps {
@@ -11,9 +11,9 @@ interface INodeDifferencesVisualizerProps {
     routePathComparisonStore?: RoutePathComparisonStore;
 }
 
-interface INodeRow {
-    node1: INode | null;
-    node2: INode | null;
+interface IRoutePathLinkRow {
+    rpLink1: IComparableRoutePathLink | null;
+    rpLink2: IComparableRoutePathLink | null;
     areNodesEqual: boolean;
 }
 
@@ -21,15 +21,18 @@ const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
     observer((props: INodeDifferencesVisualizerProps) => {
         const { routePath1, routePath2 } = props;
 
-        const nodeRows: INodeRow[] = getNodeRows({ routePath1, routePath2 });
-
+        const rpLinkRows: IRoutePathLinkRow[] = getRpLinkRows({ routePath1, routePath2 });
         return (
             <div className={s.nodeDifferencesVisualizer}>
-                {nodeRows.map((nodeRow: INodeRow, index: number) => {
+                {rpLinkRows.map((rpLinkRow: IRoutePathLinkRow, index: number) => {
                     return (
                         <div className={s.nodeRow} key={`nodeRow-${index}`}>
-                            <div className={s.node}>{nodeRow.node1 ? nodeRow.node1.id : '-'}</div>
-                            <div className={s.node}>{nodeRow.node2 ? nodeRow.node2.id : '-'}</div>
+                            <div className={s.node}>
+                                {rpLinkRow.rpLink1 ? rpLinkRow.rpLink1.startNode.id : '-'}
+                            </div>
+                            <div className={s.node}>
+                                {rpLinkRow.rpLink2 ? rpLinkRow.rpLink2.startNode.id : '-'}
+                            </div>
                         </div>
                     );
                 })}
@@ -40,4 +43,4 @@ const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
 
 export default NodeDifferencesVisualizer;
 
-export { INodeRow };
+export { IRoutePathLinkRow };
