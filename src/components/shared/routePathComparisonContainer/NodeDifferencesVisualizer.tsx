@@ -1,17 +1,21 @@
 import classnames from 'classnames';
+import { isEmpty } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import NodeType from '~/enums/nodeType';
+import StartNodeType from '~/enums/startNodeType';
 import { IRoutePath } from '~/models';
 import codeListStore from '~/stores/codeListStore';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
 import NodeUtils from '~/utils/NodeUtils';
+import ComparableRow from './ComparableRow';
 import { getRpLinkRows, IComparableRoutePathLink } from './NodeDifferenceVisualizerHelper';
 import * as s from './nodeDifferencesVisualizer.scss';
 
 interface INodeDifferencesVisualizerProps {
     routePath1: IRoutePath;
     routePath2: IRoutePath;
+    areEqualPropertiesVisible: boolean;
     routePathComparisonStore?: RoutePathComparisonStore;
 }
 
@@ -21,9 +25,15 @@ interface IRoutePathLinkRow {
     areNodesEqual: boolean;
 }
 
+interface INodePropertyRow {
+    label: string;
+    value1: string;
+    value2: string;
+}
+
 const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
     observer((props: INodeDifferencesVisualizerProps) => {
-        const { routePath1, routePath2 } = props;
+        const { routePath1, routePath2, areEqualPropertiesVisible } = props;
 
         const rpLinkRows: IRoutePathLinkRow[] = getRpLinkRows({ routePath1, routePath2 });
         return (
@@ -37,16 +47,12 @@ const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
                     return (
                         <div className={s.nodeRow} key={`nodeRow-${index}`}>
                             {_renderNodeHeader({ rpLink1, rpLink2, areNodesEqual })}
-                            <div className={s.nodeContainers}>
-                                {_renderLeftNodeContainer({
-                                    areNodesEqual,
-                                    rpLink: rpLink1,
-                                })}
-                                {_renderRightNodeContainer({
-                                    areNodesEqual,
-                                    rpLink: rpLink2,
-                                })}
-                            </div>
+                            {_renderNodeContainers({
+                                rpLink1,
+                                rpLink2,
+                                areNodesEqual,
+                                areEqualPropertiesVisible,
+                            })}
                         </div>
                     );
                 })}
@@ -90,98 +96,182 @@ const _renderNodeHeader = ({
     );
 };
 
-const _renderLeftNodeContainer = ({
-    rpLink,
+const _renderNodeContainers = ({
+    rpLink1,
+    rpLink2,
     areNodesEqual,
+    areEqualPropertiesVisible,
 }: {
-    rpLink: IComparableRoutePathLink | null;
+    rpLink1: IComparableRoutePathLink | null;
+    rpLink2: IComparableRoutePathLink | null;
     areNodesEqual: boolean;
+    areEqualPropertiesVisible: boolean;
 }) => {
-    return _renderNodeContainer({
-        rpLink,
-        areNodesEqual,
-        className: classnames(areNodesEqual ? s.alignContentLeft : s.alignContentRight),
+    const nodePropertiesList: INodePropertyRow[] = [];
+    _insertValuesIntoNodePropertiesList({
+        nodePropertiesList,
+        rpLink1,
+        rpLink2,
+        label: 'Erikoistyyppi',
+        property: 'startNodeUsage',
     });
-};
-
-const _renderRightNodeContainer = ({
-    rpLink,
-    areNodesEqual,
-}: {
-    rpLink: IComparableRoutePathLink | null;
-    areNodesEqual: boolean;
-}) => {
-    return _renderNodeContainer({
-        rpLink,
-        areNodesEqual,
-        className: classnames(areNodesEqual ? s.alignContentRight : s.alignContentLeft),
+    _insertValuesIntoNodePropertiesList({
+        nodePropertiesList,
+        rpLink1,
+        rpLink2,
+        label: 'Ajantasauspysäkki',
+        property: 'startNodeTimeAlignmentStop',
     });
-};
+    _insertValuesIntoNodePropertiesList({
+        nodePropertiesList,
+        rpLink1,
+        rpLink2,
+        label: 'Hastus paikka',
+        property: 'isStartNodeHastusStop',
+    });
+    _insertValuesIntoNodePropertiesList({
+        nodePropertiesList,
+        rpLink1,
+        rpLink2,
+        label: 'Pysäkki käytössä',
+        property: 'startNodeType',
+    });
+    _insertValuesIntoNodePropertiesList({
+        nodePropertiesList,
+        rpLink1,
+        rpLink2,
+        label: 'Ohitusaika kirja-aikataulussa',
+        property: 'isStartNodeUsingBookSchedule',
+    });
+    _insertValuesIntoNodePropertiesList({
+        nodePropertiesList,
+        rpLink1,
+        rpLink2,
+        label: 'Pysäkin sarakenumero kirja-aikataulussa',
+        property: 'startNodeBookScheduleColumnNumber',
+    });
 
-// TODO: _renderNodeSeparateRow // _renderNodeComparableRow
-const _renderNodeContainer = ({
-    rpLink,
-    areNodesEqual,
-    className,
-}: {
-    rpLink: IComparableRoutePathLink | null;
-    areNodesEqual: Boolean;
-    className: string;
-}) => {
     return (
-        <div className={classnames(s.nodeContainer, className)}>
-            <div className={s.propertiesContainer}>
-                {rpLink && (
-                    <>
-                        {_renderNodeProperty({
-                            label: 'Erikoistyyppi',
-                            value: rpLink.startNodeUsage,
-                            funcName: 'startNodeUsage',
-                        })}
-                        {_renderNodeProperty({
-                            label: 'Ajantasauspysäkki',
-                            value: rpLink.startNodeTimeAlignmentStop,
-                        })}
-                        {_renderNodeProperty({
-                            label: 'Hastus paikka',
-                            value: rpLink.isStartNodeHastusStop,
-                        })}
-                        {_renderNodeProperty({
-                            label: 'Pysäkki ei käytössä',
-                            value: rpLink.startNodeType,
-                        })}
-                        {_renderNodeProperty({
-                            label: 'Ohitusaika kirja-aikataulussa',
-                            value: rpLink.isStartNodeUsingBookSchedule,
-                        })}
-                        {_renderNodeProperty({
-                            label: 'Pysäkin sarakenumero kirja-aikataulussa',
-                            value: rpLink.startNodeBookScheduleColumnNumber,
-                        })}
-                    </>
-                )}
-            </div>
+        <div className={s.nodeContainers}>
+            {_renderNodeRows({ nodePropertiesList, areNodesEqual, areEqualPropertiesVisible })}
         </div>
     );
 };
 
-const getRpLinkValuesObj = {
+const rpLinkValueMapperObj = {
     startNodeUsage: (value: string) => codeListStore.getCodeListLabel('Pysäkin käyttö', value),
+    startNodeTimeAlignmentStop: (value: string) =>
+        codeListStore.getCodeListLabel('Ajantasaus pysakki', value),
+    startNodeType: (value: string) => (value === StartNodeType.DISABLED ? 'Ei' : 'Kyllä'),
 };
 
-const _renderNodeProperty = ({
-    label,
-    value,
-    funcName,
+const _getNodeValue = ({
+    rpLink,
+    property,
 }: {
+    rpLink: IComparableRoutePathLink | null;
+    property: string;
+}): string => {
+    if (!rpLink) return '';
+    const rawValue = rpLink[property];
+    const valueMapper = rpLinkValueMapperObj[property];
+    return valueMapper ? valueMapper(rawValue) : rawValue;
+};
+
+const _insertValuesIntoNodePropertiesList = ({
+    nodePropertiesList,
+    label,
+    property,
+    rpLink1,
+    rpLink2,
+}: {
+    nodePropertiesList: INodePropertyRow[];
     label: string;
-    value: any;
-    funcName?: string;
+    property: string;
+    rpLink1: IComparableRoutePathLink | null;
+    rpLink2: IComparableRoutePathLink | null;
+}): INodePropertyRow[] => {
+    const value1 = _getNodeValue({ property, rpLink: rpLink1 });
+    const value2 = _getNodeValue({ property, rpLink: rpLink2 });
+
+    if (isEmpty(value1) && isEmpty(value2)) {
+        return nodePropertiesList;
+    }
+
+    nodePropertiesList.push({
+        label,
+        value1,
+        value2,
+    });
+    return nodePropertiesList;
+};
+
+const _renderNodeRows = ({
+    nodePropertiesList,
+    areNodesEqual,
+    areEqualPropertiesVisible,
+}: {
+    areNodesEqual: boolean;
+    nodePropertiesList: INodePropertyRow[];
+    areEqualPropertiesVisible: boolean;
 }) => {
-    const _value = funcName ? getRpLinkValuesObj[funcName](value) : value;
+    if (nodePropertiesList.length === 0) {
+        return <div>Ei näytettäviä tietoja.</div>;
+    }
+
+    return nodePropertiesList.map((nodePropertyRow: INodePropertyRow, index: number) => {
+        const key = `row-${index}`;
+
+        return areNodesEqual
+            ? _renderComparableRow({ nodePropertyRow, areEqualPropertiesVisible, key })
+            : _renderNodeSeparateRow({ nodePropertyRow, key });
+    });
+};
+
+const _renderComparableRow = ({
+    nodePropertyRow,
+    areEqualPropertiesVisible,
+    key,
+}: {
+    nodePropertyRow: INodePropertyRow;
+    areEqualPropertiesVisible: boolean;
+    key: string;
+}) => {
+    const { label, value1, value2 } = nodePropertyRow;
+
+    if (!areEqualPropertiesVisible && value1 === value2) {
+        return null;
+    }
+
+    return <ComparableRow key={key} label={label} value1={value1} value2={value2} />;
+};
+
+const _renderNodeSeparateRow = ({
+    nodePropertyRow,
+    key,
+}: {
+    nodePropertyRow: INodePropertyRow;
+    key: string;
+}) => {
+    const { label, value1, value2 } = nodePropertyRow;
     return (
-        <div className={s.nodeProperty}>
-            {label} {_value}
+        <div className={s.separateNodeRow} key={key}>
+            <div className={s.alignContentLeft}>
+                {!isEmpty(value1) && (
+                    <>
+                        <div className={s.label}>{label}</div>
+                        <div className={s.value}>{value1}</div>
+                    </>
+                )}
+            </div>
+            <div className={s.alignContentRight}>
+                {!isEmpty(value2) && (
+                    <>
+                        <div className={s.label}>{label}</div>
+                        <div className={s.value}>{value2}</div>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

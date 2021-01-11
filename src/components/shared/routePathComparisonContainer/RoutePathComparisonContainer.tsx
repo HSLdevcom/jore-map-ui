@@ -91,6 +91,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                     <NodeDifferencesVisualizer
                         routePath1={props.routePath1}
                         routePath2={props.routePath2}
+                        areEqualPropertiesVisible={areEqualPropertiesVisible}
                     />
                 </div>
             </div>

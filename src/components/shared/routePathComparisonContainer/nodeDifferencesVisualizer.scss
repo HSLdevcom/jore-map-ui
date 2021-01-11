@@ -1,4 +1,5 @@
 @import '../styles/common';
+@import './routePathComparisonContainer';
 
 $nodeContainerWidthPercentage: 50%;
 
@@ -11,10 +12,11 @@ $nodeContainerWidthPercentage: 50%;
         flex-direction: column;
         justify-content: space-between;
         width: 100%;
+        margin-top: 10px;
 
         .headerContainer {
             display: flex;
-            margin-top: 10px;
+
             &.headerTextCommon {
                 display: flex;
                 width: 100%;
@@ -32,31 +34,35 @@ $nodeContainerWidthPercentage: 50%;
 
         .nodeContainers {
             display: flex;
-            margin-top: 5px;
+            flex-direction: column;
 
-            .nodeContainer {
+            .separateNodeRow {
                 display: flex;
-                flex-direction: column;
-                width: $nodeContainerWidthPercentage;
+                width: 100%;
+                font-size: $smallFontSize;
+                padding: $rowPadding;
 
-                .propertiesContainer {
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: inherit;
+                .label {
+                    padding: $rowPadding;
+                }
 
-                    .nodeProperty {
-                        display: flex;
-                        font-size: $smallFontSize;
-                        justify-content: inherit;
-                    }
+                .value {
+                    padding: $rowPadding;
                 }
             }
 
             .alignContentLeft {
-                justify-content: flex-end;
+                display: flex;
+                flex-direction: column;
+                width: $nodeContainerWidthPercentage;
+                align-items: flex-start;
             }
+
             .alignContentRight {
-                justify-content: flex-start;
+                display: flex;
+                flex-direction: column;
+                width: $nodeContainerWidthPercentage;
+                align-items: flex-end;
             }
         }
     }

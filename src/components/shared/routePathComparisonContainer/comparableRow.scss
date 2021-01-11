@@ -1,21 +1,22 @@
 @import '../styles/common';
+@import './routePathComparisonContainer';
 
 .comparableRow {
     display: flex;
     flex-direction: column;
     width: 100%;
     font-size: $smallFontSize;
-    padding: 2px;
+    padding: $rowPadding;
 
     .label {
         text-align: center;
-        padding: 2px;
+        padding: $rowPadding;
     }
 
     .values {
         display: flex;
         flex-direction: row;
-        padding: 2px;
+        padding: $rowPadding;
 
         .value {
             display: flex;
