@@ -25,10 +25,12 @@ $nodeContainerWidthPercentage: 50%;
             }
         }
         .headerTextLeft {
+            color: red;
             width: $nodeContainerWidthPercentage;
             text-align: start;
         }
         .headerTextRight {
+            color: green;
             width: $nodeContainerWidthPercentage;
             text-align: end;
         }
