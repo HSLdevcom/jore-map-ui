@@ -107,53 +107,40 @@ const _renderNodeContainers = ({
     areNodesEqual: boolean;
     areEqualPropertiesVisible: boolean;
 }) => {
-    const nodePropertiesList: INodePropertyRow[] = [];
-    _insertValuesIntoNodePropertiesList({
-        nodePropertiesList,
-        rpLink1,
-        rpLink2,
-        label: 'Erikoistyyppi',
-        property: 'startNodeUsage',
-    });
-    _insertValuesIntoNodePropertiesList({
-        nodePropertiesList,
-        rpLink1,
-        rpLink2,
+    let nodePropertiesList: INodePropertyRow[] = [];
+    const _insertValues = ({ label, property }: { label: string; property: string }) => {
+        nodePropertiesList = _insertValuesIntoNodePropertiesLists({
+            nodePropertiesList,
+            areNodesEqual,
+            areEqualPropertiesVisible,
+            rpLink1,
+            rpLink2,
+            label,
+            property,
+        });
+    };
+    _insertValues({ label: 'Erikoistyyppi', property: 'startNodeUsage' });
+    _insertValues({
         label: 'Ajantasauspysäkki',
         property: 'startNodeTimeAlignmentStop',
     });
-    _insertValuesIntoNodePropertiesList({
-        nodePropertiesList,
-        rpLink1,
-        rpLink2,
+    _insertValues({
         label: 'Hastus paikka',
         property: 'isStartNodeHastusStop',
     });
-    _insertValuesIntoNodePropertiesList({
-        nodePropertiesList,
-        rpLink1,
-        rpLink2,
-        label: 'Pysäkki käytössä',
-        property: 'startNodeType',
-    });
-    _insertValuesIntoNodePropertiesList({
-        nodePropertiesList,
-        rpLink1,
-        rpLink2,
+    _insertValues({ label: 'Pysäkki käytössä', property: 'startNodeType' });
+    _insertValues({
         label: 'Ohitusaika kirja-aikataulussa',
         property: 'isStartNodeUsingBookSchedule',
     });
-    _insertValuesIntoNodePropertiesList({
-        nodePropertiesList,
-        rpLink1,
-        rpLink2,
+    _insertValues({
         label: 'Pysäkin sarakenumero kirja-aikataulussa',
         property: 'startNodeBookScheduleColumnNumber',
     });
 
     return (
         <div className={s.nodeContainers}>
-            {_renderNodeRows({ nodePropertiesList, areNodesEqual, areEqualPropertiesVisible })}
+            {_renderNodeRows({ nodePropertiesList, areNodesEqual })}
         </div>
     );
 };
@@ -178,14 +165,18 @@ const _getNodeValue = ({
     return valueMapper ? valueMapper(rawValue) : rawValue;
 };
 
-const _insertValuesIntoNodePropertiesList = ({
+const _insertValuesIntoNodePropertiesLists = ({
     nodePropertiesList,
+    areNodesEqual,
+    areEqualPropertiesVisible,
     label,
     property,
     rpLink1,
     rpLink2,
 }: {
     nodePropertiesList: INodePropertyRow[];
+    areNodesEqual: boolean;
+    areEqualPropertiesVisible: boolean;
     label: string;
     property: string;
     rpLink1: IComparableRoutePathLink | null;
@@ -195,6 +186,11 @@ const _insertValuesIntoNodePropertiesList = ({
     const value2 = _getNodeValue({ property, rpLink: rpLink2 });
 
     if (isEmpty(value1) && isEmpty(value2)) {
+        return nodePropertiesList;
+    }
+
+    // Equal properties are hidden only from equal nodes
+    if (areNodesEqual && !areEqualPropertiesVisible && value1 === value2) {
         return nodePropertiesList;
     }
 
@@ -209,11 +205,9 @@ const _insertValuesIntoNodePropertiesList = ({
 const _renderNodeRows = ({
     nodePropertiesList,
     areNodesEqual,
-    areEqualPropertiesVisible,
 }: {
     areNodesEqual: boolean;
     nodePropertiesList: INodePropertyRow[];
-    areEqualPropertiesVisible: boolean;
 }) => {
     if (nodePropertiesList.length === 0) {
         return <div>Ei näytettäviä tietoja.</div>;
@@ -223,26 +217,19 @@ const _renderNodeRows = ({
         const key = `row-${index}`;
 
         return areNodesEqual
-            ? _renderComparableRow({ nodePropertyRow, areEqualPropertiesVisible, key })
+            ? _renderComparableRow({ nodePropertyRow, key })
             : _renderNodeSeparateRow({ nodePropertyRow, key });
     });
 };
 
 const _renderComparableRow = ({
     nodePropertyRow,
-    areEqualPropertiesVisible,
     key,
 }: {
     nodePropertyRow: INodePropertyRow;
-    areEqualPropertiesVisible: boolean;
     key: string;
 }) => {
     const { label, value1, value2 } = nodePropertyRow;
-
-    if (!areEqualPropertiesVisible && value1 === value2) {
-        return null;
-    }
-
     return <ComparableRow key={key} label={label} value1={value1} value2={value2} />;
 };
 
