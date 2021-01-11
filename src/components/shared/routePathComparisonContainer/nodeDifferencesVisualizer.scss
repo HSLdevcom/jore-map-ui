@@ -1,15 +1,63 @@
+@import '../styles/common';
+
+$nodeContainerWidthPercentage: 50%;
+
 .nodeDifferencesVisualizer {
     display: flex;
     flex-direction: column;
 
     .nodeRow {
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
         width: 100%;
 
-        .node {
+        .headerContainer {
             display: flex;
-            width: 50%;
+            margin-top: 10px;
+            &.headerTextCommon {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .headerTextLeft {
+            width: $nodeContainerWidthPercentage;
+            text-align: start;
+        }
+        .headerTextRight {
+            width: $nodeContainerWidthPercentage;
+            text-align: end;
+        }
+
+        .nodeContainers {
+            display: flex;
+            margin-top: 5px;
+
+            .nodeContainer {
+                display: flex;
+                flex-direction: column;
+                width: $nodeContainerWidthPercentage;
+
+                .propertiesContainer {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: inherit;
+
+                    .nodeProperty {
+                        display: flex;
+                        font-size: $smallFontSize;
+                        justify-content: inherit;
+                    }
+                }
+            }
+
+            .alignContentLeft {
+                justify-content: flex-end;
+            }
+            .alignContentRight {
+                justify-content: flex-start;
+            }
         }
     }
 }
