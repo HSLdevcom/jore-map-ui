@@ -14,7 +14,7 @@ interface IComparableRoutePathLink extends Omit<IRoutePathLink, 'endNode'> {
     endNode: INode | null;
 }
 
-// Create a simple INodeRow[] list so that the UI component can easilly render it
+// Create a simple IRoutePathLinkRow[] list so that the UI component can easilly render it
 const getRpLinkRows = ({
     routePath1,
     routePath2,
@@ -32,13 +32,9 @@ const getRpLinkRows = ({
     const nodeRows: IRoutePathLinkRow[] = [];
     let aIndex = 0;
     let bIndex = 0;
-    while (true) {
-        // This exit is just in case something goes terribly wrong.
-        // Countering unexpected (unsupported by this code) routePath structure
-        // Expecting that no routePath will ever be more than 10000 links long.
-        if (aIndex > 10000 || bIndex > 10000) {
-            break;
-        }
+    // Exit loop if it doesn't end, better than using while(true)
+    // Expecting that no routePath will ever be more than 10000 links long
+    while (aIndex < 10000 && bIndex < 10000) {
         const rpLink1: IComparableRoutePathLink | null = rpLinks1[aIndex];
         const rpLink2: IComparableRoutePathLink | null = rpLinks2[bIndex];
 
