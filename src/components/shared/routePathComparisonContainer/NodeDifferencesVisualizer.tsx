@@ -210,7 +210,7 @@ const _renderNodeRows = ({
     nodePropertiesList: INodePropertyRow[];
 }) => {
     if (nodePropertiesList.length === 0) {
-        return <div>Ei näytettäviä tietoja.</div>;
+        return <div className={s.noResults}>Ei näytettäviä tietoja.</div>;
     }
 
     return nodePropertiesList.map((nodePropertyRow: INodePropertyRow, index: number) => {

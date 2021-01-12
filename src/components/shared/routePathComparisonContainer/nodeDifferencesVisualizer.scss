@@ -67,6 +67,11 @@ $nodeContainerWidthPercentage: 50%;
                 width: $nodeContainerWidthPercentage;
                 align-items: flex-end;
             }
+
+            .noResults  {
+                padding: 5px;
+                font-style: italic;
+            }
         }
     }
 }
