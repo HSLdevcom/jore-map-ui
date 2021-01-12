@@ -5,6 +5,7 @@ import propertyCodeLists from '~/codeLists/propertyCodeLists';
 import { IRoutePath } from '~/models';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
 import ComparableRow, { getAreValuesEqual } from './ComparableRow';
+import NodeDifferencesVisualizer from './NodeDifferencesVisualizer';
 import * as s from './routePathComparisonContainer.scss';
 
 interface IRoutePathComparisonContainerProps {
@@ -86,6 +87,13 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                 </div>
                 <div className={s.differencesContainer}>{renderRoutePathDifference()}</div>
                 <div className={s.subTopic}>Solmujen tiedot</div>
+                <div>
+                    <NodeDifferencesVisualizer
+                        routePath1={props.routePath1}
+                        routePath2={props.routePath2}
+                        areEqualPropertiesVisible={areEqualPropertiesVisible}
+                    />
+                </div>
             </div>
         );
     })

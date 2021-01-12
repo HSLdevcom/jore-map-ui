@@ -1,0 +1,77 @@
+@import '../styles/common';
+@import './routePathComparisonContainer';
+
+$nodeContainerWidthPercentage: 50%;
+
+.nodeDifferencesVisualizer {
+    display: flex;
+    flex-direction: column;
+
+    .nodeRow {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        border-top: 1px solid $borderLightGrey;
+        padding: 10px 0px 10px 0px;
+
+        .headerContainer {
+            display: flex;
+
+            &.headerTextCommon {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        .headerTextLeft {
+            color: red;
+            width: $nodeContainerWidthPercentage;
+            text-align: start;
+        }
+        .headerTextRight {
+            color: green;
+            width: $nodeContainerWidthPercentage;
+            text-align: end;
+        }
+
+        .nodeContainers {
+            display: flex;
+            flex-direction: column;
+
+            .separateNodeRow {
+                display: flex;
+                width: 100%;
+                font-size: $smallFontSize;
+                padding: $rowPadding;
+
+                .label {
+                    padding: $rowPadding;
+                }
+
+                .value {
+                    padding: $rowPadding;
+                }
+            }
+
+            .alignContentLeft {
+                display: flex;
+                flex-direction: column;
+                width: $nodeContainerWidthPercentage;
+                align-items: flex-start;
+            }
+
+            .alignContentRight {
+                display: flex;
+                flex-direction: column;
+                width: $nodeContainerWidthPercentage;
+                align-items: flex-end;
+            }
+
+            .noResults  {
+                padding: 5px;
+                font-style: italic;
+            }
+        }
+    }
+}

@@ -1,5 +1,7 @@
 @import '../styles/common';
 
+$rowPadding: 2px;
+
 .routePathComparisonContainer {
     height: 100%;
     display: flex;
@@ -8,7 +10,7 @@
     padding: 20px;
 
     .subTopic {
-        font-size: $mediumFontSize;
+        font-size: $largeFontSize;
         margin-top: 15px;
         margin-bottom: 15px;
     }
@@ -36,6 +38,7 @@
     }
 
     .noResults  {
+        padding: 5px;
         font-style: italic;
     }
 }
