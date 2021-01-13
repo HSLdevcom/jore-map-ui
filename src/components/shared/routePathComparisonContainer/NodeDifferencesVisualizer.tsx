@@ -16,6 +16,7 @@ interface INodeDifferencesVisualizerProps {
     routePath1: IRoutePath;
     routePath2: IRoutePath;
     areEqualPropertiesVisible: boolean;
+    areCrossroadsVisible: boolean;
     routePathComparisonStore?: RoutePathComparisonStore;
 }
 
@@ -33,7 +34,7 @@ interface INodePropertyRow {
 
 const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
     observer((props: INodeDifferencesVisualizerProps) => {
-        const { routePath1, routePath2, areEqualPropertiesVisible } = props;
+        const { routePath1, routePath2, areEqualPropertiesVisible, areCrossroadsVisible } = props;
 
         const rpLinkRows: IRoutePathLinkRow[] = getRpLinkRows({ routePath1, routePath2 });
         return (
@@ -44,6 +45,13 @@ const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
                     const areNodesEqual = Boolean(
                         rpLink1 && rpLink2 && rpLink1.startNode.id === rpLink2.startNode.id
                     );
+                    if (
+                        !areCrossroadsVisible &&
+                        areNodesEqual &&
+                        rpLink1!.startNode.type === NodeType.CROSSROAD
+                    ) {
+                        return;
+                    }
                     return (
                         <div className={s.nodeRow} key={`nodeRow-${index}`}>
                             {_renderNodeHeader({ rpLink1, rpLink2, areNodesEqual })}

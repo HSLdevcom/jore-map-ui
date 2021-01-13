@@ -40,6 +40,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
     observer((props: IRoutePathComparisonContainerProps) => {
         const { routePath1, routePath2 } = props;
         const [areEqualPropertiesVisible, setEqualPropertiesVisible] = useState<boolean>(false);
+        const [areCrossroadsVisible, setCrossroadsVisible] = useState<boolean>(false);
         const rp1: IComparableRoutePath = omit(routePath1, excludedRoutePathProperties);
         const rp2: IComparableRoutePath = omit(routePath2, excludedRoutePathProperties);
         useEffect(() => {
@@ -78,11 +79,21 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
             <div className={s.routePathComparisonContainer}>
                 <div className={s.firstSubTopicContainer}>
                     <div className={s.subTopic}>Reitinsuuntien tiedot</div>
-                    <div
-                        className={s.hideEqualInformationButton}
-                        onClick={() => setEqualPropertiesVisible(!areEqualPropertiesVisible)}
-                    >
-                        {areEqualPropertiesVisible ? 'Piilota samat tiedot' : 'Näytä samat tiedot'}
+                    <div className={s.toggleButtonContainer}>
+                        <div
+                            className={s.toggleButton}
+                            onClick={() => setEqualPropertiesVisible(!areEqualPropertiesVisible)}
+                        >
+                            {areEqualPropertiesVisible
+                                ? 'Piilota samat tiedot'
+                                : 'Näytä samat tiedot'}
+                        </div>
+                        <div
+                            className={s.toggleButton}
+                            onClick={() => setCrossroadsVisible(!areCrossroadsVisible)}
+                        >
+                            {areCrossroadsVisible ? 'Piilota risteykset' : 'Näytä risteykset'}
+                        </div>
                     </div>
                 </div>
                 <div className={s.differencesContainer}>{renderRoutePathDifference()}</div>
@@ -92,6 +103,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                         routePath1={props.routePath1}
                         routePath2={props.routePath2}
                         areEqualPropertiesVisible={areEqualPropertiesVisible}
+                        areCrossroadsVisible={areCrossroadsVisible}
                     />
                 </div>
             </div>
