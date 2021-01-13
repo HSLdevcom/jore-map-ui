@@ -18,20 +18,34 @@ const getAreValuesEqual = (value1: any, value2: any) => {
 const ComparableRow = inject()(
     observer((props: IRoutePathComparisonContainerProps) => {
         const { label, value1, value2 } = props;
-        const renderValue = (value: any, className: string) => {
-            return (
-                <div className={classnames(s.value, className)}>
-                    {value instanceof Date ? toDateString(value) : value}
-                </div>
-            );
+        const _getValue = (value: any) => {
+            return value instanceof Date ? toDateString(value) : value;
         };
         const areValuesEqual = getAreValuesEqual(value1, value2);
         return (
             <div className={s.comparableRow}>
                 <div className={s.label}>{label}</div>
                 <div className={classnames(s.values, areValuesEqual ? s.equalValues : undefined)}>
-                    {renderValue(value1, s.leftValue)}
-                    {renderValue(value2, s.rightValue)}
+                    <div className={classnames(s.valueContainer, s.leftValueContainer)}>
+                        <div
+                            className={classnames(
+                                s.leftValue,
+                                !areValuesEqual ? s.valueChanged : undefined
+                            )}
+                        >
+                            {_getValue(value1)}
+                        </div>
+                    </div>
+                    <div className={classnames(s.valueContainer, s.rightValueContainer)}>
+                        <div
+                            className={classnames(
+                                s.rightValue,
+                                !areValuesEqual ? s.valueChanged : undefined
+                            )}
+                        >
+                            {_getValue(value2)}
+                        </div>
+                    </div>
                 </div>
             </div>
         );

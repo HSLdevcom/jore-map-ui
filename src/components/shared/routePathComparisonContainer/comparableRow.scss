@@ -18,18 +18,33 @@
         flex-direction: row;
         padding: $rowPadding;
 
-        .value {
+        .valueContainer {
             display: flex;
             width: 50%;
+
+            .leftValue {
+                justify-content: flex-end;
+                margin-right: 10px;
+                &.valueChanged {
+                    background-color: $oldPropertyBackgroundColor;
+                    display: inline-block;
+                }
+            }
+            .rightValue {
+                justify-content: flex-start;
+                margin-left: 10px;
+                &.valueChanged {
+                    background-color: $newPropertyBackgroundColor;
+                    display: inline-block;
+                }
+            }
         }
 
-        .leftValue {
+        .leftValueContainer {
             justify-content: flex-end;
-            margin-right: 10px;
         }
-        .rightValue {
+        .rightValueContainer {
             justify-content: flex-start;
-            margin-left: 10px;
         }
     }
 
