@@ -2,6 +2,8 @@
 @import './routePathComparisonContainer';
 
 $nodeContainerWidthPercentage: 50%;
+$nodeLeftColor: red;
+$nodeRightColor: green;
 
 .nodeDifferencesVisualizer {
     display: flex;
@@ -23,10 +25,15 @@ $nodeContainerWidthPercentage: 50%;
                 display: flex;
                 width: 100%;
                 justify-content: center;
+                cursor: pointer;
             }
             &.stopHeader {
                 color: $busBlue;
                 font-weight: bold;
+            }
+            &.stopHeader:hover {
+                transition: 0.5s;
+                color: darken($busBlue, 10%);
             }
 
             .transitTypeIconWrapper {
@@ -36,15 +43,25 @@ $nodeContainerWidthPercentage: 50%;
         }
         .headerTextLeft {
             display: flex;
-            color: red;
+            color: $nodeLeftColor;
             width: $nodeContainerWidthPercentage;
             text-align: start;
+            cursor: pointer;
+        }
+        .headerTextLeft:hover {
+            transition: 0.5s;
+            color: darken($nodeLeftColor, 10%);
         }
         .headerTextRight {
             display: flex;
-            color: green;
+            color: $nodeRightColor;
             width: $nodeContainerWidthPercentage;
             text-align: end;
+            cursor: pointer;
+        }
+        .headerTextRight:hover {
+            transition: 0.5s;
+            color: darken($nodeRightColor, 10%);
         }
 
         .nodeContainers {

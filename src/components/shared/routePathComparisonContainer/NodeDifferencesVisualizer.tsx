@@ -6,6 +6,7 @@ import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { IRoutePath } from '~/models';
 import codeListStore from '~/stores/codeListStore';
+import { MapStore } from '~/stores/mapStore';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
 import NodeUtils from '~/utils/NodeUtils';
 import TransitTypeNodeIcon from '../TransitTypeNodeIcon';
@@ -19,6 +20,7 @@ interface INodeDifferencesVisualizerProps {
     areEqualPropertiesVisible: boolean;
     areCrossroadsVisible: boolean;
     routePathComparisonStore?: RoutePathComparisonStore;
+    mapStore?: MapStore;
 }
 
 interface IRoutePathLinkRow {
@@ -33,7 +35,10 @@ interface INodePropertyRow {
     value2: string;
 }
 
-const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
+const NodeDifferencesVisualizer = inject(
+    'routePathComparisonStore',
+    'mapStore'
+)(
     observer((props: INodeDifferencesVisualizerProps) => {
         const { routePath1, routePath2, areEqualPropertiesVisible, areCrossroadsVisible } = props;
 
@@ -55,7 +60,12 @@ const NodeDifferencesVisualizer = inject('routePathComparisonStore')(
                     }
                     return (
                         <div className={s.nodeRow} key={`nodeRow-${index}`}>
-                            {_renderNodeHeader({ rpLink1, rpLink2, areNodesEqual })}
+                            {_renderNodeHeader({
+                                rpLink1,
+                                rpLink2,
+                                areNodesEqual,
+                                mapStore: props.mapStore,
+                            })}
                             {_renderNodeContainers({
                                 rpLink1,
                                 rpLink2,
@@ -74,10 +84,12 @@ const _renderNodeHeader = ({
     rpLink1,
     rpLink2,
     areNodesEqual,
+    mapStore,
 }: {
     rpLink1: IComparableRoutePathLink | null;
     rpLink2: IComparableRoutePathLink | null;
     areNodesEqual: boolean;
+    mapStore?: MapStore;
 }) => {
     const _getHeaderText = (rpLink: IComparableRoutePathLink) => {
         const node = rpLink.startNode;
@@ -104,6 +116,10 @@ const _renderNodeHeader = ({
             </div>
         );
     };
+    const _centerMapToNode = (rpLink: IComparableRoutePathLink) => {
+        const node = rpLink.startNode;
+        mapStore!.setCoordinates(node.coordinates);
+    };
     if (areNodesEqual) {
         const headerText = _getHeaderText(rpLink1!);
         return (
@@ -113,6 +129,7 @@ const _renderNodeHeader = ({
                     s.headerTextCommon,
                     rpLink1!.startNode.type === NodeType.STOP ? s.stopHeader : undefined
                 )}
+                onClick={() => _centerMapToNode(rpLink1!)}
             >
                 {_renderIcon(rpLink1!)}
                 {headerText}
@@ -121,7 +138,10 @@ const _renderNodeHeader = ({
     }
     return (
         <div className={s.headerContainer}>
-            <div className={s.headerTextLeft}>
+            <div
+                className={s.headerTextLeft}
+                onClick={rpLink1 ? () => _centerMapToNode(rpLink1) : () => void 0}
+            >
                 {rpLink1 && (
                     <>
                         {_renderIcon(rpLink1)}
@@ -129,7 +149,10 @@ const _renderNodeHeader = ({
                     </>
                 )}
             </div>
-            <div className={s.headerTextRight}>
+            <div
+                className={s.headerTextRight}
+                onClick={rpLink2 ? () => _centerMapToNode(rpLink2) : () => void 0}
+            >
                 {rpLink2 && (
                     <>
                         {_renderIcon(rpLink2)}
