@@ -17,6 +17,7 @@ $nodeContainerWidthPercentage: 50%;
 
         .headerContainer {
             display: flex;
+            align-items: center;
 
             &.headerTextCommon {
                 display: flex;
@@ -27,13 +28,20 @@ $nodeContainerWidthPercentage: 50%;
                 color: $busBlue;
                 font-weight: bold;
             }
+
+            .transitTypeIconWrapper {
+                display: flex;
+                margin: 0px 5px 0px 5px;
+            }
         }
         .headerTextLeft {
+            display: flex;
             color: red;
             width: $nodeContainerWidthPercentage;
             text-align: start;
         }
         .headerTextRight {
+            display: flex;
             color: green;
             width: $nodeContainerWidthPercentage;
             text-align: end;

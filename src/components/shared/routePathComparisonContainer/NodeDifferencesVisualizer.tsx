@@ -8,6 +8,7 @@ import { IRoutePath } from '~/models';
 import codeListStore from '~/stores/codeListStore';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
 import NodeUtils from '~/utils/NodeUtils';
+import TransitTypeNodeIcon from '../TransitTypeNodeIcon';
 import ComparableRow from './ComparableRow';
 import { getRpLinkRows, IComparableRoutePathLink } from './NodeDifferenceVisualizerHelper';
 import * as s from './nodeDifferencesVisualizer.scss';
@@ -88,6 +89,21 @@ const _renderNodeHeader = ({
         header += `${node.shortIdString}`;
         return header;
     };
+    const _renderIcon = (rpLink: IComparableRoutePathLink) => {
+        const node = rpLink.startNode;
+        return (
+            <div className={s.transitTypeIconWrapper}>
+                <TransitTypeNodeIcon
+                    nodeType={node.type}
+                    transitTypes={node.transitTypes}
+                    isTimeAlignmentStop={false}
+                    isDisabled={false}
+                    isHighlighted={false}
+                    highlightColor={'yellow'}
+                />
+            </div>
+        );
+    };
     if (areNodesEqual) {
         const headerText = _getHeaderText(rpLink1!);
         return (
@@ -98,16 +114,29 @@ const _renderNodeHeader = ({
                     rpLink1!.startNode.type === NodeType.STOP ? s.stopHeader : undefined
                 )}
             >
+                {_renderIcon(rpLink1!)}
                 {headerText}
             </div>
         );
     }
-    const headerTextLeft = rpLink1 ? _getHeaderText(rpLink1) : '';
-    const headerTextRight = rpLink2 ? _getHeaderText(rpLink2) : '';
     return (
         <div className={s.headerContainer}>
-            <div className={s.headerTextLeft}>{headerTextLeft}</div>
-            <div className={s.headerTextRight}>{headerTextRight}</div>
+            <div className={s.headerTextLeft}>
+                {rpLink1 && (
+                    <>
+                        {_renderIcon(rpLink1)}
+                        {_getHeaderText(rpLink1)}
+                    </>
+                )}
+            </div>
+            <div className={s.headerTextRight}>
+                {rpLink2 && (
+                    <>
+                        {_renderIcon(rpLink2)}
+                        {_getHeaderText(rpLink2)}
+                    </>
+                )}
+            </div>
         </div>
     );
 };
