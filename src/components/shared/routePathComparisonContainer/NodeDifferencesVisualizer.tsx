@@ -148,7 +148,13 @@ const _renderNodeContainers = ({
 
     return (
         <div className={s.nodeContainers}>
-            {_renderNodeRows({ nodePropertiesList, areNodesEqual })}
+            {nodePropertiesList.map((nodePropertyRow: INodePropertyRow, index: number) => {
+                const key = `row-${index}`;
+
+                return areNodesEqual
+                    ? _renderComparableRow({ nodePropertyRow, key })
+                    : _renderNodeSeparateRow({ nodePropertyRow, key });
+            })}
         </div>
     );
 };
@@ -191,8 +197,14 @@ const _insertValuesIntoNodePropertiesLists = ({
     rpLink1: IComparableRoutePathLink | null;
     rpLink2: IComparableRoutePathLink | null;
 }): INodePropertyRow[] => {
-    const value1 = _getNodeValue({ property, rpLink: rpLink1 });
-    const value2 = _getNodeValue({ property, rpLink: rpLink2 });
+    const value1 =
+        rpLink1 && rpLink1.startNode.type === NodeType.STOP
+            ? _getNodeValue({ property, rpLink: rpLink1 })
+            : '';
+    const value2 =
+        rpLink2 && rpLink2.startNode.type === NodeType.STOP
+            ? _getNodeValue({ property, rpLink: rpLink2 })
+            : '';
 
     if (isEmpty(value1) && isEmpty(value2)) {
         return nodePropertiesList;
@@ -209,26 +221,6 @@ const _insertValuesIntoNodePropertiesLists = ({
         value2,
     });
     return nodePropertiesList;
-};
-
-const _renderNodeRows = ({
-    nodePropertiesList,
-    areNodesEqual,
-}: {
-    areNodesEqual: boolean;
-    nodePropertiesList: INodePropertyRow[];
-}) => {
-    if (nodePropertiesList.length === 0) {
-        return <div className={s.noResults}>Ei näytettäviä tietoja.</div>;
-    }
-
-    return nodePropertiesList.map((nodePropertyRow: INodePropertyRow, index: number) => {
-        const key = `row-${index}`;
-
-        return areNodesEqual
-            ? _renderComparableRow({ nodePropertyRow, key })
-            : _renderNodeSeparateRow({ nodePropertyRow, key });
-    });
 };
 
 const _renderComparableRow = ({
