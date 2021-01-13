@@ -23,6 +23,10 @@ $nodeContainerWidthPercentage: 50%;
                 width: 100%;
                 justify-content: center;
             }
+            &.stopHeader {
+                color: $busBlue;
+                font-weight: bold;
+            }
         }
         .headerTextLeft {
             color: red;

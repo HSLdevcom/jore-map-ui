@@ -83,7 +83,15 @@ const _renderNodeHeader = ({
     if (areNodesEqual) {
         const headerText = _getHeaderText(rpLink1!);
         return (
-            <div className={classnames(s.headerContainer, s.headerTextCommon)}>{headerText}</div>
+            <div
+                className={classnames(
+                    s.headerContainer,
+                    s.headerTextCommon,
+                    rpLink1!.startNode.type === NodeType.STOP ? s.stopHeader : undefined
+                )}
+            >
+                {headerText}
+            </div>
         );
     }
     const headerTextLeft = rpLink1 ? _getHeaderText(rpLink1) : '';
