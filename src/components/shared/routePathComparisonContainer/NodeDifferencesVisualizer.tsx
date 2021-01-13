@@ -158,6 +158,7 @@ const rpLinkValueMapperObj = {
     startNodeTimeAlignmentStop: (value: string) =>
         codeListStore.getCodeListLabel('Ajantasaus pysakki', value),
     startNodeType: (value: string) => (value === StartNodeType.DISABLED ? 'Ei' : 'Kyllä'),
+    isStartNodeHastusStop: (value: string) => (value ? 'Kyllä' : 'Ei'),
 };
 
 const _getNodeValue = ({
