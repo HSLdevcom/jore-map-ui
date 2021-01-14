@@ -63,7 +63,6 @@ interface IRoutePathViewProps {
 interface IRoutePathViewState {
     isLoading: boolean;
     isRoutePathCalculatedLengthLoading: boolean;
-    isCompareRoutePathsContainerVisible: boolean;
 }
 
 @inject(
@@ -88,7 +87,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.state = {
             isLoading: true,
             isRoutePathCalculatedLengthLoading: false,
-            isCompareRoutePathsContainerVisible: false,
         };
     }
 
@@ -362,27 +360,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
-    private redirectToRoutePathComparisonView = () => {
-        const routePath = this.props.routePathStore!.routePath!;
-        const routePathComparisonLink = routeBuilder
-            .to(SubSites.routePathComparison)
-            .toTarget(
-                ':id',
-                [
-                    routePath.lineId,
-                    routePath.routeId,
-                    Moment(routePath.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-                    routePath.direction,
-                ].join(',')
-            )
-            .toLink();
-        navigator.goTo({ link: routePathComparisonLink });
-    };
-
     private openCompareRoutePathsContainer = () => {
-        this._setState({
-            isCompareRoutePathsContainerVisible: true,
-        });
+        this.props.routePathStore!.setIsCompareRoutePathsContainerVisible(true);
     };
 
     render() {
@@ -439,14 +418,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             Suunta {routePath.direction}: {routePath.originFi} -{' '}
                             {routePath.destinationFi}
                         </div>
-                        <Button
-                            className={s.openRoutePathComparisonViewButton}
-                            onClick={() => this.redirectToRoutePathComparisonView()}
-                            disabled={false}
-                            hasBorderRadius={true}
-                        >
-                            Vertaile
-                        </Button>
                     </div>
                 </div>
 
@@ -454,11 +425,24 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <RoutePathCopySegmentView />
                 ) : (
                     <>
-                        {this.state.isCompareRoutePathsContainerVisible ? (
-                            <RoutePathComparisonContainer
-                                routePath1={routePathStore!.oldRoutePath!}
-                                routePath2={routePath}
-                            />
+                        {routePathStore!.isCompareRoutePathsContainerVisible ? (
+                            <>
+                                <Button
+                                    isWide={true}
+                                    hasNoMargin={true}
+                                    onClick={() =>
+                                        routePathStore!.setIsCompareRoutePathsContainerVisible(
+                                            false
+                                        )
+                                    }
+                                >
+                                    Takaisin muokkaamaan
+                                </Button>
+                                <RoutePathComparisonContainer
+                                    routePath1={routePathStore!.oldRoutePath!}
+                                    routePath2={routePath}
+                                />
+                            </>
                         ) : (
                             <Tabs>
                                 <TabList
@@ -490,7 +474,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                 </ContentList>
                             </Tabs>
                         )}
-                        {this.state.isCompareRoutePathsContainerVisible ? (
+                        {routePathStore!.isCompareRoutePathsContainerVisible ? (
                             <SaveButton
                                 onClick={() => {
                                     if (

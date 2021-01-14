@@ -345,6 +345,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                             onClick={() =>
                                                 this.props.selectRoutePathToBeCompared(routePath)
                                             }
+                                            title={'Valitse 2 reitinsuuntaa vertailtavaksi'}
                                         >
                                             V
                                         </Button>
