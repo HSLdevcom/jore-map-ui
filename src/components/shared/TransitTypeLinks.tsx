@@ -18,7 +18,7 @@ const TransitTypeLinks = inject()(
         return (
             <div className={s.transitTypeLinks}>
                 <TransitTypeLink
-                    transitType={TransitType.BUS}
+                    transitType={transitType}
                     shouldShowTransitTypeIcon={true}
                     text={lineId}
                     onClick={() => NavigationUtils.openLineView({ lineId })}

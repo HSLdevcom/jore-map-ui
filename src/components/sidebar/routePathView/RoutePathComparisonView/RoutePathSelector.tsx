@@ -2,7 +2,6 @@ import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import Dropdown, { IDropdownItem } from '~/components/controls/Dropdown';
-import TransitType from '~/enums/transitType';
 import { ISearchLine } from '~/models/ILine';
 import RouteService from '~/services/routeService';
 import { toDateString } from '~/utils/dateUtils';
@@ -104,7 +103,6 @@ const RoutePathSelector = inject()(
                 lineId: lineId!,
                 routeId: routeId!,
                 startDate: Moment(startDate, 'DD.MM.YYYY').toDate(),
-                transitType: TransitType.BUS, // TODO: this should come from somewhere (props?)
             });
         };
 

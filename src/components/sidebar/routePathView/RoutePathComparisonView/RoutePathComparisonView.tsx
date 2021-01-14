@@ -4,7 +4,6 @@ import { match } from 'react-router';
 import { Checkbox } from '~/components/controls';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
-import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
 import { ISearchLine } from '~/models/ILine';
 import LineService from '~/services/lineService';
@@ -25,7 +24,6 @@ interface IRoutePathSelection {
     routeId: string;
     startDate?: Date;
     direction?: string;
-    transitType: TransitType;
 }
 
 enum RoutePathSelection {
@@ -56,14 +54,12 @@ const RoutePathComparisonView = inject()(
             routeId: routeId1,
             startDate: startDate1,
             direction: direction1,
-            transitType: TransitType.BUS, // TODO: change
         });
         const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection>({
             lineId: lineId2 ? lineId2 : lineId1,
             routeId: routeId2 ? routeId2 : routeId1,
             startDate: startDate2,
             direction: direction2,
-            transitType: TransitType.BUS, // TODO: change
         });
         const [routePath1, setRoutePath1] = useState<IRoutePath | null>(null);
         const [routePath2, setRoutePath2] = useState<IRoutePath | null>(null);
