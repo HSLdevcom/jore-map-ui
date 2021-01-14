@@ -474,7 +474,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                 </ContentList>
                             </Tabs>
                         )}
-                        {routePathStore!.isCompareRoutePathsContainerVisible ? (
+                        {this.props.isNewRoutePath ||
+                        routePathStore!.isCompareRoutePathsContainerVisible ? (
                             <SaveButton
                                 onClick={() => {
                                     if (
