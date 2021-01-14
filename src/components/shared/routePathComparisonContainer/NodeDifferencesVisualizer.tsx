@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNumber } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import NodeType from '~/enums/nodeType';
@@ -249,6 +249,8 @@ const rpLinkValueMapperObj = {
         codeListStore.getCodeListLabel('Ajantasaus pysakki', value),
     startNodeType: (value: string) => (value === StartNodeType.DISABLED ? 'Ei' : 'Kyllä'),
     isStartNodeHastusStop: (value: string) => (value ? 'Kyllä' : 'Ei'),
+    isStartNodeUsingBookSchedule: (value: boolean) => (value ? 'Kyllä' : 'Ei'),
+    startNodeBookScheduleColumnNumber: (value?: number) => (value ? String(value) : ''),
 };
 
 const _getNodeValue = ({
@@ -289,8 +291,10 @@ const _insertValuesIntoNodePropertiesLists = ({
         rpLink2 && rpLink2.startNode.type === NodeType.STOP
             ? _getNodeValue({ property, rpLink: rpLink2 })
             : '';
-
-    if (isEmpty(value1) && isEmpty(value2)) {
+    const isValueValid = (value: any) => {
+        return value && (isNumber(value) || value.length > 0);
+    };
+    if (!isValueValid(value1) && !isValueValid(value2)) {
         return nodePropertiesList;
     }
 
