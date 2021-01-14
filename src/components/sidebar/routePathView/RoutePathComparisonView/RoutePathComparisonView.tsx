@@ -72,11 +72,13 @@ const RoutePathComparisonView = inject()(
             const fetchRoutePath = async (
                 routePathSelection: IRoutePathSelection
             ): Promise<IRoutePath> => {
-                const rp: IRoutePath | null = await RoutePathService.fetchRoutePath(
-                    routePathSelection!.routeId,
-                    routePathSelection!.startDate!,
-                    routePathSelection!.direction!
-                );
+                const { routeId, startDate, direction } = routePathSelection;
+                const rp: IRoutePath | null = await RoutePathService.fetchRoutePath({
+                    routeId,
+                    startDate: startDate!,
+                    direction: direction!,
+                    shouldFetchViaNames: true,
+                });
                 if (!rp) {
                     throw `RoutePath not found: ${routePathSelection.routeId} ${routePathSelection.direction} ${routePathSelection.startDate}`;
                 }

@@ -69,11 +69,12 @@ class RoutePathLayerListStore {
             ? this.colorScale.reserveColor()
             : this.colorScale.releaseColor(routePath.color!);
         if (routePath.isVisible && routePath.routePathLinks.length === 0) {
-            const routePathWithGeometry = await RoutePathService.fetchRoutePath(
-                routePath.routeId,
-                routePath.startDate,
-                routePath.direction
-            );
+            const routePathWithGeometry = await RoutePathService.fetchRoutePath({
+                routeId: routePath.routeId,
+                startDate: routePath.startDate,
+                direction: routePath.direction,
+                shouldFetchViaNames: false,
+            });
             this.setRoutePathLinksToRoutePath(routePathWithGeometry!.routePathLinks, id);
         }
     };

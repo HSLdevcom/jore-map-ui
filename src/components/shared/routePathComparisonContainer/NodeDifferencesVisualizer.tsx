@@ -206,7 +206,30 @@ const _renderNodeContainers = ({
         label: 'Pysäkin sarakenumero kirja-aikataulussa',
         property: 'startNodeBookScheduleColumnNumber',
     });
-
+    _insertValues({
+        label: '1. Määränpää suomeksi',
+        property: 'destinationFi1',
+    });
+    _insertValues({
+        label: '2. Määränpää suomeksi',
+        property: 'destinationFi2',
+    });
+    _insertValues({
+        label: '1. Määränpää ruotsiksi',
+        property: 'destinationSw1',
+    });
+    _insertValues({
+        label: '2. Määränpää ruotsiksi',
+        property: 'destinationSw2',
+    });
+    _insertValues({
+        label: '1. Määränpää kilpi suomeksi',
+        property: 'destinationShieldFi',
+    });
+    _insertValues({
+        label: '2. Määränpää kilpi ruotsiksi',
+        property: 'destinationShieldSw',
+    });
     return (
         <div className={s.nodeContainers}>
             {nodePropertiesList.map((nodePropertyRow: INodePropertyRow, index: number) => {

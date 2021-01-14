@@ -15,8 +15,7 @@ import RoutePathComparisonContainer from '~/components/shared/routePathCompariso
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener from '~/helpers/EventListener';
-import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
-import IViaShieldName from '~/models/IViaShieldName';
+import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -27,7 +26,6 @@ import RoutePathService, {
     IRoutePathLengthResponse,
 } from '~/services/routePathService';
 import RouteService from '~/services/routeService';
-import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -220,11 +218,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private fetchRoutePath = async () => {
         const [routeId, startDateString, direction] = this.props.match!.params.id.split(',');
-        const routePath = await RoutePathService.fetchRoutePath(
+        const routePath = await RoutePathService.fetchRoutePath({
             routeId,
-            startDateString,
-            direction
-        );
+            direction,
+            startDate: startDateString,
+            shouldFetchViaNames: true,
+        });
         if (!routePath) {
             this.props.errorStore!.addError(
                 `Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startDateString}, suunta ${direction}) haku ei onnistunut.`
@@ -233,56 +232,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             navigator.goTo({ link: homeViewLink });
             return;
         }
-        await this.fetchViaNames(routePath);
         await this.fetchExistingRoutePaths({ routeId });
         this.centerMapToRoutePath(routePath);
         this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
-    };
-
-    // fetch & set viaName properties to routePathLink
-    private fetchViaNames = async (routePath: IRoutePath) => {
-        try {
-            const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
-
-            const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
-                routeId: routePath.routeId,
-                startDate: routePath.startDate,
-                direction: routePath.direction,
-            });
-
-            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldNamesByRpPrimaryKey(
-                {
-                    routeId: routePath.routeId,
-                    startDate: routePath.startDate,
-                    direction: routePath.direction,
-                }
-            );
-
-            routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-                const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
-                if (viaName) {
-                    routePathLink.viaNameId = viaName.viaNameId;
-                    routePathLink.destinationFi1 = viaName?.destinationFi1;
-                    routePathLink.destinationFi2 = viaName?.destinationFi2;
-                    routePathLink.destinationSw1 = viaName?.destinationSw1;
-                    routePathLink.destinationSw2 = viaName?.destinationSw2;
-                }
-                const viaShieldName = viaShieldNames.find(
-                    (viaShieldName) => viaShieldName.viaShieldNameId === routePathLink.id
-                );
-                if (viaShieldName) {
-                    routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
-                    routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
-                    routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
-                }
-            });
-        } catch (err) {
-            this.props.errorStore!.addError(
-                'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.',
-                err
-            );
-        }
-        return [];
     };
 
     private updateCalculatedLength = async () => {

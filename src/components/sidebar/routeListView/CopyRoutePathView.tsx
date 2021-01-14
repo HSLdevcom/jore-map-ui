@@ -161,11 +161,13 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                 selectedRoutePaths,
             });
         } else {
-            const routePathWithLinks = await RoutePathService.fetchRoutePath(
-                routePath.routeId,
-                routePath.startDate,
-                routePath.direction
-            );
+            const { routeId, startDate, direction } = routePath;
+            const routePathWithLinks = await RoutePathService.fetchRoutePath({
+                routeId,
+                startDate,
+                direction,
+                shouldFetchViaNames: false,
+            });
             // State might already have this routePath (async query, selecting item twice quickly. Read fresh selectedRoutePaths variable from state)
             let selectedRoutePaths = this.state.selectedRoutePaths;
             // isFoundFromQueryResult is used to ensure that routePathQueryResult still has routePath to select
