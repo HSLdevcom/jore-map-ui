@@ -97,8 +97,9 @@ const _renderNodeHeader = ({
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
         let header = node.type === NodeType.STOP ? stopName : nodeTypeName;
         header += ` ${node.id}`;
-        header += ` ${node.shortIdLetter}`;
-        header += `${node.shortIdString}`;
+        let shortId = node.shortIdLetter ? node.shortIdLetter : '';
+        shortId += node.shortIdString ? node.shortIdString : '';
+        header += !isEmpty(shortId) ? ` ${shortId}` : '';
         return header;
     };
     const _renderIcon = (rpLink: IComparableRoutePathLink) => {

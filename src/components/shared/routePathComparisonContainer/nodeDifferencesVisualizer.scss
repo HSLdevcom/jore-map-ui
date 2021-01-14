@@ -45,7 +45,6 @@ $nodeRightColor: green;
             display: flex;
             color: $nodeLeftColor;
             width: $nodeContainerWidthPercentage;
-            text-align: start;
             cursor: pointer;
         }
         .headerTextLeft:hover {
@@ -56,7 +55,6 @@ $nodeRightColor: green;
             display: flex;
             color: $nodeRightColor;
             width: $nodeContainerWidthPercentage;
-            text-align: end;
             cursor: pointer;
         }
         .headerTextRight:hover {
