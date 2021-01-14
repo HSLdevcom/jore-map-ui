@@ -576,17 +576,16 @@ class RoutePathStore {
     };
 
     @action
-    public setIsRoutePathLengthFormedByMeasuredLengths = (
-        isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean
-    ) => {
-        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    public setIsRoutePathLengthFormedByMeasuredLengths = (isFormedByMeasuredLengths: boolean) => {
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isFormedByMeasuredLengths;
     };
 
     @action
-    public setIsCompareRoutePathsContainerVisible = (
-        isCompareRoutePathsContainerVisible: boolean
-    ) => {
-        this._isCompareRoutePathsContainerVisible = isCompareRoutePathsContainerVisible;
+    public setIsCompareRoutePathsContainerVisible = (isVisible: boolean) => {
+        this._isCompareRoutePathsContainerVisible = isVisible;
+        if (isVisible) {
+            ToolbarStore.selectTool(null);
+        }
     };
 
     @action
