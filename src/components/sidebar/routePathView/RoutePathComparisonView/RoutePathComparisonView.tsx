@@ -1,4 +1,5 @@
 import { inject, observer } from 'mobx-react';
+import Moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { match } from 'react-router';
 import { Checkbox } from '~/components/controls';
@@ -6,6 +7,9 @@ import { IDropdownItem } from '~/components/controls/Dropdown';
 import Loader from '~/components/shared/loader/Loader';
 import { IRoutePath } from '~/models';
 import { ISearchLine } from '~/models/ILine';
+import navigator from '~/routing/navigator';
+import routeBuilder from '~/routing/routeBuilder';
+import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
 import { createLineDropdownItems } from '~/utils/dropdownUtils';
@@ -34,40 +38,25 @@ enum RoutePathSelection {
 const RoutePathComparisonView = inject()(
     observer((props: IRoutePathComparisonViewProps) => {
         const [isLoading, setIsLoading] = useState<boolean>(true);
-        const [
-            lineId1,
-            routeId1,
-            startDate1,
-            direction1,
-            lineId2,
-            routeId2,
-            startDate2,
-            direction2,
-        ] = props.match!.params.id.split(',');
         const [lineQueryResult, setLineQueryResult] = useState<ISearchLine[]>([]);
         const [lineDropdownItems, setLineDropdownItems] = useState<IDropdownItem[]>([]);
         const [areInactiveLinesHidden, setAreInactiveLinesHidden] = useState<boolean>(true);
-        // TODO: get selectedRoutePath2 from URL too. Maybe use ?routePath1=...&routePath2=... syntax
 
-        const [routePathSelection1, setRoutePathSelection1] = useState<IRoutePathSelection>({
-            lineId: lineId1,
-            routeId: routeId1,
-            startDate: startDate1,
-            direction: direction1,
-        });
-        const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection>({
-            lineId: lineId2 ? lineId2 : lineId1,
-            routeId: routeId2 ? routeId2 : routeId1,
-            startDate: startDate2,
-            direction: direction2,
-        });
+        const [defaultRp1Selection, defaultRp2Selection] = _getRoutePathSelectionsFromUrlParams(
+            props.match!.params.id
+        );
+        const [routePathSelection1, setRoutePathSelection1] = useState<IRoutePathSelection>(
+            defaultRp1Selection
+        );
+        const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection>(
+            defaultRp2Selection
+        );
         const [routePath1, setRoutePath1] = useState<IRoutePath | null>(null);
         const [routePath2, setRoutePath2] = useState<IRoutePath | null>(null);
 
         useEffect(() => {
             const fetch = async () => {
                 const lineQueryResult: ISearchLine[] = await LineService.fetchAllSearchLines();
-                // TODO: transitType filtering?
                 const result: IDropdownItem[] = createLineDropdownItems({
                     areInactiveLinesHidden,
                     lines: lineQueryResult,
@@ -103,6 +92,28 @@ const RoutePathComparisonView = inject()(
                 fetchRoutePaths();
             }
         }, [routePathSelection1, routePathSelection2]);
+
+        useEffect(() => {
+            if (routePath1 && routePath2) {
+                const routePathComparisonLink = routeBuilder
+                    .to(SubSites.routePathComparison)
+                    .toTarget(
+                        ':id',
+                        [
+                            routePath1.lineId,
+                            routePath1.routeId,
+                            Moment(routePath1.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                            routePath1.direction,
+                            routePath2.lineId,
+                            routePath2.routeId,
+                            Moment(routePath2.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                            routePath2.direction,
+                        ].join(',')
+                    )
+                    .toLink();
+                navigator.goTo({ link: routePathComparisonLink });
+            }
+        }, [routePath1, routePath2]);
 
         const deselectRoutePath = (routePathSelection: RoutePathSelection) => {
             if (routePathSelection === RoutePathSelection.ROUTEPATH_1) {
@@ -182,6 +193,33 @@ const RoutePathComparisonView = inject()(
         );
     })
 );
+
+const _getRoutePathSelectionsFromUrlParams = (urlParams: string): IRoutePathSelection[] => {
+    const [
+        lineId1,
+        routeId1,
+        startDate1,
+        direction1,
+        lineId2,
+        routeId2,
+        startDate2,
+        direction2,
+    ] = urlParams.split(',');
+    return [
+        {
+            lineId: lineId1,
+            routeId: routeId1,
+            startDate: Moment(startDate1, 'YYYY-MM-DDTHH:mm:ss').toDate(),
+            direction: direction1,
+        },
+        {
+            lineId: lineId2 ? lineId2 : lineId1,
+            routeId: routeId2 ? routeId2 : routeId1,
+            startDate: startDate2 ? Moment(startDate2, 'YYYY-MM-DDTHH:mm:ss').toDate() : undefined,
+            direction: direction2,
+        },
+    ];
+};
 
 export default RoutePathComparisonView;
 
