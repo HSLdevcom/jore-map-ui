@@ -104,11 +104,11 @@ const RoutePathComparisonView = inject()(
                         [
                             routePath1.lineId,
                             routePath1.routeId,
-                            Moment(routePath1.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                            Moment(routePath1.startDate).format('DD.MM.YYYY'),
                             routePath1.direction,
                             routePath2.lineId,
                             routePath2.routeId,
-                            Moment(routePath2.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                            Moment(routePath2.startDate).format('DD.MM.YYYY'),
                             routePath2.direction,
                         ].join(',')
                     )
@@ -211,13 +211,13 @@ const _getRoutePathSelectionsFromUrlParams = (urlParams: string): IRoutePathSele
         {
             lineId: lineId1,
             routeId: routeId1,
-            startDate: Moment(startDate1, 'YYYY-MM-DDTHH:mm:ss').toDate(),
+            startDate: Moment(startDate1, 'DD.MM.YYYY').toDate(),
             direction: direction1,
         },
         {
             lineId: lineId2 ? lineId2 : lineId1,
             routeId: routeId2 ? routeId2 : routeId1,
-            startDate: startDate2 ? Moment(startDate2, 'YYYY-MM-DDTHH:mm:ss').toDate() : undefined,
+            startDate: startDate2 ? Moment(startDate2, 'DD.MM.YYYY').toDate() : undefined,
             direction: direction2,
         },
     ];

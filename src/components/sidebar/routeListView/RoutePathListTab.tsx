@@ -578,11 +578,11 @@ const _redirectToRoutePathComparisonView = (rp1: IRoutePath, rp2: IRoutePath) =>
             [
                 rp1.lineId,
                 rp1.routeId,
-                Moment(rp1.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                Moment(rp1.startDate).format('DD.MM.YYYY'),
                 rp1.direction,
                 rp2.lineId,
                 rp2.routeId,
-                Moment(rp2.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+                Moment(rp2.startDate).format('DD.MM.YYYY'),
                 rp2.direction,
             ].join(',')
         )
