@@ -1,7 +1,9 @@
 import { inject, observer } from 'mobx-react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiXCircle } from 'react-icons/fi';
 import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
+import TransitType from '~/enums/transitType';
+import LineService from '~/services/lineService';
 import { toDateString } from '~/utils/dateUtils';
 import { IRoutePathSelection, RoutePathSelection } from './RoutePathComparisonView';
 import * as s from './routePathTabs.scss';
@@ -14,6 +16,17 @@ interface IRoutePathTabProps {
 const RoutePathTab = inject()(
     observer((props: IRoutePathTabProps) => {
         const routePath = props.routePath;
+        const [transitType, setTransitType] = useState<TransitType | null>(null);
+
+        useEffect(() => {
+            const fetchTransitType = async () => {
+                const line = await LineService.fetchLine(routePath.lineId);
+                setTransitType(line.transitType!);
+            };
+            if (routePath.lineId) {
+                fetchTransitType();
+            }
+        }, [routePath.lineId]);
 
         if (!routePath.startDate) {
             return <div className={s.routePathTabWrapper}>Ei valittua reitinsuuntaa.</div>;
@@ -22,12 +35,14 @@ const RoutePathTab = inject()(
         return (
             <div className={s.routePathTabWrapper}>
                 <div className={s.transitTypeLinks}>
-                    <TransitTypeLinks
-                        lineId={routePath.lineId}
-                        routeId={routePath.routeId}
-                        transitType={routePath.transitType}
-                        size={'medium'}
-                    />
+                    {transitType && (
+                        <TransitTypeLinks
+                            lineId={routePath.lineId}
+                            routeId={routePath.routeId}
+                            transitType={transitType}
+                            size={'medium'}
+                        />
+                    )}
                     <div
                         className={s.deselectRoutePathButton}
                         title={'Poista valinta'}

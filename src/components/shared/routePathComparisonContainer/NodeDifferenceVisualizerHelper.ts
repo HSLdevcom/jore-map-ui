@@ -4,9 +4,10 @@ import { IRoutePathLinkRow } from './NodeDifferencesVisualizer';
 
 /**
  * The algorithm behind this file is done with utilizing IComparableRoutePathLink's
- * We add an extra link to the end of given routePathLinks so that the underlying
- * algorithm doesn't have to take into account checks of reaching the endNode
- *
+ * We add an extra link to the end of given routePathLinks so that:
+ *  - the underlying algorithm doesn't have to take into account checks of reaching the endNode
+ *  - we get to add routePath.isStartNodeUsingBookSchedule and routePath.startNodeBookScheduleColumnNumber into
+ *    routePathLink which is a very nice thing
  * So, only the last IComparableRoutePathLink will have endNode marked as null.
  *
  **/
@@ -22,12 +23,8 @@ const getRpLinkRows = ({
     routePath1: IRoutePath;
     routePath2: IRoutePath;
 }): IRoutePathLinkRow[] => {
-    const rpLinks1: IComparableRoutePathLink[] = _getComparableRoutePathLinks(
-        routePath1.routePathLinks
-    );
-    const rpLinks2: IComparableRoutePathLink[] = _getComparableRoutePathLinks(
-        routePath2.routePathLinks
-    );
+    const rpLinks1: IComparableRoutePathLink[] = _getComparableRoutePathLinks(routePath1);
+    const rpLinks2: IComparableRoutePathLink[] = _getComparableRoutePathLinks(routePath2);
 
     const nodeRows: IRoutePathLinkRow[] = [];
     let aIndex = 0;
@@ -112,11 +109,15 @@ const getRpLinkRows = ({
 };
 
 // Add 1 extra routePathLink to the end which startNode is the current last element's endNode
-const _getComparableRoutePathLinks = (rpLinks: IRoutePathLink[]): IComparableRoutePathLink[] => {
+const _getComparableRoutePathLinks = (routePath: IRoutePath): IComparableRoutePathLink[] => {
+    const rpLinks = routePath.routePathLinks;
     let comparableRpLinks: IComparableRoutePathLink[] = rpLinks as IComparableRoutePathLink[];
     const extraElement = cloneDeep(comparableRpLinks[comparableRpLinks.length - 1]);
     extraElement.startNode = { ...extraElement.endNode! };
     extraElement.endNode = null;
+    // Add missing properties from routePath
+    extraElement.isStartNodeUsingBookSchedule = routePath.isStartNodeUsingBookSchedule;
+    extraElement.startNodeBookScheduleColumnNumber = routePath.startNodeBookScheduleColumnNumber;
     comparableRpLinks = comparableRpLinks.concat([extraElement]);
     return comparableRpLinks;
 };

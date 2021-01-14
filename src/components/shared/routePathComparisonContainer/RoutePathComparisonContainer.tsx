@@ -1,4 +1,4 @@
-import { forOwn, omit } from 'lodash';
+import { forOwn, pick } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 import propertyCodeLists from '~/codeLists/propertyCodeLists';
@@ -14,34 +14,42 @@ interface IRoutePathComparisonContainerProps {
     routePathComparisonStore?: RoutePathComparisonStore;
 }
 
-const excludedRoutePathProperties = [
-    'lineId',
-    'routeId',
-    'direction',
-    'startDate',
-    'routePathLinks',
-    'modifiedOn',
-    'modifiedBy',
-] as const;
-
 interface IComparableRoutePath
-    extends Omit<
+    extends Pick<
         IRoutePath,
-        | 'lineId'
-        | 'routeId'
-        | 'direction'
-        | 'startDate'
-        | 'routePathLinks'
-        | 'modifiedOn'
-        | 'modifiedBy'
+        | 'nameFi'
+        | 'nameSw'
+        | 'originFi'
+        | 'destinationFi'
+        | 'originSw'
+        | 'destinationSw'
+        | 'shortNameFi'
+        | 'shortNameSw'
+        | 'length'
+        | 'exceptionPath'
     > {}
+
+const comparableRoutePathProperties = [
+    'nameFi',
+    'nameSw',
+    'originFi',
+    'destinationFi',
+    'originSw',
+    'destinationSw',
+    'shortNameFi',
+    'shortNameSw',
+    'length',
+    'exceptionPath',
+] as const;
 
 const RoutePathComparisonContainer = inject('routePathComparisonStore')(
     observer((props: IRoutePathComparisonContainerProps) => {
         const { routePath1, routePath2 } = props;
         const [areEqualPropertiesVisible, setEqualPropertiesVisible] = useState<boolean>(false);
-        const rp1: IComparableRoutePath = omit(routePath1, excludedRoutePathProperties);
-        const rp2: IComparableRoutePath = omit(routePath2, excludedRoutePathProperties);
+        const [areCrossroadsVisible, setCrossroadsVisible] = useState<boolean>(false);
+        const comparableRp1: IComparableRoutePath = pick(routePath1, comparableRoutePathProperties);
+        const comparableRp2: IComparableRoutePath = pick(routePath2, comparableRoutePathProperties);
+
         useEffect(() => {
             props.routePathComparisonStore!.setRoutePath1(routePath1);
             props.routePathComparisonStore!.setRoutePath2(routePath2);
@@ -52,14 +60,24 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
         const renderRoutePathDifference = () => {
             const rows: any = [];
             let index: number = 0;
-            forOwn(rp1, (value1, key) => {
-                const value2 = rp2[key];
+
+            const _getValue = (value: any, property: string) => {
+                if (property === 'exceptionPath') {
+                    return value === '0' ? 'Ei' : 'Kyllä';
+                }
+                return value;
+            };
+
+            forOwn(comparableRp1, (rawValue1: any, property: string) => {
+                const value1 = _getValue(rawValue1, property);
+                const rawValue2 = comparableRp2[property];
+                const value2 = _getValue(rawValue2, property);
                 const areValuesEqual = getAreValuesEqual(value1, value2);
                 if (areEqualPropertiesVisible || !areValuesEqual) {
                     rows.push(
                         <ComparableRow
                             key={`row-${index}`}
-                            label={propertyCodeLists['routePath'][key]}
+                            label={propertyCodeLists['routePath'][property]}
                             value1={value1}
                             value2={value2}
                         />
@@ -78,11 +96,21 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
             <div className={s.routePathComparisonContainer}>
                 <div className={s.firstSubTopicContainer}>
                     <div className={s.subTopic}>Reitinsuuntien tiedot</div>
-                    <div
-                        className={s.hideEqualInformationButton}
-                        onClick={() => setEqualPropertiesVisible(!areEqualPropertiesVisible)}
-                    >
-                        {areEqualPropertiesVisible ? 'Piilota samat tiedot' : 'Näytä samat tiedot'}
+                    <div className={s.toggleButtonContainer}>
+                        <div
+                            className={s.toggleButton}
+                            onClick={() => setEqualPropertiesVisible(!areEqualPropertiesVisible)}
+                        >
+                            {areEqualPropertiesVisible
+                                ? 'Piilota samat tiedot'
+                                : 'Näytä samat tiedot'}
+                        </div>
+                        <div
+                            className={s.toggleButton}
+                            onClick={() => setCrossroadsVisible(!areCrossroadsVisible)}
+                        >
+                            {areCrossroadsVisible ? 'Piilota risteykset' : 'Näytä risteykset'}
+                        </div>
                     </div>
                 </div>
                 <div className={s.differencesContainer}>{renderRoutePathDifference()}</div>
@@ -92,6 +120,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                         routePath1={props.routePath1}
                         routePath2={props.routePath2}
                         areEqualPropertiesVisible={areEqualPropertiesVisible}
+                        areCrossroadsVisible={areCrossroadsVisible}
                     />
                 </div>
             </div>

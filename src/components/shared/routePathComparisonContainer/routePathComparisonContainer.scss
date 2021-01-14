@@ -20,15 +20,20 @@ $rowPadding: 2px;
         justify-content: space-between;
         width: 100%;
 
-        .hideEqualInformationButton {
-            text-decoration: underline;
-            font-size: $smallFontSize;
-            cursor: pointer;
-        }
-        .hideEqualInformationButton:hover {
-            transition: 0.5s;
-            color: $fontColorLightGrey;
-            height: 100%;
+        .toggleButtonContainer {
+            display: flex;
+
+            .toggleButton {
+                text-decoration: underline;
+                font-size: $smallFontSize;
+                cursor: pointer;
+                margin-left: 5px;
+            }
+            .toggleButton:hover {
+                transition: 0.5s;
+                color: $fontColorLightGrey;
+                height: 100%;
+            }
         }
     }
 

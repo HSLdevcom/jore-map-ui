@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
+import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
 import { IRoutePathLink } from '~/models';
+import RoutePathStore from './routePathStore';
 import ToolbarStore from './toolbarStore';
 
 class RoutePathLinkMassEditStore {
@@ -11,7 +13,15 @@ class RoutePathLinkMassEditStore {
 
         reaction(
             () => this._selectedMassEditRoutePathLinks.length,
-            _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+            _.debounce(
+                () =>
+                    updateDisabledRoutePathToolStatus({
+                        toolbarStore: ToolbarStore,
+                        routePathStore: RoutePathStore,
+                        routePathLinkMassEditStore: this,
+                    }),
+                25
+            )
         );
     }
 

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
+import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import routePathLinkValidationModel, {
@@ -16,6 +17,7 @@ import { IValidationResult } from '~/validation/FormValidator';
 import NavigationStore from './navigationStore';
 import RoutePathCopySegmentStore from './routePathCopySegmentStore';
 import RoutePathLayerStore from './routePathLayerStore';
+import RoutePathLinkMassEditStore from './routePathLinkMassEditStore';
 import ToolbarStore from './toolbarStore';
 import ValidationStore, { ICustomValidatorMap } from './validationStore';
 
@@ -46,6 +48,7 @@ class RoutePathStore {
     @observable private _selectedTabIndex: number;
     @observable private _calculatedRoutePathLength: number | null;
     @observable private _isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean;
+    @observable private _isCompareRoutePathsContainerVisible: boolean;
     @observable private _unmeasuredStopGapsList: string[][];
     @observable private _missingStopGapsList: string[][];
     private _routePathNodes: IRoutePathNodes | null;
@@ -68,6 +71,7 @@ class RoutePathStore {
         this._routePathLinkValidationStoreMap = new Map();
         this._calculatedRoutePathLength = null;
         this._isCalculatedRoutePathLengthFormedByMeasuredLengths = false;
+        this._isCompareRoutePathsContainerVisible = false;
 
         reaction(
             () => this.isDirty && !this._isEditingDisabled,
@@ -75,8 +79,19 @@ class RoutePathStore {
         );
         reaction(() => this._isEditingDisabled, this.onChangeIsEditingDisabled);
         reaction(
-            () => this._routePath && this._routePath.routePathLinks.length,
-            _.debounce(() => ToolbarStore.updateDisabledRoutePathToolStatus(), 25)
+            () => [
+                this._routePath && this._routePath.routePathLinks.length,
+                this._isCompareRoutePathsContainerVisible,
+            ],
+            _.debounce(
+                () =>
+                    updateDisabledRoutePathToolStatus({
+                        routePathStore: this,
+                        toolbarStore: ToolbarStore,
+                        routePathLinkMassEditStore: RoutePathLinkMassEditStore,
+                    }),
+                25
+            )
         );
         reaction(
             () => this.routePath && this.routePath.routePathLinks.length,
@@ -151,6 +166,11 @@ class RoutePathStore {
     @computed
     get isCalculatedRoutePathLengthFormedByMeasuredLengths() {
         return this._isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    }
+
+    @computed
+    get isCompareRoutePathsContainerVisible() {
+        return this._isCompareRoutePathsContainerVisible;
     }
 
     @computed
@@ -556,10 +576,16 @@ class RoutePathStore {
     };
 
     @action
-    public setIsRoutePathLengthFormedByMeasuredLengths = (
-        isCalculatedRoutePathLengthFormedByMeasuredLengths: boolean
-    ) => {
-        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isCalculatedRoutePathLengthFormedByMeasuredLengths;
+    public setIsRoutePathLengthFormedByMeasuredLengths = (isFormedByMeasuredLengths: boolean) => {
+        this._isCalculatedRoutePathLengthFormedByMeasuredLengths = isFormedByMeasuredLengths;
+    };
+
+    @action
+    public setIsCompareRoutePathsContainerVisible = (isVisible: boolean) => {
+        this._isCompareRoutePathsContainerVisible = isVisible;
+        if (isVisible) {
+            ToolbarStore.selectTool(null);
+        }
     };
 
     @action
@@ -746,6 +772,9 @@ class RoutePathStore {
                     selectedTool.toolType === ToolbarToolType.CopyRoutePathSegment)
             ) {
                 ToolbarStore.selectDefaultTool();
+            }
+            if (this.isCompareRoutePathsContainerVisible) {
+                this.setIsCompareRoutePathsContainerVisible(false);
             }
         } else {
             this._validationStore.validateAllProperties();
