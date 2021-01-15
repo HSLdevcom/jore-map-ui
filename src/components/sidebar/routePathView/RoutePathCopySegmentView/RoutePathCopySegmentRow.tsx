@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React, { useState } from 'react';
@@ -11,6 +12,7 @@ import SubSites from '~/routing/subSites';
 import RoutePathSegmentService from '~/services/routePathSegmentService';
 import { RoutePathCopySegmentStore } from '~/stores/routePathCopySegmentStore';
 import { RoutePathStore } from '~/stores/routePathStore';
+import { isCurrentDateWithinTimeSpan } from '~/utils/dateUtils';
 import * as s from './routePathCopySegmentRow.scss';
 
 interface IRoutePathCopySegmentRowProps {
@@ -101,10 +103,19 @@ const RoutePathCopySegmentRow = inject(
                         <div>
                             {routePathSegments.map(
                                 (rpSegment: IRoutePathSegment, index: number) => {
+                                    const shouldHighlightRpSegment = isCurrentDateWithinTimeSpan(
+                                        rpSegment.startDate,
+                                        rpSegment.endDate
+                                    );
                                     return (
                                         <div
                                             key={`routePathSegmentRow-${index}`}
-                                            className={s.routePathRowContainer}
+                                            className={classnames(
+                                                s.routePathRowContainer,
+                                                shouldHighlightRpSegment
+                                                    ? s.rpSegmentHighlighted
+                                                    : undefined
+                                            )}
                                             onMouseEnter={setHighlightedRpSegment(rpSegment)}
                                             onMouseLeave={setHighlightedRpSegment(null)}
                                         >
