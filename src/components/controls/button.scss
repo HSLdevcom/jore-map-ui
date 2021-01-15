@@ -71,3 +71,11 @@ $defaultBackgroundColor: $busBlue;
     pointer-events: none;
     color: $defaultColor;
 }
+.disabledClickable {
+    @extend .disabled;
+    cursor: pointer;
+    pointer-events: unset;
+}
+.disabledClickable:hover {
+    background-color: $disabledGreyHover;
+}

@@ -503,6 +503,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             <Button
                                 onClick={this.openCompareRoutePathsContainer}
                                 disabled={savePreventedNotification.length > 0}
+                                clickPreventedNotification={savePreventedNotification}
                                 hasPadding={true}
                             >
                                 Vertaile muutoksia
