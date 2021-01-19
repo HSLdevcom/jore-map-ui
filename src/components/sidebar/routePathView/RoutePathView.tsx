@@ -1,5 +1,5 @@
 import L from 'leaflet';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
@@ -364,6 +364,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         this.props.routePathStore!.setIsCompareRoutePathsContainerVisible(true);
     };
 
+    private showClickPreventedNotification = (notification: string) => {
+        this.props.alertStore!.setNotificationMessage({
+            message: notification,
+        });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -503,7 +509,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             <Button
                                 onClick={this.openCompareRoutePathsContainer}
                                 disabled={savePreventedNotification.length > 0}
-                                clickPreventedNotification={savePreventedNotification}
+                                onDisabledButtonClick={
+                                    !isEmpty(savePreventedNotification)
+                                        ? () =>
+                                              this.showClickPreventedNotification(
+                                                  savePreventedNotification
+                                              )
+                                        : undefined
+                                }
                                 hasPadding={true}
                             >
                                 Vertaile muutoksia
