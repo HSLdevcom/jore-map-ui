@@ -518,6 +518,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                         : undefined
                                 }
                                 hasPadding={true}
+                                data-cy='openCompareRoutePathsContainerButton'
                             >
                                 Vertaile muutoksia
                             </Button>
