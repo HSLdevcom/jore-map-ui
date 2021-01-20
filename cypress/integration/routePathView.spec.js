@@ -96,6 +96,8 @@ describe('RoutePathView tests - write access user', () => {
         cy.getTestElement('rpSegmentRowHeader').first().click();
         cy.getTestElement('copyRoutePathSegmentButton').first().click();
 
+        cy.getTestElement('openCompareRoutePathsContainerButton').click();
+
         cy.getTestElement('routePathSaveButton').click();
 
         cy.getTestElement('modalContainer').should('exist');
@@ -104,6 +106,8 @@ describe('RoutePathView tests - write access user', () => {
 
 const _saveRoutePath = () => {
     cy.saveButtonShouldBeActive();
+
+    cy.getTestElement('openCompareRoutePathsContainerButton').click();
 
     cy.getTestElement('routePathSaveButton').click();
 
