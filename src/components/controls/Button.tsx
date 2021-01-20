@@ -14,7 +14,10 @@ interface IButtonProps {
     isWide?: boolean;
     hasPadding?: boolean;
     hasReverseColor?: boolean;
+    hasBorderRadius?: boolean;
     hasNoTransition?: boolean;
+    hasNoMargin?: boolean;
+    onDisabledButtonClick?: () => void;
 }
 
 const Button = observer((props: IButtonProps) => {
@@ -41,14 +44,26 @@ const Button = observer((props: IButtonProps) => {
         hasPadding,
         hasReverseColor,
         hasNoTransition,
+        hasBorderRadius,
+        hasNoMargin,
+        onDisabledButtonClick,
         ...attrs
     } = props;
 
     const _onClick = () => {
-        if (!disabled) {
+        if (onDisabledButtonClick) {
+            onDisabledButtonClick();
+        } else if (!disabled) {
             onClick();
         }
     };
+
+    let disabledClass;
+    if (onDisabledButtonClick) {
+        disabledClass = s.disabledClickable;
+    } else if (disabled) {
+        disabledClass = s.disabled;
+    }
 
     return (
         <div
@@ -57,11 +72,13 @@ const Button = observer((props: IButtonProps) => {
                 s.button,
                 className,
                 getTypeClass(type),
-                disabled ? s.disabled : null,
-                isWide ? s.wide : null,
-                hasPadding ? s.hasPadding : null,
-                hasReverseColor ? s.reverseColor : null,
-                hasNoTransition ? null : s.transition
+                disabledClass,
+                isWide ? s.wide : undefined,
+                hasPadding ? s.hasPadding : undefined,
+                hasReverseColor ? s.reverseColor : undefined,
+                hasNoTransition ? undefined : s.transition,
+                hasBorderRadius ? s.borderRadius : undefined,
+                hasNoMargin ? s.hasNoMargin : undefined
             )}
             onClick={_onClick}
             title={title ? title : ''}

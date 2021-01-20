@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
+import Moment from 'moment';
 import React from 'react';
 import { Button } from '~/components/controls';
 import { ISaveModel } from '~/components/overlays/SavePrompt';
@@ -24,6 +25,7 @@ import { RouteListStore } from '~/stores/routeListStore';
 import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
+import RoutePathUtils from '~/utils/RoutePathUtils';
 import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
@@ -52,6 +54,7 @@ interface IRoutePathListTabState {
     hasOldRoutePaths: boolean | null;
     allGroupedRoutePaths: IRoutePath[][];
     groupedRoutePathsToDisplay: IRoutePath[][];
+    routePathSelectedToBeCompared: IRoutePath | null;
 }
 
 @inject(
@@ -77,6 +80,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             hasOldRoutePaths: null,
             allGroupedRoutePaths: [],
             groupedRoutePathsToDisplay: [],
+            routePathSelectedToBeCompared: null,
         };
     }
 
@@ -91,7 +95,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.fetchStopNames();
         this.selectedGroupsListener = reaction(
             () =>
-                this.props.isEditing && this.props.routePathMassEditStore!.selectedRoutePathIdGroups,
+                this.props.isEditing &&
+                this.props.routePathMassEditStore!.selectedRoutePathIdGroups,
             () => this.updateGroupedRoutePathsToDisplay()
         );
         this.routePathsListener = reaction(
@@ -192,11 +197,11 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         selectedRoutePathIdGroups.forEach((idGroup: string[]) => {
             const newRpGroup: IRoutePath[] = [];
             idGroup.forEach((id: string) => {
-                const rp = selectedRoutePaths.find(_rp => _rp.internalId === id);
+                const rp = selectedRoutePaths.find((_rp) => _rp.internalId === id);
                 newRpGroup.push(rp!);
-            })
+            });
             selectedRoutePathGroups.push(newRpGroup);
-        })
+        });
 
         // Take out new routePaths with unselected date from routePathsToGroup
         const newRoutePathGroups: IRoutePath[][] = [];
@@ -411,6 +416,27 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.props.routePathCopyStore!.init({ lineId, routeId, transitType });
     };
 
+    private selectRoutePathToBeCompared = (routePath: IRoutePath) => {
+        const isTheSameRoutePathCurrentlySelected =
+            this.state.routePathSelectedToBeCompared &&
+            RoutePathUtils.getAreRoutePathsEqual(
+                this.state.routePathSelectedToBeCompared,
+                routePath
+            );
+        if (
+            !isTheSameRoutePathCurrentlySelected &&
+            this.state.routePathSelectedToBeCompared !== null
+        ) {
+            _redirectToRoutePathComparisonView(this.state.routePathSelectedToBeCompared, routePath);
+        } else {
+            this._setState({
+                routePathSelectedToBeCompared: isTheSameRoutePathCurrentlySelected
+                    ? null
+                    : routePath,
+            });
+        }
+    };
+
     render() {
         const isEditing = this.props.isEditing;
         const routePaths = this.getRoutePaths();
@@ -455,6 +481,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                             stopNameMap={this.props.routeListStore!.stopNameMap}
                             areStopNamesLoading={this.state.areStopNamesLoading}
                             index={index}
+                            routePathSelectedToBeCompared={this.state.routePathSelectedToBeCompared}
+                            selectRoutePathToBeCompared={this.selectRoutePathToBeCompared}
                         />
                     );
                 })}
@@ -540,6 +568,26 @@ const _hasGroupRoutePathWithDirection = (
         if (hasDirection2 && rp.direction === '2') return true;
         return false;
     });
+};
+
+const _redirectToRoutePathComparisonView = (rp1: IRoutePath, rp2: IRoutePath) => {
+    const routePathComparisonLink = routeBuilder
+        .to(SubSites.routePathComparison)
+        .toTarget(
+            ':id',
+            [
+                rp1.lineId,
+                rp1.routeId,
+                Moment(rp1.startDate).format('DD.MM.YYYY'),
+                rp1.direction,
+                rp2.lineId,
+                rp2.routeId,
+                Moment(rp2.startDate).format('DD.MM.YYYY'),
+                rp2.direction,
+            ].join(',')
+        )
+        .toLink();
+    navigator.goTo({ link: routePathComparisonLink });
 };
 
 export default RoutePathListTab;

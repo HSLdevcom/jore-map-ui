@@ -1,0 +1,54 @@
+@import '../styles/common';
+@import './routePathComparisonContainer';
+
+.comparableRow {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: $smallFontSize;
+    padding: $rowPadding;
+
+    .label {
+        text-align: center;
+        padding: $rowPadding;
+    }
+
+    .values {
+        display: flex;
+        flex-direction: row;
+        padding: $rowPadding;
+
+        .valueContainer {
+            display: flex;
+            width: 50%;
+
+            .leftValue {
+                justify-content: flex-end;
+                margin-right: 10px;
+                &.valueChanged {
+                    background-color: $oldPropertyBackgroundColor;
+                    display: inline-block;
+                }
+            }
+            .rightValue {
+                justify-content: flex-start;
+                margin-left: 10px;
+                &.valueChanged {
+                    background-color: $newPropertyBackgroundColor;
+                    display: inline-block;
+                }
+            }
+        }
+
+        .leftValueContainer {
+            justify-content: flex-end;
+        }
+        .rightValueContainer {
+            justify-content: flex-start;
+        }
+    }
+
+    .equalValues {
+        color: $mediumGrey;
+    }
+}

@@ -9,12 +9,12 @@ interface ITransitIconProps {
     transitType: TransitType;
     shouldShowTransitTypeIcon: boolean;
     text: string;
-    size?: size; // defaults to large
+    size?: transitTypeLinkSize; // defaults to large
     onClick?: () => void;
     hoverText?: string;
 }
 
-type size = 'small' | 'medium' | 'large';
+type transitTypeLinkSize = 'small' | 'medium' | 'large';
 
 class TransitTypeLink extends React.Component<ITransitIconProps> {
     render() {
@@ -50,3 +50,5 @@ class TransitTypeLink extends React.Component<ITransitIconProps> {
 }
 
 export default TransitTypeLink;
+
+export { transitTypeLinkSize };

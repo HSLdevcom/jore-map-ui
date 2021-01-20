@@ -19,6 +19,7 @@ $defaultBackgroundColor: $busBlue;
     margin-right: 15px;
     color: $defaultColor;
     background-color: $defaultBackgroundColor;
+    box-sizing: border-box;
 }
 .button:hover {
     background-color: darken($defaultBackgroundColor, 10);
@@ -52,8 +53,16 @@ $defaultBackgroundColor: $busBlue;
     padding: 20px;
 }
 
+.hasNoMargin {
+    margin: 0px;
+}
+
 .transition {
     transition: 0.5s;
+}
+
+.borderRadius  {
+    border-radius: 10px;
 }
 
 .disabled {
@@ -61,4 +70,12 @@ $defaultBackgroundColor: $busBlue;
     cursor: default;
     pointer-events: none;
     color: $defaultColor;
+}
+.disabledClickable {
+    @extend .disabled;
+    cursor: pointer;
+    pointer-events: unset;
+}
+.disabledClickable:hover {
+    background-color: $disabledGreyHover;
 }
