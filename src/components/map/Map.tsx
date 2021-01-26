@@ -14,6 +14,7 @@ import AddressSearch from './AddressSearch';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
+import RoutePathComparisonLayer from './layers/RoutePathComparisonLayer';
 import RoutePathListLayer from './layers/RoutePathListLayer';
 import StopAreaLayer from './layers/StopAreaLayer';
 import EditLinkLayer from './layers/edit/EditLinkLayer';
@@ -188,6 +189,7 @@ class LeafletMap extends React.Component<IMapProps> {
                         enableMapClickListener={this.enableMapClickListener}
                         disableMapClickListener={this.disableMapClickListener}
                     />
+                    <RoutePathComparisonLayer />
                     <PopupLayer />
                     <StopAreaLayer />
                     <HighlightEntityLayer />

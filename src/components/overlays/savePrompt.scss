@@ -64,14 +64,14 @@ $savePromptContentPadding: 5px 15px 5px 15px;
 
             .oldAttribute {
                 display: inline-block;
-                background-color: #ffeef0;
+                background-color: $oldPropertyBackgroundColor;
                 padding: 3px;
                 border-radius: 5px;
             }
 
             .newAttribute {
                 display: inline-block;
-                background-color: #e6ffed;
+                background-color: $newPropertyBackgroundColor;
                 padding: 3px;
                 border-radius: 5px;
             }

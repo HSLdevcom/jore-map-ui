@@ -21,6 +21,7 @@ interface INodeMarkerProps {
     visibleNodeLabels: NodeLabel[];
     isHighlighted?: boolean;
     highlightColor?: NodeHighlightColor;
+    fillColorClassName?: string;
     nodeId?: string;
     shortId?: string;
     hastusId?: string;
@@ -193,7 +194,11 @@ const NodeMarker = inject()(
                         ) : null,
                     options: {
                         iconWidth,
-                        classNames: [nodeRootClass, ...getNodeMarkerIconClassNames()],
+                        classNames: [
+                            nodeRootClass,
+                            ...getNodeMarkerIconClassNames(),
+                            props.fillColorClassName ? props.fillColorClassName : '',
+                        ],
                         iconHeight: iconWidth,
                         popupOffset: -15,
                     },
