@@ -1,4 +1,4 @@
-import { latLngBounds} from 'leaflet';
+import { latLngBounds } from 'leaflet';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import NodeType from '~/enums/nodeType';
@@ -14,31 +14,33 @@ interface INodeItemProps {
     mapStore?: MapStore;
 }
 
-const NodeItem = inject('mapStore')(observer((props: INodeItemProps) => {
-    const { node } = props;
+const NodeItem = inject('mapStore')(
+    observer((props: INodeItemProps) => {
+        const { node } = props;
 
-    const centerMapToNode = () => {
-        const latLngs: L.LatLng[] = [props.node.coordinates];
-        const bounds = latLngBounds(latLngs);
-        props.mapStore!.setMapBounds(bounds);
-    }
+        const centerMapToNode = () => {
+            const latLngs: L.LatLng[] = [props.node.coordinates];
+            const bounds = latLngBounds(latLngs);
+            props.mapStore!.setMapBounds(bounds);
+        };
 
-    return (
-        <div
-            className={s.nodeItem}
-            data-cy={`nodeItem${node.type}`}
-        >
-            <div className={s.nodeIconWrapper} onClick={() => centerMapToNode()}>
-                <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
+        return (
+            <div className={s.nodeItem} data-cy={`nodeItem${node.type}`}>
+                <div className={s.nodeIconWrapper} onClick={() => centerMapToNode()}>
+                    <TransitTypeNodeIcon nodeType={node.type} transitTypes={node.transitTypes} />
+                </div>
+                <div
+                    className={s.nodeItemTextContainer}
+                    onClick={() => NavigationUtils.openNodeView({ nodeId: props.node.id })}
+                >
+                    <div className={s.nodeId}>{node.id}</div>
+                    <div>{NodeUtils.getNodeTypeName(node.type)}</div>
+                    {node.type === NodeType.STOP && <div>{NodeUtils.getShortId(node)}</div>}
+                    <div className={s.stopName}>{node.stopName ? node.stopName : ''}</div>
+                </div>
             </div>
-            <div className={s.nodeItemTextContainer} onClick={() => NavigationUtils.openNodeView({ nodeId: props.node.id })}>
-                <div className={s.nodeId}>{node.id}</div>
-                <div>{NodeUtils.getNodeTypeName(node.type)}</div>
-                {node.type === NodeType.STOP && <div>{NodeUtils.getShortId(node)}</div>}
-                <div className={s.stopName}>{node.stopName ? node.stopName : ''}</div>
-            </div>
-        </div>
-    );
-}));
+        );
+    })
+);
 
 export default NodeItem;

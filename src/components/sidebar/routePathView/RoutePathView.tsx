@@ -1,20 +1,21 @@
 import L from 'leaflet';
-import _ from 'lodash';
+import { isEmpty } from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
+import { Button } from '~/components/controls';
 import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
-import TransitTypeLink from '~/components/shared/TransitTypeLink';
+import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
 import Loader from '~/components/shared/loader/Loader';
+import RoutePathComparisonContainer from '~/components/shared/routePathComparisonContainer/RoutePathComparisonContainer';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener from '~/helpers/EventListener';
-import { IRoutePath, IRoutePathLink, IViaName } from '~/models';
-import IViaShieldName from '~/models/IViaShieldName';
+import { IRoutePath } from '~/models';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
@@ -25,7 +26,6 @@ import RoutePathService, {
     IRoutePathLengthResponse,
 } from '~/services/routePathService';
 import RouteService from '~/services/routeService';
-import ViaNameService from '~/services/viaNameService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -37,7 +37,6 @@ import { RoutePathLayerStore } from '~/stores/routePathLayerStore';
 import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore';
 import { ListFilter, RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
-import NavigationUtils from '~/utils/NavigationUtils';
 import RoutePathUtils from '~/utils/RoutePathUtils';
 import SidebarHeader from '../SidebarHeader';
 import RoutePathCopySegmentView from './RoutePathCopySegmentView/RoutePathCopySegmentView';
@@ -217,11 +216,12 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     private fetchRoutePath = async () => {
         const [routeId, startDateString, direction] = this.props.match!.params.id.split(',');
-        const routePath = await RoutePathService.fetchRoutePath(
+        const routePath = await RoutePathService.fetchRoutePath({
             routeId,
-            startDateString,
-            direction
-        );
+            direction,
+            startDate: startDateString,
+            shouldFetchViaNames: true,
+        });
         if (!routePath) {
             this.props.errorStore!.addError(
                 `Reitinsuunnan (reitin tunnus: ${routeId}, alkupvm ${startDateString}, suunta ${direction}) haku ei onnistunut.`
@@ -230,56 +230,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             navigator.goTo({ link: homeViewLink });
             return;
         }
-        await this.fetchViaNames(routePath);
         await this.fetchExistingRoutePaths({ routeId });
         this.centerMapToRoutePath(routePath);
         this.props.routePathStore!.init({ routePath, isNewRoutePath: this.props.isNewRoutePath });
-    };
-
-    // fetch & set viaName properties to routePathLink
-    private fetchViaNames = async (routePath: IRoutePath) => {
-        try {
-            const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
-
-            const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
-                routeId: routePath.routeId,
-                startDate: routePath.startDate,
-                direction: routePath.direction,
-            });
-
-            const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldNamesByRpPrimaryKey(
-                {
-                    routeId: routePath.routeId,
-                    startDate: routePath.startDate,
-                    direction: routePath.direction,
-                }
-            );
-
-            routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-                const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
-                if (viaName) {
-                    routePathLink.viaNameId = viaName.viaNameId;
-                    routePathLink.destinationFi1 = viaName?.destinationFi1;
-                    routePathLink.destinationFi2 = viaName?.destinationFi2;
-                    routePathLink.destinationSw1 = viaName?.destinationSw1;
-                    routePathLink.destinationSw2 = viaName?.destinationSw2;
-                }
-                const viaShieldName = viaShieldNames.find(
-                    (viaShieldName) => viaShieldName.viaShieldNameId === routePathLink.id
-                );
-                if (viaShieldName) {
-                    routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
-                    routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
-                    routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
-                }
-            });
-        } catch (err) {
-            this.props.errorStore!.addError(
-                'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.',
-                err
-            );
-        }
-        return [];
     };
 
     private updateCalculatedLength = async () => {
@@ -407,6 +360,16 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
+    private openCompareRoutePathsContainer = () => {
+        this.props.routePathStore!.setIsCompareRoutePathsContainerVisible(true);
+    };
+
+    private showClickPreventedNotification = (notification: string) => {
+        this.props.alertStore!.setNotificationMessage({
+            message: notification,
+        });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -430,6 +393,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             routePath.routePathLinks.length > 0
                 ? routePath.routePathLinks[0].transitType
                 : routePath.transitType!;
+
         return (
             <div className={s.routePathView} data-cy='routePathView'>
                 <div className={s.sidebarHeaderSection}>
@@ -444,36 +408,22 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                             `Uusi reitinsuunta reitille ${routePath.routeId}`
                         ) : (
                             <div className={s.linkContainer}>
-                                <TransitTypeLink
-                                    transitType={routePath.transitType!}
-                                    shouldShowTransitTypeIcon={true}
-                                    text={routePath.lineId!}
-                                    onClick={() =>
-                                        NavigationUtils.openLineView({ lineId: routePath!.lineId! })
-                                    }
-                                    hoverText={`Avaa linja ${routePath.lineId!}`}
-                                />
-                                <div className={s.lineLinkGreaterThanSign}>&gt;</div>
-                                <TransitTypeLink
+                                <TransitTypeLinks
+                                    lineId={routePath!.lineId!}
+                                    routeId={routePath.routeId}
                                     transitType={transitType}
-                                    shouldShowTransitTypeIcon={false}
-                                    text={routePath.routeId}
-                                    onClick={() =>
-                                        NavigationUtils.openRouteView({
-                                            routeId: routePath.routeId,
-                                        })
-                                    }
-                                    hoverText={`Avaa reitti ${routePath.routeId}`}
                                 />
                             </div>
                         )}
                     </SidebarHeader>
-                    <div className={s.subTopic}>
-                        {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
-                        {Moment(routePath.endDate).format('DD.MM.YYYY')}
-                        <br />
-                        Suunta {routePath.direction}: {routePath.originFi} -{' '}
-                        {routePath.destinationFi}
+                    <div className={s.subTopicContainer}>
+                        <div>
+                            {Moment(routePath.startDate).format('DD.MM.YYYY')} -{' '}
+                            {Moment(routePath.endDate).format('DD.MM.YYYY')}
+                            <br />
+                            Suunta {routePath.direction}: {routePath.originFi} -{' '}
+                            {routePath.destinationFi}
+                        </div>
                     </div>
                 </div>
 
@@ -481,54 +431,98 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                     <RoutePathCopySegmentView />
                 ) : (
                     <>
-                        <Tabs>
-                            <TabList
-                                selectedTabIndex={routePathStore!.selectedTabIndex}
-                                setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
-                            >
-                                <Tab>
-                                    <div>Reitinsuunnan tiedot</div>
-                                </Tab>
-                                <Tab>
-                                    <div>Solmut ja linkit</div>
-                                </Tab>
-                            </TabList>
-                            <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
-                                <ContentItem>
-                                    <RoutePathInfoTab
-                                        isEditingDisabled={isEditingDisabled}
-                                        isRoutePathCalculatedLengthLoading={
-                                            this.state.isRoutePathCalculatedLengthLoading
-                                        }
-                                    />
-                                </ContentItem>
-                                <ContentItem>
-                                    <RoutePathLinksTab
-                                        routePath={this.props.routePathStore!.routePath!}
-                                        isEditingDisabled={isEditingDisabled}
-                                    />
-                                </ContentItem>
-                            </ContentList>
-                        </Tabs>
-                        <SaveButton
-                            onClick={() => {
-                                if (routePathStore!.isRoutePathLengthFormedByMeasuredLengths()) {
-                                    this.showSavePrompt();
-                                } else {
-                                    this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                        {routePathStore!.isCompareRoutePathsContainerVisible ? (
+                            <>
+                                <Button
+                                    isWide={true}
+                                    hasNoMargin={true}
+                                    onClick={() =>
+                                        routePathStore!.setIsCompareRoutePathsContainerVisible(
+                                            false
+                                        )
+                                    }
+                                >
+                                    Takaisin muokkaamaan
+                                </Button>
+                                <RoutePathComparisonContainer
+                                    routePath1={routePathStore!.oldRoutePath!}
+                                    routePath2={routePath}
+                                />
+                            </>
+                        ) : (
+                            <Tabs>
+                                <TabList
+                                    selectedTabIndex={routePathStore!.selectedTabIndex}
+                                    setSelectedTabIndex={routePathStore!.setSelectedTabIndex}
+                                >
+                                    <Tab>
+                                        <div>Reitinsuunnan tiedot</div>
+                                    </Tab>
+                                    <Tab>
+                                        <div>Solmut ja linkit</div>
+                                    </Tab>
+                                </TabList>
+                                <ContentList selectedTabIndex={routePathStore!.selectedTabIndex}>
+                                    <ContentItem>
+                                        <RoutePathInfoTab
+                                            isEditingDisabled={isEditingDisabled}
+                                            isRoutePathCalculatedLengthLoading={
+                                                this.state.isRoutePathCalculatedLengthLoading
+                                            }
+                                        />
+                                    </ContentItem>
+                                    <ContentItem>
+                                        <RoutePathLinksTab
+                                            routePath={this.props.routePathStore!.routePath!}
+                                            isEditingDisabled={isEditingDisabled}
+                                        />
+                                    </ContentItem>
+                                </ContentList>
+                            </Tabs>
+                        )}
+                        {this.props.isNewRoutePath ||
+                        routePathStore!.isCompareRoutePathsContainerVisible ? (
+                            <SaveButton
+                                onClick={() => {
+                                    if (
+                                        routePathStore!.isRoutePathLengthFormedByMeasuredLengths()
+                                    ) {
+                                        this.showSavePrompt();
+                                    } else {
+                                        this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                                    }
+                                }}
+                                disabled={savePreventedNotification.length > 0}
+                                savePreventedNotification={savePreventedNotification}
+                                type={
+                                    savePreventedNotification.length > 0
+                                        ? 'warningButton'
+                                        : 'saveButton'
                                 }
-                            }}
-                            disabled={savePreventedNotification.length > 0}
-                            savePreventedNotification={savePreventedNotification}
-                            type={
-                                savePreventedNotification.length > 0
-                                    ? 'warningButton'
-                                    : 'saveButton'
-                            }
-                            data-cy='routePathSaveButton'
-                        >
-                            {this.props.isNewRoutePath ? 'Luo reitinsuunta' : 'Tallenna muutokset'}
-                        </SaveButton>
+                                data-cy='routePathSaveButton'
+                            >
+                                {this.props.isNewRoutePath
+                                    ? 'Luo reitinsuunta'
+                                    : 'Tallenna muutokset'}
+                            </SaveButton>
+                        ) : (
+                            <Button
+                                onClick={this.openCompareRoutePathsContainer}
+                                disabled={savePreventedNotification.length > 0}
+                                onDisabledButtonClick={
+                                    !isEmpty(savePreventedNotification)
+                                        ? () =>
+                                              this.showClickPreventedNotification(
+                                                  savePreventedNotification
+                                              )
+                                        : undefined
+                                }
+                                hasPadding={true}
+                                data-cy='openCompareRoutePathsContainerButton'
+                            >
+                                Vertaile muutoksia
+                            </Button>
+                        )}
                     </>
                 )}
             </div>

@@ -4,13 +4,15 @@ import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import TransitType from '~/enums/transitType';
 import ApolloClient from '~/helpers/ApolloClient';
-import { IRoutePath } from '~/models';
+import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey, ISingleRoutePathSaveModel } from '~/models/IRoutePath';
 import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink';
+import IViaShieldName from '~/models/IViaShieldName';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
+import ViaNameService from './viaNameService';
 
 interface IRoutePathLengthResponse {
     length: number;
@@ -32,11 +34,17 @@ interface IRouteUsingRoutePathSegment {
 }
 
 class RoutePathService {
-    public static fetchRoutePath = async (
-        routeId: string,
-        startDate: Date,
-        direction: string
-    ): Promise<IRoutePath | null> => {
+    public static fetchRoutePath = async ({
+        routeId,
+        startDate,
+        direction,
+        shouldFetchViaNames,
+    }: {
+        routeId: string;
+        startDate: Date;
+        direction: string;
+        shouldFetchViaNames: boolean;
+    }): Promise<IRoutePath | null> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathQuery(),
             variables: {
@@ -49,13 +57,18 @@ class RoutePathService {
         if (!externalRoutePath) return null;
         const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
         const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-        return RoutePathFactory.mapExternalRoutePath({
+        const routePath = RoutePathFactory.mapExternalRoutePath({
             externalRoutePath,
             lineId,
             transitType,
             externalRoutePathLinks:
                 externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
         });
+
+        if (shouldFetchViaNames) {
+            await _fetchViaNames(routePath);
+        }
+        return routePath;
     };
 
     public static fetchFirstAndLastStopNamesOfRoutePath = async (
@@ -279,6 +292,48 @@ const _findRoutePathLink = (
             rpLink.endNode.internalId === routePathLink.endNode.internalId
         );
     });
+};
+
+// Add fetched viaName properties to given routePath.routePathLinks
+const _fetchViaNames = async (routePath: IRoutePath) => {
+    try {
+        const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
+
+        const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
+            routeId: routePath.routeId,
+            startDate: routePath.startDate,
+            direction: routePath.direction,
+        });
+
+        const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldNamesByRpPrimaryKey(
+            {
+                routeId: routePath.routeId,
+                startDate: routePath.startDate,
+                direction: routePath.direction,
+            }
+        );
+
+        routePathLinks.forEach((routePathLink: IRoutePathLink) => {
+            const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
+            if (viaName) {
+                routePathLink.viaNameId = viaName.viaNameId;
+                routePathLink.destinationFi1 = viaName?.destinationFi1;
+                routePathLink.destinationFi2 = viaName?.destinationFi2;
+                routePathLink.destinationSw1 = viaName?.destinationSw1;
+                routePathLink.destinationSw2 = viaName?.destinationSw2;
+            }
+            const viaShieldName = viaShieldNames.find(
+                (viaShieldName) => viaShieldName.viaShieldNameId === routePathLink.id
+            );
+            if (viaShieldName) {
+                routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
+                routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
+                routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
+            }
+        });
+    } catch (err) {
+        throw 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.';
+    }
 };
 
 export default RoutePathService;

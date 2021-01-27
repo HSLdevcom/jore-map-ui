@@ -1,5 +1,5 @@
 import NodeType from '~/enums/nodeType';
-import { IRoutePathLink } from '~/models';
+import { IRoutePath, IRoutePathLink } from '~/models';
 
 class RoutePathUtils {
     public static validateRoutePathLinkCoherency = (routePathLinks: IRoutePathLink[]) => {
@@ -68,6 +68,15 @@ class RoutePathUtils {
         const lastNode = routePathLinks[routePathLinks.length - 1].endNode;
 
         return firstNode.id === lastNode.id;
+    };
+
+    public static getAreRoutePathsEqual = (rp1: IRoutePath, rp2: IRoutePath) => {
+        return (
+            rp1.lineId === rp2.lineId &&
+            rp1.routeId === rp2.routeId &&
+            rp1.direction === rp2.direction &&
+            rp1.startDate.toDateString() === rp2.startDate.toDateString()
+        );
     };
 }
 

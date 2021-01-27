@@ -11,7 +11,7 @@ import LineService from '~/services/lineService';
 import { LineHeaderMassEditStore } from '~/stores/lineHeaderMassEditStore';
 import { LineStore } from '~/stores/lineStore';
 import { toDateString } from '~/utils/dateUtils';
-import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
+import { createLineDropdownItems } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './searchLineHeadersToCopy.scss';
 
@@ -27,34 +27,23 @@ const SearchLineHeadersToCopy = inject('lineStore')(
         const [areInactiveLinesHidden, setAreInactiveLinesHidden] = useState<boolean>(true);
         const [selectedLineId, setSelectedLineId] = useState<string>('');
         const [lineDropdownItems, setLineDropdownItems] = useState<IDropdownItem[]>([]);
+
         const [isLoadingLineHeaders, setIsLoadingLineHeaders] = useState<boolean>(true);
         const [lineHeaders, setLineHeaders] = useState<ILineHeader[]>([]);
 
         useEffect(() => {
-            const fetchLineDropdownItems = async () => {
+            const fetch = async () => {
                 setIsLoadingLines(true);
-                let lineQueryResult: ISearchLine[] = (
-                    await LineService.fetchAllSearchLines()
-                ).filter((l) => l.transitType === props.lineStore!.line!.transitType!);
-                if (areInactiveLinesHidden) {
-                    lineQueryResult = lineQueryResult.filter((line) => {
-                        let isLineActive = false;
-                        line.routes.forEach((route) => {
-                            if (route.isUsedByRoutePath) {
-                                isLineActive = true;
-                                return;
-                            }
-                        });
-                        return isLineActive;
-                    });
-                }
-                const lineDropdownItems = createDropdownItemsFromList(
-                    lineQueryResult.map((searchLine) => searchLine.id)
-                );
-                setLineDropdownItems(lineDropdownItems);
+                const lineQueryResult: ISearchLine[] = await LineService.fetchAllSearchLines();
+                const result: IDropdownItem[] = createLineDropdownItems({
+                    areInactiveLinesHidden,
+                    lines: lineQueryResult,
+                    transitTypeFilter: props.lineStore!.line!.transitType,
+                });
+                setLineDropdownItems(result);
                 setIsLoadingLines(false);
             };
-            fetchLineDropdownItems();
+            fetch();
         }, [props.lineStore!.line!.transitType!, areInactiveLinesHidden]);
 
         useEffect(() => {

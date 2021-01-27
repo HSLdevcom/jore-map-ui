@@ -10,8 +10,6 @@ import RemoveRoutePathLinkTool from '~/components/map/tools/RemoveRoutePathLinkT
 import SelectNetworkEntityTool from '~/components/map/tools/SelectNetworkEntityTool';
 import SplitLinkTool from '~/components/map/tools/SplitLinkTool';
 import ToolbarToolType from '~/enums/toolbarToolType';
-import RoutePathLinkMassEditStore from '~/stores/routePathLinkMassEditStore';
-import RoutePathStore from '~/stores/routePathStore';
 
 const DEFAULT_TOOL_TYPE = ToolbarToolType.SelectNetworkEntity;
 
@@ -56,6 +54,11 @@ class ToolbarStore {
     @computed
     get toolPhase(): string | null {
         return this._toolPhase;
+    }
+
+    @computed
+    get disabledTools(): ToolbarToolType[] {
+        return this._disabledTools;
     }
 
     @computed
@@ -140,52 +143,12 @@ class ToolbarStore {
         this.selectTool(DEFAULT_TOOL_TYPE);
     }
 
-    @action
-    public updateDisabledRoutePathToolStatus = () => {
-        let disabledTools = _.cloneDeep(this._disabledTools);
-        const addTool = (toolType: ToolbarToolType) => {
-            if (disabledTools.indexOf(toolType) === -1) {
-                disabledTools = disabledTools.concat([toolType]);
-            }
-        };
-        const removeTool = (toolType: ToolbarToolType) => {
-            const toolToRemoveIndex = disabledTools.findIndex((tool) => tool === toolType);
-            disabledTools.splice(toolToRemoveIndex, 1);
-        };
-
-        const isExtendRoutePathToolDisabled =
-            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
-        const isRemoveRoutePathLinkToolDisabled =
-            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
-        const isCopyRoutePathSegmentToolDisabled =
-            (RoutePathStore.routePath && RoutePathStore.routePath.routePathLinks.length === 0) ||
-            RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
-
-        isExtendRoutePathToolDisabled
-            ? addTool(ToolbarToolType.ExtendRoutePath)
-            : removeTool(ToolbarToolType.ExtendRoutePath);
-        isRemoveRoutePathLinkToolDisabled
-            ? addTool(ToolbarToolType.RemoveRoutePathLink)
-            : removeTool(ToolbarToolType.RemoveRoutePathLink);
-        isCopyRoutePathSegmentToolDisabled
-            ? addTool(ToolbarToolType.CopyRoutePathSegment)
-            : removeTool(ToolbarToolType.CopyRoutePathSegment);
-
-        this._disabledTools = disabledTools;
-
-        this.setUndoButtonsDisabled(this.areUndoToolsDisabled());
-    };
-
     public isSelected = (tool: ToolbarToolType): boolean => {
         return Boolean(this._selectedTool && this._selectedTool.toolType === tool);
     };
 
     public isDisabled = (tool: ToolbarToolType): boolean => {
         return this._disabledTools.indexOf(tool) > -1;
-    };
-
-    private areUndoToolsDisabled = () => {
-        return RoutePathLinkMassEditStore.selectedMassEditRoutePathLinks.length > 0;
     };
 }
 

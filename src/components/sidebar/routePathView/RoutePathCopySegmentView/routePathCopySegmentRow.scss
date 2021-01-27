@@ -48,6 +48,10 @@
         font-size: 15px;
         border-bottom: 1px solid $borderLightGrey;
 
+        &.rpSegmentHighlighted {
+            font-weight: bold;
+        }
+
         .timestampRow {
             font-size: $smallFontSize;
         }

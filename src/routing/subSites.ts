@@ -11,6 +11,7 @@ enum SubSites {
     newLink = '/link/new/:id',
     routePath = '/routePath/:id',
     newRoutePath = '/routePath/new',
+    routePathComparison = '/routePathComparison/:id',
     node = '/node/:id',
     newNode = '/node/new/:id',
     stopArea = '/stopArea/:id',
