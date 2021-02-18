@@ -12,7 +12,6 @@ interface ITextContainerProps {
     validationResult?: IValidationResult;
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
-    isInputColorRed?: boolean;
     isLoading?: boolean;
     className?: string;
 }
@@ -35,7 +34,6 @@ const TextContainer = observer((props: ITextContainerProps) => {
         validationResult,
         isTimeIncluded,
         isInputLabelDarker,
-        isInputColorRed,
         isLoading,
         className,
         ...attrs
@@ -46,14 +44,7 @@ const TextContainer = observer((props: ITextContainerProps) => {
             <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                 {label ? label : ''}
             </div>
-            <div
-                className={classnames(
-                    s.textField,
-                    s.staticHeight,
-                    isInputColorRed ? s.redInputText : null
-                )}
-                {...attrs}
-            >
+            <div className={classnames(s.textField, s.staticHeight)} {...attrs}>
                 {isLoading ? (
                     <div className={s.loaderContainer}>
                         <Loader size='tiny' hasNoMargin={true} />

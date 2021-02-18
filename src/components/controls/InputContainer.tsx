@@ -22,7 +22,6 @@ interface IInputProps {
     decimalLimit?: number;
     isEmptyDateValueAllowed?: boolean;
     capitalizeInput?: boolean;
-    isInputColorRed?: boolean;
     isClearButtonVisibleOnDates?: boolean;
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
@@ -45,7 +44,6 @@ const InputContainer = observer((props: IInputProps) => {
         decimalLimit,
         isEmptyDateValueAllowed,
         capitalizeInput,
-        isInputColorRed,
         isClearButtonVisibleOnDates,
         isTimeIncluded,
         isInputLabelDarker,
@@ -64,7 +62,6 @@ const InputContainer = observer((props: IInputProps) => {
                 validationResult={validationResult}
                 isTimeIncluded={isTimeIncluded}
                 isInputLabelDarker={isInputLabelDarker}
-                isInputColorRed={isInputColorRed}
                 isLoading={isLoading}
                 className={className}
                 {...attrs}
