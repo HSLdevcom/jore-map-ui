@@ -166,7 +166,7 @@ class SearchResultStore {
     @action
     public search = async () => {
         this.setIsSearching(true);
-        const searchInput = SearchStore.searchInput.trim();
+        const searchInput = SearchStore.searchInput.trim().toLocaleLowerCase();
 
         if (SearchStore.isSearchingForLines) {
             this._filteredLines = this.getFilteredLines(
@@ -204,12 +204,14 @@ class SearchResultStore {
             }
 
             // Filter by line.id
-            if (this.matchText(line.id, searchInput)) return true;
+            if (this.matchText(line.id.toLowerCase(), searchInput)) return true;
 
-            // Filter by route.name
-            return line.routes
-                .map((route) => route.name.toLowerCase())
-                .some((name) => this.matchText(name, searchInput.toLowerCase()));
+            // Filter by route.name and route id
+            return line.routes.some(
+                (route) =>
+                    this.matchText(route.name.toLowerCase(), searchInput) ||
+                    this.matchText(route.id, searchInput)
+            );
         });
     };
 
