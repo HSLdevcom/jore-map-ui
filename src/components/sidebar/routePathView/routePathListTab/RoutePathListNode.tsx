@@ -106,7 +106,9 @@ const RoutePathListNode = inject(
                             <div
                                 className={classnames(
                                     s.hastusId,
-                                    isNodeDisabled || routePathLink.isStartNodeHastusStop
+                                    isLastNode ||
+                                        isNodeDisabled ||
+                                        routePathLink.isStartNodeHastusStop
                                         ? undefined
                                         : s.opacity
                                 )}
