@@ -14,6 +14,7 @@ interface ITextContainerProps {
     isInputLabelDarker?: boolean;
     isInputColorRed?: boolean;
     isLoading?: boolean;
+    className?: string;
 }
 
 const renderValidatorResult = (validationResult?: IValidationResult) => {
@@ -36,11 +37,12 @@ const TextContainer = observer((props: ITextContainerProps) => {
         isInputLabelDarker,
         isInputColorRed,
         isLoading,
+        className,
         ...attrs
     } = props;
 
     return (
-        <div className={s.formItem}>
+        <div className={classnames(s.formItem, className)}>
             <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                 {label ? label : ''}
             </div>

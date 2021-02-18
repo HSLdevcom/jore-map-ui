@@ -66,6 +66,7 @@ const InputContainer = observer((props: IInputProps) => {
                 isInputLabelDarker={isInputLabelDarker}
                 isInputColorRed={isInputColorRed}
                 isLoading={isLoading}
+                className={className}
                 {...attrs}
             />
         );

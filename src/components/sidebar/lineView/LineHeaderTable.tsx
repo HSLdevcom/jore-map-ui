@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Button } from '~/components/controls';
-import InputContainer from '~/components/controls/InputContainer';
+import TextContainer from '~/components/controls/TextContainer';
 import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import Loader from '~/components/shared/loader/Loader';
@@ -262,10 +262,7 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                 : null;
         const activeLineHeaderName = this.getActiveLineHeaderName();
         const isSaveButtonDisabled =
-            isEditingDisabled ||
-            !lineHeaderMassEditStore!.isDirty ||
-            !this.isFormValid() ||
-            !activeLineHeaderName;
+            isEditingDisabled || !lineHeaderMassEditStore!.isDirty || !this.isFormValid();
         return (
             <div className={s.lineHeaderTableView} data-cy='lineHeaderTableView'>
                 <SidebarHeader
@@ -276,18 +273,16 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
                     Linjan otsikot
                 </SidebarHeader>
                 <div className={s.flexRow}>
-                    <InputContainer
-                        disabled={true}
+                    <TextContainer
+                        className={
+                            !Boolean(activeLineHeaderName) ? s.lineHeaderNameNotActive : undefined
+                        }
                         label={'LINJAN VOIMASSAOLEVA OTSIKKO'}
                         value={
                             activeLineHeaderName
                                 ? activeLineHeaderName
                                 : 'Ei voimassa olevaa otsikkoa.'
                         }
-                        validationResult={{
-                            isValid: Boolean(activeLineHeaderName),
-                        }}
-                        isInputColorRed={!Boolean(activeLineHeaderName)}
                         data-cy='activeLineHeaderName'
                     />
                 </div>
