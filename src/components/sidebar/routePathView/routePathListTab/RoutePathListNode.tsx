@@ -39,7 +39,7 @@ interface IRoutePathListNodeProps {
     isExtended: boolean;
     isHovered: boolean;
     isStartNodeUsingBookSchedule?: boolean;
-    startNodeBookScheduleColumnNumber?: number;
+    startNodeBookScheduleColumnNumber?: number | null;
     selectedRoutePathLinkIndex: number;
     isNeighborLinkHighlighted: boolean;
     upperGapClosingNeighborLink: INeighborLink | null;

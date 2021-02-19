@@ -728,11 +728,34 @@ class RoutePathStore {
         );
     };
 
-    private initRoutePathLinkValidationStore = (routePathLink: IRoutePathLink) => {
-        this._routePathLinkValidationStoreMap.set(routePathLink.id, new ValidationStore());
+    private initRoutePathLinkValidationStore = (initRpLink: IRoutePathLink) => {
+        const validateStartNodeBookScheduleColumnNumber = (currentRpLink: IRoutePathLink) => {
+            const isRequired = Boolean(currentRpLink.isStartNodeUsingBookSchedule);
+            const hasValue =
+                Boolean(currentRpLink.startNodeBookScheduleColumnNumber) &&
+                currentRpLink.startNodeBookScheduleColumnNumber! > 0;
+            const isValid = (isRequired && hasValue) || (!isRequired && !hasValue);
+            const validationResult: IValidationResult = {
+                isValid,
+                errorMessage: !isValid
+                    ? 'Numeroarvo (1...99) vaaditaan kun ohitusaika kirja-aikataulussa täppä on päällä.'
+                    : undefined,
+            };
+            return validationResult;
+        };
+
+        const customValidatorMap: ICustomValidatorMap = {
+            // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
+            startNodeBookScheduleColumnNumber: {
+                validators: [validateStartNodeBookScheduleColumnNumber],
+                dependentProperties: ['isStartNodeUsingBookSchedule'],
+            },
+        };
+        // this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
+        this._routePathLinkValidationStoreMap.set(initRpLink.id, new ValidationStore());
         this._routePathLinkValidationStoreMap
-            .get(routePathLink.id)!
-            .init(routePathLink, routePathLinkValidationModel);
+            .get(initRpLink.id)!
+            .init(initRpLink, routePathLinkValidationModel, customValidatorMap);
     };
 
     private recalculateOrderNumbers = () => {
