@@ -14,7 +14,7 @@ interface IRoutePathNode extends IRoutePathLinkPrimaryKey, IViaName, IViaShieldN
     startNodeTimeAlignmentStop?: string;
     isStartNodeHastusStop?: boolean;
     isStartNodeUsingBookSchedule?: boolean;
-    startNodeBookScheduleColumnNumber?: number;
+    startNodeBookScheduleColumnNumber?: number | null;
     startNodeType?: StartNodeType;
 }
 

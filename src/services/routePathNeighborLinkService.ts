@@ -121,7 +121,7 @@ class RoutePathNeighborLinkService {
             );
             if (neighborLinks.length === 0) {
                 ErrorStore.addError(
-                    `Tästä solmusta (soltunnus: ${nodeId}) alkavaa linkkiä ei löytynyt.`
+                    `Tästä solmusta (soltunnus: ${nodeId}) jatkettavaa linkkiä ei löytynyt.`
                 );
             } else {
                 return {

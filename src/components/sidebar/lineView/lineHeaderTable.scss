@@ -36,4 +36,8 @@ $cellPadding: 5px 2px 5px 2px; // same as in lineHeaderTableRows.scss
         flex-direction: row;
         padding: 10px 0px 10px 0px;
     }
+
+    .lineHeaderNameNotActive {
+        color: $warningYellow;
+    }
 }

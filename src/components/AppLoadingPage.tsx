@@ -1,5 +1,6 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { getText } from '~/utils/textUtils';
 import * as s from './appLoadingPage.scss';
 
 type AppState = 'isLoading' | 'hasBackendConnectionError' | 'isLoggingIn';
@@ -11,11 +12,11 @@ const AppLoadingPage = inject()(
         const renderText = (state: AppState) => {
             switch (state) {
                 case 'isLoading':
-                    return 'Ladataan sovellusta...';
+                    return getText('login_isLoading');
                 case 'isLoggingIn':
-                    return 'Kirjaudutaan sisään...';
+                    return getText('login_isLoggingIn');
                 case 'hasBackendConnectionError':
-                    return 'Taustajärjestelmään ei saatu yhteyttä, Jore-map on mahdollisesti pois käytöstä. Yritä päivittää sivu uudelleen tai ongelmien jatkuessa ota yhteyttä sovelluksen ylläpitäjään.';
+                    return getText('login_hasBackendConnectionError');
             }
         };
 

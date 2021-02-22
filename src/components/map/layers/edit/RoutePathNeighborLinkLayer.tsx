@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { union } from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
@@ -84,7 +84,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             EventListener.trigger('editRoutePathNeighborLinkClick', clickParams);
         };
 
-        const visibleNodeLabels = _.union(this.props.mapStore!.visibleNodeLabels, [
+        const visibleNodeLabels = union(this.props.mapStore!.visibleNodeLabels, [
             NodeLabel.longNodeId,
         ]);
 
@@ -118,7 +118,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                         isHighlighted: false,
                     })
                 }
-                hasHighZIndex={isNeighborLinkHighlighted}
+                hasHighZIndex={true}
                 size={NodeSize.LARGE}
             >
                 <div

@@ -45,6 +45,7 @@ const EditRoutePathLayerNode = inject()(
                     isHighlighted={isHighlighted}
                     highlightColor={highlightColor}
                     isDisabled={isDisabled}
+                    hasHighZIndex={true}
                     onClick={onNodeClick}
                     onMouseOver={onMouseEnterNode}
                     onMouseOut={onMouseLeaveNode}

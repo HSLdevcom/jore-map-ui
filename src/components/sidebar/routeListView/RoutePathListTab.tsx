@@ -16,7 +16,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import ScheduleService from '~/services/scheduleService';
-import { AlertStore } from '~/stores/alertStore';
+import { AlertStore, AlertType } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
@@ -391,6 +391,12 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     onClick={this.openCopyRoutePathView()}
                     type={ButtonType.SQUARE}
                     disabled={this.props.routeId !== this.props.routeListStore!.routeIdToEdit}
+                    onDisabledButtonClick={() =>
+                        this.props.alertStore!.setNotificationMessage({
+                            type: AlertType.Info,
+                            message: 'Aktivoi editointi kopioidaksesi reitinsuuntia.',
+                        })
+                    }
                     isWide={true}
                     data-cy='copyRoutePathButton'
                 >

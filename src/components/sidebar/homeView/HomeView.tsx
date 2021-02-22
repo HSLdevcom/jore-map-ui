@@ -9,8 +9,8 @@ import { MapStore } from '~/stores/mapStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import { SearchStore } from '~/stores/searchStore';
 import TransitToggleButtonBar from '../../controls/TransitToggleButtonBar';
-import SearchInput from '../../shared/searchView/SearchInput';
-import SearchResults from '../../shared/searchView/SearchResults';
+import SearchInput from '../../shared/searchInput/SearchInput';
+import SearchResults from '../../shared/searchInput/SearchResults';
 import EntityTypeToggles from './EntityTypeToggles';
 import * as s from './homeView.scss';
 
