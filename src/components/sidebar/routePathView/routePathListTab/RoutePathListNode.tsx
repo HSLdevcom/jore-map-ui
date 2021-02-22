@@ -210,10 +210,17 @@ const RoutePathListNode = inject(
                 if (isExtended) {
                     props.routePathLayerStore!.setExtendedListItemId(null);
                 } else {
+                    const rpLinks = props.routePathStore!.routePath!.routePathLinks;
+                    const nextRpLink = rpLinks[routePathLink.orderNumber - 2];
                     props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
                     const geometry = props.routePathStore!.getLinkGeom(routePathLink.id);
                     const bounds: L.LatLngBounds = new L.LatLngBounds([]);
                     geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
+                    // Extend bounds with nextRpLink if it's found
+                    if (nextRpLink) {
+                        const nextRpLinkGeom = props.routePathStore!.getLinkGeom(nextRpLink.id);
+                        nextRpLinkGeom.forEach((geom: L.LatLng) => bounds.extend(geom));
+                    }
                     props.mapStore!.setMapBounds(bounds);
                 }
             };
