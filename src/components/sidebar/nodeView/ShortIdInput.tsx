@@ -92,8 +92,15 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
         const isAvailable = this.state.availableShortIdDropdownItems.find(
             (item: IDropdownItem) => item.value === selectedShortId
         );
+        const oldNode = this.props.nodeStore!.oldNode;
+        const isCurrentNodeUsingShortId =
+            oldNode && oldNode.shortIdString === this.props.node.shortIdString;
         return isAvailable ? (
-            <div className={s.isValidMessage}>Lyhyttunnus on vapaa</div>
+            <div className={s.isValidMessage}>
+                {isCurrentNodeUsingShortId
+                    ? 'Lyhyttunnus on vapaa (vain tällä solmulla käytössä)'
+                    : 'Lyhyttunnus on vapaa'}
+            </div>
         ) : (
             <div className={s.warningMessage}>Lyhyttunnus on jo käytössä</div>
         );
