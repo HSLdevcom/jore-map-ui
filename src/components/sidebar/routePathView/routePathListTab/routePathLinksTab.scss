@@ -22,12 +22,12 @@ $viaColumnWidth: 110px;
             white-space: nowrap;
             background-color: $backgroundlightGrey;
             border-left: 1px solid $borderLightGrey;
-            padding: 5px;
+            padding: 7px;
             text-align: center;
         }
 
         .name {
-            width: 133px; /* routePathListItem.scss .listIconWrapper width + .headerContainer width */
+            width: 153px; /* routePathListItem.scss .listIconWrapper width + .headerContainer width */
         }
         .hastusId {
             width: $hastusIdColumnWidth;
