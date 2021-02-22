@@ -1,4 +1,8 @@
 const textCodeList = {
+    login_isLoading: 'Ladataan sovellusta...',
+    login_isLoggingIn: 'Kirjaudutaan sisään...',
+    login_hasBackendConnectionError:
+        'Taustajärjestelmään ei saatu yhteyttä, Jore-map on mahdollisesti pois käytöstä. Yritä päivittää sivu uudelleen tai ongelmien jatkuessa ota yhteyttä sovelluksen ylläpitäjään. Huom. dev ja stage ympäristöt ovat käytettävissä arkisin toimistoaikoina: 8.00 - 18.00.',
     login_failed_user_has_no_access_permission:
         'Kirjautuminen epäonnistui. Käyttäjätunnustasi ei ole vielä hyväksytty HSL:n puolesta.',
     login_failed_no_jore_username:
@@ -6,7 +10,7 @@ const textCodeList = {
     no_access_token: 'Kirjautuminen epäonnistui, HSL-id kirjautuminen ei antanut access tokenia.',
     savePrevented_isNotDirty: 'Ei tallennettavia muutoksia.',
     routePath_savePrevented_isEditingDisabled:
-        'Tallennus estetty, editointi ei päällä. Aloita editointi ja tee muutoksia, jonka jälkeen voit tallentaa.',
+        'Tallennus estetty, editointi ei ole päällä. Aloita editointi ja tee muutoksia, jonka jälkeen voit tallentaa.',
     routePath_savePrevented_routePathLinksMissing:
         'Tallennus estetty, reitinsuunnan linkit puuttuvat.',
     routePath_savePrevented_geometryInvalid:
