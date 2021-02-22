@@ -1,5 +1,15 @@
 @import './components/shared/styles/common.scss';
 
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -14,7 +24,6 @@ select {
     border: 1px solid $mediumLightGrey;
     border-radius: 5px;
     outline: none;
-    box-sizing: border-box;
     cursor: pointer;
     font-family: $hslFont;
     color: $fontColorDefault;
