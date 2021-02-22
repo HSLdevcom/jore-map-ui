@@ -2,10 +2,10 @@
 @import '../../../shared/styles/flexbox';
 @import '../../../shared/styles/form';
 
-$hastusIdColumnWidth: 48px;
-$longIdColumnWidth: 56px;
-$shortIdColumnWidth: 48px;
-$viaColumnWidth: 100px;
+$hastusIdColumnWidth: 58px;
+$longIdColumnWidth: 66px;
+$shortIdColumnWidth: 58px;
+$viaColumnWidth: 110px;
 
 .routePathLinksTabView  {
     height: 100%;
@@ -22,12 +22,12 @@ $viaColumnWidth: 100px;
             white-space: nowrap;
             background-color: $backgroundlightGrey;
             border-left: 1px solid $borderLightGrey;
-            padding: 5px;
+            padding: 7px;
             text-align: center;
         }
 
         .name {
-            width: 133px; /* routePathListItem.scss .listIconWrapper width + .headerContainer width */
+            width: 153px; /* routePathListItem.scss .listIconWrapper width + .headerContainer width */
         }
         .hastusId {
             width: $hastusIdColumnWidth;

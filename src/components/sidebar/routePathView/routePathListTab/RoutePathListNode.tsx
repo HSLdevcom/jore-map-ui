@@ -27,6 +27,7 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { RoutePathStore } from '~/stores/routePathStore';
 import { ToolbarStore } from '~/stores/toolbarStore';
 import NodeUtils from '~/utils/NodeUtils';
+import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import * as s from './routePathListItem.scss';
 
 interface IRoutePathListNodeProps {
@@ -89,6 +90,7 @@ const RoutePathListNode = inject(
                 const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
                 const isLastNode = props.isLastNode;
                 const isNodeDisabled = routePathLink.startNodeType === StartNodeType.DISABLED;
+                const isStop = node.type === NodeType.STOP;
                 return (
                     <div
                         className={classnames(s.itemHeader, isNodeDisabled ? s.opacity : undefined)}
@@ -100,7 +102,17 @@ const RoutePathListNode = inject(
                             onMouseLeave={onMouseLeaveNodeItem}
                             data-cy='itemHeader'
                         >
-                            <div className={s.headerContainer} title={subTopic}>
+                            <div
+                                className={classnames(
+                                    s.headerContainer,
+                                    isStop && node.transitTypes && node.transitTypes[0]
+                                        ? TransitTypeUtils.getColorClass(node.transitTypes[0])
+                                        : undefined,
+                                    isStop ? s.headerStop : undefined
+                                )}
+                                title={subTopic}
+                            >
+                                {' '}
                                 {subTopic}
                             </div>
                             <div
@@ -272,16 +284,8 @@ const RoutePathListNode = inject(
                 return (
                     <div>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='PYSÄKIN NIMI'
-                                value={stop.nameFi}
-                                isInputLabelDarker={true}
-                            />
-                            <TextContainer
-                                label='PYSÄKIN NIMI RUOTSIKSI'
-                                value={stop.nameSw}
-                                isInputLabelDarker={true}
-                            />
+                            <TextContainer label='PYSÄKIN NIMI' value={stop.nameFi} />
+                            <TextContainer label='PYSÄKIN NIMI RUOTSIKSI' value={stop.nameSw} />
                         </div>
                         {!props.isLastNode && (
                             <>
@@ -316,7 +320,6 @@ const RoutePathListNode = inject(
                                         items={props.codeListStore!.getDropdownItemList(
                                             'Ajantasaus pysakki'
                                         )}
-                                        isInputLabelDarker={true}
                                     />
                                     <Dropdown
                                         label='ERIKOISTYYPPI'
@@ -326,7 +329,6 @@ const RoutePathListNode = inject(
                                         items={props.codeListStore!.getDropdownItemList(
                                             'Pysäkin käyttö'
                                         )}
-                                        isInputLabelDarker={true}
                                     />
                                 </div>
                                 <div className={s.flexRow}>
@@ -336,26 +338,23 @@ const RoutePathListNode = inject(
                                         value={routePathLink.destinationFi1}
                                         validationResult={invalidPropertiesMap['destinationFi1']}
                                         onChange={onRoutePathLinkPropertyChange('destinationFi1')}
-                                        isInputLabelDarker={true}
                                         data-cy='destinationFi1'
                                     />
-                                    <InputContainer
-                                        label='2. MÄÄRÄNPÄÄ SUOMEKSI'
-                                        disabled={isEditingDisabled}
-                                        value={routePathLink.destinationFi2}
-                                        validationResult={invalidPropertiesMap['destinationFi2']}
-                                        onChange={onRoutePathLinkPropertyChange('destinationFi2')}
-                                        isInputLabelDarker={true}
-                                    />
-                                </div>
-                                <div className={s.flexRow}>
                                     <InputContainer
                                         label='1. MÄÄRÄNPÄÄ RUOTSIKSI'
                                         disabled={isEditingDisabled}
                                         value={routePathLink.destinationSw1}
                                         validationResult={invalidPropertiesMap['destinationSw1']}
                                         onChange={onRoutePathLinkPropertyChange('destinationSw1')}
-                                        isInputLabelDarker={true}
+                                    />
+                                </div>
+                                <div className={s.flexRow}>
+                                    <InputContainer
+                                        label='2. MÄÄRÄNPÄÄ SUOMEKSI'
+                                        disabled={isEditingDisabled}
+                                        value={routePathLink.destinationFi2}
+                                        validationResult={invalidPropertiesMap['destinationFi2']}
+                                        onChange={onRoutePathLinkPropertyChange('destinationFi2')}
                                     />
                                     <InputContainer
                                         label='2. MÄÄRÄNPÄÄ RUOTSIKSI'
@@ -363,12 +362,11 @@ const RoutePathListNode = inject(
                                         value={routePathLink.destinationSw2}
                                         validationResult={invalidPropertiesMap['destinationSw2']}
                                         onChange={onRoutePathLinkPropertyChange('destinationSw2')}
-                                        isInputLabelDarker={true}
                                     />
                                 </div>
                                 <div className={s.flexRow}>
                                     <InputContainer
-                                        label='1. MÄÄRÄNPÄÄ KILPI SUOMEKSI'
+                                        label='1. KILPI SUOMEKSI'
                                         disabled={isEditingDisabled}
                                         value={routePathLink.destinationShieldFi}
                                         validationResult={
@@ -377,11 +375,10 @@ const RoutePathListNode = inject(
                                         onChange={onRoutePathLinkPropertyChange(
                                             'destinationShieldFi'
                                         )}
-                                        isInputLabelDarker={true}
                                         data-cy='destinationShieldFi'
                                     />
                                     <InputContainer
-                                        label='2. MÄÄRÄNPÄÄ KILPI RUOTSIKSI'
+                                        label='2. KILPI RUOTSIKSI'
                                         disabled={isEditingDisabled}
                                         value={routePathLink.destinationShieldSw}
                                         validationResult={
@@ -390,7 +387,6 @@ const RoutePathListNode = inject(
                                         onChange={onRoutePathLinkPropertyChange(
                                             'destinationShieldSw'
                                         )}
-                                        isInputLabelDarker={true}
                                     />
                                 </div>
                             </>
@@ -417,20 +413,14 @@ const RoutePathListNode = inject(
                                 validationResult={
                                     invalidPropertiesMap['startNodeBookScheduleColumnNumber']
                                 }
-                                isInputLabelDarker={true}
                             />
                         </div>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='MUOKANNUT'
-                                value={routePathLink.modifiedBy}
-                                isInputLabelDarker={true}
-                            />
+                            <TextContainer label='MUOKANNUT' value={routePathLink.modifiedBy} />
                             <TextContainer
                                 label='MUOKATTU PVM'
                                 isTimeIncluded={true}
                                 value={routePathLink.modifiedOn}
-                                isInputLabelDarker={true}
                             />
                         </div>
                     </div>
@@ -440,11 +430,7 @@ const RoutePathListNode = inject(
             const renderNodeView = (node: INode) => {
                 return (
                     <div className={s.flexRow}>
-                        <TextContainer
-                            label='MITTAUSPÄIVÄMÄÄRÄ'
-                            value={node.measurementDate}
-                            isInputLabelDarker={true}
-                        />
+                        <TextContainer label='MITTAUSPÄIVÄMÄÄRÄ' value={node.measurementDate} />
                     </div>
                 );
             };
@@ -476,16 +462,6 @@ const RoutePathListNode = inject(
                 window.open(nodeViewLink, '_blank');
             };
 
-            const getShadowClass = () => {
-                let shadowClass;
-                if (props.node!.stop) {
-                    shadowClass = s.shadowStop;
-                } else {
-                    shadowClass = s.shadow;
-                }
-                return shadowClass;
-            };
-
             const onMouseEnterNodeItem = () => {
                 props.routePathLayerStore!.setHoveredItemId(props.node.internalId);
             };
@@ -514,7 +490,6 @@ const RoutePathListNode = inject(
                     ref={ref}
                     className={classnames(
                         s.routePathListItem,
-                        getShadowClass(),
                         isNodeSelected() ? s.highlightedItem : undefined
                     )}
                 >
