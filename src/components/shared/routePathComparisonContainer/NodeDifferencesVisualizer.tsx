@@ -123,13 +123,18 @@ const _renderNodeHeader = ({
     };
     if (areNodesEqual) {
         const headerText = _getHeaderText(rpLink1!);
+
+        let stopHeaderClass;
+        if (rpLink1!.startNode.type === NodeType.STOP) {
+            if (rpLink1!.startNodeType === StartNodeType.DISABLED) {
+                stopHeaderClass = s.stopHeaderDisabled;
+            } else {
+                stopHeaderClass = s.stopHeader;
+            }
+        }
         return (
             <div
-                className={classnames(
-                    s.headerContainer,
-                    s.headerTextCommon,
-                    rpLink1!.startNode.type === NodeType.STOP ? s.stopHeader : undefined
-                )}
+                className={classnames(s.headerContainer, s.headerTextCommon, stopHeaderClass)}
                 onClick={() => _centerMapToNode(rpLink1!)}
             >
                 {_renderIcon(rpLink1!)}

@@ -35,7 +35,10 @@ $nodeRightColor: green;
                 transition: 0.5s;
                 color: darken($busBlue, 10%);
             }
-
+            &.stopHeaderDisabled {
+                @extend .stopHeader;
+                opacity: 0.5;
+            }
             .transitTypeIconWrapper {
                 display: flex;
                 margin: 0px 5px 0px 5px;
