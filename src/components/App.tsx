@@ -97,9 +97,12 @@ class App extends React.Component<IAppProps, IAppState> {
             this.setState({
                 isAppInitializationInProgress: false,
             });
+
             // Lazy load lines and nodes in the background
-            this.fetchAllLines();
-            this.fetchAllNodes();
+            window.setTimeout(() => {
+                this.fetchAllLines();
+                this.fetchAllNodes();
+            }, 5000);
         });
     };
 

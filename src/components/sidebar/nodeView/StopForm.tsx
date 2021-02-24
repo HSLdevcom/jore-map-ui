@@ -59,16 +59,25 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
         isRiseCountLoading: true,
         riseCount: 0,
     };
-    async componentDidMount() {
+    componentDidMount() {
+        this.fetchRiseCount();
+    }
+
+    private fetchRiseCount = async () => {
+        if (this.props.isNewStop) {
+            return;
+        }
         this.setState({
             isRiseCountLoading: true,
         });
-        const riseCount = await StopService.fetchRiseCount({ nodeId: this.props.node.id });
+        const riseCount = await StopService.fetchRiseCount({
+            nodeId: this.props.node.id,
+        });
         this.setState({
             riseCount,
             isRiseCountLoading: false,
         });
-    }
+    };
 
     private createStopAreaDropdownItems = (stopAreas: IStopArea[]): IDropdownItem[] => {
         return stopAreas.map((stopArea: IStopArea) => {

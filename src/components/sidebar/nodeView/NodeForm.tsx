@@ -160,6 +160,7 @@ class NodeForm extends Component<INodeFormProps> {
                             />
                             <ShortIdInput
                                 node={node}
+                                isNewNode={isNewNode}
                                 isBackgroundGrey={
                                     !isEditingDisabled && !Boolean(node.shortIdLetter)
                                 }
