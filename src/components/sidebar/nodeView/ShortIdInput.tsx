@@ -9,6 +9,7 @@ import * as s from './shortIdInput.scss';
 
 interface IStopFormProps {
     node: INode;
+    isNewNode: boolean;
     isBackgroundGrey: boolean;
     isEditingDisabled: boolean;
     nodeInvalidPropertiesMap: object;
@@ -49,7 +50,9 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
 
     private updateAvailableShortIds = async () => {
         const node = this.props.nodeStore!.node;
-        if (!node) return;
+        if (!node || this.props.isNewNode) {
+            return;
+        }
 
         const shortIdLetter = node.shortIdLetter;
         const availableShortIds: string[] = await StopService.fetchAvailableShortIds(

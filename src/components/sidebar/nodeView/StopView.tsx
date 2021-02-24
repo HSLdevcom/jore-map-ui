@@ -1,8 +1,7 @@
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import Loader from '~/components/shared/loader/Loader';
-import { INode, IStop, IStopArea } from '~/models';
+import { INode, IStop } from '~/models';
 import IHastusArea from '~/models/IHastusArea';
 import StopAreaService from '~/services/stopAreaService';
 import StopService, { IStopSectionItem } from '~/services/stopService';
@@ -22,7 +21,6 @@ interface IStopViewProps {
 }
 
 interface IStopViewState {
-    isLoading: boolean;
     stopSections: IStopSectionItem[];
     hastusAreas: IHastusArea[];
 }
@@ -36,7 +34,6 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
     constructor(props: IStopViewProps) {
         super(props);
         this.state = {
-            isLoading: true,
             stopSections: [],
             hastusAreas: [],
         };
@@ -48,17 +45,20 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         if (this.props.isNewStop) {
             this.props.nodeStore!.updateStopPropertiesAccordingToNodeLocation();
         }
-        const stopAreas: IStopArea[] = await StopAreaService.fetchAllStopAreas();
-        const stopSections: IStopSectionItem[] = await StopService.fetchAllStopSections();
-        const hastusAreas: IHastusArea[] = await StopService.fetchAllHastusAreas();
-        if (this._isMounted) {
-            this.setState({
-                hastusAreas,
-                stopSections,
-            });
+
+        Promise.all([
+            StopAreaService.fetchAllStopAreas(),
+            StopService.fetchAllStopSections(),
+            StopService.fetchAllHastusAreas(),
+        ]).then(([stopAreas, stopSections, hastusAreas]) => {
             this.props.nodeStore!.setStopAreas(stopAreas);
-            this.setState({ isLoading: false });
-        }
+            if (this._isMounted) {
+                this.setState({
+                    hastusAreas,
+                    stopSections,
+                });
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -128,11 +128,6 @@ class StopView extends React.Component<IStopViewProps, IStopViewState> {
         const isEditingDisabled = this.props.nodeStore!.isEditingDisabled;
         const invalidPropertiesMap = this.props.nodeStore!.stopInvalidPropertiesMap;
         const { node, isNewStop } = this.props;
-
-        if (this.state.isLoading) {
-            return <Loader size='small' />;
-        }
-
         return (
             <StopForm
                 node={node}
