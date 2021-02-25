@@ -94,12 +94,15 @@ const _renderNodeHeader = ({
     const _getHeaderText = (rpLink: IComparableRoutePathLink) => {
         const node = rpLink.startNode;
         const stopName = node.stop ? node.stop.nameFi : '';
+        const isStop = node.type === NodeType.STOP;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
-        let header = node.type === NodeType.STOP ? stopName : nodeTypeName;
+        let header = isStop ? stopName : nodeTypeName;
         header += ` ${node.id}`;
-        let shortId = node.shortIdLetter ? node.shortIdLetter : '';
-        shortId += node.shortIdString ? node.shortIdString : '';
-        header += !isEmpty(shortId) ? ` ${shortId}` : '';
+        if (isStop) {
+            let shortId = node.shortIdLetter ? node.shortIdLetter : '';
+            shortId += node.shortIdString ? node.shortIdString : '';
+            header += !isEmpty(shortId) ? ` ${shortId}` : '';
+        }
         return header;
     };
     const _renderIcon = (rpLink: IComparableRoutePathLink) => {
