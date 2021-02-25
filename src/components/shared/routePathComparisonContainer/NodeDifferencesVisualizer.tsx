@@ -255,7 +255,7 @@ const rpLinkValueMapperObj = {
     startNodeType: (value: string) => (value === StartNodeType.DISABLED ? 'Ei' : 'Kyllä'),
     isStartNodeHastusStop: (value: string) => (value ? 'Kyllä' : 'Ei'),
     isStartNodeUsingBookSchedule: (value: boolean) => (value ? 'Kyllä' : 'Ei'),
-    startNodeBookScheduleColumnNumber: (value?: number) => (value ? String(value) : ''),
+    startNodeBookScheduleColumnNumber: (value?: number) => (value ? String(value) : '-'),
 };
 
 const _getNodeValue = ({
