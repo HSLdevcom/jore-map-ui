@@ -289,6 +289,16 @@ class RoutePathStore {
             length: {
                 validators: [validateRoutePathLength],
             },
+            startNodeBookScheduleColumnNumber: {
+                validators: [
+                    (rp: IRoutePath) =>
+                        _validateStartNodeBookScheduleColumnNumber({
+                            isStartNodeUsingBookSchedule: rp.isStartNodeUsingBookSchedule,
+                            startNodeBookScheduleColumnNumber: rp.startNodeBookScheduleColumnNumber,
+                        }),
+                ],
+                dependentProperties: ['isStartNodeUsingBookSchedule'],
+            },
         };
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
     };
@@ -729,29 +739,19 @@ class RoutePathStore {
     };
 
     private initRoutePathLinkValidationStore = (initRpLink: IRoutePathLink) => {
-        const validateStartNodeBookScheduleColumnNumber = (currentRpLink: IRoutePathLink) => {
-            const isRequired = Boolean(currentRpLink.isStartNodeUsingBookSchedule);
-            const hasValue =
-                Boolean(currentRpLink.startNodeBookScheduleColumnNumber) &&
-                currentRpLink.startNodeBookScheduleColumnNumber! > 0;
-            const isValid = (isRequired && hasValue) || (!isRequired && !hasValue);
-            const validationResult: IValidationResult = {
-                isValid,
-                errorMessage: !isValid
-                    ? 'Numeroarvo (1...99) vaaditaan kun ohitusaika kirja-aikataulussa täppä on päällä.'
-                    : undefined,
-            };
-            return validationResult;
-        };
-
         const customValidatorMap: ICustomValidatorMap = {
-            // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
             startNodeBookScheduleColumnNumber: {
-                validators: [validateStartNodeBookScheduleColumnNumber],
+                validators: [
+                    (rpLink: IRoutePathLink) =>
+                        _validateStartNodeBookScheduleColumnNumber({
+                            isStartNodeUsingBookSchedule: rpLink.isStartNodeUsingBookSchedule,
+                            startNodeBookScheduleColumnNumber:
+                                rpLink.startNodeBookScheduleColumnNumber,
+                        }),
+                ],
                 dependentProperties: ['isStartNodeUsingBookSchedule'],
             },
         };
-        // this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
         this._routePathLinkValidationStoreMap.set(initRpLink.id, new ValidationStore());
         this._routePathLinkValidationStoreMap
             .get(initRpLink.id)!
@@ -855,6 +855,28 @@ const _isRoutePathDirty = (currentRp: IRoutePath | null, oldRp: IRoutePath | nul
     );
 
     return areRoutePathsEqual && areRpLinksEqual;
+};
+
+const _validateStartNodeBookScheduleColumnNumber = ({
+    isStartNodeUsingBookSchedule,
+    startNodeBookScheduleColumnNumber,
+}: {
+    isStartNodeUsingBookSchedule?: boolean;
+    startNodeBookScheduleColumnNumber?: number;
+}) => {
+    const isRequired = Boolean(isStartNodeUsingBookSchedule);
+    const hasValidValue =
+        Boolean(startNodeBookScheduleColumnNumber) &&
+        startNodeBookScheduleColumnNumber! > 0 &&
+        startNodeBookScheduleColumnNumber! <= 99;
+    const isValid = (isRequired && hasValidValue) || (!isRequired && !hasValidValue);
+    const validationResult: IValidationResult = {
+        isValid,
+        errorMessage: !isValid
+            ? 'Numeroarvo (1...99) vaaditaan kun ohitusaika kirja-aikataulussa täppä on päällä.'
+            : undefined,
+    };
+    return validationResult;
 };
 
 export default new RoutePathStore();

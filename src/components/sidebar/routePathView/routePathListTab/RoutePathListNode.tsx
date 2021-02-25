@@ -411,7 +411,11 @@ const RoutePathListNode = inject(
                                 )}
                                 value={startNodeBookScheduleColumnNumber}
                                 validationResult={
-                                    invalidPropertiesMap['startNodeBookScheduleColumnNumber']
+                                    isLastNode
+                                        ? props.routePathStore!.invalidPropertiesMap[
+                                              'startNodeBookScheduleColumnNumber'
+                                          ]
+                                        : invalidPropertiesMap['startNodeBookScheduleColumnNumber']
                                 }
                             />
                         </div>
