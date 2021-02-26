@@ -80,7 +80,7 @@ interface IRoutePathViewState {
 )
 @observer
 class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewState> {
-    private isRoutePathLinksChangedListener: IReactionDisposer;
+    private _isRoutePathLinksChangedListener: IReactionDisposer;
     private _isMounted: boolean;
     constructor(props: IRoutePathViewProps) {
         super(props);
@@ -102,7 +102,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         EventListener.on('redo', this.redo);
         this.initialize();
         this.props.routePathStore!.setIsEditingDisabled(!this.props.isNewRoutePath);
-        this.isRoutePathLinksChangedListener = reaction(
+        this._isRoutePathLinksChangedListener = reaction(
             () =>
                 this.props.routePathStore!.routePath &&
                 this.props.routePathStore!.routePath!.routePathLinks.length,
@@ -112,7 +112,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
 
     componentWillUnmount() {
         this._isMounted = false;
-        this.isRoutePathLinksChangedListener();
+        this._isRoutePathLinksChangedListener();
         this.props.toolbarStore!.selectTool(null);
         this.props.routePathStore!.clear();
         EventListener.off('undo', this.undo);
@@ -370,6 +370,14 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         });
     };
 
+    private openRoutePathLinkEdit = (nodeInternalId: string) => {
+        this.props.routePathStore!.setSelectedTabIndex(1);
+        this.props.routePathStore!.setIsCompareRoutePathsContainerVisible(false);
+        process.nextTick(() => {
+            this.props.routePathLayerStore!.setExtendedListItemId(nodeInternalId);
+        });
+    };
+
     render() {
         const routePathStore = this.props.routePathStore;
         if (this.state.isLoading) {
@@ -447,6 +455,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                 <RoutePathComparisonContainer
                                     routePath1={routePathStore!.oldRoutePath!}
                                     routePath2={routePath}
+                                    openRoutePathLinkEdit={this.openRoutePathLinkEdit}
                                 />
                             </>
                         ) : (

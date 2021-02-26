@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { cloneDeep, debounce, isEqual, omit } from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
 import ToolbarToolType from '~/enums/toolbarToolType';
@@ -83,7 +83,7 @@ class RoutePathStore {
                 this._routePath && this._routePath.routePathLinks.length,
                 this._isCompareRoutePathsContainerVisible,
             ],
-            _.debounce(
+            debounce(
                 () =>
                     updateDisabledRoutePathToolStatus({
                         routePathStore: this,
@@ -119,7 +119,7 @@ class RoutePathStore {
 
     @computed
     get isDirty() {
-        return !_.isEqual(this._routePath, this._oldRoutePath);
+        return !_isRoutePathDirty(this._routePath, this._oldRoutePath);
     }
 
     @computed
@@ -192,8 +192,8 @@ class RoutePathStore {
         isNewRoutePath: boolean;
     }) => {
         this.clear();
-        this._routePath = _.cloneDeep(routePath);
-        this._oldRoutePath = _.cloneDeep(routePath);
+        this._routePath = cloneDeep(routePath);
+        this._oldRoutePath = cloneDeep(routePath);
 
         this._isNewRoutePath = isNewRoutePath;
         const routePathLinks = routePath.routePathLinks ? routePath.routePathLinks : [];
@@ -289,6 +289,16 @@ class RoutePathStore {
             length: {
                 validators: [validateRoutePathLength],
             },
+            startNodeBookScheduleColumnNumber: {
+                validators: [
+                    (rp: IRoutePath) =>
+                        _validateStartNodeBookScheduleColumnNumber({
+                            isStartNodeUsingBookSchedule: rp.isStartNodeUsingBookSchedule,
+                            startNodeBookScheduleColumnNumber: rp.startNodeBookScheduleColumnNumber,
+                        }),
+                ],
+                dependentProperties: ['isStartNodeUsingBookSchedule'],
+            },
         };
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
     };
@@ -353,7 +363,7 @@ class RoutePathStore {
                     return rpLink.id === undoRpLink.id;
                 });
                 if (oldRpLink) {
-                    return _.cloneDeep(oldRpLink);
+                    return cloneDeep(oldRpLink);
                 }
                 return undoRpLink;
             });
@@ -376,7 +386,7 @@ class RoutePathStore {
                     return rpLink.id === redoRpLink.id;
                 });
                 if (oldRpLink) {
-                    return _.cloneDeep(oldRpLink);
+                    return cloneDeep(oldRpLink);
                 }
                 return redoRpLink;
             });
@@ -417,9 +427,9 @@ class RoutePathStore {
      */
     @action
     public addLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
-        const rpLinkToAdd = _.cloneDeep(routePathLink);
+        const rpLinkToAdd = cloneDeep(routePathLink);
         const rpLinks = this._routePath!.routePathLinks;
-        const rpLinkToAddClone = _.cloneDeep(rpLinkToAdd);
+        const rpLinkToAddClone = cloneDeep(rpLinkToAdd);
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(
             // Order numbers start from 1
@@ -479,7 +489,7 @@ class RoutePathStore {
     // TODO: if needed, copy those bookSchedule properties from segment's routePath if segment to copy ends into routePath's last node
     @action
     public cloneLink = ({ routePathLink }: { routePathLink: IRoutePathLink }) => {
-        const rpLinkToAdd = _.cloneDeep(routePathLink);
+        const rpLinkToAdd = cloneDeep(routePathLink);
         const rpLinks = this._routePath!.routePathLinks;
         // Need to do splice to trigger ReactionDisposer watcher
         rpLinks.splice(
@@ -518,7 +528,7 @@ class RoutePathStore {
          * <remove last link>
          */
         if (linkToRemoveIndex === rpLinks.length - 1) {
-            const rpLinkToRemoveClone = _.cloneDeep(rpLinks[rpLinks.length - 1]);
+            const rpLinkToRemoveClone = cloneDeep(rpLinks[rpLinks.length - 1]);
 
             this.copyPropertyToRoutePathFromRoutePathLink(
                 rpLinkToRemoveClone,
@@ -546,7 +556,7 @@ class RoutePathStore {
         const routePathLinks =
             this._routePath && this._routePath.routePathLinks ? this._routePath.routePathLinks : [];
         const currentUndoState: UndoState = {
-            routePathLinks: _.cloneDeep(routePathLinks),
+            routePathLinks: cloneDeep(routePathLinks),
             isStartNodeUsingBookSchedule: Boolean(this._routePath!.isStartNodeUsingBookSchedule),
             startNodeBookScheduleColumnNumber: this._routePath!.startNodeBookScheduleColumnNumber,
         };
@@ -729,29 +739,19 @@ class RoutePathStore {
     };
 
     private initRoutePathLinkValidationStore = (initRpLink: IRoutePathLink) => {
-        const validateStartNodeBookScheduleColumnNumber = (currentRpLink: IRoutePathLink) => {
-            const isRequired = Boolean(currentRpLink.isStartNodeUsingBookSchedule);
-            const hasValue =
-                Boolean(currentRpLink.startNodeBookScheduleColumnNumber) &&
-                currentRpLink.startNodeBookScheduleColumnNumber! > 0;
-            const isValid = (isRequired && hasValue) || (!isRequired && !hasValue);
-            const validationResult: IValidationResult = {
-                isValid,
-                errorMessage: !isValid
-                    ? 'Numeroarvo (1...99) vaaditaan kun ohitusaika kirja-aikataulussa täppä on päällä.'
-                    : undefined,
-            };
-            return validationResult;
-        };
-
         const customValidatorMap: ICustomValidatorMap = {
-            // New property to routePath for validating routePathPrimaryKey to validate primary key only once and get that validation result into a single place
             startNodeBookScheduleColumnNumber: {
-                validators: [validateStartNodeBookScheduleColumnNumber],
+                validators: [
+                    (rpLink: IRoutePathLink) =>
+                        _validateStartNodeBookScheduleColumnNumber({
+                            isStartNodeUsingBookSchedule: rpLink.isStartNodeUsingBookSchedule,
+                            startNodeBookScheduleColumnNumber:
+                                rpLink.startNodeBookScheduleColumnNumber,
+                        }),
+                ],
                 dependentProperties: ['isStartNodeUsingBookSchedule'],
             },
         };
-        // this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
         this._routePathLinkValidationStoreMap.set(initRpLink.id, new ValidationStore());
         this._routePathLinkValidationStoreMap
             .get(initRpLink.id)!
@@ -770,7 +770,7 @@ class RoutePathStore {
         routePathLink: IRoutePathLink,
         property: keyof IRoutePathLink | keyof IRoutePath
     ) => {
-        const valueToCopy = _.cloneDeep(routePathLink[property]);
+        const valueToCopy = cloneDeep(routePathLink[property]);
         this.updateRoutePathProperty(property, valueToCopy);
     };
 
@@ -779,7 +779,7 @@ class RoutePathStore {
         routePathLink: IRoutePathLink,
         property: keyof IRoutePathLink
     ) => {
-        const valueToCopy = _.cloneDeep(this.routePath![property]);
+        const valueToCopy = cloneDeep(this.routePath![property]);
         this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, valueToCopy);
         this.updateRoutePathProperty(property, null);
     };
@@ -831,6 +831,52 @@ const _areDateRangesOverlapping = ({
         return true;
     }
     return true;
+};
+
+// Custom isDirty check because rpNodes and rpLinks include properties (like internal ids) that needs to be ignored when comparing
+const _isRoutePathDirty = (currentRp: IRoutePath | null, oldRp: IRoutePath | null) => {
+    if (!currentRp || !oldRp) return false;
+
+    const areRoutePathsEqual = isEqual(
+        omit(currentRp, ['routePathLinks']),
+        omit(oldRp, ['routePathLinks'])
+    );
+    const areRpLinksEqual = !currentRp.routePathLinks.some(
+        (rpLink: IRoutePathLink, index: number) => {
+            const oldRpLink = oldRp.routePathLinks[index];
+            const isRpLinkEqual = isEqual(
+                omit(rpLink, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode']),
+                omit(oldRpLink, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode'])
+            );
+            const isStartNodeEqual = rpLink.startNode.id === oldRpLink.startNode.id;
+            const isEndNodeEqual = rpLink.endNode.id === oldRpLink.endNode.id;
+            return !(isRpLinkEqual && isStartNodeEqual && isEndNodeEqual);
+        }
+    );
+
+    return areRoutePathsEqual && areRpLinksEqual;
+};
+
+const _validateStartNodeBookScheduleColumnNumber = ({
+    isStartNodeUsingBookSchedule,
+    startNodeBookScheduleColumnNumber,
+}: {
+    isStartNodeUsingBookSchedule?: boolean;
+    startNodeBookScheduleColumnNumber?: number;
+}) => {
+    const isRequired = Boolean(isStartNodeUsingBookSchedule);
+    const hasValidValue =
+        Boolean(startNodeBookScheduleColumnNumber) &&
+        startNodeBookScheduleColumnNumber! > 0 &&
+        startNodeBookScheduleColumnNumber! <= 99;
+    const isValid = (isRequired && hasValidValue) || (!isRequired && !hasValidValue);
+    const validationResult: IValidationResult = {
+        isValid,
+        errorMessage: !isValid
+            ? 'Numeroarvo (1...99) vaaditaan kun ohitusaika kirja-aikataulussa täppä on päällä.'
+            : undefined,
+    };
+    return validationResult;
 };
 
 export default new RoutePathStore();

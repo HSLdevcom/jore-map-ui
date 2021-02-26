@@ -222,9 +222,9 @@ const RoutePathListNode = inject(
                 if (isExtended) {
                     props.routePathLayerStore!.setExtendedListItemId(null);
                 } else {
+                    props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
                     const rpLinks = props.routePathStore!.routePath!.routePathLinks;
                     const nextRpLink = rpLinks[routePathLink.orderNumber - 2];
-                    props.routePathLayerStore!.setExtendedListItemId(currentListItemId);
                     const geometry = props.routePathStore!.getLinkGeom(routePathLink.id);
                     const bounds: L.LatLngBounds = new L.LatLngBounds([]);
                     geometry.forEach((geom: L.LatLng) => bounds.extend(geom));
@@ -411,7 +411,11 @@ const RoutePathListNode = inject(
                                 )}
                                 value={startNodeBookScheduleColumnNumber}
                                 validationResult={
-                                    invalidPropertiesMap['startNodeBookScheduleColumnNumber']
+                                    isLastNode
+                                        ? props.routePathStore!.invalidPropertiesMap[
+                                              'startNodeBookScheduleColumnNumber'
+                                          ]
+                                        : invalidPropertiesMap['startNodeBookScheduleColumnNumber']
                                 }
                             />
                         </div>
