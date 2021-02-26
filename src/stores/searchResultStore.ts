@@ -164,7 +164,7 @@ class SearchResultStore {
     };
 
     @action
-    public search = async () => {
+    public search = () => {
         this.setIsSearching(true);
         const searchInput = SearchStore.searchInput.trim().toLocaleLowerCase();
 

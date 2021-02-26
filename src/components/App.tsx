@@ -102,7 +102,7 @@ class App extends React.Component<IAppProps, IAppState> {
             window.setTimeout(() => {
                 this.fetchAllLines();
                 this.fetchAllNodes();
-            }, 5000);
+            }, 1000);
         });
     };
 
