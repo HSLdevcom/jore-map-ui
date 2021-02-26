@@ -44,7 +44,7 @@ const ClusterNodeMarker = inject('popupStore')(
             return s.unusedStop;
         };
         const renderNodeMarkerIcon = () => {
-            const iconWidth = 14;
+            const iconWidth = 20;
             return LeafletUtils.createDivIcon({
                 html: <div className={s.clusterNodeMarkerContainer}>{props.nodes.length}</div>,
                 options: {
