@@ -95,17 +95,20 @@ const RoutePathComparisonView = inject(
                             routePathSelection.startDate
                                 ? toDateString(routePathSelection.startDate)
                                 : ''
-                        }`
+                        }. Tarkista käytetty osoite: ${window.location.href}`
                     );
-                    props.mapStore!.initCoordinates();
+                    const homeViewLink = routeBuilder.to(SubSites.home).toLink();
+                    navigator.goTo({ link: homeViewLink });
                 }
                 return rp;
             };
             const fetchRoutePaths = async () => {
                 const rp1 = await fetchRoutePath(routePathSelection1!);
                 const rp2 = await fetchRoutePath(routePathSelection2!);
-                setRoutePath1(rp1);
-                setRoutePath2(rp2);
+                if (rp1 && rp2) {
+                    setRoutePath1(rp1);
+                    setRoutePath2(rp2);
+                }
             };
             if (routePathSelection1.startDate && routePathSelection2.startDate) {
                 fetchRoutePaths();
