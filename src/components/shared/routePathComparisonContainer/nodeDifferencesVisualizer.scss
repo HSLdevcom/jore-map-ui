@@ -20,28 +20,48 @@ $nodeRightColor: green;
         .headerContainer {
             display: flex;
             align-items: center;
-
             &.headerTextCommon {
                 display: flex;
                 width: 100%;
                 justify-content: center;
+            }
+
+            .centerHeaderTextContainer {
+                display: flex;
+                width: 100%;
+                justify-content: center;
                 cursor: pointer;
+                &.stopHeader {
+                    color: $busBlue;
+                    font-weight: bold;
+                }
+                &.stopHeader:hover {
+                    transition: 0.5s;
+                    color: darken($busBlue, 10%);
+                }
+                &.stopHeaderDisabled {
+                    @extend .stopHeader;
+                    opacity: 0.5;
+                }
             }
-            &.stopHeader {
-                color: $busBlue;
-                font-weight: bold;
-            }
-            &.stopHeader:hover {
-                transition: 0.5s;
-                color: darken($busBlue, 10%);
-            }
-            &.stopHeaderDisabled {
-                @extend .stopHeader;
-                opacity: 0.5;
-            }
+
             .transitTypeIconWrapper {
                 display: flex;
                 margin: 0px 5px 0px 5px;
+            }
+            .editPenIconWrapper {
+                display: flex;
+                margin: 0px 5px 0px 5px;
+                color: $fontColorDefault;
+                font-size: $largeFontSize;
+                cursor: pointer;
+                padding: 3px;
+                border-radius: 5px;
+                transition: 0.5s;
+            }
+            .editPenIconWrapper:hover {
+                color: white;
+                background-color: $busBlue;
             }
         }
         .headerTextLeft {
@@ -77,6 +97,7 @@ $nodeRightColor: green;
 
                 .label {
                     padding: $rowPadding;
+                    white-space: nowrap;
                 }
 
                 .value {

@@ -11,6 +11,7 @@ import * as s from './routePathComparisonContainer.scss';
 interface IRoutePathComparisonContainerProps {
     routePath1: IRoutePath;
     routePath2: IRoutePath;
+    openRoutePathLinkEdit?: (id: string) => void;
     routePathComparisonStore?: RoutePathComparisonStore;
 }
 
@@ -44,7 +45,7 @@ const comparableRoutePathProperties = [
 
 const RoutePathComparisonContainer = inject('routePathComparisonStore')(
     observer((props: IRoutePathComparisonContainerProps) => {
-        const { routePath1, routePath2 } = props;
+        const { routePath1, routePath2, openRoutePathLinkEdit } = props;
         const [areEqualPropertiesVisible, setEqualPropertiesVisible] = useState<boolean>(false);
         const [areCrossroadsVisible, setCrossroadsVisible] = useState<boolean>(false);
         const comparableRp1: IComparableRoutePath = pick(routePath1, comparableRoutePathProperties);
@@ -121,6 +122,7 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
                         routePath2={props.routePath2}
                         areEqualPropertiesVisible={areEqualPropertiesVisible}
                         areCrossroadsVisible={areCrossroadsVisible}
+                        openRoutePathLinkEdit={openRoutePathLinkEdit}
                     />
                 </div>
             </div>

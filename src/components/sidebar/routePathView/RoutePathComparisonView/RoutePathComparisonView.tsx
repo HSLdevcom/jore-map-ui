@@ -12,6 +12,9 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
 import RoutePathService from '~/services/routePathService';
+import { ErrorStore } from '~/stores/errorStore';
+import { MapStore } from '~/stores/mapStore';
+import { toDateString } from '~/utils/dateUtils';
 import { createLineDropdownItems } from '~/utils/dropdownUtils';
 import RoutePathComparisonContainer from '../../../shared/routePathComparisonContainer/RoutePathComparisonContainer';
 import SidebarHeader from '../../SidebarHeader';
@@ -21,6 +24,8 @@ import * as s from './routePathComparisonView.scss';
 
 interface IRoutePathComparisonViewProps {
     match?: match<any>;
+    errorStore?: ErrorStore;
+    mapStore?: MapStore;
 }
 
 interface IRoutePathSelection {
@@ -35,7 +40,10 @@ enum RoutePathSelection {
     ROUTEPATH_2 = 2,
 }
 
-const RoutePathComparisonView = inject()(
+const RoutePathComparisonView = inject(
+    'errorStore',
+    'mapStore'
+)(
     observer((props: IRoutePathComparisonViewProps) => {
         const [isLoading, setIsLoading] = useState<boolean>(true);
         const [lineQueryResult, setLineQueryResult] = useState<ISearchLine[]>([]);
@@ -71,7 +79,7 @@ const RoutePathComparisonView = inject()(
         useEffect(() => {
             const fetchRoutePath = async (
                 routePathSelection: IRoutePathSelection
-            ): Promise<IRoutePath> => {
+            ): Promise<IRoutePath | null> => {
                 const { routeId, startDate, direction } = routePathSelection;
                 const rp: IRoutePath | null = await RoutePathService.fetchRoutePath({
                     routeId,
@@ -80,7 +88,16 @@ const RoutePathComparisonView = inject()(
                     shouldFetchViaNames: true,
                 });
                 if (!rp) {
-                    throw `RoutePath not found: ${routePathSelection.routeId} ${routePathSelection.direction} ${routePathSelection.startDate}`;
+                    props.errorStore!.addError(
+                        `Reitinsuuntaa ei löytynyt: ${routePathSelection.routeId} ${
+                            routePathSelection.direction
+                        } ${
+                            routePathSelection.startDate
+                                ? toDateString(routePathSelection.startDate)
+                                : ''
+                        }`
+                    );
+                    props.mapStore!.initCoordinates();
                 }
                 return rp;
             };

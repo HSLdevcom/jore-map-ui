@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { isEmpty, isNumber } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { FiEdit3 } from 'react-icons/fi';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { IRoutePath } from '~/models';
@@ -19,6 +20,7 @@ interface INodeDifferencesVisualizerProps {
     routePath2: IRoutePath;
     areEqualPropertiesVisible: boolean;
     areCrossroadsVisible: boolean;
+    openRoutePathLinkEdit?: (id: string) => void;
     routePathComparisonStore?: RoutePathComparisonStore;
     mapStore?: MapStore;
 }
@@ -40,8 +42,13 @@ const NodeDifferencesVisualizer = inject(
     'mapStore'
 )(
     observer((props: INodeDifferencesVisualizerProps) => {
-        const { routePath1, routePath2, areEqualPropertiesVisible, areCrossroadsVisible } = props;
-
+        const {
+            routePath1,
+            routePath2,
+            areEqualPropertiesVisible,
+            areCrossroadsVisible,
+            openRoutePathLinkEdit,
+        } = props;
         const rpLinkRows: IRoutePathLinkRow[] = getRpLinkRows({ routePath1, routePath2 });
         return (
             <div className={s.nodeDifferencesVisualizer}>
@@ -64,6 +71,7 @@ const NodeDifferencesVisualizer = inject(
                                 rpLink1,
                                 rpLink2,
                                 areNodesEqual,
+                                openRoutePathLinkEdit,
                                 mapStore: props.mapStore,
                             })}
                             {_renderNodeContainers({
@@ -84,11 +92,13 @@ const _renderNodeHeader = ({
     rpLink1,
     rpLink2,
     areNodesEqual,
+    openRoutePathLinkEdit,
     mapStore,
 }: {
     rpLink1: IComparableRoutePathLink | null;
     rpLink2: IComparableRoutePathLink | null;
     areNodesEqual: boolean;
+    openRoutePathLinkEdit?: (id: string) => void;
     mapStore?: MapStore;
 }) => {
     const _getHeaderText = (rpLink: IComparableRoutePathLink) => {
@@ -105,7 +115,7 @@ const _renderNodeHeader = ({
         }
         return header;
     };
-    const _renderIcon = (rpLink: IComparableRoutePathLink) => {
+    const _renderTransitTypeIcon = (rpLink: IComparableRoutePathLink) => {
         const node = rpLink.startNode;
         return (
             <div className={s.transitTypeIconWrapper}>
@@ -117,6 +127,14 @@ const _renderNodeHeader = ({
                     isHighlighted={false}
                     highlightColor={'yellow'}
                 />
+            </div>
+        );
+    };
+    const _renderEditPenIcon = (rpLink: IComparableRoutePathLink) => {
+        const node = rpLink.startNode;
+        return (
+            <div className={s.editPenIconWrapper}>
+                <FiEdit3 onClick={() => openRoutePathLinkEdit!(node.internalId)} />
             </div>
         );
     };
@@ -136,12 +154,17 @@ const _renderNodeHeader = ({
             }
         }
         return (
-            <div
-                className={classnames(s.headerContainer, s.headerTextCommon, stopHeaderClass)}
-                onClick={() => _centerMapToNode(rpLink1!)}
-            >
-                {_renderIcon(rpLink1!)}
-                {headerText}
+            <div className={classnames(s.headerContainer, s.headerTextCommon)}>
+                <div
+                    className={classnames(s.centerHeaderTextContainer, stopHeaderClass)}
+                    onClick={() => _centerMapToNode(rpLink1!)}
+                >
+                    {_renderTransitTypeIcon(rpLink1!)}
+                    {headerText}
+                </div>
+                {openRoutePathLinkEdit && rpLink1!.startNode.type === NodeType.STOP && (
+                    <>{_renderEditPenIcon(rpLink1!)}</>
+                )}
             </div>
         );
     }
@@ -153,7 +176,7 @@ const _renderNodeHeader = ({
             >
                 {rpLink1 && (
                     <>
-                        {_renderIcon(rpLink1)}
+                        {_renderTransitTypeIcon(rpLink1)}
                         {_getHeaderText(rpLink1)}
                     </>
                 )}
@@ -164,11 +187,14 @@ const _renderNodeHeader = ({
             >
                 {rpLink2 && (
                     <>
-                        {_renderIcon(rpLink2)}
+                        {_renderTransitTypeIcon(rpLink2)}
                         {_getHeaderText(rpLink2)}
                     </>
                 )}
             </div>
+            {openRoutePathLinkEdit && rpLink2 && rpLink2.startNode.type === NodeType.STOP && (
+                <div>{_renderEditPenIcon(rpLink2)}</div>
+            )}
         </div>
     );
 };
@@ -211,7 +237,7 @@ const _renderNodeContainers = ({
         property: 'isStartNodeUsingBookSchedule',
     });
     _addToNodePropertyRows({
-        label: 'Pysäkin sarakenumero kirja-aikataulussa',
+        label: 'Pysäkin sarakenum. kirja-aikataulussa',
         property: 'startNodeBookScheduleColumnNumber',
     });
     _addToNodePropertyRows({
