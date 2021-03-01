@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
 import TransitType from '~/enums/transitType';
+import ViaNameFactory from '~/factories/viaNameFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey, ISingleRoutePathSaveModel } from '~/models/IRoutePath';
@@ -297,7 +298,7 @@ const _findRoutePathLink = (
 // Add fetched viaName properties to given routePath.routePathLinks
 const _fetchViaNames = async (routePath: IRoutePath) => {
     try {
-        const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
+        let routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
 
         const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
             routeId: routePath.routeId,
@@ -313,23 +314,29 @@ const _fetchViaNames = async (routePath: IRoutePath) => {
             }
         );
 
-        routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-            const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
-            if (viaName) {
-                routePathLink.viaNameId = viaName.viaNameId;
-                routePathLink.destinationFi1 = viaName?.destinationFi1;
-                routePathLink.destinationFi2 = viaName?.destinationFi2;
-                routePathLink.destinationSw1 = viaName?.destinationSw1;
-                routePathLink.destinationSw2 = viaName?.destinationSw2;
-            }
-            const viaShieldName = viaShieldNames.find(
+        routePathLinks = routePathLinks.map((routePathLink: IRoutePathLink) => {
+            let viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
+            const rpLinkId: number = parseInt(routePathLink.id, 10);
+            viaName = viaName
+                ? viaName
+                : ViaNameFactory.parseExternalViaName({
+                      viaNameId: rpLinkId,
+                      externalViaName: null,
+                  });
+            let viaShieldName = viaShieldNames.find(
                 (viaShieldName) => viaShieldName.viaShieldNameId === routePathLink.id
             );
-            if (viaShieldName) {
-                routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
-                routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
-                routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
-            }
+            viaShieldName = viaShieldName
+                ? viaShieldName
+                : ViaNameFactory.parseExternalViaShieldName({
+                      viaShieldNameId: rpLinkId,
+                      externalViaShieldName: null,
+                  });
+            return {
+                ...routePathLink,
+                ...viaName,
+                ...viaShieldName,
+            };
         });
     } catch (err) {
         throw 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.';
