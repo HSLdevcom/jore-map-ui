@@ -377,6 +377,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     private renderBottomBarButtons = () => {
         if (!this.props.loginStore!.hasWriteAccess) return null;
 
+        const isCopyRoutePathButtonDisabled =
+            this.props.routeId !== this.props.routeListStore!.routeIdToEdit;
         return (
             <div className={s.buttonContainer}>
                 <Button
@@ -390,12 +392,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 <Button
                     onClick={this.openCopyRoutePathView()}
                     type={ButtonType.SQUARE}
-                    disabled={this.props.routeId !== this.props.routeListStore!.routeIdToEdit}
-                    onDisabledButtonClick={() =>
-                        this.props.alertStore!.setNotificationMessage({
-                            type: AlertType.Info,
-                            message: 'Aktivoi editointi kopioidaksesi reitinsuuntia.',
-                        })
+                    disabled={isCopyRoutePathButtonDisabled}
+                    onDisabledButtonClick={
+                        isCopyRoutePathButtonDisabled
+                            ? () =>
+                                  this.props.alertStore!.setNotificationMessage({
+                                      type: AlertType.Info,
+                                      message: 'Aktivoi editointi kopioidaksesi reitinsuuntia.',
+                                  })
+                            : undefined
                     }
                     isWide={true}
                     data-cy='copyRoutePathButton'

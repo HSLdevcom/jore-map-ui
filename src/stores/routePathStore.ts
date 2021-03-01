@@ -1,4 +1,4 @@
-import { cloneDeep, debounce, isEqual, omit } from 'lodash';
+import { cloneDeep, debounce, forOwn, isEqual, omit } from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
 import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
 import ToolbarToolType from '~/enums/toolbarToolType';
@@ -297,7 +297,17 @@ class RoutePathStore {
                             startNodeBookScheduleColumnNumber: rp.startNodeBookScheduleColumnNumber,
                         }),
                 ],
-                dependentProperties: ['isStartNodeUsingBookSchedule'],
+                dependentProperties: [],
+            },
+            isStartNodeUsingBookSchedule: {
+                validators: [
+                    (rp: IRoutePath) =>
+                        _validateStartNodeBookScheduleColumnNumber({
+                            isStartNodeUsingBookSchedule: rp.isStartNodeUsingBookSchedule,
+                            startNodeBookScheduleColumnNumber: rp.startNodeBookScheduleColumnNumber,
+                        }),
+                ],
+                dependentProperties: ['startNodeBookScheduleColumnNumber'],
             },
         };
         this._validationStore.init(this._routePath, routePathValidationModel, customValidatorMap);
@@ -749,7 +759,18 @@ class RoutePathStore {
                                 rpLink.startNodeBookScheduleColumnNumber,
                         }),
                 ],
-                dependentProperties: ['isStartNodeUsingBookSchedule'],
+                dependentProperties: [],
+            },
+            isStartNodeUsingBookSchedule: {
+                validators: [
+                    (rpLink: IRoutePathLink) =>
+                        _validateStartNodeBookScheduleColumnNumber({
+                            isStartNodeUsingBookSchedule: rpLink.isStartNodeUsingBookSchedule,
+                            startNodeBookScheduleColumnNumber:
+                                rpLink.startNodeBookScheduleColumnNumber,
+                        }),
+                ],
+                dependentProperties: ['startNodeBookScheduleColumnNumber'],
             },
         };
         this._routePathLinkValidationStoreMap.set(initRpLink.id, new ValidationStore());
@@ -841,19 +862,46 @@ const _isRoutePathDirty = (currentRp: IRoutePath | null, oldRp: IRoutePath | nul
         omit(currentRp, ['routePathLinks']),
         omit(oldRp, ['routePathLinks'])
     );
-    const areRpLinksEqual = !currentRp.routePathLinks.some(
-        (rpLink: IRoutePathLink, index: number) => {
+    /**
+     * Need to do a custom rpLink isDirty checks because well, isEqual is too brutal,
+     * it considers e.g. '' vs null or undefined vs null as different values
+     * (as they really are, but we want them to be equal)
+     *
+     * Also we want to leave internal ids out of the checks.
+     */
+    const areRpLinksEqual = currentRp.routePathLinks.every(
+        (currentRpLink: IRoutePathLink, index: number) => {
+            if (index >= oldRp.routePathLinks.length) {
+                return false;
+            }
             const oldRpLink = oldRp.routePathLinks[index];
-            const isRpLinkEqual = isEqual(
-                omit(rpLink, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode']),
-                omit(oldRpLink, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode'])
+            let isCurrentRpLinkEqual = true;
+            forOwn(
+                omit(currentRpLink, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode']),
+                (a: any, property: string) => {
+                    const b = oldRpLink[property];
+                    if ((!a || a === '') && (!b || b === '')) {
+                        return;
+                    }
+                    if (!isEqual(a, b)) {
+                        isCurrentRpLinkEqual = false;
+                    }
+                }
             );
-            const isStartNodeEqual = rpLink.startNode.id === oldRpLink.startNode.id;
-            const isEndNodeEqual = rpLink.endNode.id === oldRpLink.endNode.id;
-            return !(isRpLinkEqual && isStartNodeEqual && isEndNodeEqual);
+            if (!isCurrentRpLinkEqual) {
+                return false;
+            }
+            if (oldRpLink) {
+                const isStartNodeEqual = currentRpLink.startNode.id === oldRpLink.startNode.id;
+                const isEndNodeEqual = currentRpLink.endNode.id === oldRpLink.endNode.id;
+
+                if (!isStartNodeEqual || !isEndNodeEqual) {
+                    return false;
+                }
+            }
+            return true;
         }
     );
-
     return areRoutePathsEqual && areRpLinksEqual;
 };
 

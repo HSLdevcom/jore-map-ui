@@ -16,10 +16,8 @@ class RoutePathLinkService {
         let routePathLink: IRoutePathLink = RoutePathLinkFactory.mapExternalRoutePathLink(
             queryResult.data.routePathLink
         );
-        const viaName: IViaName | null = await ViaNameService.fetchViaNameById(id);
-        const viaShieldName: IViaShieldName | null = await ViaNameService.fetchViaShieldNameById(
-            id
-        );
+        const viaName: IViaName = await ViaNameService.fetchViaNameById(id);
+        const viaShieldName: IViaShieldName = await ViaNameService.fetchViaShieldNameById(id);
         routePathLink = {
             ...routePathLink,
             ...viaShieldName,

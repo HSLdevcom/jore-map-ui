@@ -50,7 +50,7 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
 
     private updateAvailableShortIds = async () => {
         const node = this.props.nodeStore!.node;
-        if (!node || this.props.isNewNode) {
+        if (!node || !node.shortIdLetter) {
             return;
         }
 
