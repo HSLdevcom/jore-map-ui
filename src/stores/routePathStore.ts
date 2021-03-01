@@ -871,6 +871,9 @@ const _isRoutePathDirty = (currentRp: IRoutePath | null, oldRp: IRoutePath | nul
      */
     const areRpLinksEqual = currentRp.routePathLinks.every(
         (currentRpLink: IRoutePathLink, index: number) => {
+            if (index >= oldRp.routePathLinks.length) {
+                return false;
+            }
             const oldRpLink = oldRp.routePathLinks[index];
             let isCurrentRpLinkEqual = true;
             forOwn(
