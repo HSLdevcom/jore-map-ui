@@ -67,12 +67,9 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     };
 
     private scrollIntoListItem = (listItemId: string) => {
-        const item = this.listObjectReferences[listItemId].current!;
-        if (item) {
-            // use setTimeout so that listItem will be extended before scrolling to get the final positioning better
-            setTimeout(() => {
-                item.scrollIntoView({ block: 'center', behavior: 'smooth' });
-            }, 25);
+        const item = this.listObjectReferences[listItemId];
+        if (item && item.current) {
+            item.current.scrollIntoView({ inline: 'start', block: 'start', behavior: 'smooth' });
         }
     };
 
