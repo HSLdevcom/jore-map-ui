@@ -27,41 +27,6 @@ interface IFetchNeighborLinksResponse {
     neighborLinks: INeighborLink[];
 }
 
-const getNeighborLinks = (
-    queryResult: any,
-    orderNumber: number,
-    from: 'startNode' | 'endNode'
-): INeighborLink[] => {
-    const linkPropertyName =
-        from === 'startNode' ? 'linkkisByLnkalkusolmu' : 'linkkisByLnkloppusolmu';
-    const nodePropertyName = from === 'startNode' ? 'solmuByLnkloppusolmu' : 'solmuByLnkalkusolmu';
-    return _parseNeighborLinks(queryResult, orderNumber, linkPropertyName, nodePropertyName);
-};
-
-const _parseNeighborLinks = (
-    queryResult: any,
-    orderNumber: number,
-    linkPropertyName: string,
-    nodePropertyName: string
-): INeighborLink[] => {
-    return queryResult.data.solmuBySoltunnus[linkPropertyName].nodes.map(
-        (link: IExtendedExternalLink): INeighborLink => ({
-            routePathLink: RoutePathLinkFactory.mapExternalLink(link, orderNumber),
-            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
-                (rp: IExternalRoutePath) => {
-                    const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
-                    const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;
-                    return RoutePathFactory.mapExternalRoutePath({
-                        lineId,
-                        transitType,
-                        externalRoutePath: rp,
-                    });
-                }
-            ),
-        })
-    );
-};
-
 class RoutePathNeighborLinkService {
     public static fetchAndCreateRoutePathLinksWithNodeId = async (
         nodeId: string,
@@ -70,7 +35,7 @@ class RoutePathNeighborLinkService {
         orderNumber: number,
         date: Date
     ): Promise<INeighborLink[]> => {
-        let res: INeighborLink[] = [];
+        let neighborLinks: INeighborLink[] = [];
 
         // If new routePathLinks should be created after the node
         if (neighborToAddType === NeighborToAddType.AfterNode) {
@@ -78,19 +43,29 @@ class RoutePathNeighborLinkService {
                 query: GraphqlQueries.getLinksByStartNodeQuery(),
                 variables: { nodeId, date },
             });
-            res = getNeighborLinks(queryResult, orderNumber, 'startNode');
+            neighborLinks = _parseNeighborLinks({
+                queryResult,
+                orderNumber,
+                linkPropertyName: 'linkkisByLnkalkusolmu',
+                nodePropertyName: 'solmuByLnkloppusolmu',
+            });
             // If new routePathLinks should be created before the node
         } else if (neighborToAddType === NeighborToAddType.BeforeNode) {
             const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
                 query: GraphqlQueries.getLinksByEndNodeQuery(),
                 variables: { nodeId, date },
             });
-            res = getNeighborLinks(queryResult, orderNumber, 'endNode');
+            neighborLinks = _parseNeighborLinks({
+                queryResult,
+                orderNumber,
+                linkPropertyName: 'linkkisByLnkloppusolmu',
+                nodePropertyName: 'solmuByLnkalkusolmu',
+            });
         } else {
             throw new Error(`neighborToAddType not supported: ${neighborToAddType}`);
         }
         const transitType: TransitType = _getTransitType(routePath);
-        return res.filter((rpLink) => rpLink.routePathLink.transitType === transitType);
+        return neighborLinks.filter((rpLink) => rpLink.routePathLink.transitType === transitType);
     };
 
     public static fetchNeighborRoutePathLinks = async (
@@ -135,6 +110,35 @@ class RoutePathNeighborLinkService {
         return null;
     };
 }
+
+const _parseNeighborLinks = ({
+    queryResult,
+    orderNumber,
+    linkPropertyName,
+    nodePropertyName,
+}: {
+    queryResult: any;
+    orderNumber: number;
+    linkPropertyName: string;
+    nodePropertyName: string;
+}): INeighborLink[] => {
+    return queryResult.data.solmuBySoltunnus[linkPropertyName].nodes.map(
+        (link: IExtendedExternalLink): INeighborLink => ({
+            routePathLink: RoutePathLinkFactory.mapExternalLink(link, orderNumber),
+            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
+                (rp: IExternalRoutePath) => {
+                    const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
+                    const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;
+                    return RoutePathFactory.mapExternalRoutePath({
+                        lineId,
+                        transitType,
+                        externalRoutePath: rp,
+                    });
+                }
+            ),
+        })
+    );
+};
 
 // Returns rpLinks' transitType if rpLinks exist
 const _getTransitType = (routePath: IRoutePath) => {
