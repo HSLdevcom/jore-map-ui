@@ -91,18 +91,17 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         const firstRp = routePaths[0];
         const header = `${toDateString(firstRp.startDate)} - ${toDateString(firstRp.endDate)}`;
         const currentDate = toMidnightDate(new Date());
-        const tomorrowDate = _.cloneDeep(currentDate);
-        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
         let validationResult;
-        let minStartDate = _.cloneDeep(tomorrowDate);
+        let minStartDate = _.cloneDeep(currentDate);
         let maxEndDate = undefined;
         let isStartDateSet = true;
         let isEndDateSet = true;
 
+        // Editable routePath: rp.startDate >= currentDate
         const isStartDateEditable =
-            isEditing && firstRp.startDate.getTime() > currentDate.getTime();
-        const isEndDateEditable = isEditing && firstRp.endDate.getTime() > currentDate.getTime();
+            isEditing && firstRp.startDate.getTime() >= currentDate.getTime();
+        const isEndDateEditable = isEditing && firstRp.endDate.getTime() >= currentDate.getTime();
         const isEditingEnabled = isStartDateEditable || isEndDateEditable;
 
         if (isEditingEnabled) {
@@ -135,9 +134,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 if (prevGroup) {
                     minStartDate = _.cloneDeep(prevGroup[0].endDate);
                     minStartDate.setDate(minStartDate.getDate() + 1);
-                    if (minStartDate.getTime() < tomorrowDate.getTime()) {
-                        // minStartDate can't be earlier than tomorrow date
-                        minStartDate = _.cloneDeep(tomorrowDate);
+                    // Editable routePath: rp.startDate >= currentDate
+                    if (minStartDate.getTime() < currentDate.getTime()) {
+                        // minStartDate can't be earlier than current date
+                        minStartDate = _.cloneDeep(currentDate);
                     }
                 }
                 if (nextGroup) {
