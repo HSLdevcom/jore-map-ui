@@ -770,9 +770,6 @@ const linksWithNodeUsageByStartNodeQuery = `
 linkkisByLnkalkusolmu {
     nodes {
         ${linkQueryFields}
-        solmuByLnkalkusolmu {
-            ${nodeQueryFields}
-        }
         solmuByLnkloppusolmu {
             ${nodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
@@ -797,9 +794,6 @@ linkkisByLnkloppusolmu {
                     ${routePathQueryFields}
                 }
             }
-        }
-        solmuByLnkloppusolmu {
-            ${nodeQueryFields}
         }
     }
 }`;
