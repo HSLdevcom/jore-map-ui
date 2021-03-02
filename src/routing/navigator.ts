@@ -78,6 +78,7 @@ class Navigator {
     public getQueryParamValues = () => {
         return qs.parse(this.store.location.search, {
             ignoreQueryPrefix: true,
+            arrayLimit: 1000, // ArrayLimit makes qs.parse an object after it exceeds given arrayLimit. We dont want that normally
         });
     };
 
