@@ -23,7 +23,7 @@ interface IRoutePathListState {
     areAllRoutePathsVisible: boolean;
 }
 
-type searchOrderOption = 'date' | 'routeId';
+type searchOrderOption = 'startDate' | 'endDate' | 'routeId';
 
 const ROUTE_PATH_SHOW_LIMIT = 10;
 
@@ -33,7 +33,7 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
 
         this.state = {
             searchInputValue: '',
-            searchOrder: 'date',
+            searchOrder: 'endDate',
             areAllRoutePathsVisible: false,
         };
     }
@@ -133,10 +133,12 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         });
 
         const searchOrder = this.state.searchOrder;
-        if (searchOrder === 'date') {
+        if (searchOrder === 'startDate') {
             filteredRoutePaths.sort((a, b) =>
                 a.startDate.getTime() < b.startDate.getTime() ? 1 : -1
             );
+        } else if (searchOrder === 'endDate') {
+            filteredRoutePaths.sort((a, b) => (a.endDate.getTime() < b.endDate.getTime() ? 1 : -1));
         } else {
             filteredRoutePaths.sort((a, b) => (a.routeId < b.routeId ? -1 : 1));
         }
@@ -145,8 +147,12 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
 
         const filterOptions: IDropdownItem[] = [
             {
-                value: 'date',
-                label: 'Pvm mukaan',
+                value: 'startDate',
+                label: 'Alkupvm mukaan',
+            },
+            {
+                value: 'endDate',
+                label: 'Loppupvm mukaan',
             },
             {
                 value: 'routeId',
