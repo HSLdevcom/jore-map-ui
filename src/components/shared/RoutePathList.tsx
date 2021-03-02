@@ -6,6 +6,7 @@ import InputContainer from '~/components/controls/InputContainer';
 import IRoutePath from '~/models/IRoutePath';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { isDateWithinTimeSpan } from '~/utils/dateUtils';
 import { Dropdown } from '../controls';
 import { IDropdownItem } from '../controls/Dropdown';
 import TransitIcon from './TransitIcon';
@@ -39,8 +40,19 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
     }
 
     private renderRoutePathRow = (routePath: IRoutePath, key: string) => {
+        const isRoutePathValid = isDateWithinTimeSpan({
+            date: new Date(),
+            timeSpanStart: routePath.startDate,
+            timeSpanEnd: routePath.endDate,
+        });
         return (
-            <div key={key} className={s.routePathRow}>
+            <div
+                key={key}
+                className={classnames(
+                    s.routePathRow,
+                    isRoutePathValid ? s.validRoutePathRow : undefined
+                )}
+            >
                 <div className={s.itemContainerOnRight}>
                     <div className={s.transitTypeIcon}>
                         <TransitIcon transitType={routePath.transitType!} isWithoutBox={false} />
