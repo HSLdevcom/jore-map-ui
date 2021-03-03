@@ -2,6 +2,7 @@ import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
 import EndpointPath from '~/enums/endpointPath';
+import StartNodeType from '~/enums/startNodeType';
 import TransitType from '~/enums/transitType';
 import ViaNameFactory from '~/factories/viaNameFactory';
 import ApolloClient from '~/helpers/ApolloClient';
@@ -32,6 +33,15 @@ interface IGetRoutePathLengthRequest {
 interface IRouteUsingRoutePathSegment {
     lineId: string;
     routeId: string;
+}
+
+interface IRoutePathWithDisabledInfo extends IRoutePath {
+    isConnectedStartNodeDisabled: boolean; // is routePathLink's startNode (that was used to fetch this routePath) disabled?
+}
+
+interface IRoutePathWithDisabledInfoQueryResponse {
+    routePath: IExternalRoutePath;
+    startNodeType: StartNodeType;
 }
 
 class RoutePathService {
@@ -158,23 +168,27 @@ class RoutePathService {
         startNodeId: string,
         endNodeId: string,
         transitType: string
-    ): Promise<IRoutePath[]> => {
+    ): Promise<IRoutePathWithDisabledInfo[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingLinkQuery(),
             variables: { startNodeId, endNodeId, transitType },
         });
 
-        const externalRoutePathLinks: IExternalRoutePath[] =
+        const queryResultRows: IRoutePathWithDisabledInfoQueryResponse[] =
             queryResult.data.get_route_paths_using_link.nodes;
-        return externalRoutePathLinks.map((externalRoutePath: IExternalRoutePath) => {
-            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
-            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath({
-                externalRoutePath,
+        return queryResultRows.map((qrRow: IRoutePathWithDisabledInfoQueryResponse) => {
+            const lineId = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            const routePath = RoutePathFactory.mapExternalRoutePath({
                 lineId,
                 transitType,
+                externalRoutePath: qrRow.routePath,
                 externalRoutePathLinks: [],
             });
+            return {
+                ...routePath,
+                isConnectedStartNodeDisabled: qrRow.startNodeType === StartNodeType.DISABLED,
+            };
         });
     };
 
@@ -201,22 +215,28 @@ class RoutePathService {
         );
     };
 
-    public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
+    public static fetchRoutePathsUsingNode = async (
+        nodeId: string
+    ): Promise<IRoutePathWithDisabledInfo[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
             variables: { nodeId },
         });
-        const externalRoutePaths: IExternalRoutePath[] =
+        const queryResultRows: IRoutePathWithDisabledInfoQueryResponse[] =
             queryResult.data.get_route_paths_using_node.nodes;
-        return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
-            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
-            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath({
-                externalRoutePath,
+        return queryResultRows.map((qrRow: IRoutePathWithDisabledInfoQueryResponse) => {
+            const lineId = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            const routePath = RoutePathFactory.mapExternalRoutePath({
                 lineId,
                 transitType,
+                externalRoutePath: qrRow.routePath,
                 externalRoutePathLinks: [],
             });
+            return {
+                ...routePath,
+                isConnectedStartNodeDisabled: qrRow.startNodeType === StartNodeType.DISABLED,
+            };
         });
     };
 
@@ -345,4 +365,9 @@ const _fetchViaNames = async (routePath: IRoutePath) => {
 
 export default RoutePathService;
 
-export { IRoutePathLengthResponse, IGetRoutePathLengthRequest, IRouteUsingRoutePathSegment };
+export {
+    IRoutePathLengthResponse,
+    IGetRoutePathLengthRequest,
+    IRouteUsingRoutePathSegment,
+    IRoutePathWithDisabledInfo,
+};

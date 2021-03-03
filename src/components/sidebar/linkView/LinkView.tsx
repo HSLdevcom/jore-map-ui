@@ -14,13 +14,12 @@ import TransitType from '~/enums/transitType';
 import LinkFactory from '~/factories/linkFactory';
 import EventListener from '~/helpers/EventListener';
 import { ILink, INode } from '~/models';
-import IRoutePath from '~/models/IRoutePath';
 import navigator from '~/routing/navigator';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import RoutePathService from '~/services/routePathService';
+import RoutePathService, { IRoutePathWithDisabledInfo } from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { CodeListStore } from '~/stores/codeListStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -46,7 +45,7 @@ interface ILinkViewProps extends RouteComponentProps<any> {
 
 interface ILinkViewState {
     isLoading: boolean;
-    routePathsUsingLink: IRoutePath[];
+    routePathsUsingLink: IRoutePathWithDisabledInfo[];
 }
 
 @inject('linkStore', 'mapStore', 'errorStore', 'alertStore', 'codeListStore', 'confirmStore')
@@ -123,7 +122,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             const bounds = L.latLngBounds(link.geometry);
             this.props.mapStore!.setMapBounds(bounds);
 
-            const routePaths = await RoutePathService.fetchRoutePathsUsingLink(
+            const routePaths: IRoutePathWithDisabledInfo[] = await RoutePathService.fetchRoutePathsUsingLink(
                 link.startNode.id,
                 link.endNode.id,
                 link.transitType!
