@@ -88,22 +88,21 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         const routePath = routePathStore.routePath!;
         const isEditingDisabled = routePathStore.isEditingDisabled;
 
-        const currentDatePlusOne = toMidnightDate(new Date());
-        currentDatePlusOne.setDate(currentDatePlusOne.getDate() + 1);
-        const isRoutePathInFuture = routePath.startDate.getTime() >= currentDatePlusOne.getTime();
+        const currentDate = toMidnightDate(new Date());
+        const isRoutePathDeletable = routePath.startDate.getTime() >= currentDate.getTime();
         return (
             <SaveButton
                 className={
-                    (s.removeButton, !isRoutePathInFuture ? s.disabledHoverButton : undefined)
+                    (s.removeButton, !isRoutePathDeletable ? s.disabledHoverButton : undefined)
                 }
                 disabled={isEditingDisabled}
                 savePreventedNotification={''}
                 type='deleteButton'
-                onClick={isRoutePathInFuture ? this.removeRoutePath : () => void 0}
+                onClick={isRoutePathDeletable ? this.removeRoutePath : () => void 0}
                 isWide={false}
                 hasPadding={false}
                 title={
-                    !isRoutePathInFuture
+                    !isRoutePathDeletable
                         ? 'Vain tulevaisuudessa olevia reitinsuuntia voi poistaa.'
                         : ''
                 }
