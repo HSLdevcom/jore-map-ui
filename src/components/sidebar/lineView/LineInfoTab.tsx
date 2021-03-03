@@ -87,7 +87,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
                     onEditButtonClick={this.editLinePrompt}
                     isEditing={!lineStore!.isEditingDisabled}
                 >
-                    {this.props.isNewLine ? 'Luo uusi linja' : `Linja ${lineStore!.line!.id}`}
+                    {this.props.isNewLine ? '' : `Linja ${lineStore!.line!.id}`}
                 </SidebarHeader>
                 <div className={s.form}>
                     <div className={s.flexRow}>
