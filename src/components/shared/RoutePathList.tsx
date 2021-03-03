@@ -3,9 +3,9 @@ import Moment from 'moment';
 import React from 'react';
 import { FiExternalLink } from 'react-icons/fi';
 import InputContainer from '~/components/controls/InputContainer';
-import IRoutePath from '~/models/IRoutePath';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
+import { IRoutePathWithDisabledInfo } from '~/services/routePathService';
 import { isDateWithinTimeSpan } from '~/utils/dateUtils';
 import { Dropdown } from '../controls';
 import { IDropdownItem } from '../controls/Dropdown';
@@ -14,7 +14,7 @@ import * as s from './routePathList.scss';
 
 interface IRoutePathListProps {
     topic: string;
-    routePaths: IRoutePath[];
+    routePaths: IRoutePathWithDisabledInfo[];
     className?: string;
 }
 
@@ -39,7 +39,7 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         };
     }
 
-    private renderRoutePathRow = (routePath: IRoutePath, key: string) => {
+    private renderRoutePathRow = (routePath: IRoutePathWithDisabledInfo, key: string) => {
         const isRoutePathValid = isDateWithinTimeSpan({
             date: new Date(),
             timeSpanStart: routePath.startDate,
@@ -71,9 +71,13 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         );
     };
 
-    private renderTextRow = (routePath: IRoutePath) => {
+    private renderTextRow = (routePath: IRoutePathWithDisabledInfo) => {
         return (
-            <div>
+            <div
+                className={
+                    routePath.isConnectedStartNodeDisabled ? s.disabledRoutePathTextRow : undefined
+                }
+            >
                 <div>
                     {routePath.routeId} {routePath.originFi} - {routePath.destinationFi}
                 </div>
@@ -85,7 +89,7 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
         );
     };
 
-    private openRoutePathInNewTab = (routePath: IRoutePath) => () => {
+    private openRoutePathInNewTab = (routePath: IRoutePathWithDisabledInfo) => () => {
         const routePathLink = routeBuilder
             .to(SubSites.routePath)
             .toTarget(

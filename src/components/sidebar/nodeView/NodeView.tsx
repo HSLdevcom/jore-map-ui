@@ -462,7 +462,7 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
                             <RoutePathList
                                 className={s.routePathList}
                                 topic={'Solmua käyttävät reitinsuunnat'}
-                                routePaths={this.state.routePathsUsingNode}
+                                routePaths={[]} // this.state.routePathsUsingNode
                             />
                         ))}
                 </div>

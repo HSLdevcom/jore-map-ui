@@ -153,8 +153,7 @@ const getRoutePathsUsingLinkQuery = () => {
     return gql`query getRoutePathsUsingLink($startNodeId: String, $endNodeId: String, $transitType: String) {
         get_route_paths_using_link: getRoutePathsUsingLink(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
             nodes {
-                ${routePathQueryFields}
-                ${routeForRoutePathQuery}
+                ${routePathsWithDisabledInfoQuery}
             }
         }
     }`;
@@ -743,6 +742,14 @@ const routeForRoutePathQuery = `
 reittiByReitunnus {
     ${lineForRoutePathQuery}
 }
+`;
+
+const routePathsWithDisabledInfoQuery = `
+    startNodeType
+    routePath {
+        ${routePathQueryFields}
+        ${routeForRoutePathQuery}
+    }
 `;
 
 const linkQueryFields = `
