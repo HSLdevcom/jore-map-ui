@@ -163,8 +163,7 @@ const getRoutePathsUsingNodeQuery = () => {
     return gql`query getRoutePathsUsingNode($nodeId: String) {
         get_route_paths_using_node: getRoutePathsUsingNode(nodeid: $nodeId) {
             nodes {
-                ${routePathQueryFields}
-                ${routeForRoutePathQuery}
+                ${routePathsWithDisabledInfoQuery}
             }
         }
     }`;

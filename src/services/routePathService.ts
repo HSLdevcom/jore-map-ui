@@ -176,18 +176,18 @@ class RoutePathService {
 
         const queryResultRows: IRoutePathWithDisabledInfoQueryResponse[] =
             queryResult.data.get_route_paths_using_link.nodes;
-        return queryResultRows.map((qr: IRoutePathWithDisabledInfoQueryResponse) => {
-            const lineId = qr.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
-            const transitType = qr.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+        return queryResultRows.map((qrRow: IRoutePathWithDisabledInfoQueryResponse) => {
+            const lineId = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
             const routePath = RoutePathFactory.mapExternalRoutePath({
                 lineId,
                 transitType,
-                externalRoutePath: qr.routePath,
+                externalRoutePath: qrRow.routePath,
                 externalRoutePathLinks: [],
             });
             return {
                 ...routePath,
-                isConnectedStartNodeDisabled: qr.startNodeType === StartNodeType.DISABLED,
+                isConnectedStartNodeDisabled: qrRow.startNodeType === StartNodeType.DISABLED,
             };
         });
     };
@@ -215,22 +215,28 @@ class RoutePathService {
         );
     };
 
-    public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
+    public static fetchRoutePathsUsingNode = async (
+        nodeId: string
+    ): Promise<IRoutePathWithDisabledInfo[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
             variables: { nodeId },
         });
-        const externalRoutePaths: IExternalRoutePath[] =
+        const queryResultRows: IRoutePathWithDisabledInfoQueryResponse[] =
             queryResult.data.get_route_paths_using_node.nodes;
-        return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
-            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
-            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath({
-                externalRoutePath,
+        return queryResultRows.map((qrRow: IRoutePathWithDisabledInfoQueryResponse) => {
+            const lineId = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            const routePath = RoutePathFactory.mapExternalRoutePath({
                 lineId,
                 transitType,
+                externalRoutePath: qrRow.routePath,
                 externalRoutePathLinks: [],
             });
+            return {
+                ...routePath,
+                isConnectedStartNodeDisabled: qrRow.startNodeType === StartNodeType.DISABLED,
+            };
         });
     };
 
