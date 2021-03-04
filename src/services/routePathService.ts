@@ -76,9 +76,9 @@ class RoutePathService {
             externalRoutePathLinks:
                 externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
         });
-
         if (shouldFetchViaNames) {
-            await _fetchViaNames(routePath);
+            const rpLinks: IRoutePathLink[] = await _fetchViaNamesForRoutePathLinks(routePath);
+            routePath.routePathLinks = rpLinks;
         }
         return routePath;
     };
@@ -317,7 +317,9 @@ const _findRoutePathLink = (
 };
 
 // Add fetched viaName properties to given routePath.routePathLinks
-const _fetchViaNames = async (routePath: IRoutePath) => {
+const _fetchViaNamesForRoutePathLinks = async (
+    routePath: IRoutePath
+): Promise<IRoutePathLink[]> => {
     try {
         let routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
 
@@ -359,6 +361,7 @@ const _fetchViaNames = async (routePath: IRoutePath) => {
                 ...viaShieldName,
             };
         });
+        return routePathLinks;
     } catch (err) {
         throw 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.';
     }
