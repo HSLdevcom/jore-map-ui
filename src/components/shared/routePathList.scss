@@ -47,6 +47,10 @@
             .timestampRow {
                 font-size: $smallFontSize;
             }
+
+            .disabledRoutePathTextRow {
+                opacity: 0.5;
+            }
         }
 
         .icon {
@@ -71,6 +75,10 @@
     }
     .routePathRow:last-of-type {
         border: none;
+    }
+
+    .validRoutePathRow {
+        font-weight: bold;
     }
 
     .noSearchResultsText {

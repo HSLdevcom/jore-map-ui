@@ -19,7 +19,6 @@ $defaultBackgroundColor: $busBlue;
     margin-right: 15px;
     color: $defaultColor;
     background-color: $defaultBackgroundColor;
-    box-sizing: border-box;
 }
 .button:hover {
     background-color: darken($defaultBackgroundColor, 10);

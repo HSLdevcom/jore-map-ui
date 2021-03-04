@@ -148,22 +148,13 @@ const RoutePathListLink = inject(
                 return (
                     <div>
                         <div className={s.flexRow}>
-                            <TextContainer
-                                label='ALKUSOLMU'
-                                value={rpLink.startNode.id}
-                                isInputLabelDarker={true}
-                            />
-                            <TextContainer
-                                label='LOPPUSOLMU'
-                                value={rpLink.endNode.id}
-                                isInputLabelDarker={true}
-                            />
+                            <TextContainer label='ALKUSOLMU' value={rpLink.startNode.id} />
+                            <TextContainer label='LOPPUSOLMU' value={rpLink.endNode.id} />
                         </div>
                         <div className={s.flexRow}>
                             <TextContainer
                                 label='JÄRJESTYSNUMERO'
                                 value={rpLink.orderNumber.toString()}
-                                isInputLabelDarker={true}
                             />
                         </div>
                     </div>

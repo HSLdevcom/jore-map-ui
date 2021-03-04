@@ -67,6 +67,7 @@ class NodeStore {
         this._oldNode = null;
         this._oldLinks = [];
         this._isNewNode = false;
+        this._stopAreas = [];
         this._geometryUndoStore = new GeometryUndoStore();
         this._nodeValidationStore = new ValidationStore();
         this._stopValidationStore = new ValidationStore();
@@ -382,7 +383,7 @@ class NodeStore {
     @action
     public setIsAddressQueryLoading = (isLoading: boolean) => {
         this._isAddressQueryLoading = isLoading;
-    }
+    };
 
     @action
     public updateMunicipality = (features: IGeoJSONFeature[] | null) => {

@@ -10,7 +10,7 @@ import NodeFactory from './nodeFactory';
 const numberIterator = new NumberIterator();
 
 class RoutePathLinkFactory {
-    private static getTemporaryRoutePathLinkId = () => {
+    public static getTemporaryRoutePathLinkId = () => {
         return `${constants.NEW_OBJECT_TAG}${numberIterator.getNumber()}`;
     };
 
@@ -35,7 +35,9 @@ class RoutePathLinkFactory {
             startNodeType: externalRoutePathLink.relpysakki as StartNodeType,
             isStartNodeHastusStop: externalRoutePathLink.paikka === '1',
             isStartNodeUsingBookSchedule: externalRoutePathLink.kirjaan === '1',
-            startNodeBookScheduleColumnNumber: externalRoutePathLink.kirjasarake,
+            startNodeBookScheduleColumnNumber: externalRoutePathLink.kirjasarake
+                ? externalRoutePathLink.kirjasarake
+                : undefined,
             transitType: externalRoutePathLink.lnkverkko,
             modifiedBy: externalRoutePathLink.relkuka,
             modifiedOn: externalRoutePathLink.relviimpvm

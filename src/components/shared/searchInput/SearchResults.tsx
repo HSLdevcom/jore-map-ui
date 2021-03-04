@@ -6,7 +6,7 @@ import { ISearchLine } from '~/models/ILine';
 import { ISearchNode } from '~/models/INode';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
-import { SearchResultStore } from '~/stores/searchResultStore';
+import searchResultStore, { SearchResultStore } from '~/stores/searchResultStore';
 import { SearchStore } from '~/stores/searchStore';
 import Loader from '../loader/Loader';
 import LineItem from './LineItem';
@@ -97,7 +97,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const filteredNodes = this.getFilteredNodes();
         return (
             <div className={s.searchResultsView}>
-                {searchStore!.isLoading ? (
+                {searchStore!.isLoading || searchResultStore!.allLines.length === 0 ? (
                     <div className={s.searchResultsView}>
                         <Loader />
                     </div>
@@ -108,7 +108,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                         ref={this.paginatedDiv}
                     >
                         {searchStore.isSearchingForLines &&
-                            (filteredLines.length === 0 ? (
+                            (filteredLines.length === 0 && !searchResultStore.isSearching ? (
                                 <div className={s.noResults}>Ei hakutuloksia.</div>
                             ) : (
                                 filteredLines.map((item: ISearchLine) => {
@@ -116,7 +116,7 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
                                 })
                             ))}
                         {searchStore.isSearchingForNodes &&
-                            (filteredNodes.length === 0 ? (
+                            (filteredNodes.length === 0 && !searchResultStore.isSearching ? (
                                 <div className={s.noResults}>Ei hakutuloksia.</div>
                             ) : (
                                 filteredNodes.map((item: ISearchNode) => {

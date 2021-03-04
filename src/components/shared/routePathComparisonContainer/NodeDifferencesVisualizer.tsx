@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { isEmpty, isNumber } from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React from 'react';
+import { FiEdit3 } from 'react-icons/fi';
 import NodeType from '~/enums/nodeType';
 import StartNodeType from '~/enums/startNodeType';
 import { IRoutePath } from '~/models';
@@ -19,6 +20,7 @@ interface INodeDifferencesVisualizerProps {
     routePath2: IRoutePath;
     areEqualPropertiesVisible: boolean;
     areCrossroadsVisible: boolean;
+    openRoutePathLinkEdit?: (id: string) => void;
     routePathComparisonStore?: RoutePathComparisonStore;
     mapStore?: MapStore;
 }
@@ -40,8 +42,13 @@ const NodeDifferencesVisualizer = inject(
     'mapStore'
 )(
     observer((props: INodeDifferencesVisualizerProps) => {
-        const { routePath1, routePath2, areEqualPropertiesVisible, areCrossroadsVisible } = props;
-
+        const {
+            routePath1,
+            routePath2,
+            areEqualPropertiesVisible,
+            areCrossroadsVisible,
+            openRoutePathLinkEdit,
+        } = props;
         const rpLinkRows: IRoutePathLinkRow[] = getRpLinkRows({ routePath1, routePath2 });
         return (
             <div className={s.nodeDifferencesVisualizer}>
@@ -64,6 +71,7 @@ const NodeDifferencesVisualizer = inject(
                                 rpLink1,
                                 rpLink2,
                                 areNodesEqual,
+                                openRoutePathLinkEdit,
                                 mapStore: props.mapStore,
                             })}
                             {_renderNodeContainers({
@@ -84,25 +92,30 @@ const _renderNodeHeader = ({
     rpLink1,
     rpLink2,
     areNodesEqual,
+    openRoutePathLinkEdit,
     mapStore,
 }: {
     rpLink1: IComparableRoutePathLink | null;
     rpLink2: IComparableRoutePathLink | null;
     areNodesEqual: boolean;
+    openRoutePathLinkEdit?: (id: string) => void;
     mapStore?: MapStore;
 }) => {
     const _getHeaderText = (rpLink: IComparableRoutePathLink) => {
         const node = rpLink.startNode;
         const stopName = node.stop ? node.stop.nameFi : '';
+        const isStop = node.type === NodeType.STOP;
         const nodeTypeName = NodeUtils.getNodeTypeName(node.type);
-        let header = node.type === NodeType.STOP ? stopName : nodeTypeName;
+        let header = isStop ? stopName : nodeTypeName;
         header += ` ${node.id}`;
-        let shortId = node.shortIdLetter ? node.shortIdLetter : '';
-        shortId += node.shortIdString ? node.shortIdString : '';
-        header += !isEmpty(shortId) ? ` ${shortId}` : '';
+        if (isStop) {
+            let shortId = node.shortIdLetter ? node.shortIdLetter : '';
+            shortId += node.shortIdString ? node.shortIdString : '';
+            header += !isEmpty(shortId) ? ` ${shortId}` : '';
+        }
         return header;
     };
-    const _renderIcon = (rpLink: IComparableRoutePathLink) => {
+    const _renderTransitTypeIcon = (rpLink: IComparableRoutePathLink) => {
         const node = rpLink.startNode;
         return (
             <div className={s.transitTypeIconWrapper}>
@@ -117,23 +130,41 @@ const _renderNodeHeader = ({
             </div>
         );
     };
+    const _renderEditPenIcon = (rpLink: IComparableRoutePathLink) => {
+        const node = rpLink.startNode;
+        return (
+            <div className={s.editPenIconWrapper}>
+                <FiEdit3 onClick={() => openRoutePathLinkEdit!(node.internalId)} />
+            </div>
+        );
+    };
     const _centerMapToNode = (rpLink: IComparableRoutePathLink) => {
         const node = rpLink.startNode;
         mapStore!.setCoordinates(node.coordinates);
     };
     if (areNodesEqual) {
         const headerText = _getHeaderText(rpLink1!);
+
+        let stopHeaderClass;
+        if (rpLink1!.startNode.type === NodeType.STOP) {
+            if (rpLink1!.startNodeType === StartNodeType.DISABLED) {
+                stopHeaderClass = s.stopHeaderDisabled;
+            } else {
+                stopHeaderClass = s.stopHeader;
+            }
+        }
         return (
-            <div
-                className={classnames(
-                    s.headerContainer,
-                    s.headerTextCommon,
-                    rpLink1!.startNode.type === NodeType.STOP ? s.stopHeader : undefined
+            <div className={classnames(s.headerContainer, s.headerTextCommon)}>
+                <div
+                    className={classnames(s.centerHeaderTextContainer, stopHeaderClass)}
+                    onClick={() => _centerMapToNode(rpLink1!)}
+                >
+                    {_renderTransitTypeIcon(rpLink1!)}
+                    {headerText}
+                </div>
+                {openRoutePathLinkEdit && rpLink1!.startNode.type === NodeType.STOP && (
+                    <>{_renderEditPenIcon(rpLink1!)}</>
                 )}
-                onClick={() => _centerMapToNode(rpLink1!)}
-            >
-                {_renderIcon(rpLink1!)}
-                {headerText}
             </div>
         );
     }
@@ -145,7 +176,7 @@ const _renderNodeHeader = ({
             >
                 {rpLink1 && (
                     <>
-                        {_renderIcon(rpLink1)}
+                        {_renderTransitTypeIcon(rpLink1)}
                         {_getHeaderText(rpLink1)}
                     </>
                 )}
@@ -156,11 +187,14 @@ const _renderNodeHeader = ({
             >
                 {rpLink2 && (
                     <>
-                        {_renderIcon(rpLink2)}
+                        {_renderTransitTypeIcon(rpLink2)}
                         {_getHeaderText(rpLink2)}
                     </>
                 )}
             </div>
+            {openRoutePathLinkEdit && rpLink2 && rpLink2.startNode.type === NodeType.STOP && (
+                <div>{_renderEditPenIcon(rpLink2)}</div>
+            )}
         </div>
     );
 };
@@ -176,10 +210,10 @@ const _renderNodeContainers = ({
     areNodesEqual: boolean;
     areEqualPropertiesVisible: boolean;
 }) => {
-    let nodePropertiesList: INodePropertyRow[] = [];
-    const _insertValues = ({ label, property }: { label: string; property: string }) => {
-        nodePropertiesList = _insertValuesIntoNodePropertiesLists({
-            nodePropertiesList,
+    let nodePropertyRows: INodePropertyRow[] = [];
+    const _addToNodePropertyRows = ({ label, property }: { label: string; property: string }) => {
+        nodePropertyRows = _addRowToNodePropertyRows({
+            nodePropertyRows,
             areNodesEqual,
             areEqualPropertiesVisible,
             rpLink1,
@@ -188,51 +222,51 @@ const _renderNodeContainers = ({
             property,
         });
     };
-    _insertValues({ label: 'Erikoistyyppi', property: 'startNodeUsage' });
-    _insertValues({
+    _addToNodePropertyRows({ label: 'Erikoistyyppi', property: 'startNodeUsage' });
+    _addToNodePropertyRows({
         label: 'Ajantasauspysäkki',
         property: 'startNodeTimeAlignmentStop',
     });
-    _insertValues({
+    _addToNodePropertyRows({
         label: 'Hastus paikka',
         property: 'isStartNodeHastusStop',
     });
-    _insertValues({ label: 'Pysäkki käytössä', property: 'startNodeType' });
-    _insertValues({
-        label: 'Ohitusaika kirja-aikataulussa',
-        property: 'isStartNodeUsingBookSchedule',
-    });
-    _insertValues({
-        label: 'Pysäkin sarakenumero kirja-aikataulussa',
-        property: 'startNodeBookScheduleColumnNumber',
-    });
-    _insertValues({
+    _addToNodePropertyRows({ label: 'Pysäkki käytössä', property: 'startNodeType' });
+    _addToNodePropertyRows({
         label: '1. Määränpää suomeksi',
         property: 'destinationFi1',
     });
-    _insertValues({
-        label: '2. Määränpää suomeksi',
-        property: 'destinationFi2',
-    });
-    _insertValues({
+    _addToNodePropertyRows({
         label: '1. Määränpää ruotsiksi',
         property: 'destinationSw1',
     });
-    _insertValues({
+    _addToNodePropertyRows({
+        label: '2. Määränpää suomeksi',
+        property: 'destinationFi2',
+    });
+    _addToNodePropertyRows({
         label: '2. Määränpää ruotsiksi',
         property: 'destinationSw2',
     });
-    _insertValues({
-        label: '1. Määränpää kilpi suomeksi',
+    _addToNodePropertyRows({
+        label: '1. Kilpi suomeksi',
         property: 'destinationShieldFi',
     });
-    _insertValues({
-        label: '2. Määränpää kilpi ruotsiksi',
+    _addToNodePropertyRows({
+        label: '2. Kilpi ruotsiksi',
         property: 'destinationShieldSw',
+    });
+    _addToNodePropertyRows({
+        label: 'Ohitusaika kirja-aikataulussa',
+        property: 'isStartNodeUsingBookSchedule',
+    });
+    _addToNodePropertyRows({
+        label: 'Pysäkin sarakenum. kirja-aikataulussa',
+        property: 'startNodeBookScheduleColumnNumber',
     });
     return (
         <div className={s.nodeContainers}>
-            {nodePropertiesList.map((nodePropertyRow: INodePropertyRow, index: number) => {
+            {nodePropertyRows.map((nodePropertyRow: INodePropertyRow, index: number) => {
                 const key = `row-${index}`;
 
                 return areNodesEqual
@@ -250,7 +284,7 @@ const rpLinkValueMapperObj = {
     startNodeType: (value: string) => (value === StartNodeType.DISABLED ? 'Ei' : 'Kyllä'),
     isStartNodeHastusStop: (value: string) => (value ? 'Kyllä' : 'Ei'),
     isStartNodeUsingBookSchedule: (value: boolean) => (value ? 'Kyllä' : 'Ei'),
-    startNodeBookScheduleColumnNumber: (value?: number) => (value ? String(value) : ''),
+    startNodeBookScheduleColumnNumber: (value?: number) => (value ? String(value) : '-'),
 };
 
 const _getNodeValue = ({
@@ -266,8 +300,8 @@ const _getNodeValue = ({
     return valueMapper ? valueMapper(rawValue) : rawValue;
 };
 
-const _insertValuesIntoNodePropertiesLists = ({
-    nodePropertiesList,
+const _addRowToNodePropertyRows = ({
+    nodePropertyRows,
     areNodesEqual,
     areEqualPropertiesVisible,
     label,
@@ -275,7 +309,7 @@ const _insertValuesIntoNodePropertiesLists = ({
     rpLink1,
     rpLink2,
 }: {
-    nodePropertiesList: INodePropertyRow[];
+    nodePropertyRows: INodePropertyRow[];
     areNodesEqual: boolean;
     areEqualPropertiesVisible: boolean;
     label: string;
@@ -295,20 +329,20 @@ const _insertValuesIntoNodePropertiesLists = ({
         return value && (isNumber(value) || value.length > 0);
     };
     if (!isValueValid(value1) && !isValueValid(value2)) {
-        return nodePropertiesList;
+        return nodePropertyRows;
     }
 
     // Equal properties are hidden only from equal nodes
     if (areNodesEqual && !areEqualPropertiesVisible && value1 === value2) {
-        return nodePropertiesList;
+        return nodePropertyRows;
     }
 
-    nodePropertiesList.push({
+    nodePropertyRows.push({
         label,
         value1,
         value2,
     });
-    return nodePropertiesList;
+    return nodePropertyRows;
 };
 
 const _renderComparableRow = ({

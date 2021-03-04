@@ -1,14 +1,11 @@
 @import '../../../shared/styles/common';
 
 $iconBorderWidthSmall: 2px;
-$iconWidthSmall: 10px;
 $iconBorderWidthNormal: 3px;
-$iconWidthNormal: 14px;
 $iconBorderWidthLarge: 3px;
-$iconWidthLarge: 21px;
-$iconFullWidthSmall: 14; // value: $iconWidthSmall + 2 * $iconBorderWidthSmall)
-$iconFullWidthNormal: 20; // value: $iconWidthNormal + 2 * $iconBorderWidthNormal)
-$iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
+$iconFullWidthSmall: 14;
+$iconFullWidthNormal: 20;
+$iconFullWidthLarge: 27;
 
 .node {
     display: block;
@@ -56,29 +53,20 @@ $iconFullWidthLarge: 27; // value: $iconWidthLarge + 2 * $iconBorderWidthLarge)
 }
 
 .smallSize {
-    height: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
-    width: $iconWidthSmall !important; // if changed, change also $iconFullWidthSmall
-    border-width: $iconBorderWidthSmall; // if changed, change also $iconFullWidthSmall
-
+    border-width: $iconBorderWidthSmall;
     .nodeLabel {
         left: 18px;
     }
 }
 .normalSize {
-    height: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
-    width: $iconWidthNormal !important; // if changed, change also $iconFullWidthNormal
-    border-width: $iconBorderWidthNormal; // if changed, change also $iconFullWidthNormal
-
+    border-width: $iconBorderWidthNormal;
     .nodeLabel {
         left: 25px;
     }
 }
 
 .largeSize {
-    height: $iconWidthLarge !important; // if changed, change also $iconFullWidthLarge
-    width: $iconWidthLarge !important; // if changed, change also $iconFullWidthLarge
-    border-width: $iconBorderWidthLarge; // if changed, change also $iconFullWidthLarge
-
+    border-width: $iconBorderWidthLarge;
     .nodeLabel {
         left: 31px;
     }

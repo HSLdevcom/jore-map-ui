@@ -12,8 +12,8 @@ interface ITextContainerProps {
     validationResult?: IValidationResult;
     isTimeIncluded?: boolean;
     isInputLabelDarker?: boolean;
-    isInputColorRed?: boolean;
     isLoading?: boolean;
+    className?: string;
 }
 
 const renderValidatorResult = (validationResult?: IValidationResult) => {
@@ -34,24 +34,17 @@ const TextContainer = observer((props: ITextContainerProps) => {
         validationResult,
         isTimeIncluded,
         isInputLabelDarker,
-        isInputColorRed,
         isLoading,
+        className,
         ...attrs
     } = props;
 
     return (
-        <div className={s.formItem}>
+        <div className={classnames(s.formItem, className)}>
             <div className={isInputLabelDarker ? s.darkerInputLabel : s.inputLabel}>
                 {label ? label : ''}
             </div>
-            <div
-                className={classnames(
-                    s.textField,
-                    s.staticHeight,
-                    isInputColorRed ? s.redInputText : null
-                )}
-                {...attrs}
-            >
+            <div className={classnames(s.textField, s.staticHeight)} {...attrs}>
                 {isLoading ? (
                     <div className={s.loaderContainer}>
                         <Loader size='tiny' hasNoMargin={true} />

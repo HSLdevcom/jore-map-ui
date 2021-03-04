@@ -1,6 +1,7 @@
 @import '../shared/styles/common.scss';
 
 .container {
+    box-sizing: unset;
     display: flex;
     position: relative;
     align-items: center;

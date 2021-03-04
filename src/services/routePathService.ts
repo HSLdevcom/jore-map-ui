@@ -1,8 +1,11 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
+import { compareRoutePathLinks } from '~/components/sidebar/routePathView/routePathUtils';
 import EndpointPath from '~/enums/endpointPath';
+import StartNodeType from '~/enums/startNodeType';
 import TransitType from '~/enums/transitType';
+import ViaNameFactory from '~/factories/viaNameFactory';
 import ApolloClient from '~/helpers/ApolloClient';
 import { IRoutePath, IViaName } from '~/models';
 import { IRoutePathPrimaryKey, ISingleRoutePathSaveModel } from '~/models/IRoutePath';
@@ -31,6 +34,15 @@ interface IGetRoutePathLengthRequest {
 interface IRouteUsingRoutePathSegment {
     lineId: string;
     routeId: string;
+}
+
+interface IRoutePathWithDisabledInfo extends IRoutePath {
+    isConnectedStartNodeDisabled: boolean; // is routePathLink's startNode (that was used to fetch this routePath) disabled?
+}
+
+interface IRoutePathWithDisabledInfoQueryResponse {
+    routePath: IExternalRoutePath;
+    startNodeType: StartNodeType;
 }
 
 class RoutePathService {
@@ -64,9 +76,9 @@ class RoutePathService {
             externalRoutePathLinks:
                 externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
         });
-
         if (shouldFetchViaNames) {
-            await _fetchViaNames(routePath);
+            const rpLinks: IRoutePathLink[] = await _fetchViaNamesForRoutePathLinks(routePath);
+            routePath.routePathLinks = rpLinks;
         }
         return routePath;
     };
@@ -157,23 +169,27 @@ class RoutePathService {
         startNodeId: string,
         endNodeId: string,
         transitType: string
-    ): Promise<IRoutePath[]> => {
+    ): Promise<IRoutePathWithDisabledInfo[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingLinkQuery(),
             variables: { startNodeId, endNodeId, transitType },
         });
 
-        const externalRoutePathLinks: IExternalRoutePath[] =
+        const queryResultRows: IRoutePathWithDisabledInfoQueryResponse[] =
             queryResult.data.get_route_paths_using_link.nodes;
-        return externalRoutePathLinks.map((externalRoutePath: IExternalRoutePath) => {
-            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
-            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath({
-                externalRoutePath,
+        return queryResultRows.map((qrRow: IRoutePathWithDisabledInfoQueryResponse) => {
+            const lineId = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            const routePath = RoutePathFactory.mapExternalRoutePath({
                 lineId,
                 transitType,
+                externalRoutePath: qrRow.routePath,
                 externalRoutePathLinks: [],
             });
+            return {
+                ...routePath,
+                isConnectedStartNodeDisabled: qrRow.startNodeType === StartNodeType.DISABLED,
+            };
         });
     };
 
@@ -200,22 +216,28 @@ class RoutePathService {
         );
     };
 
-    public static fetchRoutePathsUsingNode = async (nodeId: string): Promise<IRoutePath[]> => {
+    public static fetchRoutePathsUsingNode = async (
+        nodeId: string
+    ): Promise<IRoutePathWithDisabledInfo[]> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getRoutePathsUsingNodeQuery(),
             variables: { nodeId },
         });
-        const externalRoutePaths: IExternalRoutePath[] =
+        const queryResultRows: IRoutePathWithDisabledInfoQueryResponse[] =
             queryResult.data.get_route_paths_using_node.nodes;
-        return externalRoutePaths.map((externalRoutePath: IExternalRoutePath) => {
-            const lineId = externalRoutePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
-            const transitType = externalRoutePath.reittiByReitunnus.linjaByLintunnus.linverkko;
-            return RoutePathFactory.mapExternalRoutePath({
-                externalRoutePath,
+        return queryResultRows.map((qrRow: IRoutePathWithDisabledInfoQueryResponse) => {
+            const lineId = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.lintunnus;
+            const transitType = qrRow.routePath.reittiByReitunnus.linjaByLintunnus.linverkko;
+            const routePath = RoutePathFactory.mapExternalRoutePath({
                 lineId,
                 transitType,
+                externalRoutePath: qrRow.routePath,
                 externalRoutePathLinks: [],
             });
+            return {
+                ...routePath,
+                isConnectedStartNodeDisabled: qrRow.startNodeType === StartNodeType.DISABLED,
+            };
         });
     };
 
@@ -234,12 +256,12 @@ const _createRoutePathSaveModel = (
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];
     const originals: IRoutePathLink[] = [];
-    newRoutePath.routePathLinks.forEach((rpLink) => {
-        const foundOldRoutePathLink = oldRoutePath
+    newRoutePath.routePathLinks.forEach((rpLink: IRoutePathLink) => {
+        const foundOldRoutePathLink: IRoutePathLink | null | undefined = oldRoutePath
             ? _findRoutePathLink(oldRoutePath, rpLink)
             : null;
         if (foundOldRoutePathLink) {
-            const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
+            const isModified = !compareRoutePathLinks(rpLink, foundOldRoutePathLink);
             // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
             if (isModified) {
                 // Make sure we keep the old id (rpLink has temp id (including NEW_OBJECT_TAG) if link was removed and then added again)
@@ -295,9 +317,11 @@ const _findRoutePathLink = (
 };
 
 // Add fetched viaName properties to given routePath.routePathLinks
-const _fetchViaNames = async (routePath: IRoutePath) => {
+const _fetchViaNamesForRoutePathLinks = async (
+    routePath: IRoutePath
+): Promise<IRoutePathLink[]> => {
     try {
-        const routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
+        let routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
 
         const viaNames: IViaName[] = await ViaNameService.fetchViaNamesByRpPrimaryKey({
             routeId: routePath.routeId,
@@ -313,24 +337,31 @@ const _fetchViaNames = async (routePath: IRoutePath) => {
             }
         );
 
-        routePathLinks.forEach((routePathLink: IRoutePathLink) => {
-            const viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
-            if (viaName) {
-                routePathLink.viaNameId = viaName.viaNameId;
-                routePathLink.destinationFi1 = viaName?.destinationFi1;
-                routePathLink.destinationFi2 = viaName?.destinationFi2;
-                routePathLink.destinationSw1 = viaName?.destinationSw1;
-                routePathLink.destinationSw2 = viaName?.destinationSw2;
-            }
-            const viaShieldName = viaShieldNames.find(
+        routePathLinks = routePathLinks.map((routePathLink: IRoutePathLink) => {
+            let viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id);
+            const rpLinkId: number = parseInt(routePathLink.id, 10);
+            viaName = viaName
+                ? viaName
+                : ViaNameFactory.parseExternalViaName({
+                      viaNameId: rpLinkId,
+                      externalViaName: null,
+                  });
+            let viaShieldName = viaShieldNames.find(
                 (viaShieldName) => viaShieldName.viaShieldNameId === routePathLink.id
             );
-            if (viaShieldName) {
-                routePathLink.viaShieldNameId = viaShieldName.viaShieldNameId;
-                routePathLink.destinationShieldFi = viaShieldName?.destinationShieldFi;
-                routePathLink.destinationShieldSw = viaShieldName?.destinationShieldSw;
-            }
+            viaShieldName = viaShieldName
+                ? viaShieldName
+                : ViaNameFactory.parseExternalViaShieldName({
+                      viaShieldNameId: rpLinkId,
+                      externalViaShieldName: null,
+                  });
+            return {
+                ...routePathLink,
+                ...viaName,
+                ...viaShieldName,
+            };
         });
+        return routePathLinks;
     } catch (err) {
         throw 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.';
     }
@@ -338,4 +369,9 @@ const _fetchViaNames = async (routePath: IRoutePath) => {
 
 export default RoutePathService;
 
-export { IRoutePathLengthResponse, IGetRoutePathLengthRequest, IRouteUsingRoutePathSegment };
+export {
+    IRoutePathLengthResponse,
+    IGetRoutePathLengthRequest,
+    IRouteUsingRoutePathSegment,
+    IRoutePathWithDisabledInfo,
+};
