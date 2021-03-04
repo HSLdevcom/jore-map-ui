@@ -233,36 +233,36 @@ const _renderNodeContainers = ({
     });
     _addToNodePropertyRows({ label: 'Pysäkki käytössä', property: 'startNodeType' });
     _addToNodePropertyRows({
-        label: 'Ohitusaika kirja-aikataulussa',
-        property: 'isStartNodeUsingBookSchedule',
-    });
-    _addToNodePropertyRows({
-        label: 'Pysäkin sarakenum. kirja-aikataulussa',
-        property: 'startNodeBookScheduleColumnNumber',
-    });
-    _addToNodePropertyRows({
         label: '1. Määränpää suomeksi',
         property: 'destinationFi1',
-    });
-    _addToNodePropertyRows({
-        label: '2. Määränpää suomeksi',
-        property: 'destinationFi2',
     });
     _addToNodePropertyRows({
         label: '1. Määränpää ruotsiksi',
         property: 'destinationSw1',
     });
     _addToNodePropertyRows({
+        label: '2. Määränpää suomeksi',
+        property: 'destinationFi2',
+    });
+    _addToNodePropertyRows({
         label: '2. Määränpää ruotsiksi',
         property: 'destinationSw2',
     });
     _addToNodePropertyRows({
-        label: '1. Määränpää kilpi suomeksi',
+        label: '1. Kilpi suomeksi',
         property: 'destinationShieldFi',
     });
     _addToNodePropertyRows({
-        label: '2. Määränpää kilpi ruotsiksi',
+        label: '2. Kilpi ruotsiksi',
         property: 'destinationShieldSw',
+    });
+    _addToNodePropertyRows({
+        label: 'Ohitusaika kirja-aikataulussa',
+        property: 'isStartNodeUsingBookSchedule',
+    });
+    _addToNodePropertyRows({
+        label: 'Pysäkin sarakenum. kirja-aikataulussa',
+        property: 'startNodeBookScheduleColumnNumber',
     });
     return (
         <div className={s.nodeContainers}>
