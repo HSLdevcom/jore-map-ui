@@ -632,6 +632,7 @@ class RoutePathStore {
         this._validationStore.clear();
         this._routePathLinkValidationStoreMap = new Map();
         RoutePathLayerStore.clear();
+        NavigationStore.setShouldShowUnsavedChangesPrompt(false);
     };
 
     @action
