@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import RoutePathLinkFactory from '~/factories/routePathLinkFactory';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
 import { IRoutePathLinkRow } from './NodeDifferencesVisualizer';
 
@@ -26,7 +27,7 @@ const getRpLinkRows = ({
     const rpLinks1: IComparableRoutePathLink[] = _getComparableRoutePathLinks(routePath1);
     const rpLinks2: IComparableRoutePathLink[] = _getComparableRoutePathLinks(routePath2);
 
-    const nodeRows: IRoutePathLinkRow[] = [];
+    const rpLinkRows: IRoutePathLinkRow[] = [];
     let aIndex = 0;
     let bIndex = 0;
     // Exit loop if it doesn't end, better than using while(true)
@@ -46,12 +47,12 @@ const getRpLinkRows = ({
             targetRpLinks: rpLinks1,
         });
         if (!rpLink1 && !rpLink2) {
-            // If both nodes are null, exit.
+            // If both rpLinks are null, exit.
             break;
         }
-        // If we no longer see node1's (there are less rpLinks1 than rpLinks2), we draw node2
+        // If we no longer see rpLink1's (there are less rpLinks1 than rpLinks2), we draw rpLink2
         if (!rpLink1) {
-            nodeRows.push({
+            rpLinkRows.push({
                 rpLink2,
                 rpLink1: null,
                 areNodesEqual: false,
@@ -59,9 +60,9 @@ const getRpLinkRows = ({
             bIndex += 1;
             continue;
         }
-        // If we no longer see node2's (there are less rpLinks2 than rpLinks1), we draw node1
+        // If we no longer see rpLink2's (there are less rpLinks2 than rpLinks1), we draw rpLink1
         if (!rpLink2) {
-            nodeRows.push({
+            rpLinkRows.push({
                 rpLink1,
                 rpLink2: null,
                 areNodesEqual: false,
@@ -70,9 +71,9 @@ const getRpLinkRows = ({
             continue;
         }
 
-        // If links are equal, print both
+        // If rpLinks are equal, print both
         if (_areLinksEqual(rpLink1, rpLink2)) {
-            nodeRows.push({
+            rpLinkRows.push({
                 rpLink1,
                 rpLink2,
                 areNodesEqual: true,
@@ -81,7 +82,7 @@ const getRpLinkRows = ({
             bIndex += 1;
             // if rpLink1 exists in rpLinks2 and it's closer than rpLink2 index in rpLinks1, draw rpLink1
         } else if (rpLink1IndexInRpLinks2 < rpLink2IndexInRpLinks1) {
-            nodeRows.push({
+            rpLinkRows.push({
                 rpLink1,
                 rpLink2: null,
                 areNodesEqual: false,
@@ -89,14 +90,14 @@ const getRpLinkRows = ({
             aIndex += 1;
             // if rpLink2 exists in rpLinks1 and it's closer than rpLink1 index in rpLinks2, draw rpLink2
         } else if (rpLink1IndexInRpLinks2 > rpLink2IndexInRpLinks1) {
-            nodeRows.push({
+            rpLinkRows.push({
                 rpLink2,
                 rpLink1: null,
                 areNodesEqual: false,
             });
             bIndex += 1;
         } else {
-            nodeRows.push({
+            rpLinkRows.push({
                 rpLink1,
                 rpLink2,
                 areNodesEqual: true, // Not true, can also be false.
@@ -105,20 +106,27 @@ const getRpLinkRows = ({
             bIndex += 1;
         }
     }
-    return nodeRows;
+    return rpLinkRows;
 };
 
 // Add 1 extra routePathLink to the end which startNode is the current last element's endNode
 const _getComparableRoutePathLinks = (routePath: IRoutePath): IComparableRoutePathLink[] => {
     const rpLinks = routePath.routePathLinks;
     let comparableRpLinks: IComparableRoutePathLink[] = rpLinks as IComparableRoutePathLink[];
-    const extraElement = cloneDeep(comparableRpLinks[comparableRpLinks.length - 1]);
-    extraElement.startNode = { ...extraElement.endNode! };
-    extraElement.endNode = null;
+    const lastRoutePathLink = comparableRpLinks[comparableRpLinks.length - 1];
+    // These values doesnt matter since extraRpLink is only used for simplifier algorithm
+    const extraRpLink: IComparableRoutePathLink = {
+        id: RoutePathLinkFactory.getTemporaryRoutePathLinkId(),
+        startNode: cloneDeep(lastRoutePathLink.endNode!),
+        endNode: null,
+        geometry: [],
+        transitType: lastRoutePathLink.transitType,
+        orderNumber: lastRoutePathLink.orderNumber + 1,
+    };
     // Add missing properties from routePath
-    extraElement.isStartNodeUsingBookSchedule = routePath.isStartNodeUsingBookSchedule;
-    extraElement.startNodeBookScheduleColumnNumber = routePath.startNodeBookScheduleColumnNumber;
-    comparableRpLinks = comparableRpLinks.concat([extraElement]);
+    extraRpLink.isStartNodeUsingBookSchedule = routePath.isStartNodeUsingBookSchedule;
+    extraRpLink.startNodeBookScheduleColumnNumber = routePath.startNodeBookScheduleColumnNumber;
+    comparableRpLinks = comparableRpLinks.concat([extraRpLink]);
     return comparableRpLinks;
 };
 
