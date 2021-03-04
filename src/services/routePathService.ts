@@ -1,6 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
+import { compareRoutePathLinks } from '~/components/sidebar/routePathView/routePathUtils';
 import EndpointPath from '~/enums/endpointPath';
 import StartNodeType from '~/enums/startNodeType';
 import TransitType from '~/enums/transitType';
@@ -255,12 +256,12 @@ const _createRoutePathSaveModel = (
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];
     const originals: IRoutePathLink[] = [];
-    newRoutePath.routePathLinks.forEach((rpLink) => {
-        const foundOldRoutePathLink = oldRoutePath
+    newRoutePath.routePathLinks.forEach((rpLink: IRoutePathLink) => {
+        const foundOldRoutePathLink: IRoutePathLink | null | undefined = oldRoutePath
             ? _findRoutePathLink(oldRoutePath, rpLink)
             : null;
         if (foundOldRoutePathLink) {
-            const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
+            const isModified = !compareRoutePathLinks(rpLink, foundOldRoutePathLink);
             // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
             if (isModified) {
                 // Make sure we keep the old id (rpLink has temp id (including NEW_OBJECT_TAG) if link was removed and then added again)
