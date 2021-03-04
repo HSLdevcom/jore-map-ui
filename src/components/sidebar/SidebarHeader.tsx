@@ -11,7 +11,7 @@ import { NavigationStore } from '~/stores/navigationStore';
 import * as s from './sidebarHeader.scss';
 
 interface ISidebarHeaderProps {
-    children: ReactNode;
+    children?: ReactNode;
     className?: string;
     isEditing?: boolean;
     isEditButtonVisible?: boolean;
@@ -84,13 +84,19 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
     };
 
     render() {
-        const { className, isEditing, isBackButtonVisible, isCloseButtonVisible } = this.props;
+        const {
+            children,
+            className,
+            isEditing,
+            isBackButtonVisible,
+            isCloseButtonVisible,
+        } = this.props;
         return (
             <div
                 className={classnames(s.sidebarHeaderView, className ? className : undefined)}
                 data-cy='sidebarHeaderView'
             >
-                <div className={s.containerLeft}>{this.props.children}</div>
+                <div className={s.containerLeft}>{children ? children : undefined}</div>
                 <div className={s.containerRight}>
                     {this.props.isEditButtonVisible && this.props.loginStore!.hasWriteAccess && (
                         <FiEdit3

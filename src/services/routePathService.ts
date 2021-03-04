@@ -1,6 +1,7 @@
 import { ApolloQueryResult } from 'apollo-client';
 import _ from 'lodash';
 import Moment from 'moment';
+import { compareRoutePathLinks } from '~/components/sidebar/routePathView/routePathUtils';
 import EndpointPath from '~/enums/endpointPath';
 import StartNodeType from '~/enums/startNodeType';
 import TransitType from '~/enums/transitType';
@@ -75,9 +76,9 @@ class RoutePathService {
             externalRoutePathLinks:
                 externalRoutePath.reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta.nodes,
         });
-
         if (shouldFetchViaNames) {
-            await _fetchViaNames(routePath);
+            const rpLinks: IRoutePathLink[] = await _fetchViaNamesForRoutePathLinks(routePath);
+            routePath.routePathLinks = rpLinks;
         }
         return routePath;
     };
@@ -255,12 +256,12 @@ const _createRoutePathSaveModel = (
     const modified: IRoutePathLink[] = [];
     const removed: IRoutePathLink[] = [];
     const originals: IRoutePathLink[] = [];
-    newRoutePath.routePathLinks.forEach((rpLink) => {
-        const foundOldRoutePathLink = oldRoutePath
+    newRoutePath.routePathLinks.forEach((rpLink: IRoutePathLink) => {
+        const foundOldRoutePathLink: IRoutePathLink | null | undefined = oldRoutePath
             ? _findRoutePathLink(oldRoutePath, rpLink)
             : null;
         if (foundOldRoutePathLink) {
-            const isModified = !_.isEqual(foundOldRoutePathLink, rpLink);
+            const isModified = !compareRoutePathLinks(rpLink, foundOldRoutePathLink);
             // If a routePathLink is found from both newRoutePath and oldRoutePath and it has modifications, add to modified [] list
             if (isModified) {
                 // Make sure we keep the old id (rpLink has temp id (including NEW_OBJECT_TAG) if link was removed and then added again)
@@ -316,7 +317,9 @@ const _findRoutePathLink = (
 };
 
 // Add fetched viaName properties to given routePath.routePathLinks
-const _fetchViaNames = async (routePath: IRoutePath) => {
+const _fetchViaNamesForRoutePathLinks = async (
+    routePath: IRoutePath
+): Promise<IRoutePathLink[]> => {
     try {
         let routePathLinks: IRoutePathLink[] = routePath.routePathLinks;
 
@@ -358,6 +361,7 @@ const _fetchViaNames = async (routePath: IRoutePath) => {
                 ...viaShieldName,
             };
         });
+        return routePathLinks;
     } catch (err) {
         throw 'Määränpää tietojen (via nimet ja via kilpi nimet) haku ei onnistunut.';
     }

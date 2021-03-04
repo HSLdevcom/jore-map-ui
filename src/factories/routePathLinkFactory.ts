@@ -10,7 +10,7 @@ import NodeFactory from './nodeFactory';
 const numberIterator = new NumberIterator();
 
 class RoutePathLinkFactory {
-    private static getTemporaryRoutePathLinkId = () => {
+    public static getTemporaryRoutePathLinkId = () => {
         return `${constants.NEW_OBJECT_TAG}${numberIterator.getNumber()}`;
     };
 

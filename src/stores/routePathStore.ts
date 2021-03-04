@@ -1,6 +1,10 @@
-import { cloneDeep, debounce, forOwn, isEqual, omit } from 'lodash';
+import { cloneDeep, debounce } from 'lodash';
 import { action, computed, observable, reaction } from 'mobx';
-import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
+import {
+    compareRoutePaths,
+    compareRoutePathLinks,
+    updateDisabledRoutePathToolStatus,
+} from '~/components/sidebar/routePathView/routePathUtils';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import routePathLinkValidationModel, {
@@ -297,7 +301,7 @@ class RoutePathStore {
                             startNodeBookScheduleColumnNumber: rp.startNodeBookScheduleColumnNumber,
                         }),
                 ],
-                dependentProperties: [],
+                dependentProperties: ['isStartNodeUsingBookSchedule'],
             },
             isStartNodeUsingBookSchedule: {
                 validators: [
@@ -628,6 +632,7 @@ class RoutePathStore {
         this._validationStore.clear();
         this._routePathLinkValidationStoreMap = new Map();
         RoutePathLayerStore.clear();
+        NavigationStore.setShouldShowUnsavedChangesPrompt(false);
     };
 
     @action
@@ -759,7 +764,7 @@ class RoutePathStore {
                                 rpLink.startNodeBookScheduleColumnNumber,
                         }),
                 ],
-                dependentProperties: [],
+                dependentProperties: ['isStartNodeUsingBookSchedule'],
             },
             isStartNodeUsingBookSchedule: {
                 validators: [
@@ -858,51 +863,17 @@ const _areDateRangesOverlapping = ({
 const _isRoutePathDirty = (currentRp: IRoutePath | null, oldRp: IRoutePath | null) => {
     if (!currentRp || !oldRp) return false;
 
-    const areRoutePathsEqual = isEqual(
-        omit(currentRp, ['routePathLinks']),
-        omit(oldRp, ['routePathLinks'])
-    );
-    /**
-     * Need to do a custom rpLink isDirty checks because well, isEqual is too brutal,
-     * it considers e.g. '' vs null or undefined vs null as different values
-     * (as they really are, but we want them to be equal)
-     *
-     * Also we want to leave internal ids out of the checks.
-     */
+    const areRpsEqual = compareRoutePaths(currentRp, oldRp);
     const areRpLinksEqual = currentRp.routePathLinks.every(
         (currentRpLink: IRoutePathLink, index: number) => {
             if (index >= oldRp.routePathLinks.length) {
                 return false;
             }
-            const oldRpLink = oldRp.routePathLinks[index];
-            let isCurrentRpLinkEqual = true;
-            forOwn(
-                omit(currentRpLink, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode']),
-                (a: any, property: string) => {
-                    const b = oldRpLink[property];
-                    if ((!a || a === '') && (!b || b === '')) {
-                        return;
-                    }
-                    if (!isEqual(a, b)) {
-                        isCurrentRpLinkEqual = false;
-                    }
-                }
-            );
-            if (!isCurrentRpLinkEqual) {
-                return false;
-            }
-            if (oldRpLink) {
-                const isStartNodeEqual = currentRpLink.startNode.id === oldRpLink.startNode.id;
-                const isEndNodeEqual = currentRpLink.endNode.id === oldRpLink.endNode.id;
-
-                if (!isStartNodeEqual || !isEndNodeEqual) {
-                    return false;
-                }
-            }
-            return true;
+            const oldRpLink: IRoutePathLink = oldRp.routePathLinks[index];
+            return compareRoutePathLinks(currentRpLink, oldRpLink);
         }
     );
-    return areRoutePathsEqual && areRpLinksEqual;
+    return areRpsEqual && areRpLinksEqual;
 };
 
 const _validateStartNodeBookScheduleColumnNumber = ({
@@ -922,7 +893,7 @@ const _validateStartNodeBookScheduleColumnNumber = ({
         isValid,
         errorMessage: !isValid
             ? 'Numeroarvo (1...99) vaaditaan kun ohitusaika kirja-aikataulussa täppä on päällä.'
-            : undefined,
+            : '',
     };
     return validationResult;
 };
