@@ -59,6 +59,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         this.extendedItemListener();
     }
 
+    componentDidMount() {
+        const extendedListItemId = this.props.routePathLayerStore!.extendedListItemId;
+        if (extendedListItemId) {
+            this.scrollIntoListItem(extendedListItemId);
+        }
+    }
+
     private onListItemExtend = () => {
         const extendedListItemId = this.props.routePathLayerStore!.extendedListItemId;
         if (extendedListItemId) {
@@ -67,10 +74,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     };
 
     private scrollIntoListItem = (listItemId: string) => {
-        const item = this.listObjectReferences[listItemId];
-        if (item && item.current) {
-            item.current.scrollIntoView({ inline: 'start', block: 'start', behavior: 'smooth' });
-        }
+        // Next tick is needed because this way the possible previously opened item gets closed before the next one gets opened
+        process.nextTick(() => {
+            const item = this.listObjectReferences[listItemId];
+            if (item && item.current) {
+                item.current.scrollIntoView({ inline: 'start', block: 'start', behavior: 'smooth' });
+            }
+        });
     };
 
     private isNodeVisible = (node: INode) => {
