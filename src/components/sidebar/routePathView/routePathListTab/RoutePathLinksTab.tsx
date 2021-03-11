@@ -59,6 +59,13 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         this.extendedItemListener();
     }
 
+    componentDidMount() {
+        const extendedListItemId = this.props.routePathLayerStore!.extendedListItemId;
+        if (extendedListItemId) {
+            this.scrollIntoListItem(extendedListItemId);
+        }
+    }
+
     private onListItemExtend = () => {
         const extendedListItemId = this.props.routePathLayerStore!.extendedListItemId;
         if (extendedListItemId) {

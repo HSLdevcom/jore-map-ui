@@ -373,9 +373,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
     private openRoutePathLinkEdit = (nodeInternalId: string) => {
         this.props.routePathStore!.setSelectedTabIndex(1);
         this.props.routePathStore!.setIsCompareRoutePathsContainerVisible(false);
-        process.nextTick(() => {
-            this.props.routePathLayerStore!.setExtendedListItemId(nodeInternalId);
-        });
+        this.props.routePathLayerStore!.setExtendedListItemId(nodeInternalId);
     };
 
     render() {
