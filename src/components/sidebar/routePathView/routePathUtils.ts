@@ -85,6 +85,12 @@ const compareRoutePathLinks = (rpLink1: IRoutePathLink, rpLink2: IRoutePathLink)
             if ((!a || a === '') && (!b || b === '')) {
                 return;
             }
+            // startNodeUsage's 0 or null mean the same value
+            if (property === 'startNodeUsage') {
+                if ((!a || a === '0') && (!b || b === '0')) {
+                    return;
+                }
+            }
             if (!isEqual(a, b)) {
                 areRoutePathLinksEqual = false;
             }
