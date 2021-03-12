@@ -26,7 +26,12 @@ import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import RoutePathUtils from '~/utils/RoutePathUtils';
-import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
+import {
+    getMaxDate,
+    isCurrentDateWithinTimeSpan,
+    toDateString,
+    toMidnightDate,
+} from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
@@ -473,6 +478,27 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const isSaveButtonDisabled =
             !this.props.routePathMassEditStore!.isDirty ||
             !this.props.routePathMassEditStore!.isFormValid;
+        let savePreventedNotification = '';
+        if (isSaveButtonDisabled) {
+            if (!this.props.routePathMassEditStore!.isDirty) {
+                savePreventedNotification = 'Ei tallennettavia muutoksia.';
+            } else if (!this.props.routePathMassEditStore!.isFormValid) {
+                savePreventedNotification = this.props
+                    .routePathMassEditStore!.massEditRoutePaths!.map((massEditRp) => {
+                        const reason =
+                            massEditRp?.validationResult?.errorMessage &&
+                            massEditRp?.validationResult?.errorMessage.length > 0
+                                ? `, syy: ${massEditRp!.validationResult!.errorMessage}`
+                                : '';
+                        return `Reitinsuunta epävalidi  ${toDateString(
+                            massEditRp.routePath.startDate
+                        )} - ${toDateString(massEditRp.routePath.endDate)} ${reason}`;
+                    })
+                    .join('\n');
+            } else {
+                throw new Error(`Reason why saving is prevented isn't covered when it should be.`);
+            }
+        }
         return (
             <div className={s.routePathListTab}>
                 {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
@@ -532,7 +558,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     <SaveButton
                         onClick={() => this.showSavePrompt()}
                         disabled={isSaveButtonDisabled}
-                        savePreventedNotification={''}
+                        savePreventedNotification={savePreventedNotification}
                         type={'saveButton'}
                     >
                         Tallenna muutokset
