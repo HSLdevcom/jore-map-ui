@@ -34,7 +34,9 @@ class Alert extends React.Component<IAlertProps> {
                         <IoMdInformationCircle className={classnames(s.icon, s.info)} />
                     )}
                     {alertStore.type === AlertType.Loader && <Loader size='small' />}
+                    <div className={s.alertContent}>
                     {alertStore.message}
+                    </div>
                     {alertStore.isCancelButtonVisible && (
                         <Button
                             className={s.closeAlertButton}
