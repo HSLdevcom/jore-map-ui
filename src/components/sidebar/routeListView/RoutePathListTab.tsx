@@ -485,6 +485,9 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
             } else if (!this.props.routePathMassEditStore!.isFormValid) {
                 savePreventedNotification = this.props
                     .routePathMassEditStore!.massEditRoutePaths!.map((massEditRp) => {
+                        if (massEditRp.validationResult.isValid) {
+                            return '';
+                        }
                         const reason =
                             massEditRp?.validationResult?.errorMessage &&
                             massEditRp?.validationResult?.errorMessage.length > 0
