@@ -159,7 +159,7 @@ const _getAvailableShortIds = (
             !reservedShortIdItems.find((reservedShortIdItem: IReservedShortIdItem) => {
                 return (
                     reservedShortIdItem.shortId === shortIdVariation &&
-                    // Prevent currently opened node to affect available ids
+                    // Prevent currently opened node to affect available ids (this matters when editing existing node)
                     reservedShortIdItem.nodeId !== currentNodeId
                 );
             })

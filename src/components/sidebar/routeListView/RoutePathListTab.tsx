@@ -16,7 +16,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import ScheduleService from '~/services/scheduleService';
-import { AlertStore } from '~/stores/alertStore';
+import { AlertStore, AlertType } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
@@ -26,7 +26,12 @@ import { RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import { RoutePathMassEditStore } from '~/stores/routePathMassEditStore';
 import RoutePathUtils from '~/utils/RoutePathUtils';
-import { getMaxDate, isCurrentDateWithinTimeSpan, toMidnightDate } from '~/utils/dateUtils';
+import {
+    getMaxDate,
+    isCurrentDateWithinTimeSpan,
+    toDateString,
+    toMidnightDate,
+} from '~/utils/dateUtils';
 import RoutePathGroup from './RoutePathGroup';
 import * as s from './routePathListTab.scss';
 
@@ -127,7 +132,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
 
     private getRoutePaths = (): IRoutePath[] => {
         return this.props.isEditing
-            ? _.cloneDeep(this.props.routePathMassEditStore!.routePaths)
+            ? this.props.routePathMassEditStore!.routePaths
             : this.props.originalRoutePaths;
     };
 
@@ -139,10 +144,11 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
      * 3) updates allGroupedRoutePaths, groupedRoutePathsToDisplay
      */
     private updateGroupedRoutePathsToDisplay = () => {
-        const routePaths = this.getRoutePaths();
+        const routePaths = _.cloneDeep(this.getRoutePaths());
         if (routePaths.length === 0) return;
-
-        const allGroupedRoutePaths: IRoutePath[][] = this.getGroupedRoutePaths(routePaths);
+        const allGroupedRoutePaths: IRoutePath[][] = this.props.isEditing
+            ? this.getMassEditGroupedRoutePaths(routePaths)
+            : this.getReadOnlyGroupedRoutePaths(routePaths);
         let groupedRoutePathsToDisplay = allGroupedRoutePaths;
         let lastSeenNotOldRoutePathGroupIndex = 0;
         allGroupedRoutePaths.forEach((groupedRp: IRoutePath[], index: number) => {
@@ -168,14 +174,35 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.setRoutePathsVisible(groupedRoutePathsToDisplay);
     };
 
+    // Create routePath pairs from routePathsToGroup, sort them by date
+    private getReadOnlyGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
+        const routePathsToGroup = routePaths;
+        const res = {};
+        routePathsToGroup.forEach((rp) => {
+            const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
+            (res[identifier] = res[identifier] || []).push(rp);
+        });
+        const list: IRoutePath[][] = Object.keys(res).map((key: string) => {
+            return res[key];
+        });
+        list.sort(
+            (a: IRoutePath[], b: IRoutePath[]) =>
+                b[0].startDate.getTime() - a[0].startDate.getTime()
+        );
+        list.forEach((routePaths: IRoutePath[]) => {
+            routePaths.sort((a: IRoutePath, b: IRoutePath) => (a.direction === '1' ? -1 : 1));
+        });
+        return list;
+    };
+
     /**
      * Creates routePath groups (1-2 routePaths in a group) with the following order:
      * 1) routePaths paired according to routePathMassEditStore.selectedRoutePathIdPairs
      * 2) remaining routePaths with date > getMaxDate in single groups
      * 3) remaining routePaths grouped by date
      */
-    private getGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
-        let routePathsToGroup = _.cloneDeep(routePaths);
+    private getMassEditGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
+        let routePathsToGroup = routePaths;
         const selectedRoutePathIdGroups: string[][] = this.props.routePathMassEditStore!
             .selectedRoutePathIdGroups;
 
@@ -214,19 +241,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         });
 
         // Create routePath pairs from remaining (existing) routePaths, sort them by date
-        const res = {};
-        routePathsToGroup.forEach((rp) => {
-            const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
-            (res[identifier] = res[identifier] || []).push(rp);
-        });
-        const list: IRoutePath[][] = Object.values(res);
-        list.sort(
-            (a: IRoutePath[], b: IRoutePath[]) =>
-                b[0].startDate.getTime() - a[0].startDate.getTime()
-        );
-        list.forEach((routePaths: IRoutePath[]) => {
-            routePaths.sort((a: IRoutePath, b: IRoutePath) => (a.direction === '1' ? -1 : 1));
-        });
+        const list: IRoutePath[][] = this.getReadOnlyGroupedRoutePaths(routePathsToGroup);
 
         // Add selected routePaths to the beginning of the list
         selectedRoutePathGroups.forEach((rpGroup) => list.unshift(rpGroup));
@@ -377,6 +392,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     private renderBottomBarButtons = () => {
         if (!this.props.loginStore!.hasWriteAccess) return null;
 
+        const isCopyRoutePathButtonDisabled =
+            this.props.routeId !== this.props.routeListStore!.routeIdToEdit;
         return (
             <div className={s.buttonContainer}>
                 <Button
@@ -390,7 +407,16 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                 <Button
                     onClick={this.openCopyRoutePathView()}
                     type={ButtonType.SQUARE}
-                    disabled={this.props.routeId !== this.props.routeListStore!.routeIdToEdit}
+                    disabled={isCopyRoutePathButtonDisabled}
+                    onDisabledButtonClick={
+                        isCopyRoutePathButtonDisabled
+                            ? () =>
+                                  this.props.alertStore!.setNotificationMessage({
+                                      type: AlertType.Info,
+                                      message: 'Aktivoi editointi kopioidaksesi reitinsuuntia.',
+                                  })
+                            : undefined
+                    }
                     isWide={true}
                     data-cy='copyRoutePathButton'
                 >
@@ -452,6 +478,30 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const isSaveButtonDisabled =
             !this.props.routePathMassEditStore!.isDirty ||
             !this.props.routePathMassEditStore!.isFormValid;
+        let savePreventedNotification = '';
+        if (isSaveButtonDisabled) {
+            if (!this.props.routePathMassEditStore!.isDirty) {
+                savePreventedNotification = 'Ei tallennettavia muutoksia.';
+            } else if (!this.props.routePathMassEditStore!.isFormValid) {
+                savePreventedNotification = this.props
+                    .routePathMassEditStore!.massEditRoutePaths!.map((massEditRp) => {
+                        if (massEditRp.validationResult.isValid) {
+                            return '';
+                        }
+                        const reason =
+                            massEditRp?.validationResult?.errorMessage &&
+                            massEditRp?.validationResult?.errorMessage.length > 0
+                                ? `, syy: ${massEditRp!.validationResult!.errorMessage}`
+                                : '';
+                        return `Reitinsuunta epävalidi  ${toDateString(
+                            massEditRp.routePath.startDate
+                        )} - ${toDateString(massEditRp.routePath.endDate)} ${reason}`;
+                    })
+                    .join('\n');
+            } else {
+                throw new Error(`Reason why saving is prevented isn't covered when it should be.`);
+            }
+        }
         return (
             <div className={s.routePathListTab}>
                 {groupedRoutePathsToDisplay.map((routePaths: IRoutePath[], index) => {
@@ -511,7 +561,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     <SaveButton
                         onClick={() => this.showSavePrompt()}
                         disabled={isSaveButtonDisabled}
-                        savePreventedNotification={''}
+                        savePreventedNotification={savePreventedNotification}
                         type={'saveButton'}
                     >
                         Tallenna muutokset

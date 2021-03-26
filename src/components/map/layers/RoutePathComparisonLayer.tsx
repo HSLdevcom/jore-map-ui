@@ -4,11 +4,12 @@ import { inject, observer } from 'mobx-react';
 import React, { useEffect } from 'react';
 import { Polyline } from 'react-leaflet';
 import { INode, IRoutePath, IRoutePathLink } from '~/models';
-import { MapStore } from '~/stores/mapStore';
+import { MapFilter, MapStore } from '~/stores/mapStore';
 import { RoutePathComparisonStore } from '~/stores/routePathComparisonStore';
 import NodeUtils from '~/utils/NodeUtils';
 import NodeMarker from './markers/NodeMarker';
 import * as s from './routePathComparisonLayer.scss';
+import ArrowDecorator from './utils/ArrowDecorator';
 
 interface IRoutePathComparisonLayerProps {
     routePathComparisonStore?: RoutePathComparisonStore;
@@ -94,20 +95,35 @@ const RoutePathComparisonLayer = inject(
                         return null;
                     }
                     return (
-                        <Polyline
-                            positions={rpLink.geometry}
-                            key={`rpLink-${rpLink.id}`}
-                            color={
-                                rpLinkIsDifferent
-                                    ? type === ROUTE_PATH_TYPE.ROUTE_PATH_1
-                                        ? s.diff1Color
-                                        : s.diff2Color
-                                    : s.commonColor
-                            }
-                            weight={5}
-                            opacity={0.8}
-                            interactive={false}
-                        />
+                        <>
+                            <Polyline
+                                positions={rpLink.geometry}
+                                key={`rpLink-${rpLink.id}`}
+                                color={
+                                    rpLinkIsDifferent
+                                        ? type === ROUTE_PATH_TYPE.ROUTE_PATH_1
+                                            ? s.diff1Color
+                                            : s.diff2Color
+                                        : s.commonColor
+                                }
+                                weight={5}
+                                opacity={0.8}
+                                interactive={false}
+                            />
+                            {props.mapStore!.isMapFilterEnabled(MapFilter.arrowDecorator) && (
+                                <ArrowDecorator
+                                    key={index}
+                                    color={
+                                        rpLinkIsDifferent
+                                            ? type === ROUTE_PATH_TYPE.ROUTE_PATH_1
+                                                ? s.diff1Color
+                                                : s.diff2Color
+                                            : s.commonColor
+                                    }
+                                    geometry={rpLink.geometry}
+                                />
+                            )}
+                        </>
                     );
                 };
 

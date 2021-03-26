@@ -35,8 +35,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
         const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
             'routePathPrimaryKey'
         ];
-        const tomorrowDate = toMidnightDate(new Date());
-        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+        const currentDate = toMidnightDate(new Date());
         return (
             <div className={s.routePathInfoTabView}>
                 <div className={s.form}>
@@ -53,7 +52,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <InputContainer
                                 label='VOIM. AST'
                                 disabled={isUpdating}
-                                minStartDate={tomorrowDate}
+                                minStartDate={currentDate}
                                 type='date'
                                 value={routePath.startDate}
                                 onChange={onChange('startDate')}
@@ -62,6 +61,7 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
                             <InputContainer
                                 label='VIIM.VOIM.OLO'
                                 disabled={isUpdating}
+                                minStartDate={currentDate}
                                 type='date'
                                 value={routePath.endDate}
                                 onChange={onChange('endDate')}

@@ -2,7 +2,7 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import React from 'react';
 import ButtonType from '~/enums/buttonType';
-import AlertStore from '~/stores/alertStore';
+import AlertStore, { AlertType } from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 import { Button } from '../controls';
 import * as s from './saveButton.scss';
@@ -99,6 +99,7 @@ const showSavePreventedNotification = (savePreventedNotification: string) => {
         : savePreventedNotification;
     AlertStore.setNotificationMessage({
         message: alertText,
+        type: AlertType.Info
     });
 };
 

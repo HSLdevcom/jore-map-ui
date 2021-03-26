@@ -10,7 +10,7 @@ import Loader from '~/components/shared/loader/Loader';
 import NodeType from '~/enums/nodeType';
 import NodeFactory from '~/factories/nodeFactory';
 import EventListener from '~/helpers/EventListener';
-import { ILink, INode, IRoutePath } from '~/models';
+import { ILink, INode } from '~/models';
 import { ISearchNode } from '~/models/INode';
 import navigator from '~/routing/navigator';
 import QueryParams from '~/routing/queryParams';
@@ -18,7 +18,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LinkService from '~/services/linkService';
 import NodeService from '~/services/nodeService';
-import RoutePathService from '~/services/routePathService';
+import RoutePathService, { IRoutePathWithDisabledInfo } from '~/services/routePathService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
@@ -46,7 +46,7 @@ interface INodeViewProps {
 interface INodeViewState {
     isLoading: boolean;
     isRoutePathsUsingNodeQueryLoading: boolean;
-    routePathsUsingNode: IRoutePath[];
+    routePathsUsingNode: IRoutePathWithDisabledInfo[];
 }
 
 @inject('alertStore', 'nodeStore', 'mapStore', 'errorStore', 'confirmStore', 'searchResultStore')
@@ -224,7 +224,9 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
     private fetchRoutePathsUsingNode = async (nodeId: string) => {
         this._setState({ isRoutePathsUsingNodeQueryLoading: true });
-        const routePaths = await RoutePathService.fetchRoutePathsUsingNode(nodeId);
+        const routePaths: IRoutePathWithDisabledInfo[] = await RoutePathService.fetchRoutePathsUsingNode(
+            nodeId
+        );
         this._setState({
             isRoutePathsUsingNodeQueryLoading: false,
             routePathsUsingNode: routePaths,

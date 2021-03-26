@@ -153,8 +153,7 @@ const getRoutePathsUsingLinkQuery = () => {
     return gql`query getRoutePathsUsingLink($startNodeId: String, $endNodeId: String, $transitType: String) {
         get_route_paths_using_link: getRoutePathsUsingLink(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
             nodes {
-                ${routePathQueryFields}
-                ${routeForRoutePathQuery}
+                ${routePathsWithDisabledInfoQuery}
             }
         }
     }`;
@@ -164,8 +163,7 @@ const getRoutePathsUsingNodeQuery = () => {
     return gql`query getRoutePathsUsingNode($nodeId: String) {
         get_route_paths_using_node: getRoutePathsUsingNode(nodeid: $nodeId) {
             nodes {
-                ${routePathQueryFields}
-                ${routeForRoutePathQuery}
+                ${routePathsWithDisabledInfoQuery}
             }
         }
     }`;
@@ -745,6 +743,14 @@ reittiByReitunnus {
 }
 `;
 
+const routePathsWithDisabledInfoQuery = `
+    startNodeType
+    routePath {
+        ${routePathQueryFields}
+        ${routeForRoutePathQuery}
+    }
+`;
+
 const linkQueryFields = `
     geojson
     lnkverkko
@@ -770,9 +776,6 @@ const linksWithNodeUsageByStartNodeQuery = `
 linkkisByLnkalkusolmu {
     nodes {
         ${linkQueryFields}
-        solmuByLnkalkusolmu {
-            ${nodeQueryFields}
-        }
         solmuByLnkloppusolmu {
             ${nodeQueryFields}
             usageDuringDate(date: $date, isstartnode: false) {
@@ -797,9 +800,6 @@ linkkisByLnkloppusolmu {
                     ${routePathQueryFields}
                 }
             }
-        }
-        solmuByLnkloppusolmu {
-            ${nodeQueryFields}
         }
     }
 }`;

@@ -93,13 +93,17 @@ class App extends React.Component<IAppProps, IAppState> {
         this.setState({
             isAppInitializationInProgress: true,
         });
-        Promise.all([this.fetchAllLines(), this.initCodeLists(), this.fetchSaveLock()]).then(() => {
+        Promise.all([this.initCodeLists(), this.fetchSaveLock()]).then(() => {
             this.setState({
                 isAppInitializationInProgress: false,
             });
+
+            // Lazy load lines and nodes in the background
+            window.setTimeout(() => {
+                this.fetchAllLines();
+                this.fetchAllNodes();
+            }, 1000);
         });
-        // Lazy load nodes in the background
-        this.fetchAllNodes();
     };
 
     private fetchAllLines = async () => {

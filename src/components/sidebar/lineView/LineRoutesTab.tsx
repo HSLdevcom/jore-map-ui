@@ -50,7 +50,9 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                         text={route.id}
                         hoverText={''}
                     />
-                    <div className={s.routeName}>{route.routeName}</div>
+                    <div className={s.routeName} title={route.routeName}>
+                        {route.routeName}
+                    </div>
                 </div>
             );
         });
@@ -59,6 +61,19 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     private redirectToRouteView = (routeId: string) => () => {
         this.props.searchStore!.setSearchInput('');
         NavigationUtils.openRouteView({ routeId, queryValues: navigator.getQueryParamValues() });
+    };
+
+    private openAllRoutes = () => {
+        const routes = this.props.lineStore!.routes;
+        const routesLinkBuilder = routeBuilder.to(SubSites.routes);
+        routes.forEach((route) => {
+            routesLinkBuilder.append(QueryParams.routes, route.id);
+        });
+        const routesLink = routesLinkBuilder.toLink();
+        this.props.searchStore!.setSearchInput('');
+        navigator.goTo({
+            link: routesLink,
+        });
     };
 
     render() {
@@ -84,6 +99,12 @@ class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
                         >
                             {`Luo uusi reitti linjalle ${line.id}`}
                         </Button>
+                    )}
+                    {routes.length > 0 && (
+                        <Button
+                            onClick={this.openAllRoutes}
+                            type={ButtonType.SQUARE}
+                        >{`Avaa reitit (${routes.length})`}</Button>
                     )}
                 </div>
             </div>

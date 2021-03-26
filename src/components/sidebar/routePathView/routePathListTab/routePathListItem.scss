@@ -13,14 +13,6 @@ $borderContainerWidth: 16px;
     width: 20px;
 }
 
-.shadow {
-    background-color: #c2c2c224;
-}
-
-.shadowStop {
-    background-color: rgba(0, 122, 201, 0.1);
-}
-
 .routePathListItem {
     display: flex;
 
@@ -28,6 +20,7 @@ $borderContainerWidth: 16px;
         display: flex;
         flex-direction: column;
         width: 100%;
+        border-bottom: 1px solid $borderLightGrey;
 
         .itemHeader {
             display: flex;
@@ -49,7 +42,6 @@ $borderContainerWidth: 16px;
                     justify-content: center;
                     text-align: center;
                     font-size: $smallFontSize;
-                    padding: 5px;
                     border-left: 1px solid transparent; // To make column widths match header
                 }
                 .headerContainer {
@@ -59,8 +51,11 @@ $borderContainerWidth: 16px;
                     overflow: hidden;
                     cursor: pointer;
                     font-size: 0.9em;
-                    width: 100px;
+                    width: 120px;
                     font-size: $smallFontSize;
+                    &.headerStop {
+                        font-weight: bold;
+                    }
                 }
                 .hastusId {
                     width: $hastusIdColumnWidth;
@@ -72,7 +67,6 @@ $borderContainerWidth: 16px;
                     width: $shortIdColumnWidth;
                 }
                 .viaWrapper {
-                    padding: 0px 5px 0px 5px;
                     display: block;
                     width: $viaColumnWidth;
                     text-overflow: ellipsis;
@@ -104,6 +98,10 @@ $borderContainerWidth: 16px;
             .itemToggle:hover {
                 color: darken($darkGrey, 20);
             }
+        }
+
+        .itemHeader:hover {
+            background-color: $backgroundHoverColor;
         }
 
         .itemContent {
@@ -148,7 +146,7 @@ $borderContainerWidth: 16px;
 
             .borderLeft {
                 border-right: 4px solid rgba(0, 0, 0, 0.7); // border width & color
-                width: calc(50% - 2px); // needs to be half of the border width
+                width: calc(50% + 2px); // needs to be half of the border width
             }
             .neighborBorderLeft {
                 @extend .borderLeft;

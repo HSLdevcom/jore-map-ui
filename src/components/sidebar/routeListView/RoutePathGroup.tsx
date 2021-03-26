@@ -91,21 +91,20 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
         const firstRp = routePaths[0];
         const header = `${toDateString(firstRp.startDate)} - ${toDateString(firstRp.endDate)}`;
         const currentDate = toMidnightDate(new Date());
-        const tomorrowDate = _.cloneDeep(currentDate);
-        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
 
         let validationResult;
-        let minStartDate = _.cloneDeep(tomorrowDate);
+        let minStartDate = _.cloneDeep(currentDate);
         let maxEndDate = undefined;
         let isStartDateSet = true;
         let isEndDateSet = true;
 
+        // Editable routePath: rp.startDate >= currentDate
         const isStartDateEditable =
-            isEditing && firstRp.startDate.getTime() > currentDate.getTime();
-        const isEndDateEditable = isEditing && firstRp.endDate.getTime() > currentDate.getTime();
-        const isEditingEnabled = isStartDateEditable || isEndDateEditable;
+            isEditing && firstRp.startDate.getTime() >= currentDate.getTime();
+        const isEndDateEditable = isEditing && firstRp.endDate.getTime() >= currentDate.getTime();
+        const isEditingAllowed = isStartDateEditable || isEndDateEditable;
 
-        if (isEditingEnabled) {
+        if (isEditingAllowed) {
             const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
                 (massEditRp: IMassEditRoutePath) => {
                     return routePaths.find((rp) => rp.internalId === massEditRp.id);
@@ -135,9 +134,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 if (prevGroup) {
                     minStartDate = _.cloneDeep(prevGroup[0].endDate);
                     minStartDate.setDate(minStartDate.getDate() + 1);
-                    if (minStartDate.getTime() < tomorrowDate.getTime()) {
-                        // minStartDate can't be earlier than tomorrow date
-                        minStartDate = _.cloneDeep(tomorrowDate);
+                    // Editable routePath: rp.startDate >= currentDate
+                    if (minStartDate.getTime() < currentDate.getTime()) {
+                        // minStartDate can't be earlier than current date
+                        minStartDate = _.cloneDeep(currentDate);
                     }
                 }
                 if (nextGroup) {
@@ -160,10 +160,10 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                 <div
                     className={classnames(
                         s.dateContainer,
-                        !isEditingEnabled ? s.editingDisabledDateContainer : undefined
+                        !isEditingAllowed ? s.editingDisabledDateContainer : undefined
                     )}
                 >
-                    {isEditingEnabled ? (
+                    {isEditingAllowed ? (
                         <>
                             <InputContainer
                                 label=''
@@ -237,7 +237,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             <div
                                 className={classnames(
                                     s.routePath,
-                                    isEditingEnabled && isNew ? s.rpHighlighAsNew : s.rpNoHighlight,
+                                    isEditingAllowed && isNew ? s.rpHighlighAsNew : s.rpNoHighlight,
                                     isSelected ? s.highlightAsSelected : undefined
                                 )}
                                 onClick={isNew ? this.selectRoutePath(routePath) : void 0}
@@ -246,7 +246,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             >
                                 <div
                                     className={classnames(
-                                        isEditingEnabled
+                                        isEditingAllowed
                                             ? s.routePathInfoEditing
                                             : s.routePathInfoNotEditing,
                                         shouldHighlightRoutePath
@@ -254,7 +254,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                             : undefined
                                     )}
                                     onClick={
-                                        isEditingEnabled
+                                        isEditingAllowed
                                             ? void 0
                                             : this.openRoutePathView(routePath)
                                     }
@@ -269,7 +269,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                               } - ${oldRoutePath.destinationFi} | ${
                                                   oldRoutePath.lineId
                                               } | ${oldRoutePath.routeId}`
-                                            : isEditingEnabled
+                                            : isEditingAllowed
                                             ? ``
                                             : `Avaa reitinsuunta ${destinations1} - ${destinations2}`
                                     }
@@ -298,7 +298,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     </div>
                                 </div>
                                 <div className={s.routePathControls}>
-                                    {isEditingEnabled && isNew && (
+                                    {isEditingAllowed && isNew && (
                                         <>
                                             <Button
                                                 className={s.separateNewRoutePathButton}
@@ -330,7 +330,7 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                             </Button>
                                         </>
                                     )}
-                                    {!isEditingEnabled && (
+                                    {!isEditing && (
                                         <Button
                                             className={classnames(
                                                 s.selectRoutePathToBeComparedButton,
