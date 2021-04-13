@@ -9,6 +9,10 @@ jobs:
   test-dev:
     runs-on: ubuntu-latest
     steps:
+      - name: "Set time zone to Europe/Helsinki"
+        uses: zcong1993/setup-timezone@master
+        with:
+          timezone: "Europe/Helsinki"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Cypress run
