@@ -10,8 +10,7 @@ import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
 import Loader from '~/components/shared/loader/Loader';
-import RoutePathComparisonContainer
-    from '~/components/shared/routePathComparisonContainer/RoutePathComparisonContainer';
+import RoutePathComparisonContainer from '~/components/shared/routePathComparisonContainer/RoutePathComparisonContainer';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener from '~/helpers/EventListener';
@@ -21,7 +20,10 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
-import RoutePathService, { IGetRoutePathLengthRequest, IRoutePathLengthResponse } from '~/services/routePathService';
+import RoutePathService, {
+    IGetRoutePathLengthRequest,
+    IRoutePathLengthResponse,
+} from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -334,6 +336,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                 onConfirm();
             },
             confirmButtonText: 'Tallenna',
+            confirmType: 'save',
         });
     };
 

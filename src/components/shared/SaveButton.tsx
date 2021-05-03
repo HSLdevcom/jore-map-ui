@@ -1,8 +1,7 @@
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import React, { useEffect } from 'react';
+import React from 'react';
 import ButtonType from '~/enums/buttonType';
-import EventListener from '~/helpers/EventListener';
 import AlertStore, { AlertType } from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 import { Button } from '../controls';
@@ -38,21 +37,6 @@ const SaveButton = observer((props: ISaveButtonProps) => {
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
     const isDisabled = disabled && savePreventedNotification.length === 0;
-
-    const onTriggerSaveFromEnter = () => {
-        if (!disabled && !isSaveLockEnabled && type === 'saveButton') {
-            onClick();
-        }
-    };
-    useEffect(() => {
-        EventListener.on('enter', onTriggerSaveFromEnter);
-        EventListener.on('numpadEnter', onTriggerSaveFromEnter);
-        return () => {
-            EventListener.off('enter', onTriggerSaveFromEnter);
-            EventListener.off('numpadEnter', onTriggerSaveFromEnter);
-        };
-    }, [disabled, type]);
-
     // Render button that shows a notification when clicked (save prevented)
     if (isSaveLockEnabled || savePreventedNotification.length > 0) {
         const typeClass =
