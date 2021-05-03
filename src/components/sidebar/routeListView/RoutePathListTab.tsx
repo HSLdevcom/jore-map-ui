@@ -433,7 +433,6 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         this.props.routePathCopyStore!.init({ lineId, routeId, transitType });
 
         if (!isEditing) {
-            console.log('initing mass edit store!');
             this.props.routePathMassEditStore!.init({ routeId, routePaths: this.props.originalRoutePaths });
             this.props.routeListStore!.setRouteIdToEdit(routeId);
         }
