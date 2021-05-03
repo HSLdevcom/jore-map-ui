@@ -111,13 +111,12 @@ const _saveRoutePath = () => {
 
     cy.getTestElement('routePathSaveButton').click();
 
+    // modalContainer is not guaranteed to show up
     cy.getTestElement('modalContainer').then((modal) => {
         // unmeasuredStopGapPrompt is not guaranteed to show up
         if (modal[0].innerHTML.includes('unmeasuredStopGapPrompt')) {
             cy.getTestElement('confirmButton').click();
         }
-        cy.getTestElement('savePromptView').should('exist');
-        cy.getTestElement('confirmButton').click();
     });
 }
 

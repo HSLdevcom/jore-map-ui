@@ -96,6 +96,8 @@ class RoutePathMassEditStore {
 
     @action
     public init = ({ routePaths, routeId }: { routePaths: IRoutePath[]; routeId: string }) => {
+        this.clear();
+
         const massEditRoutePaths: IMassEditRoutePath[] = [];
         _.cloneDeep(routePaths).forEach((rp: IRoutePath) => {
             massEditRoutePaths.push({
@@ -353,13 +355,15 @@ class RoutePathMassEditStore {
         this._selectedRoutePathIdGroups = [];
 
         // To clear unsaved routePaths, need to remove them from RoutePathLayerListStore
-        const routePathsToRemove = this._massEditRoutePaths!.filter((mEditRp) => mEditRp.isNew).map(
-            (mEditRp) => mEditRp.routePath
-        );
-        routePathsToRemove.forEach((rp) => RoutePathLayerListStore.removeRoutePath(rp.internalId));
+        if (this._massEditRoutePaths) {
+            const routePathsToRemove = this._massEditRoutePaths!.filter((mEditRp) => mEditRp.isNew).map(
+                (mEditRp) => mEditRp.routePath
+            );
+            routePathsToRemove.forEach((rp) => RoutePathLayerListStore.removeRoutePath(rp.internalId));
+            this._massEditRoutePaths = null;
+        }
 
         this._routeId = null;
-        this._massEditRoutePaths = null;
 
         RouteListStore.setRouteIdToEdit(null);
     };
