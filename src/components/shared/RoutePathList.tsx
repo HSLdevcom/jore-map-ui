@@ -40,18 +40,12 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
     }
 
     private renderRoutePathRow = (routePath: IRoutePathWithDisabledInfo, key: string) => {
-        const isRoutePathValid = isDateWithinTimeSpan({
-            date: new Date(),
-            timeSpanStart: routePath.startDate,
-            timeSpanEnd: routePath.endDate,
-        });
         return (
             <div
                 key={key}
-                className={classnames(
-                    s.routePathRow,
-                    isRoutePathValid ? s.validRoutePathRow : undefined
-                )}
+                className={
+                    s.routePathRow
+                }
             >
                 <div className={s.itemContainerOnRight}>
                     <div className={s.transitTypeIcon}>
@@ -72,10 +66,19 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
     };
 
     private renderTextRow = (routePath: IRoutePathWithDisabledInfo) => {
+        const currentDate = new Date()
+        const isRoutePathValid = isDateWithinTimeSpan({
+            date: currentDate,
+            timeSpanStart: routePath.startDate,
+            timeSpanEnd: routePath.endDate,
+        }) || routePath.startDate.getTime() >= currentDate.getTime();
+
         return (
             <div
-                className={
+                className={classnames(
+                    isRoutePathValid ? s.validRoutePathRow : undefined,
                     routePath.isConnectedStartNodeDisabled ? s.disabledRoutePathTextRow : undefined
+                )
                 }
             >
                 <div>
