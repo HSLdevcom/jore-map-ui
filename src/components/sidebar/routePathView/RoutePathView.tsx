@@ -6,12 +6,12 @@ import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import { Button } from '~/components/controls';
-import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
 import Loader from '~/components/shared/loader/Loader';
-import RoutePathComparisonContainer from '~/components/shared/routePathComparisonContainer/RoutePathComparisonContainer';
+import RoutePathComparisonContainer
+    from '~/components/shared/routePathComparisonContainer/RoutePathComparisonContainer';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import RoutePathFactory from '~/factories/routePathFactory';
 import EventListener from '~/helpers/EventListener';
@@ -21,10 +21,7 @@ import QueryParams from '~/routing/queryParams';
 import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import LineService from '~/services/lineService';
-import RoutePathService, {
-    IGetRoutePathLengthRequest,
-    IRoutePathLengthResponse,
-} from '~/services/routePathService';
+import RoutePathService, { IGetRoutePathLengthRequest, IRoutePathLengthResponse } from '~/services/routePathService';
 import RouteService from '~/services/routeService';
 import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
@@ -317,26 +314,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
     };
 
-    private showSavePrompt = () => {
-        const confirmStore = this.props.confirmStore;
-        const currentRoutePath = this.props.routePathStore!.routePath;
-        const oldRoutePath = this.props.routePathStore!.oldRoutePath;
-        const saveModel: ISaveModel = {
-            type: 'saveModel',
-            newData: currentRoutePath ? currentRoutePath : {},
-            oldData: oldRoutePath,
-            model: 'routePath',
-        };
-        const savePromptSection = { models: [saveModel] };
-        confirmStore!.openConfirm({
-            confirmComponentName: 'savePrompt',
-            confirmData: { savePromptSections: [savePromptSection] },
-            onConfirm: () => {
-                this.save();
-            },
-        });
-    };
-
     private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
         const confirmStore = this.props.confirmStore;
         const routePathStore = this.props.routePathStore!;
@@ -356,7 +333,7 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             onConfirm: () => {
                 onConfirm();
             },
-            confirmButtonText: 'Jatka tallennukseen',
+            confirmButtonText: 'Tallenna',
         });
     };
 
@@ -494,9 +471,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                     if (
                                         routePathStore!.isRoutePathLengthFormedByMeasuredLengths()
                                     ) {
-                                        this.showSavePrompt();
+                                        this.save();
                                     } else {
-                                        this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                                        this.showUnmeasuredStopGapsPrompt(this.save);
                                     }
                                 }}
                                 disabled={savePreventedNotification.length > 0}
