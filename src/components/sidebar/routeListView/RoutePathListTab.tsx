@@ -16,7 +16,7 @@ import routeBuilder from '~/routing/routeBuilder';
 import SubSites from '~/routing/subSites';
 import RoutePathMassEditService from '~/services/routePathMassEditService';
 import ScheduleService from '~/services/scheduleService';
-import { AlertStore, AlertType } from '~/stores/alertStore';
+import { AlertStore } from '~/stores/alertStore';
 import { ConfirmStore } from '~/stores/confirmStore';
 import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
@@ -392,8 +392,8 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     private renderBottomBarButtons = () => {
         if (!this.props.loginStore!.hasWriteAccess) return null;
 
-        const isCopyRoutePathButtonDisabled =
-            this.props.routeId !== this.props.routeListStore!.routeIdToEdit;
+        const isEditing = Boolean(this.props.routeListStore!.routeIdToEdit);
+        const isCopyRoutePathButtonDisabled = isEditing && this.props.routeId !== this.props.routeListStore!.routeIdToEdit;
         return (
             <div className={s.buttonContainer}>
                 <Button
@@ -405,18 +405,9 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
                     {`Luo reitinsuunta`}
                 </Button>
                 <Button
-                    onClick={this.openCopyRoutePathView()}
+                    onClick={this.openCopyRoutePathView(isEditing)}
                     type={ButtonType.SQUARE}
                     disabled={isCopyRoutePathButtonDisabled}
-                    onDisabledButtonClick={
-                        isCopyRoutePathButtonDisabled
-                            ? () =>
-                                  this.props.alertStore!.setNotificationMessage({
-                                      type: AlertType.Info,
-                                      message: 'Aktivoi editointi kopioidaksesi reitinsuuntia.',
-                                  })
-                            : undefined
-                    }
                     isWide={true}
                     data-cy='copyRoutePathButton'
                 >
@@ -437,9 +428,15 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         navigator.goTo({ link: newRoutePathLink });
     };
 
-    private openCopyRoutePathView = () => () => {
+    private openCopyRoutePathView = (isEditing: boolean) => () => {
         const { lineId, routeId, transitType } = this.props;
         this.props.routePathCopyStore!.init({ lineId, routeId, transitType });
+
+        if (!isEditing) {
+            console.log('initing mass edit store!');
+            this.props.routePathMassEditStore!.init({ routeId, routePaths: this.props.originalRoutePaths });
+            this.props.routeListStore!.setRouteIdToEdit(routeId);
+        }
     };
 
     private selectRoutePathToBeCompared = (routePath: IRoutePath) => {
