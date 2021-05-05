@@ -7,6 +7,8 @@ $longIdColumnWidth: 66px;
 $shortIdColumnWidth: 58px;
 $viaColumnWidth: 110px;
 
+$invalidNodeBorderWidth: 1px;
+
 .routePathLinksTabView  {
     height: 100%;
     flex-direction: column;
@@ -60,10 +62,12 @@ $viaColumnWidth: 110px;
             margin-left: 1px;
 
             .invalidRoutePathNode {
-                border: 1px solid $errorRed;
+                border: $invalidNodeBorderWidth solid $errorRed;
+                margin-left: 0;
+                margin-right: 0;
             }
             .invalidRoutePathNode + .invalidRoutePathNode {
-                border: 1px solid $errorRed;
+                border: $invalidNodeBorderWidth solid $errorRed;
                 border-top: none;
             }
 
