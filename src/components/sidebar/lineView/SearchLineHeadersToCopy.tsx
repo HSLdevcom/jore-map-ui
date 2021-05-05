@@ -50,7 +50,7 @@ const SearchLineHeadersToCopy = inject('lineStore')(
             const fetchLineHeaders = async () => {
                 setIsLoadingLineHeaders(true);
                 const lineHeaders = await LineHeaderService.fetchLineHeaders(selectedLineId);
-                setLineHeaders(lineHeaders);
+                setLineHeaders(lineHeaders.sort((a: ILineHeader, b:ILineHeader) => a.startDate < b.startDate ? 1 : -1));
                 setIsLoadingLineHeaders(false);
             };
             fetchLineHeaders();

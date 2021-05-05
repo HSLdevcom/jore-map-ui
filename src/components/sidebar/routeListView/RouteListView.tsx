@@ -180,7 +180,6 @@ class RouteListView extends React.Component<IRouteListViewProps> {
         const routeListStore = this.props.routeListStore!;
         const routePathMassEditStore = this.props.routePathMassEditStore!;
         const isEditing = Boolean(newRouteId);
-        routeListStore.setRouteIdToEdit(newRouteId);
         // Start editing
         if (isEditing) {
             if (isEditingRoutePaths) {
@@ -196,6 +195,7 @@ class RouteListView extends React.Component<IRouteListViewProps> {
                 routeStore.clear();
             }
         }
+        routeListStore.setRouteIdToEdit(newRouteId);
     };
 
     private toggleTransitType = (type: TransitType) => {

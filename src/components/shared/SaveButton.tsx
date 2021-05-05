@@ -37,7 +37,6 @@ const SaveButton = observer((props: ISaveButtonProps) => {
 
     const isSaveLockEnabled = LoginStore.isSaveLockEnabled;
     const isDisabled = disabled && savePreventedNotification.length === 0;
-
     // Render button that shows a notification when clicked (save prevented)
     if (isSaveLockEnabled || savePreventedNotification.length > 0) {
         const typeClass =
@@ -99,7 +98,7 @@ const showSavePreventedNotification = (savePreventedNotification: string) => {
         : savePreventedNotification;
     AlertStore.setNotificationMessage({
         message: alertText,
-        type: AlertType.Info
+        type: AlertType.Info,
     });
 };
 

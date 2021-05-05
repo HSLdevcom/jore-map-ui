@@ -14,12 +14,12 @@ const UnmeasuredStopGapsConfirm = inject()(
     observer((props: IUnmeasuredStopGapsConfirmProps) => {
         return (
             <div className={s.unmeasuredStopGapPrompt} data-cy='unmeasuredStopGapPrompt'>
-                <div>Haluatko varmasti edetä reitinsuunnan tallentamiseen?</div>
+                <div>Haluatko varmasti tallentaa reitinsuunnan?</div>
                 {props.routePathLength !== props.calculatedRoutePathLength && (
                     <div className={s.header}>
                         <FaExclamationCircle className={s.exclamationMark} />
                         <div>
-                            Reitinsuunnan tämänhetkinen pituus ei ole sama kuin pysäkkivälien ja
+                            Reitinsuunnan tämän hetkinen pituus ei ole sama kuin pysäkkivälien ja
                             linkkien pituuksista muodostettu summa.
                         </div>
                     </div>

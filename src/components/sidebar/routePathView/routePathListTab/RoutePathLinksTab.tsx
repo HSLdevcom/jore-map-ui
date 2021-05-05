@@ -78,7 +78,11 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
         process.nextTick(() => {
             const item = this.listObjectReferences[listItemId];
             if (item && item.current) {
-                item.current.scrollIntoView({ inline: 'start', block: 'start', behavior: 'smooth' });
+                item.current.scrollIntoView({
+                    inline: 'start',
+                    block: 'start',
+                    behavior: 'smooth',
+                });
             }
         });
     };
@@ -134,6 +138,10 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
             ? bottomGapClosingNeighborLink.routePathLink.id ===
               routePathLayerStore.highlightedNeighborLinkId
             : false;
+        const isRoutePathNodeValid = isLastNode
+            ? this.props.routePathStore!.invalidPropertiesMap['startNodeBookScheduleColumnNumber']
+                  .isValid
+            : this.props.routePathStore!.getIsRoutePathLinkValid(routePathLink.id);
         return (
             <RoutePathListNode
                 key={key}
@@ -156,6 +164,9 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                 isNeighborLinkHighlighted={isNeighborLinkHighlighted}
                 upperGapClosingNeighborLink={upperGapClosingNeighborLink}
                 bottomGapClosingNeighborLink={bottomGapClosingNeighborLink}
+                invalidRoutePathNodeClassName={
+                    !isRoutePathNodeValid ? s.invalidRoutePathNode : undefined
+                }
             />
         );
     };
@@ -252,7 +263,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                     ] = React.createRef();
                                 }
                                 return (
-                                    <div key={index}>
+                                    <React.Fragment key={index}>
                                         {this.renderRpListNode({
                                             routePathLink,
                                             key: `${routePathLink.id}-${index}-startNode`,
@@ -292,7 +303,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                                                 )}
                                             </>
                                         )}
-                                    </div>
+                                    </React.Fragment>
                                 );
                             });
                         })}
