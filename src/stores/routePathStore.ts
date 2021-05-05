@@ -473,6 +473,8 @@ class RoutePathStore {
          * lastRpLink.data = routePath.data
          * routePath.data = rpLinkToAddClone.data
          */
+        this.initRoutePathLinkValidationStore(rpLinkToAdd);
+
         if (this.isLastRoutePathLink(rpLinkToAdd) && rpLinks.length > 1) {
             const lastRpLink = rpLinks[rpLinks.length - 1];
             this.copyPropertyToRoutePathLinkFromRoutePath(
@@ -495,8 +497,6 @@ class RoutePathStore {
 
         this.recalculateOrderNumbers();
         this.addCurrentStateToUndoStore();
-
-        this.initRoutePathLinkValidationStore(rpLinkToAdd);
     };
 
     // Same as addLink() but doesnt support cloning routePath's bookSchedule properties.
