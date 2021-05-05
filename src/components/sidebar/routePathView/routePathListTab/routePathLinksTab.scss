@@ -7,6 +7,8 @@ $longIdColumnWidth: 66px;
 $shortIdColumnWidth: 58px;
 $viaColumnWidth: 110px;
 
+$invalidNodeBorderWidth: 1px;
+
 .routePathLinksTabView  {
     height: 100%;
     flex-direction: column;
@@ -57,6 +59,17 @@ $viaColumnWidth: 110px;
             font-size: $mediumFontSize;
             overflow-y: scroll;
             color: $darkLabelColor;
+            margin-left: 1px;
+
+            .invalidRoutePathNode {
+                border: $invalidNodeBorderWidth solid $errorRed;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .invalidRoutePathNode + .invalidRoutePathNode {
+                border: $invalidNodeBorderWidth solid $errorRed;
+                border-top: none;
+            }
 
             .saveButton {
                 padding: 20px;
