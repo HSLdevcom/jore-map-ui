@@ -57,6 +57,15 @@ $viaColumnWidth: 110px;
             font-size: $mediumFontSize;
             overflow-y: scroll;
             color: $darkLabelColor;
+            margin-left: 1px;
+
+            .invalidRoutePathNode {
+                border: 1px solid $errorRed;
+            }
+            .invalidRoutePathNode + .invalidRoutePathNode {
+                border: 1px solid $errorRed;
+                border-top: none;
+            }
 
             .saveButton {
                 padding: 20px;

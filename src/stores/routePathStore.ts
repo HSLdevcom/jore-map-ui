@@ -700,8 +700,12 @@ class RoutePathStore {
         return '';
     };
 
-    public getRoutePathLinkInvalidPropertiesMap = (id: string) => {
-        return this._routePathLinkValidationStoreMap.get(id)!.getInvalidPropertiesMap();
+    public getRoutePathLinkInvalidPropertiesMap = (rpLinkId: string) => {
+        return this._routePathLinkValidationStoreMap.get(rpLinkId)!.getInvalidPropertiesMap();
+    };
+
+    public getIsRoutePathLinkValid = (rpLinkId: string) => {
+        return this._routePathLinkValidationStoreMap.get(rpLinkId)!.isValid();
     };
 
     public isLastRoutePathLink = (routePathLink: IRoutePathLink): boolean => {
@@ -864,15 +868,15 @@ const _isRoutePathDirty = (currentRp: IRoutePath | null, oldRp: IRoutePath | nul
     if (!currentRp || !oldRp) return false;
 
     const areRpsEqual = compareRoutePaths(currentRp, oldRp);
-    const areRpLinksEqual = currentRp.routePathLinks.length === oldRp.routePathLinks.length && currentRp.routePathLinks.every(
-        (currentRpLink: IRoutePathLink, index: number) => {
+    const areRpLinksEqual =
+        currentRp.routePathLinks.length === oldRp.routePathLinks.length &&
+        currentRp.routePathLinks.every((currentRpLink: IRoutePathLink, index: number) => {
             if (index >= oldRp.routePathLinks.length) {
                 return false;
             }
             const oldRpLink: IRoutePathLink = oldRp.routePathLinks[index];
             return compareRoutePathLinks(currentRpLink, oldRpLink);
-        }
-    );
+        });
     return areRpsEqual && areRpLinksEqual;
 };
 
