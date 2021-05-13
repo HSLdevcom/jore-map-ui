@@ -4,6 +4,7 @@ import { INeighborLink, INode } from '~/models';
 
 type eventName =
     | 'enter'
+    | 'numpadEnter'
     | 'arrowUp'
     | 'arrowDown'
     | 'escape'

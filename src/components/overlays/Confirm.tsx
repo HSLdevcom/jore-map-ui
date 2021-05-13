@@ -17,36 +17,32 @@ interface IConfirmProps {
     confirmStore?: ConfirmStore;
 }
 
-@inject('confirmStore')
-@observer
-class Confirm extends React.Component<IConfirmProps> {
-    private displayDoubleConfirm = () => {
-        const confirmStore = this.props.confirmStore!;
-        const isOk = confirm(confirmStore.doubleConfirmText!);
-        if (isOk) {
-            confirmStore!.confirm();
-        }
-    };
+const Confirm = inject('confirmStore')(
+    observer((props: IConfirmProps) => {
+        const displayDoubleConfirm = () => {
+            const confirmStore = props.confirmStore!;
+            const isOk = confirm(confirmStore.doubleConfirmText!);
+            if (isOk) {
+                confirmStore!.confirm();
+            }
+        };
 
-    render() {
-        const confirmStore = this.props.confirmStore!;
-        if (!confirmStore.isOpen) return null;
-
+        const confirmStore = props.confirmStore!;
+        const doubleConfirmText = props.confirmStore!.doubleConfirmText;
+        const shouldShowDoubleConfirm = !_.isEmpty(doubleConfirmText);
         const isConfirmButtonDisabled = confirmStore.isConfirmButtonDisabled;
         const confirmType = confirmStore.confirmType;
-
         const confirmButtonClassName =
             confirmType === 'save'
                 ? s.saveButton
                 : confirmType === 'delete'
                 ? s.deleteButton
                 : undefined;
-
-        const doubleConfirmText = this.props.confirmStore!.doubleConfirmText;
-        const shouldShowDoubleConfirm = !_.isEmpty(doubleConfirmText);
-
         const confirmComponentName = confirmStore.confirmComponentName;
         const confirmData = confirmStore.confirmData;
+
+        if (!confirmStore.isOpen) return null;
+
         return (
             <ModalContainer>
                 <div className={s.confirmView} data-cy='confirmView'>
@@ -87,7 +83,7 @@ class Confirm extends React.Component<IConfirmProps> {
                                 type={ButtonType.SQUARE}
                                 onClick={
                                     shouldShowDoubleConfirm
-                                        ? this.displayDoubleConfirm
+                                        ? displayDoubleConfirm
                                         : confirmStore!.confirm
                                 }
                                 isWide={true}
@@ -100,7 +96,7 @@ class Confirm extends React.Component<IConfirmProps> {
                 </div>
             </ModalContainer>
         );
-    }
-}
+    })
+);
 
 export default Confirm;

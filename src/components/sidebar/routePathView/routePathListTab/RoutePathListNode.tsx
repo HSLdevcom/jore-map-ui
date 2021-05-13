@@ -1,6 +1,5 @@
 import classnames from 'classnames';
 import * as L from 'leaflet';
-import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useRef } from 'react';
 import { FaAngleDown, FaAngleRight } from 'react-icons/fa';
@@ -45,6 +44,7 @@ interface IRoutePathListNodeProps {
     isNeighborLinkHighlighted: boolean;
     upperGapClosingNeighborLink: INeighborLink | null;
     bottomGapClosingNeighborLink: INeighborLink | null;
+    invalidRoutePathNodeClassName?: string;
     routePathStore?: RoutePathStore;
     routePathLayerStore?: RoutePathLayerStore;
     routePathLinkMassEditStore?: RoutePathLinkMassEditStore;
@@ -494,7 +494,10 @@ const RoutePathListNode = inject(
                     ref={ref}
                     className={classnames(
                         s.routePathListItem,
-                        isNodeSelected() ? s.highlightedItem : undefined
+                        isNodeSelected() ? s.highlightedItem : undefined,
+                        props.invalidRoutePathNodeClassName
+                            ? props.invalidRoutePathNodeClassName
+                            : undefined
                     )}
                 >
                     <div

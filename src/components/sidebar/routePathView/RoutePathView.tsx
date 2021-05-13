@@ -6,7 +6,6 @@ import Moment from 'moment';
 import React from 'react';
 import { match } from 'react-router';
 import { Button } from '~/components/controls';
-import { ISaveModel } from '~/components/overlays/SavePrompt';
 import SaveButton from '~/components/shared/SaveButton';
 import { ContentItem, ContentList, Tab, Tabs, TabList } from '~/components/shared/Tabs';
 import TransitTypeLinks from '~/components/shared/TransitTypeLinks';
@@ -317,26 +316,6 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
         }
     };
 
-    private showSavePrompt = () => {
-        const confirmStore = this.props.confirmStore;
-        const currentRoutePath = this.props.routePathStore!.routePath;
-        const oldRoutePath = this.props.routePathStore!.oldRoutePath;
-        const saveModel: ISaveModel = {
-            type: 'saveModel',
-            newData: currentRoutePath ? currentRoutePath : {},
-            oldData: oldRoutePath,
-            model: 'routePath',
-        };
-        const savePromptSection = { models: [saveModel] };
-        confirmStore!.openConfirm({
-            confirmComponentName: 'savePrompt',
-            confirmData: { savePromptSections: [savePromptSection] },
-            onConfirm: () => {
-                this.save();
-            },
-        });
-    };
-
     private showUnmeasuredStopGapsPrompt = (onConfirm: Function) => {
         const confirmStore = this.props.confirmStore;
         const routePathStore = this.props.routePathStore!;
@@ -356,7 +335,8 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
             onConfirm: () => {
                 onConfirm();
             },
-            confirmButtonText: 'Jatka tallennukseen',
+            confirmButtonText: 'Tallenna',
+            confirmType: 'save',
         });
     };
 
@@ -494,9 +474,9 @@ class RoutePathView extends React.Component<IRoutePathViewProps, IRoutePathViewS
                                     if (
                                         routePathStore!.isRoutePathLengthFormedByMeasuredLengths()
                                     ) {
-                                        this.showSavePrompt();
+                                        this.save();
                                     } else {
-                                        this.showUnmeasuredStopGapsPrompt(this.showSavePrompt);
+                                        this.showUnmeasuredStopGapsPrompt(this.save);
                                     }
                                 }}
                                 disabled={savePreventedNotification.length > 0}

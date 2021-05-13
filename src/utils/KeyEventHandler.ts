@@ -2,6 +2,7 @@ import EventListener from '~/helpers/EventListener';
 
 const KEYCODES = {
     enter: 'Enter',
+    numpadEnter: 'NumpadEnter',
     arrowUp: 'ArrowUp',
     arrowDown: 'ArrowDown',
     Y: 'KeyY',
@@ -19,6 +20,9 @@ class KeyEventHandler {
             case KEYCODES.enter: {
                 EventListener.trigger('enter');
                 break;
+            }
+            case KEYCODES.numpadEnter: {
+                EventListener.trigger('numpadEnter');
             }
             case KEYCODES.arrowUp: {
                 EventListener.trigger('arrowUp');
