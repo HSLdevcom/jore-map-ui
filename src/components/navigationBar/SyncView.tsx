@@ -18,7 +18,7 @@ enum SyncModels {
     LINE_HEADER = 'lineHeader',
     ROUTE = 'route',
     NODE_AND_LINK = 'nodeAndLink',
-    STOP_AREA = 'stopArea',
+    STOP_AREA_AND_HASTUS = 'stopAreaAndHastus',
     ROUTE_PATH = 'routePath',
 }
 
@@ -122,10 +122,12 @@ const SyncView = inject('alertStore')(
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Pysäkkialueet'
-                                            checked={selectedModels.includes(SyncModels.STOP_AREA)}
+                                            content='Pysäkkialueet ja hastukset'
+                                            checked={selectedModels.includes(
+                                                SyncModels.STOP_AREA_AND_HASTUS
+                                            )}
                                             onClick={() =>
-                                                toggleSelectedModel(SyncModels.STOP_AREA)
+                                                toggleSelectedModel(SyncModels.STOP_AREA_AND_HASTUS)
                                             }
                                         />
                                         <Checkbox
