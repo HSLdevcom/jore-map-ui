@@ -2,6 +2,7 @@ import classnames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Popup } from 'react-leaflet';
+import SelectRoutePathNeighborPopup from '~/components/map/layers/popups/SelectRoutePathNeighborPopup';
 import { IPopup, PopupStore } from '~/stores/popupStore';
 import * as s from './popupLayer.scss';
 import NodePopup from './popups/NodePopup';
@@ -34,6 +35,8 @@ class PopupLayer extends Component<PopupLayerProps> {
                 return <NodePopup popupId={popup.id} data={popup.data} />;
             case 'nodeUsagePopup':
                 return <NodeUsagePopup popupId={popup.id} data={popup.data} />;
+            case 'selectRoutePathNeighborPopup':
+                return <SelectRoutePathNeighborPopup popupId={popup.id} data={popup.data} />;
             default:
                 return popup.content!(popup.id!);
         }

@@ -1,10 +1,14 @@
+import { LatLngBounds } from 'leaflet';
 import { union } from 'lodash';
 import { reaction, IReactionDisposer } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import React, { Component } from 'react';
 import { Polyline } from 'react-leaflet';
+import ClusterNodeMarker from '~/components/map/layers/markers/ClusterNodeMarker';
+import { ISelectRoutePathNeighborPopupData } from '~/components/map/layers/popups/SelectRoutePathNeighborPopup';
 import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
+import NodeFactory from '~/factories/nodeFactory';
 import EventListener, { IEditRoutePathNeighborLinkClickParams } from '~/helpers/EventListener';
 import { IRoutePath } from '~/models';
 import INeighborLink from '~/models/INeighborLink';
@@ -148,6 +152,10 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         }
     };
 
+    private renderNeighborLinks = (neighborLinks: INeighborLink[]) => {
+        return neighborLinks.map((neighborLink) => this.renderNeighborLink(neighborLink));
+    };
+
     private renderNeighborLink = (neighborLink: INeighborLink) => {
         const onNeighborLinkClick = () => {
             const clickParams: IEditRoutePathNeighborLinkClickParams = {
@@ -203,20 +211,115 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
     };
 
     render() {
-        const neighborLinks = this.props.routePathLayerStore!.neighborLinks;
-        return neighborLinks.map((neighborLink, index) => {
-            const neighborToAddType = this.props.routePathLayerStore!.neighborToAddType;
-            const nodeToRender =
-                neighborToAddType === NeighborToAddType.AfterNode
-                    ? neighborLink.routePathLink.endNode
-                    : neighborLink.routePathLink.startNode;
-            return [
-                this.renderNeighborNode(nodeToRender, neighborLink, index),
-                this.renderNeighborLink(neighborLink),
-            ];
-        });
+        const neighborLinks: INeighborLink[] = this.props.routePathLayerStore!.neighborLinks;
+        // get clusteredNeighborLinksMap<IRoutePathLink>
+        const clusteredNeighborLinksMap: Map<
+            LatLngBounds,
+            INeighborLink[]
+        > = _getClusteredNeighborLinksMap(
+            neighborLinks,
+            this.props.routePathLayerStore!.neighborToAddType
+        );
+
+        const clusteredNeighborLinkMapEntries = Array.from(clusteredNeighborLinksMap.entries());
+
+        return (
+            <>
+                {clusteredNeighborLinkMapEntries.map(([bounds, neighborLinkCluster], index) => {
+                    if (neighborLinkCluster.length === 1) {
+                        const neighborLink = neighborLinkCluster[0];
+                        // return renderNodeMarker(neighborLinkCluster[0]);
+                        const nodeToRender =
+                            this.props.routePathLayerStore!.neighborToAddType ===
+                            NeighborToAddType.AfterNode
+                                ? neighborLink.routePathLink.endNode
+                                : neighborLink.routePathLink.startNode;
+                        return [
+                            this.renderNeighborNode(nodeToRender, neighborLink, index),
+                            this.renderNeighborLink(neighborLink),
+                        ];
+                    }
+                    if (neighborLinkCluster.length > 1) {
+                        const searchNodes = neighborLinkCluster.map(
+                            (neighborLink: INeighborLink) => {
+                                const nodeToRender =
+                                    this.props.routePathLayerStore!.neighborToAddType ===
+                                    NeighborToAddType.AfterNode
+                                        ? neighborLink.routePathLink.endNode
+                                        : neighborLink.routePathLink.startNode;
+                                return NodeFactory.createSearchNodeFromNode(nodeToRender);
+                            }
+                        );
+
+                        const popupData: ISelectRoutePathNeighborPopupData = {
+                            neighborNodes: neighborLinkCluster.map(
+                                (neighborLink: INeighborLink) => {
+                                    const nodeToRender =
+                                        this.props.routePathLayerStore!.neighborToAddType ===
+                                        NeighborToAddType.AfterNode
+                                            ? neighborLink.routePathLink.endNode
+                                            : neighborLink.routePathLink.startNode;
+                                    return {
+                                        neighborLink,
+                                        node: nodeToRender,
+                                    };
+                                }
+                            ),
+                        };
+                        return [
+                            <ClusterNodeMarker
+                                key={`clusterMarker-${index}`}
+                                coordinates={bounds.getCenter()}
+                                nodes={searchNodes}
+                                iconSize={'large'}
+                                popupType={'selectRoutePathNeighborPopup'}
+                                popupData={popupData}
+                            />,
+                            this.renderNeighborLinks(neighborLinkCluster),
+                        ];
+                    }
+                    return null;
+                })}
+            </>
+        );
     }
 }
+
+const _getClusteredNeighborLinksMap = (
+    neighborLinks: INeighborLink[],
+    neighborToAddType: NeighborToAddType
+): Map<LatLngBounds, INeighborLink[]> => {
+    if (neighborLinks.length === 0) {
+        return new Map();
+    }
+    const clusteredNeighborLinksMap = new Map<LatLngBounds, INeighborLink[]>();
+
+    for (const neighborLink of neighborLinks) {
+        let areaBounds;
+        const node =
+            neighborToAddType === NeighborToAddType.AfterNode
+                ? neighborLink.routePathLink.endNode
+                : neighborLink.routePathLink.startNode;
+        if (clusteredNeighborLinksMap.size !== 0) {
+            const areaEntries = clusteredNeighborLinksMap.entries();
+            for (const [area] of areaEntries) {
+                if (area.contains(node.coordinates)) {
+                    areaBounds = area;
+                    break;
+                }
+            }
+        }
+
+        if (!areaBounds) {
+            areaBounds = node.coordinates.toBounds(3);
+        }
+
+        const neighborLinkGroup = clusteredNeighborLinksMap.get(areaBounds) || [];
+        neighborLinkGroup.push(neighborLink);
+        clusteredNeighborLinksMap.set(areaBounds, neighborLinkGroup);
+    }
+    return clusteredNeighborLinksMap;
+};
 
 const getNeighborLinkColor = (neighborLink: INeighborLink, isNeighborLinkHighlighted: boolean) => {
     const isNeighborLinkUsed = neighborLink.nodeUsageRoutePaths.length > 0;
