@@ -17,9 +17,8 @@ enum SyncModels {
     LINE = 'line',
     LINE_HEADER = 'lineHeader',
     ROUTE = 'route',
-    NODE_AND_LINK = 'nodeAndLink',
-    STOP_AREA_AND_HASTUS = 'stopAreaAndHastus',
-    ROUTE_PATH = 'routePath',
+    NODE_LINK_ROUTE_PATH = 'nodeLinkRoutePath',
+    STOP_AREA_HASTUS = 'stopAreaHastus',
 }
 
 const SyncView = inject('alertStore')(
@@ -112,30 +111,22 @@ const SyncView = inject('alertStore')(
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Pysäkit, risteykset, linkit'
+                                            content='Pysäkit, risteykset, linkit, reitinsuunnat'
                                             checked={selectedModels.includes(
-                                                SyncModels.NODE_AND_LINK
+                                                SyncModels.NODE_LINK_ROUTE_PATH
                                             )}
                                             onClick={() =>
-                                                toggleSelectedModel(SyncModels.NODE_AND_LINK)
+                                                toggleSelectedModel(SyncModels.NODE_LINK_ROUTE_PATH)
                                             }
                                         />
                                         <Checkbox
                                             className={s.checkbox}
                                             content='Pysäkkialueet ja hastukset'
                                             checked={selectedModels.includes(
-                                                SyncModels.STOP_AREA_AND_HASTUS
+                                                SyncModels.STOP_AREA_HASTUS
                                             )}
                                             onClick={() =>
-                                                toggleSelectedModel(SyncModels.STOP_AREA_AND_HASTUS)
-                                            }
-                                        />
-                                        <Checkbox
-                                            className={s.checkbox}
-                                            content='Reitinsuunnat'
-                                            checked={selectedModels.includes(SyncModels.ROUTE_PATH)}
-                                            onClick={() =>
-                                                toggleSelectedModel(SyncModels.ROUTE_PATH)
+                                                toggleSelectedModel(SyncModels.STOP_AREA_HASTUS)
                                             }
                                         />
                                     </div>
