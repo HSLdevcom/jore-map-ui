@@ -2,8 +2,9 @@ import { LatLngBounds } from 'leaflet';
 import _ from 'lodash';
 import { inject, observer } from 'mobx-react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { ISelectNetworkEntityPopupData } from '~/components/map/layers/popups/SelectNetworkEntityPopup';
 import NodeType from '~/enums/nodeType';
-import { ISearchNode } from '~/models/INode';
+import { INodeMapHighlight, ISearchNode } from '~/models/INode';
 import { MapStore } from '~/stores/mapStore';
 import { NetworkStore } from '~/stores/networkStore';
 import { RoutePathStore } from '~/stores/routePathStore';
@@ -102,13 +103,17 @@ const NodeLayer = inject(
                             return renderNodeMarker(nodeCluster[0]);
                         }
                         if (nodeCluster.length > 1) {
+                            const popupData: ISelectNetworkEntityPopupData = {
+                                nodes: nodeCluster as INodeMapHighlight[],
+                                links: [],
+                            };
                             return (
                                 <ClusterNodeMarker
                                     key={`clusterMarker-${index}`}
                                     coordinates={bounds.getCenter()}
                                     nodes={nodeCluster}
-                                    onLeftClickMarkerItem={() => void 0}
-                                    onRightClickMarkerItem={() => void 0}
+                                    popupType={'selectNetworkEntityPopup'}
+                                    popupData={popupData}
                                 />
                             );
                         }

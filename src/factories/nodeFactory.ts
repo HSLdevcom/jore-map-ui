@@ -99,6 +99,20 @@ class NodeFactory {
                 : undefined,
         };
     }
+
+    public static createSearchNodeFromNode(node: INode, dateRanges: string = ''): ISearchNode {
+        return {
+            dateRanges,
+            id: node.id,
+            type: node.type,
+            coordinates: node.coordinates,
+            coordinatesProjection: node.coordinatesProjection,
+            transitTypes: node.transitTypes ? node.transitTypes : [],
+            shortIdLetter: node.shortIdLetter,
+            shortIdString: node.shortIdString,
+            stopName: node.stop ? node.stop.nameFi : '',
+        };
+    }
 }
 
 const _getLatLng = (coordinates: string) => {
