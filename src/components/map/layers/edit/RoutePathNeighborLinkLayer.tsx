@@ -39,6 +39,7 @@ interface PolylineRefs {
 @observer
 class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRoutePathLayerState> {
     private linkListener: IReactionDisposer;
+    private highlightedNeighborLinkListener: IReactionDisposer;
     constructor(props: IRoutePathLayerProps) {
         super(props);
         this.state = {
@@ -48,10 +49,15 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
             () => this.props.routePathLayerStore!.neighborLinks,
             () => this.initializePolylineRefs()
         );
+        this.highlightedNeighborLinkListener = reaction(
+            () => this.props.routePathLayerStore!.highlightedNeighborLinkId,
+            () => this.bringNeighborLinkTofront()
+        );
     }
 
     public componentWillUnmount() {
         this.linkListener();
+        this.highlightedNeighborLinkListener();
     }
 
     private initializePolylineRefs = () => {
@@ -62,6 +68,13 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         this.setState({
             polylineRefs,
         });
+    };
+
+    private bringNeighborLinkTofront = () => {
+        const id = this.props.routePathLayerStore!.highlightedNeighborLinkId;
+        if (id) {
+            this.state.polylineRefs[id]!.current.leafletElement.bringToFront();
+        }
     };
 
     private showNodePopup = (node: INode, routePaths: IRoutePath[]) => {
@@ -201,7 +214,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
         if (isHighlighted) {
             if (this.props.routePathLayerStore!.highlightedNeighborLinkId !== id) {
                 this.props.routePathLayerStore!.setHighlightedNeighborLinkId(id);
-                this.state.polylineRefs[id]!.current.leafletElement.bringToFront();
             }
         } else {
             if (this.props.routePathLayerStore!.highlightedNeighborLinkId === id) {
@@ -212,7 +224,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
 
     render() {
         const neighborLinks: INeighborLink[] = this.props.routePathLayerStore!.neighborLinks;
-        // get clusteredNeighborLinksMap<IRoutePathLink>
         const clusteredNeighborLinksMap: Map<
             LatLngBounds,
             INeighborLink[]
@@ -228,7 +239,6 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
                 {clusteredNeighborLinkMapEntries.map(([bounds, neighborLinkCluster], index) => {
                     if (neighborLinkCluster.length === 1) {
                         const neighborLink = neighborLinkCluster[0];
-                        // return renderNodeMarker(neighborLinkCluster[0]);
                         const nodeToRender =
                             this.props.routePathLayerStore!.neighborToAddType ===
                             NeighborToAddType.AfterNode
