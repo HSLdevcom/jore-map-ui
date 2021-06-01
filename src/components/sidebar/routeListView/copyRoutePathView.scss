@@ -81,6 +81,9 @@ $routePathTablePadding: 15px;
             .selectedRow {
                 background-color: $highlightedItemColor;
             }
+            .validRow {
+                font-weight: bold;
+            }
             .tableRow:hover {
                 background-color: $highlightedItemColor !important;
             }
