@@ -10,7 +10,7 @@ import { ErrorStore } from '~/stores/errorStore';
 import { LoginStore } from '~/stores/loginStore';
 import { RoutePathStore } from '~/stores/routePathStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import { toDateString, toMidnightDate } from '~/utils/dateUtils';
+import { isDateWithinTimeSpan, toDateString } from '~/utils/dateUtils';
 import * as s from './removeRoutePathButton.scss';
 
 interface IRemoveRoutePathButtonProps {
@@ -61,11 +61,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
             onConfirm: async () => {
                 try {
                     this.props.alertStore!.setLoaderMessage('Reitinsuuntaa poistetaan...');
-                    await RoutePathService.removeRoutePath({
-                        routeId: routePath.routeId,
-                        direction: routePath.direction,
-                        startDate: routePath.startDate,
-                    });
+                    await RoutePathService.removeRoutePath(routePath);
                     this.props.alertStore!.setFadeMessage({ message: 'Reitinsuunta poistettu!' });
                     NavigationUtils.openRouteView({
                         routeId: routePath.routeId,
@@ -88,8 +84,13 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
         const routePath = routePathStore.routePath!;
         const isEditingDisabled = routePathStore.isEditingDisabled;
 
-        const currentDate = toMidnightDate(new Date());
-        const isRoutePathDeletable = routePath.startDate.getTime() >= currentDate.getTime();
+        const currentDate = new Date();
+        const isRoutePathValid = isDateWithinTimeSpan({
+            date: currentDate,
+            timeSpanStart: routePath.startDate,
+            timeSpanEnd: routePath.endDate,
+        });
+        const isRoutePathDeletable = !isRoutePathValid;
         return (
             <SaveButton
                 className={
@@ -103,7 +104,7 @@ class RemoveRoutePathButton extends React.Component<IRemoveRoutePathButtonProps>
                 hasPadding={false}
                 title={
                     !isRoutePathDeletable
-                        ? 'Vain tulevaisuudessa olevia reitinsuuntia voi poistaa.'
+                        ? 'Voit poistaa reitinsuuntia, jotka eivät ole tällä hetkellä voimassa.'
                         : ''
                 }
                 data-cy='removeRoutePathButton'
