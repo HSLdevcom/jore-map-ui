@@ -25,6 +25,10 @@ $newHighlightBackgroundColor: #e0fde2;
             -ms-flex-align: center;
             align-items: center;
 
+            .routePathContainer {
+                display: flex;
+            }
+
             .routePathInfoNotEditing {
                 display: flex;
                 cursor: pointer;
@@ -37,6 +41,17 @@ $newHighlightBackgroundColor: #e0fde2;
 
             .routePathInfoEditing {
                 display: flex;
+                flex-direction: column;
+                cursor: pointer;
+                .rpCopiedFromText {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    width: 320px;
+                    overflow: hidden;
+                    display: inline-block;
+                    font-size: 12px;
+                    font-style: italic;
+                }
             }
 
             .routePathHighlighted {
