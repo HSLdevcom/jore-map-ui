@@ -16,6 +16,7 @@ import RouteService from '~/services/routeService';
 import { IRoutePathToCopy, RoutePathCopyStore } from '~/stores/routePathCopyStore';
 import { RoutePathLayerListStore } from '~/stores/routePathLayerListStore';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
+import { isDateWithinTimeSpan } from '~/utils/dateUtils';
 import { createDropdownItemsFromList } from '~/utils/dropdownUtils';
 import SidebarHeader from '../SidebarHeader';
 import * as s from './copyRoutePathView.scss';
@@ -416,6 +417,12 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                             const selectedBackgroundColorStyle = {
                                                                 backgroundColor: color,
                                                             };
+                                                            const currentDate = new Date();
+                                                            const isValid = isDateWithinTimeSpan({
+                                                                date: currentDate,
+                                                                timeSpanStart: routePath.startDate,
+                                                                timeSpanEnd: routePath.endDate,
+                                                            });
                                                             return (
                                                                 <tr
                                                                     key={`rpQueryResult-${index}`}
@@ -423,6 +430,9 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                         s.tableRow,
                                                                         isSelected
                                                                             ? s.selectedRow
+                                                                            : undefined,
+                                                                        isValid
+                                                                            ? s.validRow
                                                                             : undefined
                                                                     )}
                                                                     onClick={this.toggleRoutePath(
@@ -468,7 +478,7 @@ class CopyRoutePathView extends React.Component<ICopyRoutePathViewProps, ICopyRo
                                                                                     ? 'selectedRp'
                                                                                     : ''
                                                                             }
-                                                                        ></div>
+                                                                        />
                                                                     </td>
                                                                 </tr>
                                                             );
