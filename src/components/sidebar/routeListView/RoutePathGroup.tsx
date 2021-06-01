@@ -233,6 +233,16 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                             this.props.userStore!.userTransitType === TransitType.BUS
                                 ? stopDestinations
                                 : routePathDestinations;
+                        const rpCopiedFromText =
+                            isNew && oldRoutePath
+                                ? `Kopioitu reitinsuunta: ${
+                                      oldRoutePath.direction
+                                  } | ${toDateString(oldRoutePath.startDate)} - ${toDateString(
+                                      oldRoutePath.endDate
+                                  )} | ${oldRoutePath.originFi} - ${oldRoutePath.destinationFi} | ${
+                                      oldRoutePath.lineId
+                                  } | ${oldRoutePath.routeId}`
+                                : '';
                         return (
                             <div
                                 className={classnames(
@@ -260,42 +270,37 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
                                     }
                                     title={
                                         isNew && oldRoutePath
-                                            ? `Kopioitu reitinsuunta: ${
-                                                  oldRoutePath.direction
-                                              } | ${toDateString(
-                                                  oldRoutePath.startDate
-                                              )} - ${toDateString(oldRoutePath.endDate)} | ${
-                                                  oldRoutePath.originFi
-                                              } - ${oldRoutePath.destinationFi} | ${
-                                                  oldRoutePath.lineId
-                                              } | ${oldRoutePath.routeId}`
+                                            ? rpCopiedFromText
                                             : isEditingAllowed
                                             ? ``
                                             : `Avaa reitinsuunta ${destinations1} - ${destinations2}`
                                     }
                                     data-cy='openRoutePathViewButton'
                                 >
-                                    <div className={s.routePathDirection}>
-                                        {routePath.direction}
+                                    <div className={s.routePathContainer}>
+                                        <div className={s.routePathDirection}>
+                                            {routePath.direction}
+                                        </div>
+                                        <div>
+                                            {isLoading ? (
+                                                <Loader
+                                                    containerClassName={s.stopNameLoader}
+                                                    size='tiny'
+                                                    hasNoMargin={true}
+                                                />
+                                            ) : (
+                                                <>
+                                                    <div className={s.destinations1}>
+                                                        {destinations1}
+                                                    </div>
+                                                    <div className={s.destinations2}>
+                                                        {destinations2}
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div>
-                                        {isLoading ? (
-                                            <Loader
-                                                containerClassName={s.stopNameLoader}
-                                                size='tiny'
-                                                hasNoMargin={true}
-                                            />
-                                        ) : (
-                                            <>
-                                                <div className={s.destinations1}>
-                                                    {destinations1}
-                                                </div>
-                                                <div className={s.destinations2}>
-                                                    {destinations2}
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
+                                    <div className={s.rpCopiedFromText}>{rpCopiedFromText}</div>
                                 </div>
                                 <div className={s.routePathControls}>
                                     {isEditingAllowed && isNew && (
