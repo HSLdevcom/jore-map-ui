@@ -8,7 +8,7 @@
     margin: 15px 70px;
     padding: 10px;
     width: 350px;
-    height: 270px; // We want a static height so that it doesn't change when content changes
+    height: 290px; // We want a static height so that it doesn't change when content changes
     color: $fontColorDefault;
 
     .loaderContainer  {
@@ -42,12 +42,19 @@
 
 .openSyncViewButton {
     display: flex;
-    margin: 6px;
     cursor: pointer;
     padding: 3px;
+    text-align: center;
+    line-height: 20px;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 5px;
+    margin-left: 5px;
+    letter-spacing: -0.6px;
 
     .icon {
-        font-size: 24px;
+        font-size: 20px;
     }
 }
 .openSyncViewButton:hover {
