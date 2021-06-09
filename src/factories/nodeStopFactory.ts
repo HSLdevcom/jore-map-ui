@@ -22,7 +22,6 @@ class StopFactory {
             placeNameFi: node.pyspaikannimi,
             placeNameSw: node.pyspaikannimir,
             platform: node.pyslaituri,
-            roof: node.pyskatos,
             postalNumber: node.postinro,
             section: node.vyohyke,
         };
@@ -48,7 +47,6 @@ class StopFactory {
             placeNameFi: '',
             placeNameSw: '',
             platform: '',
-            roof: '',
             postalNumber: '',
             section: '',
         };

@@ -13,7 +13,6 @@ export default interface IStop extends IStopPrimaryKey {
     modifiedBy?: string;
     modifiedOn?: Date;
     platform?: string;
-    roof: string;
     radius: number;
     hastusId?: string;
     stopAreaId?: string;

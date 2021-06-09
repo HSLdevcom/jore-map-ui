@@ -11,7 +11,6 @@ export default interface IExternalStop {
     pyskuka?: string;
     pysviimpvm?: Date;
     pyslaituri?: string;
-    pyskatos: string;
     pystyyppi: string;
     pyssade: number;
     pyssuunta: string;
