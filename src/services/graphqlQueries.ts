@@ -305,6 +305,7 @@ const getArmamentInfoQuery = () => {
         query getArmamentInfoQuery($nodeId: String!) {
             node: varustelutiedotUusiByTunnus(tunnus: $nodeId) {
                 nousijat
+                pysakkityyppi
             }
         }
     `;
@@ -600,7 +601,6 @@ const stopQueryFields = `
     pyskuka
     pysviimpvm
     pyslaituri
-    pyskatos
     pystyyppi
     pyssade
     pyssuunta

@@ -3,11 +3,13 @@ import _ from 'lodash';
 import EndpointPath from '~/enums/endpointPath';
 import NodeStopFactory from '~/factories/nodeStopFactory';
 import ApolloClient from '~/helpers/ApolloClient';
-import IHastusArea, { IHastusAreaSaveModel } from '~/models/IHastusArea';
-import IStop, { IStopItem } from '~/models/IStop';
+import IExternalArmamentInfo from '~/models/externals/IExternalArmamentInfo';
 import IExternalHastusArea from '~/models/externals/IExternalHastusArea';
 import IExternalNode from '~/models/externals/IExternalNode';
 import IExternalStop, { IExternalStopItem } from '~/models/externals/IExternalStop';
+import IArmamentInfo from '~/models/IArmamentInfo';
+import IHastusArea, { IHastusAreaSaveModel } from '~/models/IHastusArea';
+import IStop, { IStopItem } from '~/models/IStop';
 import HttpUtils from '~/utils/HttpUtils';
 import GraphqlQueries from './graphqlQueries';
 import NodeService from './nodeService';
@@ -138,14 +140,25 @@ class StopService {
         await HttpUtils.updateObject(EndpointPath.HASTUS_AREA, hastusAreaSaveModel);
     };
 
-    public static fetchRiseCount = async ({ nodeId }: { nodeId: string }): Promise<number> => {
+    public static fetchArmamentInfo = async ({
+        nodeId,
+    }: {
+        nodeId: string;
+    }): Promise<IArmamentInfo> => {
         const queryResult: ApolloQueryResult<any> = await ApolloClient.query({
             query: GraphqlQueries.getArmamentInfoQuery(),
             variables: { nodeId },
         });
-        return queryResult && queryResult.data && queryResult.data.node
-            ? queryResult.data.node.nousijat
-            : 0;
+        const externalArmamentInfo: IExternalArmamentInfo | null = queryResult?.data?.node;
+        return externalArmamentInfo
+            ? {
+                  passengerCount: externalArmamentInfo.nousijat,
+                  roof: externalArmamentInfo.pysakkityyppi,
+              }
+            : {
+                  passengerCount: 0,
+                  roof: '',
+              };
     };
 }
 
