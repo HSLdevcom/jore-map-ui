@@ -157,7 +157,7 @@ class StopService {
               }
             : {
                   passengerCount: 0,
-                  roof: '00',
+                  roof: '',
               };
     };
 }
