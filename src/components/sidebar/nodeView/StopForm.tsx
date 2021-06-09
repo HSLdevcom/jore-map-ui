@@ -10,6 +10,7 @@ import InputContainer from '~/components/controls/InputContainer';
 import TextContainer from '~/components/controls/TextContainer';
 import ButtonType from '~/enums/buttonType';
 import { INode, IStop } from '~/models';
+import IArmamentInfo from '~/models/IArmamentInfo';
 import IHastusArea from '~/models/IHastusArea';
 import IStopArea from '~/models/IStopArea';
 import navigator from '~/routing/navigator';
@@ -48,34 +49,37 @@ interface IStopFormProps {
 }
 
 interface IStopFormState {
-    isRiseCountLoading: boolean;
-    riseCount: number;
+    isArmamentInfoLoading: boolean;
+    passengerCount: number;
+    roof: string;
 }
 
 @inject('codeListStore', 'nodeStore', 'modalStore')
 @observer
 class StopForm extends Component<IStopFormProps, IStopFormState> {
     state = {
-        isRiseCountLoading: true,
-        riseCount: 0,
+        isArmamentInfoLoading: true,
+        passengerCount: 0,
+        roof: '',
     };
     componentDidMount() {
-        this.fetchRiseCount();
+        this.fetchArmamentInfo();
     }
 
-    private fetchRiseCount = async () => {
+    private fetchArmamentInfo = async () => {
         if (this.props.isNewStop) {
             return;
         }
         this.setState({
-            isRiseCountLoading: true,
+            isArmamentInfoLoading: true,
         });
-        const riseCount = await StopService.fetchRiseCount({
+        const armamentInfo: IArmamentInfo = await StopService.fetchArmamentInfo({
             nodeId: this.props.node.id,
         });
         this.setState({
-            riseCount,
-            isRiseCountLoading: false,
+            passengerCount: armamentInfo.passengerCount,
+            roof: armamentInfo.roof,
+            isArmamentInfoLoading: false,
         });
     };
 
@@ -360,13 +364,11 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
                             data-cy='section'
                         />
                         <Dropdown
-                            onChange={updateStopProperty!('roof')}
                             items={this.props.codeListStore!.getDropdownItemList('Pysäkkityyppi')}
-                            selected={stop.roof}
-                            disabled={isEditingDisabled}
+                            selected={this.state.roof}
+                            isLoading={this.state.isArmamentInfoLoading}
+                            disabled={true}
                             label='PYSÄKKIKATOS'
-                            validationResult={stopInvalidPropertiesMap['roof']}
-                            data-cy='roof'
                         />
                     </div>
                     <div className={s.flexRow}>
@@ -445,9 +447,9 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
                     {!this.props.isNewStop && (
                         <div className={s.flexRow}>
                             <TextContainer
-                                isLoading={this.state.isRiseCountLoading}
+                                isLoading={this.state.isArmamentInfoLoading}
                                 label='NOUSIJAMÄÄRÄ'
-                                value={this.state.riseCount}
+                                value={this.state.passengerCount}
                             />
                         </div>
                     )}
