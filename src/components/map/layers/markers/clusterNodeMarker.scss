@@ -1,6 +1,7 @@
 @import './nodeMarker.scss';
 
-$markerHeight: 14px;
+$markerHeightSmall: 14px;
+$markerHeightLarge: 17px;
 
 .clusterNodeMarker {
     display: flex;
@@ -12,7 +13,10 @@ $markerHeight: 14px;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: $markerHeight;
     line-height: 100%;
-    width: $markerHeight;
+}
+
+:export {
+    markerHeightSmall: $markerHeightSmall;
+    markerHeightLarge: $markerHeightLarge;
 }

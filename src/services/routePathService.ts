@@ -161,8 +161,8 @@ class RoutePathService {
         return response;
     };
 
-    public static removeRoutePath = async (routePathPrimaryKey: IRoutePathPrimaryKey) => {
-        await HttpUtils.deleteObject(EndpointPath.ROUTE_PATH_REMOVE, routePathPrimaryKey);
+    public static removeRoutePath = async (routePath: IRoutePath) => {
+        await HttpUtils.deleteObject(EndpointPath.ROUTE_PATH_REMOVE, routePath);
     };
 
     public static fetchRoutePathsUsingLink = async (

@@ -28,7 +28,8 @@ const isDateWithinTimeSpan = ({
     timeSpanEnd: Date;
 }) => {
     return (
-        Moment(timeSpanStart).isBefore(Moment(date)) && Moment(timeSpanEnd).isAfter(Moment(date))
+        Moment(timeSpanStart).isSameOrBefore(Moment(date)) &&
+        Moment(timeSpanEnd).isSameOrAfter(Moment(date))
     );
 };
 

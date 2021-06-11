@@ -17,9 +17,8 @@ enum SyncModels {
     LINE = 'line',
     LINE_HEADER = 'lineHeader',
     ROUTE = 'route',
-    NODE_AND_LINK = 'nodeAndLink',
-    STOP_AREA = 'stopArea',
-    ROUTE_PATH = 'routePath',
+    NODE_LINK_ROUTE_PATH = 'nodeLinkRoutePath',
+    STOP_AREA_HASTUS = 'stopAreaHastus',
 }
 
 const SyncView = inject('alertStore')(
@@ -36,6 +35,8 @@ const SyncView = inject('alertStore')(
                     if (!response.isDbSyncing) {
                         clearInterval(newIntervalIdRef.current);
                         setIsSyncRunning(false);
+                        // Refresh the page once sync is complete
+                        location.reload();
                     }
                 }, 2000);
             }
@@ -66,22 +67,26 @@ const SyncView = inject('alertStore')(
         return (
             <>
                 <div
+                    onClick={() => setIsSyncViewVisible(true)}
                     className={s.openSyncViewButton}
                     title={`Avaa uusi ikkuna uusimpien tietojen hakuun Joresta`}
                 >
-                    <IoIosArrowDown className={s.icon} onClick={() => setIsSyncViewVisible(true)} />
+                    Päivitä
+                    <IoIosArrowDown className={s.icon} />
                 </div>
                 <div>
                     {isSyncViewVisible && (
                         <ModalContainer>
                             <div className={s.syncViewContainer}>
-                                <div>Hae uusimmat (alle 24h sisään päivitetyt) tiedot Joresta</div>
+                                <div>
+                                    Hae alle 24h sisään päivitetyt tiedot Joresta. Sivu ladataan
+                                    automaattisesti uudestaan haun jälkeen.
+                                </div>
                                 {isSyncRunning ? (
                                     <>
                                         <div className={s.loaderContainer}>
                                             <div className={s.loadingText}>
-                                                Tietojen haku käynnissä. Voit halutessasi sulkea
-                                                tämän ikkunan, haku jatkuu taustalla.
+                                                Tietoja päivitetään...
                                             </div>
                                             <Loader hasNoMargin={true} />
                                         </div>
@@ -112,28 +117,22 @@ const SyncView = inject('alertStore')(
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Pysäkit, risteykset, linkit'
+                                            content='Pysäkit, risteykset, linkit, reitinsuunnat'
                                             checked={selectedModels.includes(
-                                                SyncModels.NODE_AND_LINK
+                                                SyncModels.NODE_LINK_ROUTE_PATH
                                             )}
                                             onClick={() =>
-                                                toggleSelectedModel(SyncModels.NODE_AND_LINK)
+                                                toggleSelectedModel(SyncModels.NODE_LINK_ROUTE_PATH)
                                             }
                                         />
                                         <Checkbox
                                             className={s.checkbox}
-                                            content='Pysäkkialueet'
-                                            checked={selectedModels.includes(SyncModels.STOP_AREA)}
+                                            content='Pysäkkialueet ja hastukset'
+                                            checked={selectedModels.includes(
+                                                SyncModels.STOP_AREA_HASTUS
+                                            )}
                                             onClick={() =>
-                                                toggleSelectedModel(SyncModels.STOP_AREA)
-                                            }
-                                        />
-                                        <Checkbox
-                                            className={s.checkbox}
-                                            content='Reitinsuunnat'
-                                            checked={selectedModels.includes(SyncModels.ROUTE_PATH)}
-                                            onClick={() =>
-                                                toggleSelectedModel(SyncModels.ROUTE_PATH)
+                                                toggleSelectedModel(SyncModels.STOP_AREA_HASTUS)
                                             }
                                         />
                                     </div>
@@ -141,6 +140,7 @@ const SyncView = inject('alertStore')(
                                 <div className={s.syncButtonContainer}>
                                     <Button
                                         isWide={true}
+                                        disabled={isSyncRunning}
                                         onClick={() => setIsSyncViewVisible(false)}
                                     >
                                         Sulje

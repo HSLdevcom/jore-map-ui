@@ -4,24 +4,26 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { Marker as LeafletMarker } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
-import { INodeMapHighlight, ISearchNode } from '~/models/INode';
-import { IPopupProps, PopupStore } from '~/stores/popupStore';
+import { ISearchNode } from '~/models/INode';
+import { IPopupProps, PopupStore, PopupType } from '~/stores/popupStore';
 import NodeHighlightColor from '~/types/NodeHighlightColor';
 import LeafletUtils from '~/utils/leafletUtils';
-import { ISelectNetworkEntityPopupData } from '../popups/SelectNetworkEntityPopup';
 import * as s from './clusterNodeMarker.scss';
+
+type IconSize = 'large' | 'small';
 
 interface IClusterNodeMarkerProps {
     coordinates: L.LatLng;
     nodes: ISearchNode[];
-    onLeftClickMarkerItem: Function;
-    onRightClickMarkerItem: Function;
+    popupType: PopupType;
+    popupData: any; // Depends on which popupType is given
+    iconSize?: IconSize;
     onContextMenu?: Function;
     popupStore?: PopupStore;
 }
 
 const ClusterNodeMarker = inject('popupStore')(
-    observer((props: IClusterNodeMarkerProps) => {
+    observer(({ iconSize = 'small', ...props }: IClusterNodeMarkerProps) => {
         const getTransitTypeClassName = () => {
             let transitTypes: TransitType[] = [];
             props.nodes.forEach((node) => (transitTypes = transitTypes.concat(node.transitTypes)));
@@ -44,9 +46,17 @@ const ClusterNodeMarker = inject('popupStore')(
             return s.unusedStop;
         };
         const renderNodeMarkerIcon = () => {
-            const iconWidth = 20;
+            const iconWidth = iconSize === 'small' ? 20 : 24;
+            const markerHeight = iconSize === 'small' ? s.markerHeightSmall : s.markerHeightLarge;
             return LeafletUtils.createDivIcon({
-                html: <div className={s.clusterNodeMarkerContainer}>{props.nodes.length}</div>,
+                html: (
+                    <div
+                        className={s.clusterNodeMarkerContainer}
+                        style={{ fontSize: markerHeight, width: markerHeight }}
+                    >
+                        {props.nodes.length}
+                    </div>
+                ),
                 options: {
                     iconWidth,
                     classNames: [s.node, s.clusterNodeMarker, getTransitTypeClassName()],
@@ -57,13 +67,9 @@ const ClusterNodeMarker = inject('popupStore')(
         };
 
         const onMarkerClick = (e: L.LeafletEvent) => {
-            const popupData: ISelectNetworkEntityPopupData = {
-                nodes: props.nodes as INodeMapHighlight[],
-                links: [],
-            };
             const popup: IPopupProps = {
-                type: 'selectNetworkEntityPopup',
-                data: popupData,
+                type: props.popupType,
+                data: props.popupData,
                 coordinates: props.coordinates,
                 isCloseButtonVisible: true,
                 isAutoCloseOn: false,
