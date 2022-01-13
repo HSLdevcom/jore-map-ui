@@ -89,7 +89,7 @@ const RoutePathListNode = inject(
                 const shortId = NodeUtils.getShortId(node);
                 const subTopic = node.type === NodeType.STOP ? stopName : nodeTypeName;
                 const isLastNode = props.isLastNode;
-                const isNodeDisabled = routePathLink.startNodeType === StartNodeType.DISABLED;
+                const isNodeDisabled = routePathLink.startNodeType === StartNodeType.DISABLED && !isLastNode;
                 const isStop = node.type === NodeType.STOP;
                 return (
                     <div
