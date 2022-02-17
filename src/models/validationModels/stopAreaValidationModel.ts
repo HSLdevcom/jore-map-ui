@@ -1,6 +1,6 @@
 import { IStopArea } from '..';
 
-const nameRule = 'required|min:1|max:16|string';
+const nameRule = 'required|min:1|max:20|string';
 
 type IStopAreaValidationModel = { [key in keyof IStopArea]: string };
 
