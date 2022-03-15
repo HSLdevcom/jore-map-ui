@@ -163,7 +163,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <TileLayer
                         url={
                             this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
-                                ? 'https://digitransit-prod-cdn-origin.azureedge.net/map/v1/hsl-map/{z}/{x}/{y}.png'
+                                ? 'https://cdn.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}.png'
                                 : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
                         }
                         attribution={
@@ -172,7 +172,7 @@ class LeafletMap extends React.Component<IMapProps> {
                                 <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>
                                 Imagery © <a href="http://mapbox.com">Mapbox</a>
                                 />`
-                                : `© Espoon, Helsingin ja Vantaan kauupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY`
+                                : `© Espoon, Helsingin ja Vantaan kaupungit, Kirkkonummen ja Nurmijärven kunnat sekä HSL ja HSY`
                         }
                         baseLayer={true}
                         maxZoom={19}
