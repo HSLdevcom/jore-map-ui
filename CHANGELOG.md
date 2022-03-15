@@ -1,3 +1,15 @@
+## 1.4.0 (2022-02-17)
+
+* StopArea name max length is now 20 ([1424515](https://github.com/HSLdevcom/jore-map-ui/commit/1424515))
+
+
+
+## 1.3.0 (2022-01-12)
+
+* Last rpLinkNode can never be shown as disabled ([e405e28](https://github.com/HSLdevcom/jore-map-ui/commit/e405e28))
+
+
+
 ## 1.2.0 (2021-06-11)
 
 * 1822 sort by start date and end date (#1878) ([184fe8f](https://github.com/HSLdevcom/jore-map-ui/commit/184fe8f)), closes [#1878](https://github.com/HSLdevcom/jore-map-ui/issues/1878)
