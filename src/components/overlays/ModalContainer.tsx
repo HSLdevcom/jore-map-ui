@@ -16,7 +16,9 @@ const ModalContainer = observer((props: IModalProps) => {
 
     return (
         <div className={s.modalContainer} onClick={onExteriorDivClick} data-cy='modalContainer'>
-            <div className={s.wrapper}>{props.children}</div>
+            <div className={s.wrapper}>
+                <div className={s.modalInnerWrapper}>{props.children}</div>
+            </div>
         </div>
     );
 });

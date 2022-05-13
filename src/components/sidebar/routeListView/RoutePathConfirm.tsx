@@ -16,7 +16,7 @@ interface IRoutePathConfirmProps {
 const RoutePathConfirm = inject()(
     observer((props: IRoutePathConfirmProps) => {
         return (
-            <div>
+            <div className={s.routePathConfirm}>
                 <SavePrompt savePromptSections={props.savePromptSections} />
                 <div className={s.routeActiveSchedulesWrapper}>
                     <RouteActiveSchedules
