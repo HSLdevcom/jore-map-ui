@@ -128,6 +128,7 @@ class RouteActiveSchedules extends React.Component<IRouteActiveSchedulesProps> {
             return isCurrentDateWithinTimeSpan(schedule.startDate, schedule.endDate);
         });
         let currentSchedule: ISchedule | null = null;
+
         const futureSchedules: ISchedule[] = _.cloneDeep(activeSchedules);
         if (currentScheduleIndex >= 0) {
             currentSchedule = activeSchedules[currentScheduleIndex];

@@ -39,8 +39,6 @@ $savePromptContentPadding: 5px 15px 5px 15px;
     }
 
     .savePromptContent {
-        max-height: 450px;
-        overflow-y: auto;
         padding: $savePromptContentPadding;
         font-size: $smallFontSize;
 
