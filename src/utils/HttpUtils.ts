@@ -5,6 +5,7 @@ import EndpointPath from '~/enums/endpointPath';
 import FetchStatusCode from '~/enums/fetchStatusCode';
 import ApolloClient from '~/helpers/ApolloClient';
 import IError from '~/models/IError';
+import { trimObjectWhiteSpaces } from '~/utils/trimWhiteSpaces';
 import AlertStore from '~/stores/alertStore';
 import LoginStore from '~/stores/loginStore';
 
@@ -83,7 +84,7 @@ class HttpUtils {
         object: any,
         credentials?: credentials
     ) => {
-        const formattedObject = _format(object);
+        const formattedObject = trimObjectWhiteSpaces(_format(object));
         let error: IError | null = null;
 
         try {
