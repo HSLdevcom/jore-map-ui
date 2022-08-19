@@ -84,7 +84,7 @@ class HttpUtils {
         object: any,
         credentials?: credentials
     ) => {
-        const formattedObject = _format(trimObjectWhiteSpaces(object));
+        const formattedObject = trimObjectWhiteSpaces(_format(object));
         let error: IError | null = null;
 
         try {
