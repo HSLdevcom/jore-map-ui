@@ -13,6 +13,7 @@ import IRoutePathLink, { IRoutePathLinkSaveModel } from '~/models/IRoutePathLink
 import IViaShieldName from '~/models/IViaShieldName';
 import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
 import HttpUtils from '~/utils/HttpUtils';
+import { trimObjectWhiteSpaces } from '~/utils/trimWhiteSpaces';
 import RoutePathFactory from '../factories/routePathFactory';
 import GraphqlQueries from './graphqlQueries';
 import ViaNameService from './viaNameService';
@@ -297,10 +298,10 @@ const _createRoutePathSaveModel = (
     };
     delete routePathToSave['routePathLinks'];
 
-    return {
+    return trimObjectWhiteSpaces({
         routePathLinkSaveModel,
         routePath: routePathToSave,
-    };
+    });
 };
 
 const _findRoutePathLink = (
