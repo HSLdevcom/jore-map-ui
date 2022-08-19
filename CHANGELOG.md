@@ -1,3 +1,14 @@
+## <small>1.4.1 (2022-08-19)</small>
+
+* Digitransit url changed ([fa84f5c](https://github.com/HSLdevcom/jore-map-ui/commit/fa84f5c))
+* Fixed scrolling issue ([1794a62](https://github.com/HSLdevcom/jore-map-ui/commit/1794a62))
+* Fixed siuntio shortIdOption ([ac3843d](https://github.com/HSLdevcom/jore-map-ui/commit/ac3843d))
+* Support for Siuntio (So) and Askola (As) shortIds ([5f1d1a8](https://github.com/HSLdevcom/jore-map-ui/commit/5f1d1a8))
+* Trim routePath whitespaces ([1e7f518](https://github.com/HSLdevcom/jore-map-ui/commit/1e7f518))
+* trim whitespaces from each request object ([a808996](https://github.com/HSLdevcom/jore-map-ui/commit/a808996))
+
+
+
 ## 1.4.0 (2022-02-17)
 
 * StopArea name max length is now 20 ([1424515](https://github.com/HSLdevcom/jore-map-ui/commit/1424515))
