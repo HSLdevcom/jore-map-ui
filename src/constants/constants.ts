@@ -41,6 +41,7 @@ const commonConstants = {
     HSL_ID_URL,
     HSL_ID_CLIENT_ID,
     ENVIRONMENT: environment,
+    DIGITRANSITAPIKEY: process.env.REACT_APP_DIGITRANSITAPIKEY,
     BUILD_DATE: process.env.BUILD_DATE,
     AFTER_LOGIN_URL: `${APP_URL}/afterLogin`,
     DECIMALS_IN_GEOMETRIES: 6, // Max value 6 currenlty at joredb columns: numeric(8,6)

@@ -11,6 +11,7 @@ import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import AddressSearch from './AddressSearch';
+import constants from '~/constants/constants';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
@@ -149,6 +150,7 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
+        const digitransitApiKey = constants.DIGITRANSITAPIKEY
         const isMapInteractionRestricted = this.props.mapStore!.isMapInteractionRestricted;
         return (
             <div className={s.mapView} data-cy='mapView'>
@@ -161,9 +163,9 @@ class LeafletMap extends React.Component<IMapProps> {
                     className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
                     <TileLayer
-                        url={
+                        url={ // dev-api.digitransit.fi, ?digitransit-subscription-key
                             this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
-                                ? 'https://cdn.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}.png'
+                                ? `https://dev-api.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}.png?digitransit-subscription-key=${digitransitApiKey}`
                                 : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
                         }
                         attribution={
