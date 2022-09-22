@@ -163,7 +163,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     className={isMapInteractionRestricted ? s.disableInteraction : ''}
                 >
                     <TileLayer
-                        url={ // dev-api.digitransit.fi, ?digitransit-subscription-key
+                        url={
                             this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
                                 ? `https://dev-api.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}.png?digitransit-subscription-key=${digitransitApiKey}`
                                 : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
