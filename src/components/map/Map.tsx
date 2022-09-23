@@ -150,7 +150,6 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 
     render() {
-        const digitransitApiKey = constants.DIGITRANSITAPIKEY
         const isMapInteractionRestricted = this.props.mapStore!.isMapInteractionRestricted;
         return (
             <div className={s.mapView} data-cy='mapView'>
@@ -165,7 +164,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <TileLayer
                         url={
                             this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
-                                ? `https://dev-api.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}.png?digitransit-subscription-key=${digitransitApiKey}`
+                                ? `${constants.DIGITRANSIT_MAP_URL}/map/v2/hsl-map/{z}/{x}/{y}.png?digitransit-subscription-key=${constants.DIGITRANSIT_API_KEY}`
                                 : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
                         }
                         attribution={

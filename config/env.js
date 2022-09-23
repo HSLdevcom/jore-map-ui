@@ -80,7 +80,7 @@ function getClientEnvironment(publicUrl) {
                 ENVIRONMENT: process.env.ENVIRONMENT,
                 DOMAIN_NAME: process.env.DOMAIN_NAME,
                 BUILD_DATE: process.env.BUILD_DATE,
-                REACT_APP_DIGITRANSITAPIKEY: process.env.REACT_APP_DIGITRANSITAPIKEY
+                REACT_APP_DIGITRANSIT_API_KEY: process.env.REACT_APP_DIGITRANSIT_API_KEY
             }
         );
     // Stringify all values so we can feed into Webpack DefinePlugin

@@ -302,7 +302,7 @@ module.exports = {
             'process.env.ENVIRONMENT': JSON.stringify(process.env.ENVIRONMENT)
         }),
         new webpack.DefinePlugin({
-            'process.env.REACT_APP_DIGITRANSITAPIKEY': JSON.stringify(process.env.REACT_APP_DIGITRANSITAPIKEY)
+            'process.env.REACT_APP_DIGITRANSIT_API_KEY': JSON.stringify(process.env.REACT_APP_DIGITRANSIT_API_KEY)
         }),
         new webpack.DefinePlugin({
             'process.env.DOMAIN_NAME': JSON.stringify(process.env.DOMAIN_NAME)
