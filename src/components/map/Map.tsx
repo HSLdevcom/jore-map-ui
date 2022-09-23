@@ -11,6 +11,7 @@ import { MapBaseLayer, MapStore } from '~/stores/mapStore';
 import { NodeStore } from '~/stores/nodeStore';
 import { RouteListStore } from '~/stores/routeListStore';
 import AddressSearch from './AddressSearch';
+import constants from '~/constants/constants';
 import HighlightEntityLayer from './layers/HighlightEntityLayer';
 import NetworkLayers from './layers/NetworkLayers';
 import PopupLayer from './layers/PopupLayer';
@@ -163,7 +164,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <TileLayer
                         url={
                             this.props.mapStore?.visibleMapBaseLayer === MapBaseLayer.DIGITRANSIT
-                                ? 'https://cdn.digitransit.fi/map/v2/hsl-map/{z}/{x}/{y}.png'
+                                ? `${constants.DIGITRANSIT_MAP_URL}/map/v2/hsl-map/{z}/{x}/{y}.png?digitransit-subscription-key=${constants.DIGITRANSIT_API_KEY}`
                                 : 'https://ortophotos.blob.core.windows.net/hsy-map/hsy_tiles2/{z}/{x}/{y}.jpg'
                         }
                         attribution={
