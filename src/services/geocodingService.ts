@@ -38,7 +38,7 @@ class GeocodingService {
         coordinates: L.LatLng;
         searchResultCount: number;
     }): Promise<IGeoJSONFeature[] | null> => {
-        const requestUrl = `${constants.DIGITRANSIT_REVERSE_GEOCODING_URL}?size=${searchResultCount}&point.lat=${coordinates.lat}&point.lon=${coordinates.lng}&zones=1`;
+        const requestUrl = `${constants.DIGITRANSIT_REVERSE_GEOCODING_URL}?digitransit-subscription-key=${constants.DIGITRANSIT_API_KEY}&size=${searchResultCount}&point.lat=${coordinates.lat}&point.lon=${coordinates.lng}&zones=1`;
 
         const response = await HttpUtils.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
         return response.features;
@@ -49,10 +49,11 @@ class GeocodingService {
         coordinates: L.LatLng
     ): Promise<IGeoJSONFeature[]> => {
         const GEOCODING_URL = constants.GEOCODING_URL;
+        const DIGITRANSIT_API_KEY = constants.DIGITRANSIT_API_KEY;
         const SEARCH_RESULT_COUNT = constants.ADDRESS_SEARCH_RESULT_COUNT;
         const lat = coordinates.lat;
         const lng = coordinates.lng;
-        const requestUrl = `${GEOCODING_URL}?text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`;
+        const requestUrl = `${GEOCODING_URL}?digitransit-subscription-key=${DIGITRANSIT_API_KEY}&text=${value}&size=${SEARCH_RESULT_COUNT}&focus.point.lat=${lat}&focus.point.lon=${lng}`;
 
         const response = await HttpUtils.sendRequest(RequestMethod.GET, encodeURI(requestUrl), {});
         return response.features;
