@@ -14,8 +14,8 @@ switch (environment) {
         APP_URL = 'http://localhost:3000';
         HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
         HSL_ID_CLIENT_ID = '6549375356227079';
-        DIGITRANSIT_CACHED_URL_PREFIX = 'api-dev';
-        DIGITRANSIT_NON_CACHED_URL_PREFIX = 'api-dev';
+        DIGITRANSIT_CACHED_URL_PREFIX = 'dev-api';
+        DIGITRANSIT_NON_CACHED_URL_PREFIX = 'dev-api';
         break;
     }
     case Environment.DEV: {
