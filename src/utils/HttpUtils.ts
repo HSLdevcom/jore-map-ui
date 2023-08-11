@@ -95,7 +95,7 @@ class HttpUtils {
                 credentials: credentials ? credentials : undefined,
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/json',
+                    ...(method !== RequestMethod.GET && {'Content-Type': 'application/json'}),
                 },
             });
 
