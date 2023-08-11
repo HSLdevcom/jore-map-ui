@@ -1,3 +1,16 @@
+## <small>1.4.2 (2023-08-11)</small>
+
+* Fix fonts url ([6e41731](https://github.com/HSLdevcom/jore-map-ui/commit/6e41731))
+* Remove Content-Type completely instead of empty string on GET ([7a34617](https://github.com/HSLdevcom/jore-map-ui/commit/7a34617))
+* Remove content-type header from get requests ([0a2d09a](https://github.com/HSLdevcom/jore-map-ui/commit/0a2d09a))
+* Remove deprecated test ([2981cff](https://github.com/HSLdevcom/jore-map-ui/commit/2981cff))
+* Trim whitespaces fix ([adcc924](https://github.com/HSLdevcom/jore-map-ui/commit/adcc924))
+* Updated digitransit dev url ([03d7b65](https://github.com/HSLdevcom/jore-map-ui/commit/03d7b65))
+* Updated digitransit dev url (#1997) ([bccdc7b](https://github.com/HSLdevcom/jore-map-ui/commit/bccdc7b)), closes [#1997](https://github.com/HSLdevcom/jore-map-ui/issues/1997)
+* Using api key with digitransit map (#1994) ([1d9b119](https://github.com/HSLdevcom/jore-map-ui/commit/1d9b119)), closes [#1994](https://github.com/HSLdevcom/jore-map-ui/issues/1994)
+
+
+
 ## <small>1.4.1 (2022-08-19)</small>
 
 * Digitransit url changed ([fa84f5c](https://github.com/HSLdevcom/jore-map-ui/commit/fa84f5c))
