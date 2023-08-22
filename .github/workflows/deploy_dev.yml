@@ -20,7 +20,7 @@ jobs:
         with:
           ref: develop
       - name: Build UI and publish Docker image
-        uses: elgohr/Publish-Docker-Github-Action@master
+        uses: elgohr/Publish-Docker-Github-Action@v5
         with:
           name: hsldevcom/jore-map-ui
           username: ${{ secrets.DOCKERHUB_USERNAME }}
