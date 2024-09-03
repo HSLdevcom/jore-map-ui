@@ -72,14 +72,14 @@ const commonConstants = {
 const developmentConstants = {
     ...commonConstants,
     API_URL: 'http://localhost:3040',
-    GEOSERVER_URL: 'http://localhost:8080/geoserver',
+    TILESERVER_URL: 'http://localhost:7800/tiles',
     FADE_ALERT_TIMEOUT: 500, // milliseconds
 };
 
 const productionConstants = {
     ...commonConstants,
     API_URL: `${APP_URL}/api`,
-    GEOSERVER_URL: `${APP_URL}/geoserver`,
+    TILESERVER_URL: `${APP_URL}/tiles`,
     FADE_ALERT_TIMEOUT: 2500, // milliseconds
 };
 

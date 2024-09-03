@@ -18,10 +18,9 @@ import VectorGridLayer from './VectorGridLayer';
 import * as s from './networkLayers.scss';
 import { INodePopupData } from './popups/NodePopup';
 
-enum GeoserverLayer {
-    Node = 'solmu',
-    Link = 'linkki',
-    Point = 'piste',
+enum TileserverLayer {
+    Link = 'linkki_view',
+    Point = 'piste_view',
 }
 
 interface INetworkLayersProps {
@@ -40,9 +39,9 @@ interface ILinkProperties {
     lnkloppusolmu: string;
 }
 
-function getGeoServerUrl(layerName: string) {
-    const GEOSERVER_URL = constants.GEOSERVER_URL;
-    return `${GEOSERVER_URL}/gwc/service/tms/1.0.0/joremapui%3A${layerName}@jore_EPSG%3A900913@pbf/{z}/{x}/{y}.pbf`;
+function getTileserverUrl(layerName: string) {
+    const TILESERVER_URL = constants.TILESERVER_URL;
+    return `${TILESERVER_URL}/jore.${layerName}/{z}/{x}/{y}.pbf`;
 }
 
 @inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
@@ -52,7 +51,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private getLinkStyle = () => {
         return {
-            // Layer name 'linkki' is directly mirrored from Jore through geoserver
+            // Layer name 'linkki' is directly mirrored from Jore through tileserver
             linkki: (properties: ILinkProperties) => {
                 const {
                     lnkalkusolmu: startNodeId,
@@ -84,7 +83,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
 
     private getLinkPointStyle = () => {
         return {
-            // Layer name 'piste' is directly mirrored from Jore through geoserver
+            // Layer name 'piste' is directly mirrored from Jore through tileserver
             piste: (properties: ILinkProperties) => {
                 const {
                     lnkalkusolmu: startNodeId,
@@ -144,10 +143,10 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     };
 
     /**
-     * Sets a reaction object for GeoserverLayer (replaces existing one) so
+     * Sets a reaction object for TileserverLayer (replaces existing one) so
      * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
      */
-    private setVectorgridLayerReaction = (type: GeoserverLayer) => (
+    private setVectorgridLayerReaction = (type: TileserverLayer) => (
         reaction: IReactionDisposer
     ) => {
         if (this.reactionDisposer[type]) this.reactionDisposer[type]();
@@ -165,11 +164,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
-                        key={GeoserverLayer.Link}
+                        key={TileserverLayer.Link}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
-                            GeoserverLayer.Link
+                            TileserverLayer.Link
                         )}
-                        url={getGeoServerUrl(GeoserverLayer.Link)}
+                        url={getTileserverUrl(TileserverLayer.Link)}
                         interactive={true}
                         vectorTileLayerStyles={this.getLinkStyle()}
                     />
@@ -178,11 +177,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
                     <VectorGridLayer
                         selectedTransitTypes={selectedTransitTypes}
                         selectedDate={selectedDate}
-                        key={GeoserverLayer.Point}
+                        key={TileserverLayer.Point}
                         setVectorgridLayerReaction={this.setVectorgridLayerReaction(
-                            GeoserverLayer.Point
+                            TileserverLayer.Point
                         )}
-                        url={getGeoServerUrl(GeoserverLayer.Point)}
+                        url={getTileserverUrl(TileserverLayer.Point)}
                         interactive={false}
                         vectorTileLayerStyles={this.getLinkPointStyle()}
                     />
