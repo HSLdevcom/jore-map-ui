@@ -9,14 +9,10 @@ jobs:
   deploy-dev:
     runs-on: ubuntu-latest
     steps:
-      - name: "Set time zone to Europe/Helsinki"
-        uses: zcong1993/setup-timezone@master
-        with:
-          timezone: "Europe/Helsinki"
       - name: Set current date to be accessible later with steps.date.outputs.date
         id: date
-        run: echo "::set-output name=date::$(date +'%d.%m.%Y_%H:%M')"
-      - uses: actions/checkout@v2
+        run: echo "::set-output name=date::$(TZ='Europe/Helsinki' date +'%d.%m.%Y_%H:%M')"
+      - uses: actions/checkout@v4
         with:
           ref: develop
       - name: Build UI and publish Docker image
@@ -25,14 +21,7 @@ jobs:
           name: hsldevcom/jore-map-ui
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-          buildargs: APP_ENVIRONMENT=dev, APP_REACT_APP_DIGITRANSIT_API_KEY=${{ secrets.JOREMAPUI_DIGITRANSITAPIKEY_PROD }} APP_DOMAIN_NAME=${{ secrets.APP_DOMAIN_NAME }}, APP_BUILD_DATE=${{ steps.date.outputs.date }}
+          buildargs: APP_ENVIRONMENT=dev, APP_REACT_APP_DIGITRANSIT_API_KEY=${{ secrets.JOREMAPUI_DIGITRANSITAPIKEY_PROD }} APP_DOMAIN=${{ secrets.APP_DOMAIN_DEV }}, APP_BUILD_DATE=${{ steps.date.outputs.date }}
           tags: develop
-      - name: Notify of deployment
-        uses: 8398a7/action-slack@v3
-        if: always()
-        with:
-          status: ${{ job.status }}
-          text: Jore-map DEV deployment status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
