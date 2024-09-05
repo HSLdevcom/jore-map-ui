@@ -19,8 +19,8 @@ import * as s from './networkLayers.scss';
 import { INodePopupData } from './popups/NodePopup';
 
 enum TileserverLayer {
-    Link = 'linkki_view',
-    Point = 'piste_view',
+    Link = 'linkki',
+    Point = 'piste',
 }
 
 interface INetworkLayersProps {
