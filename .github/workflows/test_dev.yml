@@ -21,7 +21,7 @@ jobs:
         #  record: true
         env:
           CYPRESS_E2E: true # Needed to tell babel.config to not load cypress breaking presets
-          CYPRESS_BASE_URL: https://dev.jore-map.hsl.fi
+          CYPRESS_BASE_URL: https:///dev.jore-map.hsldev.com
           CYPRESS_HSLID_CLIENT_ID: ${{ secrets.CYPRESS_HSLID_CLIENT_ID }}
           CYPRESS_HSLID_CLIENT_SECRET: ${{ secrets.CYPRESS_HSLID_CLIENT_SECRET }}
           CYPRESS_HSLID_WRITE_ACCESS_USERNAME: ${{ secrets.CYPRESS_HSLID_WRITE_ACCESS_USERNAME }}
