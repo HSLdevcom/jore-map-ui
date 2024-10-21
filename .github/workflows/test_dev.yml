@@ -30,13 +30,13 @@ jobs:
           CYPRESS_HSLID_READ_ACCESS_PASSWORD: ${{ secrets.CYPRESS_HSLID_READ_ACCESS_PASSWORD }}
           # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }} # Only prod updates to record into Cypress.io
       - name: Upload screenshot artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress/screenshots
       - name: Upload video artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-videos
