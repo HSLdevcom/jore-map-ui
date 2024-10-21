@@ -50,8 +50,6 @@ class VectorGridLayer extends GridLayer<IVectorGridLayerProps> {
 
     createLeafletElement(props: IVectorGridLayerProps): any {
         const { url, ...options } = props;
-        options.tms = true;
-
         return L.vectorGrid.protobuf(url, options);
     }
 

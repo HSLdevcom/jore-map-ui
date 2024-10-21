@@ -305,7 +305,7 @@ module.exports = {
             'process.env.REACT_APP_DIGITRANSIT_API_KEY': JSON.stringify(process.env.REACT_APP_DIGITRANSIT_API_KEY)
         }),
         new webpack.DefinePlugin({
-            'process.env.DOMAIN_NAME': JSON.stringify(process.env.DOMAIN_NAME)
+            'process.env.APP_DOMAIN': JSON.stringify(process.env.APP_DOMAIN)
         }),
         new webpack.DefinePlugin({
             'process.env.BUILD_DATE': JSON.stringify(process.env.BUILD_DATE)

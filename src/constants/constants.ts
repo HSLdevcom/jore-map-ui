@@ -19,7 +19,7 @@ switch (environment) {
         break;
     }
     case Environment.DEV: {
-        APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+        APP_URL = `https://${process.env.APP_DOMAIN}`;
         HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
         HSL_ID_CLIENT_ID = '6549375356227079';
         DIGITRANSIT_CACHED_URL_PREFIX = 'cdn';
@@ -27,7 +27,7 @@ switch (environment) {
         break;
     }
     case Environment.STAGE: {
-        APP_URL = `https://${process.env.ENVIRONMENT}.${process.env.DOMAIN_NAME}`;
+        APP_URL = `https://${process.env.APP_DOMAIN}`;
         HSL_ID_URL = 'https://hslid-uat.cinfra.fi';
         HSL_ID_CLIENT_ID = '6549375356227079';
         DIGITRANSIT_CACHED_URL_PREFIX = 'cdn';
@@ -35,7 +35,7 @@ switch (environment) {
         break;
     }
     case Environment.PROD: {
-        APP_URL = `https://${process.env.DOMAIN_NAME}`;
+        APP_URL = `https://${process.env.APP_DOMAIN}`;
         HSL_ID_URL = 'https://id.hsl.fi';
         HSL_ID_CLIENT_ID = '7799731418699567';
         DIGITRANSIT_CACHED_URL_PREFIX = 'cdn';
@@ -72,14 +72,14 @@ const commonConstants = {
 const developmentConstants = {
     ...commonConstants,
     API_URL: 'http://localhost:3040',
-    GEOSERVER_URL: 'http://localhost:8080/geoserver',
+    TILESERVER_URL: 'http://localhost:7800/tiles',
     FADE_ALERT_TIMEOUT: 500, // milliseconds
 };
 
 const productionConstants = {
     ...commonConstants,
     API_URL: `${APP_URL}/api`,
-    GEOSERVER_URL: `${APP_URL}/geoserver`,
+    TILESERVER_URL: `${APP_URL}/tiles`,
     FADE_ALERT_TIMEOUT: 2500, // milliseconds
 };
 

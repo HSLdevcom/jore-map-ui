@@ -78,7 +78,7 @@ function getClientEnvironment(publicUrl) {
                 // images into the `src` and `import` them in code to get their paths.
                 PUBLIC_URL: publicUrl,
                 ENVIRONMENT: process.env.ENVIRONMENT,
-                DOMAIN_NAME: process.env.DOMAIN_NAME,
+                APP_DOMAIN: process.env.APP_DOMAIN,
                 BUILD_DATE: process.env.BUILD_DATE,
                 REACT_APP_DIGITRANSIT_API_KEY: process.env.REACT_APP_DIGITRANSIT_API_KEY
             }
