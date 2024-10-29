@@ -23,6 +23,8 @@ enum TileserverLayer {
     Point = 'piste_view',
 }
 
+const SCHEMA = 'jore';
+
 interface INetworkLayersProps {
     map: any;
     mapStore?: MapStore;
@@ -41,7 +43,7 @@ interface ILinkProperties {
 
 function getTileserverUrl(layerName: string) {
     const TILESERVER_URL = constants.TILESERVER_URL;
-    return `${TILESERVER_URL}/jore.${layerName}/{z}/{x}/{y}.pbf`;
+    return `${TILESERVER_URL}/${SCHEMA}.${layerName}/{z}/{x}/{y}.pbf`;
 }
 
 @inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
@@ -52,7 +54,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through tileserver
-            linkki: (properties: ILinkProperties) => {
+            [`${SCHEMA}.${TileserverLayer.Link}`]: (properties: ILinkProperties) => {
                 const {
                     lnkalkusolmu: startNodeId,
                     lnkloppusolmu: endNodeId,
@@ -84,7 +86,7 @@ class NetworkLayers extends Component<INetworkLayersProps> {
     private getLinkPointStyle = () => {
         return {
             // Layer name 'piste' is directly mirrored from Jore through tileserver
-            piste: (properties: ILinkProperties) => {
+            [`${SCHEMA}.${TileserverLayer.Point}`]: (properties: ILinkProperties) => {
                 const {
                     lnkalkusolmu: startNodeId,
                     lnkloppusolmu: endNodeId,
