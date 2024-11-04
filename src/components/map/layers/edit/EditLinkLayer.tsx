@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { withLeaflet, Marker as LeafletMarker } from 'react-leaflet';
 import ToolbarToolType from '~/enums/toolbarToolType';
 import EventListener, { INodeClickParams } from '~/helpers/EventListener';
-import { ILink, INode } from '~/models';
+import { INode } from '~/models';
 import { LinkStore } from '~/stores/linkStore';
 import { LoginStore } from '~/stores/loginStore';
 import { MapFilter, MapStore } from '~/stores/mapStore';
@@ -42,20 +42,20 @@ const EditLinkLayer = inject(
     'networkStore'
 )(
     observer((props: IEditLinkLayerProps) => {
-        const [editableLinks, setEditableLinks] = useState<L.Polyline[]>([]);
+        const [selectedLinks, setSelectedLinks] = useState<L.Polyline[]>([]);
         const enableSelectNetworkEntityToolTimeout = useRef<number>();
 
         useEffect(() => {
-            editableLinks.forEach((editableLink) => {
-                editableLink.remove();
+            selectedLinks.forEach((selectedLinks) => {
+                selectedLinks.remove();
             });
-            drawEditableLink();
+            drawSelectedLink();
         }, [props.linkStore!.link?.geometry, props.networkStore!.selectedDate]);
 
         const updateLinkGeometry = useCallback(() => {
-            const latLngs = editableLinks[0].getLatLngs()[0] as L.LatLng[];
+            const latLngs = selectedLinks[0].getLatLngs()[0] as L.LatLng[];
             props.linkStore!.updateLinkGeometry(latLngs);
-        }, [editableLinks]);
+        }, [selectedLinks]);
 
         useEffect(() => {
             const map = props.leaflet.map;
@@ -88,42 +88,36 @@ const EditLinkLayer = inject(
             };
         }, [updateLinkGeometry, props.leaflet.map]);
 
-        const drawEditableLink = () => {
+        const drawSelectedLink = () => {
             const link = props.linkStore!.link;
             const map = props.leaflet.map;
             if (!map || !link || !link.geometry) return;
 
+            const isLinkOld = isNetworkElementOld(link.dateRanges);
+            const selectedLink = L.polyline([_.cloneDeep(link.geometry)], {
+                interactive: false,
+                color: isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR,
+            }).addTo(map);
+
             const isEditable =
                 props.loginStore!.hasWriteAccess && props.linkStore!.isLinkGeometryEditable;
-            drawLinkToMap(link, isEditable);
-        };
 
-        const drawLinkToMap = (link: ILink, isEditable: boolean) => {
-            const map = props.leaflet.map;
-            if (map) {
-                const isLinkOld = isNetworkElementOld(link.dateRanges);
-                const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
-                    interactive: false,
-                    color: isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR,
-                }).addTo(map);
-
-                if (isEditable) {
-                    editableLink.enableEdit();
-                    const latLngs = editableLink.getLatLngs() as L.LatLng[][];
-                    const coords = latLngs[0];
-                    const coordsToDisable = [coords[0], coords[coords.length - 1]];
-                    coordsToDisable.forEach((coordToDisable: any) => {
-                        const vertexMarker = coordToDisable.__vertex;
-                        vertexMarker.dragging.disable();
-                        vertexMarker._events.click = {};
-                        vertexMarker.setOpacity(0);
-                        // Put vertex marker z-index low so that it
-                        // would be below other layers that needs to be clickable
-                        vertexMarker.setZIndexOffset(-1000);
-                    });
-                    setEditableLinks([editableLink]);
-                }
+            if (isEditable) {
+                selectedLink.enableEdit();
+                const latLngs = selectedLink.getLatLngs() as L.LatLng[][];
+                const coords = latLngs[0];
+                const coordsToDisable = [coords[0], coords[coords.length - 1]];
+                coordsToDisable.forEach((coordToDisable: any) => {
+                    const vertexMarker = coordToDisable.__vertex;
+                    vertexMarker.dragging.disable();
+                    vertexMarker._events.click = {};
+                    vertexMarker.setOpacity(0);
+                    // Put vertex marker z-index low so that it
+                    // would be below other layers that needs to be clickable
+                    vertexMarker.setZIndexOffset(-1000);
+                });
             }
+            setSelectedLinks([selectedLink]);
         };
 
         const renderLinkDecorator = () => {
