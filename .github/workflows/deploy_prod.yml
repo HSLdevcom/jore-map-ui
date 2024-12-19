@@ -25,13 +25,3 @@ jobs:
           tags: production
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build UI and publish stage Docker image
-        uses: elgohr/Publish-Docker-Github-Action@v5
-        with:
-          name: hsldevcom/jore-map-ui
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-          buildargs: APP_ENVIRONMENT=stage, APP_REACT_APP_DIGITRANSIT_API_KEY=${{ secrets.JOREMAPUI_DIGITRANSITAPIKEY_PROD }}, APP_DOMAIN=${{ secrets.APP_DOMAIN_STAGE }}, APP_BUILD_DATE=${{ steps.date.outputs.date }}
-          tags: stage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
