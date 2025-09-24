@@ -1,15 +1,15 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 const getLineQuery = () => {
-    return gql`query getLineByLintunnus ($lineId: String!) {
+  return gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
                 ${lineQueryFields}
             }
-        }`;
-};
+        }`
+}
 
 const getLineAndRoutesQuery = () => {
-    return gql`query getLineByLintunnus ($lineId: String!) {
+  return gql`query getLineByLintunnus ($lineId: String!) {
             linjaByLintunnus(lintunnus:$lineId) {
                 ${lineQueryFields}
                 reittisByLintunnus(orderBy: REIVIIMPVM_DESC) {
@@ -18,11 +18,11 @@ const getLineAndRoutesQuery = () => {
                     }
                 }
             }
-        }`;
-};
+        }`
+}
 
 const getAllSearchLinesQuery = () => {
-    return gql`{
+  return gql`{
             allLinjas {
                 nodes {
                     ${searchLineQueryFields}
@@ -33,11 +33,11 @@ const getAllSearchLinesQuery = () => {
                     }
                 }
             }
-        }`;
-};
+        }`
+}
 
 const getRouteQuery = (areRoutePathLinksExcluded: boolean) => {
-    return gql`query getLineDetails($routeId: String!) {
+  return gql`query getLineDetails($routeId: String!) {
             route: reittiByReitunnus(reitunnus: $routeId) {
                 ${routeQueryFields}
                 reitinsuuntasByReitunnus{
@@ -48,236 +48,236 @@ const getRouteQuery = (areRoutePathLinksExcluded: boolean) => {
                     }
                 }
             }
-        }`;
-};
+        }`
+}
 
 const getAllRoutesQuery = () => {
-    return gql`
-        {
-            allReittis {
-                nodes {
-                    reitunnus
-                    lintunnus
-                }
-            }
+  return gql`
+    {
+      allReittis {
+        nodes {
+          reitunnus
+          lintunnus
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getRoutePathQuery = () => {
-    return gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
+  return gql`query getRoutePath($routeId: String!, $startDate: Datetime!, $direction: String!) {
             routePath: reitinsuuntaByReitunnusAndSuuvoimastAndSuusuunta(reitunnus: $routeId, suuvoimast: $startDate, suusuunta: $direction) {
                 ${routePathQueryFields}
                 ${routeForRoutePathQuery}
                 ${routePathLinksForRoutePathQuery}
             }
-        }`;
-};
+        }`
+}
 
 const getFirstStopNameOfRoutePath = () => {
-    return gql`
-        query getFirstStopNameOfRoutePath(
-            $routeId: String!
-            $startDate: Datetime!
-            $direction: String!
-        ) {
-            get_first_stop_name_of_route_path: getFirstStopNameOfRoutePath(
-                routeid: $routeId
-                startdate: $startDate
-                direction: $direction
-            ) {
-                nodes
-            }
-        }
-    `;
-};
+  return gql`
+    query getFirstStopNameOfRoutePath(
+      $routeId: String!
+      $startDate: Datetime!
+      $direction: String!
+    ) {
+      get_first_stop_name_of_route_path: getFirstStopNameOfRoutePath(
+        routeid: $routeId
+        startdate: $startDate
+        direction: $direction
+      ) {
+        nodes
+      }
+    }
+  `
+}
 
 const getLastStopNameOfRoutePath = () => {
-    return gql`
-        query getLastStopNameOfRoutePath(
-            $routeId: String!
-            $startDate: Datetime!
-            $direction: String!
-        ) {
-            get_last_stop_name_of_route_path: getLastStopNameOfRoutePath(
-                routeid: $routeId
-                startdate: $startDate
-                direction: $direction
-            ) {
-                nodes
-            }
-        }
-    `;
-};
+  return gql`
+    query getLastStopNameOfRoutePath(
+      $routeId: String!
+      $startDate: Datetime!
+      $direction: String!
+    ) {
+      get_last_stop_name_of_route_path: getLastStopNameOfRoutePath(
+        routeid: $routeId
+        startdate: $startDate
+        direction: $direction
+      ) {
+        nodes
+      }
+    }
+  `
+}
 
 const getRoutePathLinkQuery = () => {
-    return gql`query getRoutePathLink($routeLinkId: Int!) {
+  return gql`query getRoutePathLink($routeLinkId: Int!) {
             routePathLink: reitinlinkkiByRelid(relid: $routeLinkId) {
                 ${routePathLinkQueryFields}
             }
-        }`;
-};
+        }`
+}
 
 const getRoutePathLinksFromRoutePathSegment = () => {
-    return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String, $routeId: String) {
+  return gql`query getRoutePathLinksFromRoutePathSegment($startNodeId: String, $endNodeId: String, $transitType: String, $routeId: String) {
             get_route_path_links_from_route_path_segment: getRoutePathLinksFromRoutePathSegment(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType, routeid: $routeId) {
                 nodes {
                     ${routePathSegmentQueryFields}
                 }
             }
-        }`;
-};
+        }`
+}
 
 const getRoutesUsingRoutePathSegment = () => {
-    return gql`
-        query getRoutesUsingRoutePathSegment(
-            $startNodeId: String
-            $endNodeId: String
-            $transitType: String
-        ) {
-            get_routes_using_route_path_segment: getRoutesUsingRoutePathSegment(
-                startnodeid: $startNodeId
-                endnodeid: $endNodeId
-                transittype: $transitType
-            ) {
-                nodes {
-                    lintunnus
-                    reitunnus
-                }
-            }
+  return gql`
+    query getRoutesUsingRoutePathSegment(
+      $startNodeId: String
+      $endNodeId: String
+      $transitType: String
+    ) {
+      get_routes_using_route_path_segment: getRoutesUsingRoutePathSegment(
+        startnodeid: $startNodeId
+        endnodeid: $endNodeId
+        transittype: $transitType
+      ) {
+        nodes {
+          lintunnus
+          reitunnus
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getRoutePathsUsingLinkQuery = () => {
-    return gql`query getRoutePathsUsingLink($startNodeId: String, $endNodeId: String, $transitType: String) {
+  return gql`query getRoutePathsUsingLink($startNodeId: String, $endNodeId: String, $transitType: String) {
         get_route_paths_using_link: getRoutePathsUsingLink(startnodeid: $startNodeId, endnodeid: $endNodeId, transittype: $transitType) {
             nodes {
                 ${routePathsWithDisabledInfoQuery}
             }
         }
-    }`;
-};
+    }`
+}
 
 const getRoutePathsUsingNodeQuery = () => {
-    return gql`query getRoutePathsUsingNode($nodeId: String) {
+  return gql`query getRoutePathsUsingNode($nodeId: String) {
         get_route_paths_using_node: getRoutePathsUsingNode(nodeid: $nodeId) {
             nodes {
                 ${routePathsWithDisabledInfoQuery}
             }
         }
-    }`;
-};
+    }`
+}
 
 const getLinksByStartNodeQuery = () => {
-    return gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
+  return gql`query getNodesWithRoutePathLinkStartNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksWithNodeUsageByStartNodeQuery}
             }
-        }`;
-};
+        }`
+}
 
 const getNetworkNodesFromPointQuery = () => {
-    return gql`
-        query getNetworkNodesFromPoint($lon: Float, $lat: Float, $bufferSize: Float) {
-            get_network_nodes_from_point: getNetworkNodesFromPoint(
-                lon: $lon
-                lat: $lat
-                buffersize: $bufferSize
-            ) {
-                nodes {
-                    soltunnus
-                    soltyyppi
-                    geojson
-                    geojsonManual
-                    transitTypes
-                    dateRanges
-                }
-            }
+  return gql`
+    query getNetworkNodesFromPoint($lon: Float, $lat: Float, $bufferSize: Float) {
+      get_network_nodes_from_point: getNetworkNodesFromPoint(
+        lon: $lon
+        lat: $lat
+        buffersize: $bufferSize
+      ) {
+        nodes {
+          soltunnus
+          soltyyppi
+          geojson
+          geojsonManual
+          transitTypes
+          dateRanges
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getNetworkLinksFromPointQuery = () => {
-    return gql`
-        query getNetworkLinksFromPoint($lat: Float, $lon: Float, $bufferSize: Float) {
-            get_network_links_from_point: getNetworkLinksFromPoint(
-                lat: $lat
-                lon: $lon
-                buffersize: $bufferSize
-            ) {
-                nodes {
-                    lnkverkko
-                    geojson
-                    lnkalkusolmu
-                    lnkloppusolmu
-                    dateRanges
-                    startNodeTransitTypes
-                    startNodeType
-                    endNodeTransitTypes
-                    endNodeType
-                }
-            }
+  return gql`
+    query getNetworkLinksFromPoint($lat: Float, $lon: Float, $bufferSize: Float) {
+      get_network_links_from_point: getNetworkLinksFromPoint(
+        lat: $lat
+        lon: $lon
+        buffersize: $bufferSize
+      ) {
+        nodes {
+          lnkverkko
+          geojson
+          lnkalkusolmu
+          lnkloppusolmu
+          dateRanges
+          startNodeTransitTypes
+          startNodeType
+          endNodeTransitTypes
+          endNodeType
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getLinkQuery = () => {
-    return gql`query getLink($startNodeId: String!, $endNodeId: String!, $transitType:String!) {
+  return gql`query getLink($startNodeId: String!, $endNodeId: String!, $transitType:String!) {
             link: linkkiByLnkverkkoAndLnkalkusolmuAndLnkloppusolmu(lnkverkko: $transitType, lnkalkusolmu: $startNodeId, lnkloppusolmu: $endNodeId) {
                 ${linkQueryFields}
             }
-        }`;
-};
+        }`
+}
 
 const getLinksQuery = () => {
-    return gql`query getLinks($startNodeId: String!, $endNodeId: String!) {
+  return gql`query getLinks($startNodeId: String!, $endNodeId: String!) {
             getLinks(startnodeid: $startNodeId, endnodeid: $endNodeId) {
                 nodes {
                     ${linkQueryFields}
                 }
             }
-        }`;
-};
+        }`
+}
 
 const getLinksByEndNodeQuery = () => {
-    return gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
+  return gql`query getNodesWithRoutePathLinkEndNodeId($nodeId: String!, $date: Datetime!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksWithNodeUsageByEndNodeQuery}
             }
-        }`;
-};
+        }`
+}
 
 const getLinksByStartNodeAndEndNodeQuery = () => {
-    return gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
+  return gql`query getNodesWithRoutePathLinkStartNodeAndEndNodeId($nodeId: String!) {
             solmuBySoltunnus(soltunnus: $nodeId) {
                 ${linksByStartNodeQuery}
                 ${linksByEndNodeQuery}
             }
-        }`;
-};
+        }`
+}
 
 const getNodeQuery = () => {
-    return gql`
+  return gql`
         query getNodeDetails($nodeId: String!) {
             node: solmuBySoltunnus(soltunnus: $nodeId) {
                 ${nodeQueryFields}
             }
-        }`;
-};
+        }`
+}
 
 const getSearchNodeQuery = () => {
-    return gql`
+  return gql`
         query getNodeDetails($nodeId: String!) {
             node: solmuBySoltunnus(soltunnus: $nodeId) {
                 ${nodeSearchQueryFields}
             }
         }
-    `;
-};
+    `
+}
 
 const getAllSearchNodesQuery = () => {
-    return gql`
+  return gql`
         query getAllNodes {
             allNodes: allSolmus {
                 nodes {
@@ -285,11 +285,11 @@ const getAllSearchNodesQuery = () => {
                 }
             }
         }
-    `;
-};
+    `
+}
 
 const getAllStopsQuery = () => {
-    return gql`
+  return gql`
         query getAllStopItems {
             node: allPysakkis {
                 nodes {
@@ -297,37 +297,37 @@ const getAllStopsQuery = () => {
                 }
             }
         }
-    `;
-};
+    `
+}
 
 const getArmamentInfoQuery = () => {
-    return gql`
-        query getArmamentInfoQuery($nodeId: String!) {
-            node: varustelutiedotUusiByTunnus(tunnus: $nodeId) {
-                nousijat
-                pysakkityyppi
-            }
-        }
-    `;
-};
+  return gql`
+    query getArmamentInfoQuery($nodeId: String!) {
+      node: varustelutiedotUusiByTunnus(tunnus: $nodeId) {
+        nousijat
+        pysakkityyppi
+      }
+    }
+  `
+}
 
 const getAllCodeLists = () => {
-    return gql`
-        query getAllCodeLists {
-            node: allKoodistos {
-                nodes {
-                    koolista
-                    koojarjestys
-                    kookoodi
-                    kooselite
-                }
-            }
+  return gql`
+    query getAllCodeLists {
+      node: allKoodistos {
+        nodes {
+          koolista
+          koojarjestys
+          kookoodi
+          kooselite
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getRoutePathsUsingLinkFromDate = () => {
-    return gql`
+  return gql`
         query routepathsUsingLinkFromDate($startNodeId:String!, $endNodeId:String!, $date: Datetime!, $transitType: String!) {
             routePaths: routepathsUsingLinkFromDate(startnodeid: $startNodeId, endnodeid: $endNodeId, date: $date, transittype: $transitType) {
                 nodes {
@@ -335,21 +335,21 @@ const getRoutePathsUsingLinkFromDate = () => {
                     ${routeForRoutePathQuery}
                 }
             }
-        }`;
-};
+        }`
+}
 
 const getStopAreaQuery = () => {
-    return gql`
+  return gql`
         query getStopArea($stopAreaId: String!) {
             stopArea: pysakkialueByPysalueid(pysalueid: $stopAreaId) {
                 ${stopAreaQueryFields}
             }
         }
-    `;
-};
+    `
+}
 
 const getAllStopAreas = () => {
-    return gql`
+  return gql`
         query getAllStopAreas {
             node: allPysakkialues {
                 nodes {
@@ -357,85 +357,85 @@ const getAllStopAreas = () => {
                 }
             }
         }
-    `;
-};
+    `
+}
 
 const getAllStopItems = () => {
-    return gql`
-        query getAllStopItems {
-            node: allPysakkis {
-                nodes {
-                    soltunnus
-                    pysalueid
-                    pysnimi
-                    pysnimir
-                }
-            }
+  return gql`
+    query getAllStopItems {
+      node: allPysakkis {
+        nodes {
+          soltunnus
+          pysalueid
+          pysnimi
+          pysnimir
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getAllTerminalAreas = () => {
-    return gql`
-        query getAllTerminalAreas {
-            node: allTerminaalialues {
-                nodes {
-                    termid
-                    nimi
-                }
-            }
+  return gql`
+    query getAllTerminalAreas {
+      node: allTerminaalialues {
+        nodes {
+          termid
+          nimi
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getAllStopSections = () => {
-    return gql`
-        query getAllStopSections {
-            node: allVyohykes {
-                nodes {
-                    selite
-                }
-            }
+  return gql`
+    query getAllStopSections {
+      node: allVyohykes {
+        nodes {
+          selite
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getAllHastusAreas = () => {
-    return gql`
-        query getAllHastusAreas {
-            node: allPaikkas {
-                nodes {
-                    paitunnus
-                    nimi
-                }
-            }
+  return gql`
+    query getAllHastusAreas {
+      node: allPaikkas {
+        nodes {
+          paitunnus
+          nimi
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getReservedShortIds = () => {
-    return gql`
-        query getReservedShortIds($shortIdLetter: String) {
-            getReservedShortIds: allSolmus(condition: { solkirjain: $shortIdLetter }) {
-                nodes {
-                    soltunnus
-                    sollistunnus
-                }
-            }
+  return gql`
+    query getReservedShortIds($shortIdLetter: String) {
+      getReservedShortIds: allSolmus(condition: { solkirjain: $shortIdLetter }) {
+        nodes {
+          soltunnus
+          sollistunnus
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const getLineHeaderQuery = () => {
-    return gql`query getLineHeader($lineId: String!, $startDate: Datetime!) {
+  return gql`query getLineHeader($lineId: String!, $startDate: Datetime!) {
             lineHeader: linjannimetByLintunnusAndLinalkupvm(lintunnus: $lineId, linalkupvm: $startDate) {
                 ${lineHeaderQueryFields}
             }
-        }`;
-};
+        }`
+}
 
 const getAllLineHeadersQuery = () => {
-    return gql`
+  return gql`
         query getAllLineHeaders {
             node: allLinjannimets {
                 nodes {
@@ -443,21 +443,21 @@ const getAllLineHeadersQuery = () => {
                 }
             }
         }
-    `;
-};
+    `
+}
 
 const getViaNameByIdKeyQuery = () => {
-    return gql`
+  return gql`
         query viaNimetByRelid($relid: Int!) {
             viaNimetByRelid(relid: $relid) {
                 ${viaNameQueryFields}
             }
         }
-    `;
-};
+    `
+}
 
 const getViaNamesByRpPrimaryKeyQuery = () => {
-    return gql`
+  return gql`
         query getViaNames($routeId: String, $startDate: Datetime, $direction: String) {
             get_via_names: getViaNames(
                 routeid: $routeId
@@ -469,21 +469,21 @@ const getViaNamesByRpPrimaryKeyQuery = () => {
                 }
             }
         }
-    `;
-};
+    `
+}
 
 const getViaShieldNameByIdKeyQuery = () => {
-    return gql`
+  return gql`
         query viaKilpiNimetByRelid($relid: Int!) {
             viaKilpiNimetByRelid(relid: $relid) {
                 ${viaShieldNameQueryFields}
             }
         }
-    `;
-};
+    `
+}
 
 const getViaShieldNamesByRpPrimaryKeyQuery = () => {
-    return gql`
+  return gql`
         query getViaShieldNames($routeId: String, $startDate: Datetime, $direction: String) {
             get_via_shield_names: getViaShieldNames(
                 routeid: $routeId
@@ -495,24 +495,24 @@ const getViaShieldNamesByRpPrimaryKeyQuery = () => {
                 }
             }
         }
-    `;
-};
+    `
+}
 
 const getAllSchedulesQuery = () => {
-    return gql`
-        {
-            allAikataulus {
-                nodes {
-                    reitunnus
-                    lavoimast
-                    laviimvoi
-                    lakuka
-                    laviimpvm
-                }
-            }
+  return gql`
+    {
+      allAikataulus {
+        nodes {
+          reitunnus
+          lavoimast
+          laviimvoi
+          lakuka
+          laviimpvm
         }
-    `;
-};
+      }
+    }
+  `
+}
 
 const lineQueryFields = `
     lintunnus
@@ -527,20 +527,20 @@ const lineQueryFields = `
     linjlkohde
     vaihtoaika
     linkorvtyyppi
-`;
+`
 
 const searchLineQueryFields = `
     lintunnus
     linjoukkollaji
     linverkko
-`;
+`
 
 const searchRouteQueryFields = `
     reinimi
     isUsedByRoutePath
     reitunnus
     reiviimpvm
-`;
+`
 
 const routeQueryFields = `
     reitunnus
@@ -551,7 +551,7 @@ const routeQueryFields = `
     lintunnus
     reikuka
     reiviimpvm
-`;
+`
 
 const routePathQueryFields = `
     reitunnus
@@ -572,7 +572,7 @@ const routePathQueryFields = `
     poikkeusreitti
     kirjaan
     kirjasarake
-`;
+`
 
 const routePathSegmentQueryFields = `
     reitunnus
@@ -586,7 +586,7 @@ const routePathSegmentQueryFields = `
     suulahpaik
     suupaapaik
     geom
-`;
+`
 
 const stopQueryFields = `
     soltunnus
@@ -618,7 +618,7 @@ const stopQueryFields = `
     pysnimipitkar
     vyohyke
     postinro
-`;
+`
 
 const stopAreaQueryFields = `
     pysalueid
@@ -629,7 +629,7 @@ const stopAreaQueryFields = `
     tallpvm
     tallentaja
     pysakkialueryhma
-`;
+`
 
 const nodeQueryFields = `
     soltunnus
@@ -648,7 +648,7 @@ const nodeQueryFields = `
     pysakkiBySoltunnus {
         ${stopQueryFields}
     }
-`;
+`
 
 const nodeSearchQueryFields = `
     soltunnus
@@ -664,7 +664,7 @@ const nodeSearchQueryFields = `
         soltunnus
         pysnimi
     }
-`;
+`
 
 const routePathLinkQueryFields = `
     relid
@@ -692,7 +692,7 @@ const routePathLinkQueryFields = `
     solmuByLnkloppusolmu {
         ${nodeQueryFields}
     }
-`;
+`
 
 const lineHeaderQueryFields = `
     lintunnus
@@ -708,7 +708,7 @@ const lineHeaderQueryFields = `
     linlahtop2R
     linkuka
     linviimpvm
-`;
+`
 
 const viaNameQueryFields = `
     relid
@@ -716,32 +716,32 @@ const viaNameQueryFields = `
     maaranpaa2
     maaranpaa1R
     maaranpaa2R
-`;
+`
 const viaShieldNameQueryFields = `
     relid
     viasuomi
     viaruotsi
-`;
+`
 
 const routePathLinksForRoutePathQuery = `
 reitinlinkkisByReitunnusAndSuuvoimastAndSuusuunta {
     nodes {
         ${routePathLinkQueryFields}
     }
-}`;
+}`
 
 const lineForRoutePathQuery = `
 linjaByLintunnus {
     lintunnus
     linverkko
 }
-`;
+`
 
 const routeForRoutePathQuery = `
 reittiByReitunnus {
     ${lineForRoutePathQuery}
 }
-`;
+`
 
 const routePathsWithDisabledInfoQuery = `
     startNodeType
@@ -749,7 +749,7 @@ const routePathsWithDisabledInfoQuery = `
         ${routePathQueryFields}
         ${routeForRoutePathQuery}
     }
-`;
+`
 
 const linkQueryFields = `
     geojson
@@ -770,7 +770,7 @@ const linkQueryFields = `
     solmuByLnkloppusolmu {
         ${nodeQueryFields}
     }
-`;
+`
 
 const linksWithNodeUsageByStartNodeQuery = `
 linkkisByLnkalkusolmu {
@@ -786,7 +786,7 @@ linkkisByLnkalkusolmu {
             }
         }
     }
-}`;
+}`
 
 const linksWithNodeUsageByEndNodeQuery = `
 linkkisByLnkloppusolmu {
@@ -802,7 +802,7 @@ linkkisByLnkloppusolmu {
             }
         }
     }
-}`;
+}`
 
 const linksByStartNodeQuery = `
 linkkisByLnkalkusolmu {
@@ -815,7 +815,7 @@ linkkisByLnkalkusolmu {
             ${nodeQueryFields}
         }
     }
-}`;
+}`
 
 const linksByEndNodeQuery = `
 linkkisByLnkloppusolmu {
@@ -828,48 +828,48 @@ linkkisByLnkloppusolmu {
             ${nodeQueryFields}
         }
     }
-}`;
+}`
 
 export default {
-    getLineQuery,
-    getLineAndRoutesQuery,
-    getAllSearchLinesQuery,
-    getLinkQuery,
-    getLinksQuery,
-    getRouteQuery,
-    getAllRoutesQuery,
-    getRoutePathQuery,
-    getFirstStopNameOfRoutePath,
-    getLastStopNameOfRoutePath,
-    getRoutePathLinkQuery,
-    getRoutePathLinksFromRoutePathSegment,
-    getRoutesUsingRoutePathSegment,
-    getRoutePathsUsingLinkQuery,
-    getRoutePathsUsingNodeQuery,
-    getLinksByStartNodeQuery,
-    getNetworkNodesFromPointQuery,
-    getNetworkLinksFromPointQuery,
-    getLinksByStartNodeAndEndNodeQuery,
-    getNodeQuery,
-    getSearchNodeQuery,
-    getAllSearchNodesQuery,
-    getAllStopsQuery,
-    getArmamentInfoQuery,
-    getLinksByEndNodeQuery,
-    getAllCodeLists,
-    getRoutePathsUsingLinkFromDate,
-    getStopAreaQuery,
-    getAllStopAreas,
-    getAllStopItems,
-    getAllTerminalAreas,
-    getLineHeaderQuery,
-    getAllLineHeadersQuery,
-    getAllStopSections,
-    getAllHastusAreas,
-    getReservedShortIds,
-    getViaNameByIdKeyQuery,
-    getViaNamesByRpPrimaryKeyQuery,
-    getViaShieldNameByIdKeyQuery,
-    getViaShieldNamesByRpPrimaryKeyQuery,
-    getAllSchedulesQuery,
-};
+  getLineQuery,
+  getLineAndRoutesQuery,
+  getAllSearchLinesQuery,
+  getLinkQuery,
+  getLinksQuery,
+  getRouteQuery,
+  getAllRoutesQuery,
+  getRoutePathQuery,
+  getFirstStopNameOfRoutePath,
+  getLastStopNameOfRoutePath,
+  getRoutePathLinkQuery,
+  getRoutePathLinksFromRoutePathSegment,
+  getRoutesUsingRoutePathSegment,
+  getRoutePathsUsingLinkQuery,
+  getRoutePathsUsingNodeQuery,
+  getLinksByStartNodeQuery,
+  getNetworkNodesFromPointQuery,
+  getNetworkLinksFromPointQuery,
+  getLinksByStartNodeAndEndNodeQuery,
+  getNodeQuery,
+  getSearchNodeQuery,
+  getAllSearchNodesQuery,
+  getAllStopsQuery,
+  getArmamentInfoQuery,
+  getLinksByEndNodeQuery,
+  getAllCodeLists,
+  getRoutePathsUsingLinkFromDate,
+  getStopAreaQuery,
+  getAllStopAreas,
+  getAllStopItems,
+  getAllTerminalAreas,
+  getLineHeaderQuery,
+  getAllLineHeadersQuery,
+  getAllStopSections,
+  getAllHastusAreas,
+  getReservedShortIds,
+  getViaNameByIdKeyQuery,
+  getViaNamesByRpPrimaryKeyQuery,
+  getViaShieldNameByIdKeyQuery,
+  getViaShieldNamesByRpPrimaryKeyQuery,
+  getAllSchedulesQuery,
+}

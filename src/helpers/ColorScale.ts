@@ -1,47 +1,47 @@
 class ColorScale {
-    public static allColors = [
-        '#e6194B',
-        '#3cb44b',
-        '#ffe119',
-        '#4363d8',
-        '#f58231',
-        '#42d4f4',
-        '#f032e6',
-        '#fabebe',
-        '#469990',
-        '#e6beff',
-        '#9A6324',
-        // '#fffac8',
-        '#800000',
-        '#aaffc3',
-        '#000075',
-        // '#a9a9a9',
-    ];
+  public static allColors = [
+    '#e6194B',
+    '#3cb44b',
+    '#ffe119',
+    '#4363d8',
+    '#f58231',
+    '#42d4f4',
+    '#f032e6',
+    '#fabebe',
+    '#469990',
+    '#e6beff',
+    '#9A6324',
+    // '#fffac8',
+    '#800000',
+    '#aaffc3',
+    '#000075',
+    // '#a9a9a9',
+  ]
 
-    public colorStack: string[];
+  public colorStack: string[]
 
-    constructor() {
-        this.colorStack = ColorScale.allColors.slice();
+  constructor() {
+    this.colorStack = ColorScale.allColors.slice()
+  }
+
+  public reserveColor = (color?: string) => {
+    if (color) {
+      const removeIndex = this.colorStack.findIndex((c) => c === color)
+      this.colorStack.splice(removeIndex, 1)
+      return
     }
+    if (this.colorStack.length < 1) {
+      return '#007ac9'
+    }
+    return this.colorStack.pop()
+  }
 
-    public reserveColor = (color?: string) => {
-        if (color) {
-            const removeIndex = this.colorStack.findIndex((c) => c === color);
-            this.colorStack.splice(removeIndex, 1);
-            return;
-        }
-        if (this.colorStack.length < 1) {
-            return '#007ac9';
-        }
-        return this.colorStack.pop();
-    };
-
-    public releaseColor = (color: string) => {
-        if (ColorScale.allColors.includes(color)) {
-            this.colorStack.push(color);
-        }
-        return undefined;
-    };
+  public releaseColor = (color: string) => {
+    if (ColorScale.allColors.includes(color)) {
+      this.colorStack.push(color)
+    }
+    return undefined
+  }
 }
 
-export default ColorScale;
+export default ColorScale

@@ -27,6 +27,7 @@
     "graphql": "^14.5.8",
     "graphql-tag": "^2.9.2",
     "history": "^4.7.2",
+    "husky": "^1.3.1",
     "html-webpack-plugin": "2.29.0",
     "jest": "26.4.0",
     "leaflet": "1.6.0",
@@ -89,7 +90,8 @@
     "cypress": "CYPRESS_E2E=true cypress",
     "cypress:run:dev": "CYPRESS_E2E=true cypress run --env configFile=dev",
     "cypress:run:stage": "CYPRESS_E2E=true cypress run --env configFile=stage",
-    "prettify-all-files": "npx prettier --write '**/*.ts'"
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "devDependencies": {
     "@types/chroma-js": "^1.3.5",
@@ -115,9 +117,10 @@
     "bumped": "^0.10.11",
     "bumped-changelog": "0.3.13",
     "bumped-terminal": "^0.7.6",
-    "cypress": "5.5.0",
+    "cypress": "^15.3.0",
     "cypress-commands": "^0.3.1",
     "cypress-wait-until": "^1.6.1",
+    "lint-staged": "^9.0.0",
     "mobx-react-devtools": "^6.0.1",
     "react-dev-utils": "^5.0.1",
     "sass": "^1.26.1",
@@ -186,11 +189,15 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "prettier": {
-    "printWidth": 100,
-    "tabWidth": 4,
-    "semi": true,
-    "singleQuote": true,
-    "jsxSingleQuote": true
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }

@@ -1,0 +1,25 @@
+---
+name: "CI/CD: Continuous integration and continuous deployment"
+on: [pull_request]
+permissions:
+  contents: read
+
+jobs:
+  build-check:
+    name: 'Build & check format'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      - name: Install NPM dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check code formatting
+        run: npm run format:check

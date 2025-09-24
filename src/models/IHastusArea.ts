@@ -1,11 +1,11 @@
 export default interface IHastusArea {
-    id: string;
-    name: string;
+  id: string
+  name: string
 }
 
 interface IHastusAreaSaveModel {
-    newHastusArea: IHastusArea;
-    oldHastusArea: IHastusArea | null;
+  newHastusArea: IHastusArea
+  oldHastusArea: IHastusArea | null
 }
 
-export { IHastusAreaSaveModel };
+export { IHastusAreaSaveModel }

@@ -1,6 +1,6 @@
 interface IArmamentInfo {
-    passengerCount: number;
-    roof: string;
+  passengerCount: number
+  roof: string
 }
 
-export default IArmamentInfo;
+export default IArmamentInfo

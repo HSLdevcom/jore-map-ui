@@ -1,9 +1,9 @@
 interface IExternalSchedule {
-    reitunnus: string;
-    lavoimast: Date;
-    laviimvoi: Date;
-    lakuka: string;
-    laviimpvm: Date;
+  reitunnus: string
+  lavoimast: Date
+  laviimvoi: Date
+  lakuka: string
+  laviimpvm: Date
 }
 
-export default IExternalSchedule;
+export default IExternalSchedule

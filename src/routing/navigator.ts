@@ -1,150 +1,150 @@
-import { RouterStore } from 'mobx-react-router';
-import qs from 'qs';
-import ConfirmStore from '~/stores/confirmStore';
-import NavigationStore from '~/stores/navigationStore';
-import QueryParams from './queryParams';
+import { RouterStore } from 'mobx-react-router'
+import qs from 'qs'
+import ConfirmStore from '~/stores/confirmStore'
+import NavigationStore from '~/stores/navigationStore'
+import QueryParams from './queryParams'
 
-const DEFAULT_PROMPT_MESSAGE = `Sinulla on tallentamattomia muutoksia. Haluatko poistua näkymästä? Tallentamattomat muutokset kumotaan.`;
+const DEFAULT_PROMPT_MESSAGE = `Sinulla on tallentamattomia muutoksia. Haluatko poistua näkymästä? Tallentamattomat muutokset kumotaan.`
 
 class Navigator {
-    private store: RouterStore;
+  private store: RouterStore
 
-    constructor() {
-        this.store = new RouterStore();
-    }
+  constructor() {
+    this.store = new RouterStore()
+  }
 
-    public getStore = () => {
-        return this.store;
-    };
+  public getStore = () => {
+    return this.store
+  }
 
-    public goTo = ({
-        link,
-        unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt,
-        shouldSkipNavigationAction,
-    }: {
-        link: string;
-        unsavedChangesPromptMessage?: string;
-        shouldSkipUnsavedChangesPrompt?: boolean;
-        shouldSkipNavigationAction?: boolean;
-    }) => {
-        // prevent new pushing url if the current url is already the right one
-        if (this.store.location.pathname === link) return;
+  public goTo = ({
+    link,
+    unsavedChangesPromptMessage,
+    shouldSkipUnsavedChangesPrompt,
+    shouldSkipNavigationAction,
+  }: {
+    link: string
+    unsavedChangesPromptMessage?: string
+    shouldSkipUnsavedChangesPrompt?: boolean
+    shouldSkipNavigationAction?: boolean
+  }) => {
+    // prevent new pushing url if the current url is already the right one
+    if (this.store.location.pathname === link) return
 
-        const redirectFunction = () => this.store.history.push(link);
-        this.callRedirectFunction({
-            redirectFunction,
-            unsavedChangesPromptMessage,
-            shouldSkipUnsavedChangesPrompt,
-            shouldSkipNavigationAction,
-        });
-    };
+    const redirectFunction = () => this.store.history.push(link)
+    this.callRedirectFunction({
+      redirectFunction,
+      unsavedChangesPromptMessage,
+      shouldSkipUnsavedChangesPrompt,
+      shouldSkipNavigationAction,
+    })
+  }
 
-    // Instead of pushing to a stack (goTo function), replace current url
-    public replace = (url: string) => {
-        // prevent new pushing url if the current url is already the right one
-        if (this.store.location.pathname === url) return;
+  // Instead of pushing to a stack (goTo function), replace current url
+  public replace = (url: string) => {
+    // prevent new pushing url if the current url is already the right one
+    if (this.store.location.pathname === url) return
 
-        this.store.history.replace(url);
-    };
+    this.store.history.replace(url)
+  }
 
-    /**
-     * @return {String} for example /routePath/new
-     */
-    public getPathName = (): string => {
-        return this.store.location.pathname;
-    };
+  /**
+   * @return {String} for example /routePath/new
+   */
+  public getPathName = (): string => {
+    return this.store.location.pathname
+  }
 
-    /**
-     * @return {String} for example ?routes=0033
-     */
-    public getSearch = (): string => {
-        return this.store.location.search;
-    };
+  /**
+   * @return {String} for example ?routes=0033
+   */
+  public getSearch = (): string => {
+    return this.store.location.search
+  }
 
-    /**
-     * @return {String} for example /routePath/new?routes=0033
-     */
-    public getFullPath = (): string => {
-        return `${this.store.location.pathname}${this.store.location.search}`;
-    };
+  /**
+   * @return {String} for example /routePath/new?routes=0033
+   */
+  public getFullPath = (): string => {
+    return `${this.store.location.pathname}${this.store.location.search}`
+  }
 
-    // TODO, rename
-    public getQueryParam = (param: QueryParams) => {
-        return this.getQueryParamValues()[param];
-    };
+  // TODO, rename
+  public getQueryParam = (param: QueryParams) => {
+    return this.getQueryParamValues()[param]
+  }
 
-    // TODO, rename
-    public getQueryParamValues = () => {
-        return qs.parse(this.store.location.search, {
-            ignoreQueryPrefix: true,
-            arrayLimit: 1000, // ArrayLimit makes qs.parse an object after it exceeds given arrayLimit. We dont want that normally
-        });
-    };
+  // TODO, rename
+  public getQueryParamValues = () => {
+    return qs.parse(this.store.location.search, {
+      ignoreQueryPrefix: true,
+      arrayLimit: 1000, // ArrayLimit makes qs.parse an object after it exceeds given arrayLimit. We dont want that normally
+    })
+  }
 
-    public goBack = ({
-        unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt,
-        shouldSkipNavigationAction,
-    }: {
-        unsavedChangesPromptMessage?: string;
-        shouldSkipUnsavedChangesPrompt?: boolean;
-        shouldSkipNavigationAction?: boolean;
-    }) => {
-        this.callRedirectFunction({
-            unsavedChangesPromptMessage,
-            shouldSkipUnsavedChangesPrompt,
-            shouldSkipNavigationAction,
-            redirectFunction: this.store.goBack,
-        });
-    };
+  public goBack = ({
+    unsavedChangesPromptMessage,
+    shouldSkipUnsavedChangesPrompt,
+    shouldSkipNavigationAction,
+  }: {
+    unsavedChangesPromptMessage?: string
+    shouldSkipUnsavedChangesPrompt?: boolean
+    shouldSkipNavigationAction?: boolean
+  }) => {
+    this.callRedirectFunction({
+      unsavedChangesPromptMessage,
+      shouldSkipUnsavedChangesPrompt,
+      shouldSkipNavigationAction,
+      redirectFunction: this.store.goBack,
+    })
+  }
 
-    /* not used yet
+  /* not used yet
 
     public goForward() {
         this._store.goForward();
     } */
 
-    private callRedirectFunction = ({
-        redirectFunction: callback,
-        unsavedChangesPromptMessage,
-        shouldSkipUnsavedChangesPrompt,
-        shouldSkipNavigationAction,
-    }: {
-        redirectFunction: Function;
-        unsavedChangesPromptMessage?: string;
-        shouldSkipUnsavedChangesPrompt?: boolean;
-        shouldSkipNavigationAction?: boolean;
-    }) => {
-        if (
-            !Boolean(shouldSkipUnsavedChangesPrompt) &&
-            NavigationStore.shouldShowUnsavedChangesPrompt
-        ) {
-            ConfirmStore!.openConfirm({
-                confirmData: unsavedChangesPromptMessage
-                    ? unsavedChangesPromptMessage
-                    : DEFAULT_PROMPT_MESSAGE,
-                onConfirm: () => {
-                    _callNavigationAction(shouldSkipNavigationAction);
-                    callback();
-                },
-                confirmButtonText: 'Kyllä',
-            });
-        } else {
-            _callNavigationAction(shouldSkipNavigationAction);
-            callback();
-        }
-    };
+  private callRedirectFunction = ({
+    redirectFunction: callback,
+    unsavedChangesPromptMessage,
+    shouldSkipUnsavedChangesPrompt,
+    shouldSkipNavigationAction,
+  }: {
+    redirectFunction: Function
+    unsavedChangesPromptMessage?: string
+    shouldSkipUnsavedChangesPrompt?: boolean
+    shouldSkipNavigationAction?: boolean
+  }) => {
+    if (
+      !Boolean(shouldSkipUnsavedChangesPrompt) &&
+      NavigationStore.shouldShowUnsavedChangesPrompt
+    ) {
+      ConfirmStore!.openConfirm({
+        confirmData: unsavedChangesPromptMessage
+          ? unsavedChangesPromptMessage
+          : DEFAULT_PROMPT_MESSAGE,
+        onConfirm: () => {
+          _callNavigationAction(shouldSkipNavigationAction)
+          callback()
+        },
+        confirmButtonText: 'Kyllä',
+      })
+    } else {
+      _callNavigationAction(shouldSkipNavigationAction)
+      callback()
+    }
+  }
 }
 
 const _callNavigationAction = (shouldSkipNavigationAction?: boolean) => {
-    if (shouldSkipNavigationAction) return;
+  if (shouldSkipNavigationAction) return
 
-    NavigationStore.setShouldShowUnsavedChangesPrompt(false);
-    const navigationAction = NavigationStore.navigationAction;
-    if (navigationAction) {
-        navigationAction();
-    }
-};
+  NavigationStore.setShouldShowUnsavedChangesPrompt(false)
+  const navigationAction = NavigationStore.navigationAction
+  if (navigationAction) {
+    navigationAction()
+  }
+}
 
-export default new Navigator();
+export default new Navigator()
