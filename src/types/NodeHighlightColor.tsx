@@ -1,3 +1,3 @@
-type NodeHighlightColor = 'blue' | 'green' | 'yellow';
+type NodeHighlightColor = 'blue' | 'green' | 'yellow'
 
-export default NodeHighlightColor;
+export default NodeHighlightColor

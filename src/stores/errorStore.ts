@@ -1,65 +1,65 @@
-import { isEmpty } from 'lodash';
-import { action, computed, observable } from 'mobx';
-import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
-import IError from '~/models/IError';
-import AlertStore, { AlertType } from './alertStore';
+import { isEmpty } from 'lodash'
+import { action, computed, observable } from 'mobx'
+import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList'
+import IError from '~/models/IError'
+import AlertStore, { AlertType } from './alertStore'
 
 class ErrorStore {
-    @observable private _errors: string[];
+  @observable private _errors: string[]
 
-    constructor() {
-        this._errors = [];
+  constructor() {
+    this._errors = []
+  }
+
+  @computed
+  get latestError() {
+    const errors = this._errors
+    if (!errors || errors.length === 0) return null
+
+    return errors[errors.length - 1]
+  }
+
+  @computed
+  get errors() {
+    return this._errors
+  }
+
+  @action
+  public addError(message: string, error?: IError) {
+    if (error && error.errorCode === 409) {
+      AlertStore!.setNotificationMessage({
+        message: httpStatusDescriptionCodeList[409],
+        onClose: () => {
+          window.location.reload()
+        },
+        closeButtonText: 'Päivitä sivu',
+        type: AlertType.Info,
+      })
+      return
     }
-
-    @computed
-    get latestError() {
-        const errors = this._errors;
-        if (!errors || errors.length === 0) return null;
-
-        return errors[errors.length - 1];
+    let msg = message
+    if (error && error.errorCode && httpStatusDescriptionCodeList[error.errorCode]) {
+      if (!isEmpty(msg)) {
+        msg += `, `
+      }
+      msg += `${httpStatusDescriptionCodeList[error.errorCode]}`
+    } else if (error && !isEmpty(error.message)) {
+      if (!isEmpty(msg)) {
+        msg += `, `
+      }
+      msg += `${error.message}`
     }
+    this._errors.push(msg)
+    // tslint:disable-next-line:no-console
+    if (error) console.error(error)
+  }
 
-    @computed
-    get errors() {
-        return this._errors;
-    }
-
-    @action
-    public addError(message: string, error?: IError) {
-        if (error && error.errorCode === 409) {
-            AlertStore!.setNotificationMessage({
-                message: httpStatusDescriptionCodeList[409],
-                onClose: () => {
-                    window.location.reload();
-                },
-                closeButtonText: 'Päivitä sivu',
-                type: AlertType.Info,
-            });
-            return;
-        }
-        let msg = message;
-        if (error && error.errorCode && httpStatusDescriptionCodeList[error.errorCode]) {
-            if (!isEmpty(msg)) {
-                msg += `, `;
-            }
-            msg += `${httpStatusDescriptionCodeList[error.errorCode]}`;
-        } else if (error && !isEmpty(error.message)) {
-            if (!isEmpty(msg)) {
-                msg += `, `;
-            }
-            msg += `${error.message}`;
-        }
-        this._errors.push(msg);
-        // tslint:disable-next-line:no-console
-        if (error) console.error(error);
-    }
-
-    @action
-    public pop() {
-        return this._errors.length > 0 && this._errors.pop();
-    }
+  @action
+  public pop() {
+    return this._errors.length > 0 && this._errors.pop()
+  }
 }
 
-export default new ErrorStore();
+export default new ErrorStore()
 
-export { ErrorStore };
+export { ErrorStore }

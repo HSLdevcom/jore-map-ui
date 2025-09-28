@@ -1,7 +1,7 @@
 enum NodeType {
-    STOP = 'P',
-    CROSSROAD = 'X',
-    MUNICIPALITY_BORDER = '-',
+  STOP = 'P',
+  CROSSROAD = 'X',
+  MUNICIPALITY_BORDER = '-',
 }
 
-export default NodeType;
+export default NodeType

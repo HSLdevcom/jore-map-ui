@@ -1,71 +1,74 @@
-import { ILine } from '~/models';
-import { ISearchLine } from '~/models/ILine';
-import { ISearchRoute } from '~/models/IRoute';
-import IExternalLine from '~/models/externals/IExternalLine.ts';
-import IExternalRoute from '~/models/externals/IExternalRoute.ts';
+import { ILine } from '~/models'
+import { ISearchLine } from '~/models/ILine'
+import { ISearchRoute } from '~/models/IRoute'
+import IExternalLine from '~/models/externals/IExternalLine.ts'
+import IExternalRoute from '~/models/externals/IExternalRoute.ts'
 
 class LineFactory {
-    public static mapExternalLine = (externalLine: IExternalLine): ILine => {
-        return {
-            transitType: externalLine.linverkko,
-            id: externalLine.lintunnus,
-            lineBasicRoute: externalLine.linperusreitti,
-            publicTransportType: externalLine.linjoukkollaji,
-            clientOrganization: externalLine.lintilorg,
-            modifiedBy: externalLine.linkuka,
-            modifiedOn: externalLine.linviimpvm ? new Date(externalLine.linviimpvm) : undefined,
-            publicTransportDestination: externalLine.linjlkohde,
-            exchangeTime: externalLine.vaihtoaika,
-            lineReplacementType: externalLine.linkorvtyyppi,
-        };
-    };
+  public static mapExternalLine = (externalLine: IExternalLine): ILine => {
+    return {
+      transitType: externalLine.linverkko,
+      id: externalLine.lintunnus,
+      lineBasicRoute: externalLine.linperusreitti,
+      publicTransportType: externalLine.linjoukkollaji,
+      clientOrganization: externalLine.lintilorg,
+      modifiedBy: externalLine.linkuka,
+      modifiedOn: externalLine.linviimpvm ? new Date(externalLine.linviimpvm) : undefined,
+      publicTransportDestination: externalLine.linjlkohde,
+      exchangeTime: externalLine.vaihtoaika,
+      lineReplacementType: externalLine.linkorvtyyppi,
+    }
+  }
 
-    public static createNewLine = (): ILine => {
-        return {
-            id: '',
-            lineBasicRoute: '',
-            publicTransportType: '',
-            clientOrganization: 'HSL',
-            modifiedBy: '',
-            modifiedOn: undefined,
-            publicTransportDestination: '',
-            exchangeTime: 0,
-            lineReplacementType: '',
-        };
-    };
+  public static createNewLine = (): ILine => {
+    return {
+      id: '',
+      lineBasicRoute: '',
+      publicTransportType: '',
+      clientOrganization: 'HSL',
+      modifiedBy: '',
+      modifiedOn: undefined,
+      publicTransportDestination: '',
+      exchangeTime: 0,
+      lineReplacementType: '',
+    }
+  }
 
-    public static createSearchLineFromLine = (line: ILine, routes: ISearchRoute[]): ISearchLine => {
-        return {
-            routes,
-            id: line.id,
-            transitType: line.transitType!,
-        };
-    };
+  public static createSearchLineFromLine = (
+    line: ILine,
+    routes: ISearchRoute[]
+  ): ISearchLine => {
+    return {
+      routes,
+      id: line.id,
+      transitType: line.transitType!,
+    }
+  }
 
-    public static createSearchLine = (externalLine: IExternalLine): ISearchLine => {
-        const routes = externalLine.reittisByLintunnus.nodes.map(
-            (route: IExternalRoute): ISearchRoute => {
-                return {
-                    id: route.reitunnus,
-                    name: _getRouteName(route),
-                    isUsedByRoutePath: route.isUsedByRoutePath!,
-                };
-            }
-        );
-
+  public static createSearchLine = (externalLine: IExternalLine): ISearchLine => {
+    const routes = externalLine.reittisByLintunnus.nodes.map(
+      (route: IExternalRoute): ISearchRoute => {
         return {
-            routes,
-            transitType: externalLine.linverkko,
-            id: externalLine.lintunnus,
-        };
-    };
+          id: route.reitunnus,
+          name: _getRouteName(route),
+          isUsedByRoutePath: route.isUsedByRoutePath!,
+        }
+      }
+    )
+
+    return {
+      routes,
+      transitType: externalLine.linverkko,
+      id: externalLine.lintunnus,
+    }
+  }
 }
 
 const _getRouteName = (route: any) => {
-    if (!route || !route.reinimi) {
-        return 'Reitillä ei nimeä';
-    }
-    return route.reinimi;
-};
+  if (!route || !route.reinimi) {
+    return 'Reitillä ei nimeä'
+  }
+  return route.reinimi
+}
 
-export default LineFactory;
+export default LineFactory

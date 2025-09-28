@@ -1,4 +1,4 @@
 export default interface IExternalHastusArea {
-    paitunnus: string;
-    nimi: string;
+  paitunnus: string
+  nimi: string
 }

@@ -1,3 +1,3 @@
 export default interface IGraphqlList<childType> {
-    nodes: childType[];
+  nodes: childType[]
 }

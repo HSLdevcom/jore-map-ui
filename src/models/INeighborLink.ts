@@ -1,9 +1,9 @@
-import IRoutePath from './IRoutePath';
-import IRoutePathLink from './IRoutePathLink';
+import IRoutePath from './IRoutePath'
+import IRoutePathLink from './IRoutePathLink'
 
 interface INeighborLink {
-    nodeUsageRoutePaths: IRoutePath[];
-    routePathLink: IRoutePathLink;
+  nodeUsageRoutePaths: IRoutePath[]
+  routePathLink: IRoutePathLink
 }
 
-export default INeighborLink;
+export default INeighborLink
