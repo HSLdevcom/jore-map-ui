@@ -1,4 +1,4 @@
-FROM node:12.16.1-alpine AS builder
+FROM node:20-alpine AS builder
 
 ENV WORK=/opt/joremapui
 
