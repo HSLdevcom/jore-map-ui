@@ -7,7 +7,7 @@ WORKDIR ${WORK}
 
 # Install app dependencies
 COPY yarn.lock package.json .yarnrc ${WORK}
-RUN CYPRESS_INSTALL_BINARY=0 yarn
+RUN yarn install --ignore-scripts
 
 COPY . ${WORK}
 
