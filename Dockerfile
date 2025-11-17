@@ -7,6 +7,7 @@ WORKDIR ${WORK}
 
 # Install app dependencies
 COPY yarn.lock package.json .yarnrc ${WORK}
+
 RUN yarn install --ignore-scripts
 
 COPY . ${WORK}
