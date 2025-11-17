@@ -117,7 +117,7 @@
     "bumped": "^0.10.11",
     "bumped-changelog": "0.3.13",
     "bumped-terminal": "^0.7.6",
-    "cypress": "^15.3.0",
+    "cypress": "^5.5.0",
     "cypress-commands": "^0.3.1",
     "cypress-wait-until": "^1.6.1",
     "lint-staged": "^9.0.0",
