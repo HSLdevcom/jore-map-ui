@@ -61,9 +61,8 @@ class ShortIdInput extends React.Component<IStopFormProps, IStopFormState> {
     )
     if (this.mounted) {
       this.setState({
-        availableShortIdDropdownItems: this.createAvailableShortIdDropdownItems(
-          availableShortIds
-        ),
+        availableShortIdDropdownItems:
+          this.createAvailableShortIdDropdownItems(availableShortIds),
       })
     }
   }

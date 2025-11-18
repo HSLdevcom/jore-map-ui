@@ -126,11 +126,12 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
       const bounds = L.latLngBounds(link.geometry)
       this.props.mapStore!.setMapBounds(bounds)
 
-      const routePaths: IRoutePathWithDisabledInfo[] = await RoutePathService.fetchRoutePathsUsingLink(
-        link.startNode.id,
-        link.endNode.id,
-        link.transitType!
-      )
+      const routePaths: IRoutePathWithDisabledInfo[] =
+        await RoutePathService.fetchRoutePathsUsingLink(
+          link.startNode.id,
+          link.endNode.id,
+          link.transitType!
+        )
       this._setState({ routePathsUsingLink: routePaths })
     }
     this._setState({ isLoading: false })

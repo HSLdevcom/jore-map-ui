@@ -86,12 +86,8 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
   private init = async () => {
     this.setState({ isLoading: true })
 
-    const [
-      linkStartNodeId,
-      linkEndNodeId,
-      linkTransitType,
-      nodeId,
-    ] = this.props.match!.params.id.split(',')
+    const [linkStartNodeId, linkEndNodeId, linkTransitType, nodeId] =
+      this.props.match!.params.id.split(',')
     try {
       if (linkStartNodeId && linkEndNodeId && linkTransitType && nodeId) {
         const link = await LinkService.fetchLink(

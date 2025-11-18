@@ -204,8 +204,8 @@ class RoutePathListTab extends React.Component<
    */
   private getMassEditGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
     let routePathsToGroup = routePaths
-    const selectedRoutePathIdGroups: string[][] = this.props.routePathMassEditStore!
-      .selectedRoutePathIdGroups
+    const selectedRoutePathIdGroups: string[][] =
+      this.props.routePathMassEditStore!.selectedRoutePathIdGroups
 
     // Take out selectedRoutePaths out from routePathsToGroup
     const selectedRoutePaths: IRoutePath[] = [] // RoutePaths that are filtered from routePathsToGroup

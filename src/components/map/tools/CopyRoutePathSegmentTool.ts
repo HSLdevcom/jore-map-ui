@@ -175,11 +175,12 @@ class CopyRoutePathSegmentTool implements BaseTool {
     RoutePathCopySegmentStore.setIsLoading(true)
 
     const transitType = RoutePathStore.routePath!.transitType!
-    const routesUsingRoutePathSegment: IRouteUsingRoutePathSegment[] = await RoutePathService.fetchRoutesUsingLinkSegment(
-      startSegmentPoint.nodeId,
-      endSegmentPoint.nodeId,
-      transitType
-    )
+    const routesUsingRoutePathSegment: IRouteUsingRoutePathSegment[] =
+      await RoutePathService.fetchRoutesUsingLinkSegment(
+        startSegmentPoint.nodeId,
+        endSegmentPoint.nodeId,
+        transitType
+      )
     const routesToCopyFrom: IRoutesToCopyFrom[] = []
     routesUsingRoutePathSegment.forEach((r: IRouteUsingRoutePathSegment) => {
       routesToCopyFrom.push({

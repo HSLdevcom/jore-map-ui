@@ -229,29 +229,28 @@ const RoutePathListNode = inject(
           onRoutePathLinkPropertyChange('startNodeType')(value ? 'E' : 'P')
         }
 
-        const onRoutePathLinkPropertyChange = (property: keyof IRoutePathLink) => (
-          value: any
-        ) => {
-          const orderNumber = props.routePathLink.orderNumber
-          props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value)
-        }
+        const onRoutePathLinkPropertyChange =
+          (property: keyof IRoutePathLink) => (value: any) => {
+            const orderNumber = props.routePathLink.orderNumber
+            props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value)
+          }
 
         /**
          * A special onChange function for the following properties:
          * isStartNodeUsingBookSchedule & startNodeBookScheduleColumnNumber
          * note: the last rpLink link will change routePath's value instead of routePathLink's value
          */
-        const onRoutePathBookSchedulePropertyChange = (
-          property: 'startNodeBookScheduleColumnNumber' | 'isStartNodeUsingBookSchedule'
-        ) => (value: any) => {
-          const orderNumber = props.routePathLink.orderNumber
+        const onRoutePathBookSchedulePropertyChange =
+          (property: 'startNodeBookScheduleColumnNumber' | 'isStartNodeUsingBookSchedule') =>
+          (value: any) => {
+            const orderNumber = props.routePathLink.orderNumber
 
-          if (props.isLastNode) {
-            props.routePathStore!.updateRoutePathProperty(property, value)
-          } else {
-            props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value)
+            if (props.isLastNode) {
+              props.routePathStore!.updateRoutePathProperty(property, value)
+            } else {
+              props.routePathStore!.updateRoutePathLinkProperty(orderNumber, property, value)
+            }
           }
-        }
 
         const onIsStartNodeUsingBookScheduleChange = (value: boolean) => () => {
           onRoutePathBookSchedulePropertyChange('isStartNodeUsingBookSchedule')(value)
@@ -266,9 +265,8 @@ const RoutePathListNode = inject(
           const routePathLink = props.routePathLink
           const isStartNodeUsingBookSchedule = props.isStartNodeUsingBookSchedule
           const startNodeBookScheduleColumnNumber = props.startNodeBookScheduleColumnNumber
-          const invalidPropertiesMap = props.routePathStore!.getRoutePathLinkInvalidPropertiesMap(
-            routePathLink.id
-          )
+          const invalidPropertiesMap =
+            props.routePathStore!.getRoutePathLinkInvalidPropertiesMap(routePathLink.id)
           return (
             <div>
               <div className={s.flexRow}>

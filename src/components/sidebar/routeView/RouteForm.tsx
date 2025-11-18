@@ -16,13 +16,8 @@ interface IRouteFormProps {
 
 class RouteForm extends React.Component<IRouteFormProps> {
   render() {
-    const {
-      route,
-      isNewRoute,
-      invalidPropertiesMap,
-      isEditing,
-      onChangeRouteProperty,
-    } = this.props
+    const { route, isNewRoute, invalidPropertiesMap, isEditing, onChangeRouteProperty } =
+      this.props
     const onChange = onChangeRouteProperty
     const queryParamLineId = navigator.getQueryParam(QueryParams.lineId) as string
     const isEditingDisabled = !isEditing

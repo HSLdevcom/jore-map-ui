@@ -332,13 +332,12 @@ const _fetchViaNamesForRoutePathLinks = async (
       direction: routePath.direction,
     })
 
-    const viaShieldNames: IViaShieldName[] = await ViaNameService.fetchViaShieldNamesByRpPrimaryKey(
-      {
+    const viaShieldNames: IViaShieldName[] =
+      await ViaNameService.fetchViaShieldNamesByRpPrimaryKey({
         routeId: routePath.routeId,
         startDate: routePath.startDate,
         direction: routePath.direction,
-      }
-    )
+      })
 
     routePathLinks = routePathLinks.map((routePathLink: IRoutePathLink) => {
       let viaName = viaNames.find((viaName) => viaName.viaNameId === routePathLink.id)

@@ -87,13 +87,14 @@ class RoutePathNeighborLinkService {
     }
 
     try {
-      const neighborLinks = await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-        nodeId,
-        neighborToAddType,
-        routePath,
-        orderNumber,
-        new Date()
-      )
+      const neighborLinks =
+        await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+          nodeId,
+          neighborToAddType,
+          routePath,
+          orderNumber,
+          new Date()
+        )
       if (neighborLinks.length === 0) {
         ErrorStore.addError(
           `Tästä solmusta (soltunnus: ${nodeId}) jatkettavaa linkkiä ei löytynyt.`

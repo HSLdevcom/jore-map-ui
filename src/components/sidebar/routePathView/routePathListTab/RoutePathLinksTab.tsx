@@ -198,9 +198,8 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     if (!routePathLinks) return null
 
     const listFilters = this.props.routePathStore!.listFilters
-    const coherentRoutePathLinksList = RoutePathUtils.getCoherentRoutePathLinksList(
-      routePathLinks
-    )
+    const coherentRoutePathLinksList =
+      RoutePathUtils.getCoherentRoutePathLinksList(routePathLinks)
     const areLinksVisible = this.areLinksVisible()
     return (
       <div className={s.routePathLinksTabView}>
@@ -240,8 +239,8 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                 const startNode = routePathLink.startNode
                 const endNode = routePathLink.endNode
                 const shouldRenderLastNode = index === routePathLinks.length - 1
-                const gapClosingNeighborLink = this.props.routePathLayerStore!
-                  .gapClosingNeighborLink
+                const gapClosingNeighborLink =
+                  this.props.routePathLayerStore!.gapClosingNeighborLink
                 const isEndNodeAttachedToGapClosingNeighborLink =
                   gapClosingNeighborLink &&
                   routePathLink.endNode.id ===
@@ -287,9 +286,10 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
                           isFirstNode: false,
                           isLastNode: true,
                           upperGapClosingNeighborLink: null,
-                          bottomGapClosingNeighborLink: isEndNodeAttachedToGapClosingNeighborLink
-                            ? gapClosingNeighborLink
-                            : null,
+                          bottomGapClosingNeighborLink:
+                            isEndNodeAttachedToGapClosingNeighborLink
+                              ? gapClosingNeighborLink
+                              : null,
                         })}
                         {isEndNodeAttachedToGapClosingNeighborLink && (
                           <RoutePathListNeighborLink
