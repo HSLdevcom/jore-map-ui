@@ -8214,10 +8214,10 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
-leaflet-editable@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/leaflet-editable/-/leaflet-editable-1.2.0.tgz#a3a01001764ba58ea923381ee6a1c814708a0b84"
-  integrity sha512-wG11JwpL8zqIbypTop6xCRGagMuWw68ihYu4uqrqc5Ep0wnEJeyob7NB2Rt5t74Oih4rwJ3OfwaGbzdowOGfYQ==
+leaflet-editable@^1.2.0:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/leaflet-editable/-/leaflet-editable-1.3.2.tgz#ff107e4dfe6520fb13fcf5a9a1fb8dea1d2d6ec8"
+  integrity sha512-iDTXR0byKWRiPliNrQrmZtbHHrr/ONZwoFoIzUHP2MQJQwgqzeblc1OKrT0ryOEzf0PFtrClk9SksAbeQpsmXw==
 
 leaflet-polylinedecorator@^1.6.0:
   version "1.6.0"
