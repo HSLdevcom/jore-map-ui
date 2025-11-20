@@ -27,6 +27,7 @@ class TransitTypeLink extends React.Component<ITransitIconProps> {
             hoverText,
             ...attrs
         } = this.props;
+        console.log(transitType)
         return (
             <div
                 className={classnames(
