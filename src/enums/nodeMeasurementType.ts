@@ -1,6 +1,6 @@
 enum NodeMeasurementType {
-  Measured = 'M',
-  Calculated = 'L',
+    Measured = 'M',
+    Calculated = 'L',
 }
 
-export default NodeMeasurementType
+export default NodeMeasurementType;

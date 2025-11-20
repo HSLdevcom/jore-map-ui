@@ -1,3 +1,3 @@
-type NodeLocationType = 'coordinates' | 'coordinatesProjection'
+type NodeLocationType = 'coordinates' | 'coordinatesProjection';
 
-export default NodeLocationType
+export default NodeLocationType;

@@ -1,8 +1,8 @@
 enum Environment {
-  PROD = 'prod',
-  STAGE = 'stage',
-  DEV = 'dev',
-  LOCALHOST = 'localhost',
+    PROD = 'prod',
+    STAGE = 'stage',
+    DEV = 'dev',
+    LOCALHOST = 'localhost',
 }
 
-export default Environment
+export default Environment;

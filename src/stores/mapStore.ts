@@ -1,201 +1,201 @@
-import * as L from 'leaflet'
-import { action, computed, observable } from 'mobx'
-import constants from '~/constants/constants'
-import CoordinateSystem from '~/enums/coordinateSystem'
-import Environment from '~/enums/environment'
-import LocalStorageHelper from '~/helpers/LocalStorageHelper'
+import * as L from 'leaflet';
+import { action, computed, observable } from 'mobx';
+import constants from '~/constants/constants';
+import CoordinateSystem from '~/enums/coordinateSystem';
+import Environment from '~/enums/environment';
+import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
-let INITIAL_COORDINATES: L.LatLng
+let INITIAL_COORDINATES: L.LatLng;
 if (constants.ENVIRONMENT === Environment.LOCALHOST) {
-  INITIAL_COORDINATES = new L.LatLng(60.2148, 24.8384)
+    INITIAL_COORDINATES = new L.LatLng(60.2148, 24.8384);
 } else {
-  INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384)
+    INITIAL_COORDINATES = new L.LatLng(60.1699, 24.9384);
 }
-const INITIAL_ZOOM = 15
-const NODE_LABEL_MIN_ZOOM = 14
+const INITIAL_ZOOM = 15;
+const NODE_LABEL_MIN_ZOOM = 14;
 
 enum NodeLabel {
-  hastusId,
-  longNodeId,
-  shortNodeId,
+    hastusId,
+    longNodeId,
+    shortNodeId,
 }
 
 enum MapFilter {
-  arrowDecorator,
-  linkPoint,
+    arrowDecorator,
+    linkPoint,
 }
 
 enum MapBaseLayer {
-  DIGITRANSIT = 'Digitransit',
-  AERIAL = 'Ilmakuva',
+    DIGITRANSIT = 'Digitransit',
+    AERIAL = 'Ilmakuva',
 }
 
-type MapCursor = '' | 'crosshair'
+type MapCursor = '' | 'crosshair';
 
 class MapStore {
-  @observable private _coordinates: L.LatLng | null
-  @observable private _displayCoordinateSystem: CoordinateSystem
-  @observable private _isMapFullscreen: boolean
-  @observable private _zoom: number
-  @observable private _selectedNodeId: string | null
-  @observable private _visibleNodeLabels: NodeLabel[]
-  @observable private _visibleMapBaseLayer: MapBaseLayer
-  @observable private _mapFilters: MapFilter[]
-  @observable private _mapBounds: L.LatLngBounds
-  @observable private _mapCursor: MapCursor
+    @observable private _coordinates: L.LatLng | null;
+    @observable private _displayCoordinateSystem: CoordinateSystem;
+    @observable private _isMapFullscreen: boolean;
+    @observable private _zoom: number;
+    @observable private _selectedNodeId: string | null;
+    @observable private _visibleNodeLabels: NodeLabel[];
+    @observable private _visibleMapBaseLayer: MapBaseLayer;
+    @observable private _mapFilters: MapFilter[];
+    @observable private _mapBounds: L.LatLngBounds;
+    @observable private _mapCursor: MapCursor;
 
-  constructor() {
-    this._coordinates = null
-    this._displayCoordinateSystem = CoordinateSystem.EPSG4326
-    this._zoom = INITIAL_ZOOM
-    this._isMapFullscreen = false
-    this._visibleNodeLabels = this.getInitialVisibleNodeLabels()
-    this._visibleMapBaseLayer = MapBaseLayer.DIGITRANSIT
-    this._mapFilters = [MapFilter.arrowDecorator]
-    this._mapCursor = ''
-  }
-
-  @computed
-  get coordinates(): L.LatLng | null {
-    return this._coordinates
-  }
-
-  @computed
-  get isMapInteractionRestricted(): boolean {
-    return !Boolean(this.coordinates)
-  }
-
-  @computed
-  get areNetworkLayersHidden(): boolean {
-    return this.isMapInteractionRestricted || this.zoom <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL
-  }
-
-  @computed
-  get displayCoordinateSystem(): CoordinateSystem {
-    return this._displayCoordinateSystem
-  }
-
-  @computed
-  get zoom(): number {
-    return this._zoom
-  }
-
-  @computed
-  get isMapFullscreen(): boolean {
-    return this._isMapFullscreen
-  }
-
-  @computed
-  get selectedNodeId() {
-    return this._selectedNodeId
-  }
-
-  @computed
-  get visibleNodeLabels() {
-    if (this.zoom < NODE_LABEL_MIN_ZOOM) return []
-    return this._visibleNodeLabels
-  }
-
-  @computed
-  get visibleMapBaseLayer() {
-    return this._visibleMapBaseLayer
-  }
-
-  @computed
-  get mapBounds() {
-    return this._mapBounds
-  }
-
-  @computed
-  get mapCursor() {
-    return this._mapCursor
-  }
-
-  public isMapFilterEnabled = (mapFilter: MapFilter) => {
-    return this._mapFilters.includes(mapFilter)
-  }
-
-  @action
-  public setMapBounds = (bounds: L.LatLngBounds) => {
-    this._mapBounds = bounds
-  }
-
-  @action
-  public setCoordinates = (coordinates: L.LatLng | null) => {
-    this._coordinates = coordinates
-  }
-
-  @action
-  public setZoom = (zoom: number) => {
-    this._zoom = zoom
-  }
-
-  @action
-  public initCoordinates = () => {
-    if (!this._coordinates) {
-      this._coordinates = INITIAL_COORDINATES
+    constructor() {
+        this._coordinates = null;
+        this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
+        this._zoom = INITIAL_ZOOM;
+        this._isMapFullscreen = false;
+        this._visibleNodeLabels = this.getInitialVisibleNodeLabels();
+        this._visibleMapBaseLayer = MapBaseLayer.DIGITRANSIT;
+        this._mapFilters = [MapFilter.arrowDecorator];
+        this._mapCursor = '';
     }
-  }
 
-  @action
-  public toggleMapFullscreen = () => {
-    this._isMapFullscreen = !this._isMapFullscreen
-  }
-
-  @action
-  public setDisplayCoordinateSystem = (value: CoordinateSystem) => {
-    this._displayCoordinateSystem = value
-  }
-
-  @action
-  public setSelectedNodeId = (id: string | null) => {
-    this._selectedNodeId = id
-  }
-
-  @action
-  public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
-    let visibleNodeLabels
-    if (this._visibleNodeLabels.includes(nodeLabel)) {
-      visibleNodeLabels = this._visibleNodeLabels.filter((t) => t !== nodeLabel)
-    } else {
-      // Need to do concat (instead of push) to trigger observable reaction
-      visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel])
+    @computed
+    get coordinates(): L.LatLng | null {
+        return this._coordinates;
     }
-    this._visibleNodeLabels = visibleNodeLabels
-    LocalStorageHelper.setItem('visible_node_labels', visibleNodeLabels)
-  }
 
-  @action
-  public setVisibleMapBaseLayer = (baseLayer: MapBaseLayer) => {
-    this._visibleMapBaseLayer = baseLayer
-  }
-
-  @action
-  public toggleMapFilter = (mapFilter: MapFilter) => {
-    if (this._mapFilters.includes(mapFilter)) {
-      this._mapFilters = this._mapFilters.filter((mF) => mF !== mapFilter)
-    } else {
-      // Need to do concat (instead of push) to trigger observable reaction
-      this._mapFilters = this._mapFilters.concat([mapFilter])
+    @computed
+    get isMapInteractionRestricted(): boolean {
+        return !Boolean(this.coordinates);
     }
-  }
 
-  @action
-  public setMapCursor = (mapCursor: MapCursor) => {
-    this._mapCursor = mapCursor
-  }
+    @computed
+    get areNetworkLayersHidden(): boolean {
+        return this.isMapInteractionRestricted || this.zoom <= constants.MAP_LAYERS_MIN_ZOOM_LEVEL;
+    }
 
-  public isNodeLabelVisible = (nodeLabel: NodeLabel) => {
-    return this._visibleNodeLabels.includes(nodeLabel)
-  }
+    @computed
+    get displayCoordinateSystem(): CoordinateSystem {
+        return this._displayCoordinateSystem;
+    }
 
-  private getInitialVisibleNodeLabels = () => {
-    const localStorageVisibleNodeLabels = LocalStorageHelper.getItem('visible_node_labels')
-    if (!Array.isArray(localStorageVisibleNodeLabels)) return []
-    return localStorageVisibleNodeLabels as NodeLabel[]
-  }
+    @computed
+    get zoom(): number {
+        return this._zoom;
+    }
+
+    @computed
+    get isMapFullscreen(): boolean {
+        return this._isMapFullscreen;
+    }
+
+    @computed
+    get selectedNodeId() {
+        return this._selectedNodeId;
+    }
+
+    @computed
+    get visibleNodeLabels() {
+        if (this.zoom < NODE_LABEL_MIN_ZOOM) return [];
+        return this._visibleNodeLabels;
+    }
+
+    @computed
+    get visibleMapBaseLayer() {
+        return this._visibleMapBaseLayer;
+    }
+
+    @computed
+    get mapBounds() {
+        return this._mapBounds;
+    }
+
+    @computed
+    get mapCursor() {
+        return this._mapCursor;
+    }
+
+    public isMapFilterEnabled = (mapFilter: MapFilter) => {
+        return this._mapFilters.includes(mapFilter);
+    };
+
+    @action
+    public setMapBounds = (bounds: L.LatLngBounds) => {
+        this._mapBounds = bounds;
+    };
+
+    @action
+    public setCoordinates = (coordinates: L.LatLng | null) => {
+        this._coordinates = coordinates;
+    };
+
+    @action
+    public setZoom = (zoom: number) => {
+        this._zoom = zoom;
+    };
+
+    @action
+    public initCoordinates = () => {
+        if (!this._coordinates) {
+            this._coordinates = INITIAL_COORDINATES;
+        }
+    };
+
+    @action
+    public toggleMapFullscreen = () => {
+        this._isMapFullscreen = !this._isMapFullscreen;
+    };
+
+    @action
+    public setDisplayCoordinateSystem = (value: CoordinateSystem) => {
+        this._displayCoordinateSystem = value;
+    };
+
+    @action
+    public setSelectedNodeId = (id: string | null) => {
+        this._selectedNodeId = id;
+    };
+
+    @action
+    public toggleNodeLabelVisibility = (nodeLabel: NodeLabel) => {
+        let visibleNodeLabels;
+        if (this._visibleNodeLabels.includes(nodeLabel)) {
+            visibleNodeLabels = this._visibleNodeLabels.filter((t) => t !== nodeLabel);
+        } else {
+            // Need to do concat (instead of push) to trigger observable reaction
+            visibleNodeLabels = this._visibleNodeLabels.concat([nodeLabel]);
+        }
+        this._visibleNodeLabels = visibleNodeLabels;
+        LocalStorageHelper.setItem('visible_node_labels', visibleNodeLabels);
+    };
+
+    @action
+    public setVisibleMapBaseLayer = (baseLayer: MapBaseLayer) => {
+        this._visibleMapBaseLayer = baseLayer;
+    };
+
+    @action
+    public toggleMapFilter = (mapFilter: MapFilter) => {
+        if (this._mapFilters.includes(mapFilter)) {
+            this._mapFilters = this._mapFilters.filter((mF) => mF !== mapFilter);
+        } else {
+            // Need to do concat (instead of push) to trigger observable reaction
+            this._mapFilters = this._mapFilters.concat([mapFilter]);
+        }
+    };
+
+    @action
+    public setMapCursor = (mapCursor: MapCursor) => {
+        this._mapCursor = mapCursor;
+    };
+
+    public isNodeLabelVisible = (nodeLabel: NodeLabel) => {
+        return this._visibleNodeLabels.includes(nodeLabel);
+    };
+
+    private getInitialVisibleNodeLabels = () => {
+        const localStorageVisibleNodeLabels = LocalStorageHelper.getItem('visible_node_labels');
+        if (!Array.isArray(localStorageVisibleNodeLabels)) return [];
+        return localStorageVisibleNodeLabels as NodeLabel[];
+    };
 }
 
-export default new MapStore()
+export default new MapStore();
 
-export { MapStore, NodeLabel, MapFilter, MapCursor, MapBaseLayer }
+export { MapStore, NodeLabel, MapFilter, MapCursor, MapBaseLayer };

@@ -1,216 +1,218 @@
-import { action, computed, observable } from 'mobx'
-import Moment from 'moment'
-import NodeSize from '~/enums/nodeSize'
-import TransitType from '~/enums/transitType'
-import LocalStorageHelper from '~/helpers/LocalStorageHelper'
+import { action, computed, observable } from 'mobx';
+import Moment from 'moment';
+import NodeSize from '~/enums/nodeSize';
+import TransitType from '~/enums/transitType';
+import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
 enum MapLayer {
-  node = 'node',
-  link = 'link',
-  linkPoint = 'linkPoint',
-  unusedNode = 'unusedNode',
-  unusedLink = 'unusedLink',
+    node = 'node',
+    link = 'link',
+    linkPoint = 'linkPoint',
+    unusedNode = 'unusedNode',
+    unusedLink = 'unusedLink',
 }
 
 class NetworkStore {
-  @observable private _selectedTransitTypes: TransitType[]
-  @observable private _selectedDate: Moment.Moment | null
-  @observable private _visibleMapLayers: MapLayer[]
-  @observable private _nodeSize: NodeSize
-  private _savedMapLayers: MapLayer[]
+    @observable private _selectedTransitTypes: TransitType[];
+    @observable private _selectedDate: Moment.Moment | null;
+    @observable private _visibleMapLayers: MapLayer[];
+    @observable private _nodeSize: NodeSize;
+    private _savedMapLayers: MapLayer[];
 
-  constructor() {
-    this._selectedTransitTypes = this.getInitialVisibleTransitTypes()
-    this._visibleMapLayers = this.getInitialVisibleMapLayers()
-    this._nodeSize = NodeSize.SMALL
-    this._savedMapLayers = []
-    this._selectedDate = Moment()
-  }
-
-  @computed
-  get selectedTransitTypes() {
-    return this._selectedTransitTypes
-  }
-
-  @computed
-  get selectedDate(): Moment.Moment | null {
-    return this._selectedDate
-  }
-
-  @action
-  public setSelectedDate = (value: Moment.Moment | null) => {
-    this._selectedDate = value
-  }
-
-  @computed
-  get nodeSize(): NodeSize {
-    return this._nodeSize
-  }
-
-  @computed
-  get visibleMapLayers() {
-    return this._visibleMapLayers
-  }
-
-  @computed
-  get isMapLayersVisible(): boolean {
-    return this._visibleMapLayers && this._visibleMapLayers.length !== 0
-  }
-
-  public isMapLayerVisible = (mapLayer: MapLayer) => {
-    return this._visibleMapLayers.includes(mapLayer)
-  }
-
-  @action
-  public setVisibleMapLayers = (layers: MapLayer[]) => {
-    this._visibleMapLayers = layers
-  }
-
-  @action
-  public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
-    if (this._visibleMapLayers.includes(mapLayer)) {
-      this.hideMapLayer(mapLayer)
-      _setLocalStorageLayerVisibility({ mapLayer, isVisible: false })
-    } else {
-      this.showMapLayer(mapLayer)
-      _setLocalStorageLayerVisibility({ mapLayer, isVisible: true })
+    constructor() {
+        this._selectedTransitTypes = this.getInitialVisibleTransitTypes();
+        this._visibleMapLayers = this.getInitialVisibleMapLayers();
+        this._nodeSize = NodeSize.SMALL;
+        this._savedMapLayers = [];
+        this._selectedDate = Moment();
     }
-  }
 
-  @action
-  public showMapLayer = (mapLayer: MapLayer) => {
-    if (this._visibleMapLayers.includes(mapLayer)) return
-    // Need to do concat (instead of push) to trigger observable reaction
-    this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer])
-  }
-
-  @action
-  public hideAllMapLayers = () => {
-    this._visibleMapLayers = []
-  }
-
-  @action
-  public hideMapLayer = (mapLayer: MapLayer) => {
-    this._visibleMapLayers = this._visibleMapLayers.filter((mL) => mL !== mapLayer)
-  }
-
-  @action
-  public setSelectedTransitTypes = (types: TransitType[]) => {
-    this._selectedTransitTypes = types
-  }
-
-  @action
-  public setNodeSize = (nodeSize: NodeSize) => {
-    this._nodeSize = nodeSize
-  }
-
-  @action
-  public toggleSelectedTransitType = (transitType: TransitType) => {
-    if (this._selectedTransitTypes.includes(transitType)) {
-      this._selectedTransitTypes = this._selectedTransitTypes.filter((t) => t !== transitType)
-      _setLocalStorageTransitTypeVisibility({ transitType, isVisible: false })
-    } else {
-      // Need to do concat (instead of push) to trigger observable reaction
-      this._selectedTransitTypes = this._selectedTransitTypes.concat([transitType])
-      _setLocalStorageTransitTypeVisibility({ transitType, isVisible: true })
+    @computed
+    get selectedTransitTypes() {
+        return this._selectedTransitTypes;
     }
-  }
 
-  @action
-  public restoreSavedMapLayers() {
-    this.setVisibleMapLayers(this._savedMapLayers)
-    this._savedMapLayers = []
-  }
-
-  @action
-  public saveMapLayers() {
-    this._savedMapLayers = this._visibleMapLayers
-  }
-
-  private getInitialVisibleMapLayers = () => {
-    const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers')
-    const layers: MapLayer[] = []
-    if (!Array.isArray(localStorageVisibleLayers)) return []
-
-    const addLayer = (layer: MapLayer) => {
-      if (localStorageVisibleLayers.includes(layer)) {
-        layers.push(layer)
-      }
+    @computed
+    get selectedDate(): Moment.Moment | null {
+        return this._selectedDate;
     }
-    addLayer(MapLayer.node)
-    addLayer(MapLayer.link)
-    addLayer(MapLayer.unusedNode)
-    addLayer(MapLayer.unusedLink)
 
-    return layers
-  }
+    @action
+    public setSelectedDate = (value: Moment.Moment | null) => {
+        this._selectedDate = value;
+    };
 
-  private getInitialVisibleTransitTypes = () => {
-    const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_transit_types')
-    const transitTypes: TransitType[] = []
-    if (!Array.isArray(localStorageVisibleLayers)) return []
-
-    const addTransitType = (transitType: TransitType) => {
-      if (localStorageVisibleLayers.includes(transitType)) {
-        transitTypes.push(transitType)
-      }
+    @computed
+    get nodeSize(): NodeSize {
+        return this._nodeSize;
     }
-    addTransitType(TransitType.BUS)
-    addTransitType(TransitType.FERRY)
-    addTransitType(TransitType.SUBWAY)
-    addTransitType(TransitType.TRAIN)
-    addTransitType(TransitType.TRAM)
 
-    return transitTypes
-  }
+    @computed
+    get visibleMapLayers() {
+        return this._visibleMapLayers;
+    }
+
+    @computed
+    get isMapLayersVisible(): boolean {
+        return this._visibleMapLayers && this._visibleMapLayers.length !== 0;
+    }
+
+    public isMapLayerVisible = (mapLayer: MapLayer) => {
+        return this._visibleMapLayers.includes(mapLayer);
+    };
+
+    @action
+    public setVisibleMapLayers = (layers: MapLayer[]) => {
+        this._visibleMapLayers = layers;
+    };
+
+    @action
+    public toggleMapLayerVisibility = (mapLayer: MapLayer) => {
+        if (this._visibleMapLayers.includes(mapLayer)) {
+            this.hideMapLayer(mapLayer);
+            _setLocalStorageLayerVisibility({ mapLayer, isVisible: false });
+        } else {
+            this.showMapLayer(mapLayer);
+            _setLocalStorageLayerVisibility({ mapLayer, isVisible: true });
+        }
+    };
+
+    @action
+    public showMapLayer = (mapLayer: MapLayer) => {
+        if (this._visibleMapLayers.includes(mapLayer)) return;
+        // Need to do concat (instead of push) to trigger observable reaction
+        this._visibleMapLayers = this._visibleMapLayers.concat([mapLayer]);
+    };
+
+    @action
+    public hideAllMapLayers = () => {
+        this._visibleMapLayers = [];
+    };
+
+    @action
+    public hideMapLayer = (mapLayer: MapLayer) => {
+        this._visibleMapLayers = this._visibleMapLayers.filter((mL) => mL !== mapLayer);
+    };
+
+    @action
+    public setSelectedTransitTypes = (types: TransitType[]) => {
+        this._selectedTransitTypes = types;
+    };
+
+    @action
+    public setNodeSize = (nodeSize: NodeSize) => {
+        this._nodeSize = nodeSize;
+    };
+
+    @action
+    public toggleSelectedTransitType = (transitType: TransitType) => {
+        if (this._selectedTransitTypes.includes(transitType)) {
+            this._selectedTransitTypes = this._selectedTransitTypes.filter(
+                (t) => t !== transitType
+            );
+            _setLocalStorageTransitTypeVisibility({ transitType, isVisible: false });
+        } else {
+            // Need to do concat (instead of push) to trigger observable reaction
+            this._selectedTransitTypes = this._selectedTransitTypes.concat([transitType]);
+            _setLocalStorageTransitTypeVisibility({ transitType, isVisible: true });
+        }
+    };
+
+    @action
+    public restoreSavedMapLayers() {
+        this.setVisibleMapLayers(this._savedMapLayers);
+        this._savedMapLayers = [];
+    }
+
+    @action
+    public saveMapLayers() {
+        this._savedMapLayers = this._visibleMapLayers;
+    }
+
+    private getInitialVisibleMapLayers = () => {
+        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+        const layers: MapLayer[] = [];
+        if (!Array.isArray(localStorageVisibleLayers)) return [];
+
+        const addLayer = (layer: MapLayer) => {
+            if (localStorageVisibleLayers.includes(layer)) {
+                layers.push(layer);
+            }
+        };
+        addLayer(MapLayer.node);
+        addLayer(MapLayer.link);
+        addLayer(MapLayer.unusedNode);
+        addLayer(MapLayer.unusedLink);
+
+        return layers;
+    };
+
+    private getInitialVisibleTransitTypes = () => {
+        const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_transit_types');
+        const transitTypes: TransitType[] = [];
+        if (!Array.isArray(localStorageVisibleLayers)) return [];
+
+        const addTransitType = (transitType: TransitType) => {
+            if (localStorageVisibleLayers.includes(transitType)) {
+                transitTypes.push(transitType);
+            }
+        };
+        addTransitType(TransitType.BUS);
+        addTransitType(TransitType.FERRY);
+        addTransitType(TransitType.SUBWAY);
+        addTransitType(TransitType.TRAIN);
+        addTransitType(TransitType.TRAM);
+
+        return transitTypes;
+    };
 }
 
 const _setLocalStorageLayerVisibility = ({
-  mapLayer,
-  isVisible,
+    mapLayer,
+    isVisible,
 }: {
-  mapLayer: MapLayer
-  isVisible: boolean
+    mapLayer: MapLayer;
+    isVisible: boolean;
 }) => {
-  if (mapLayer === 'linkPoint') {
-    return
-  }
-
-  const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers')
-  let layers: string[] = Array.isArray(localStorageVisibleLayers)
-    ? localStorageVisibleLayers
-    : []
-  if (isVisible) {
-    if (!layers.includes(mapLayer)) {
-      layers.push(mapLayer)
+    if (mapLayer === 'linkPoint') {
+        return;
     }
-  } else {
-    layers = layers.filter((l) => l !== mapLayer)
-  }
-  LocalStorageHelper.setItem('visible_layers', layers)
-}
+
+    const localStorageVisibleLayers = LocalStorageHelper.getItem('visible_layers');
+    let layers: string[] = Array.isArray(localStorageVisibleLayers)
+        ? localStorageVisibleLayers
+        : [];
+    if (isVisible) {
+        if (!layers.includes(mapLayer)) {
+            layers.push(mapLayer);
+        }
+    } else {
+        layers = layers.filter((l) => l !== mapLayer);
+    }
+    LocalStorageHelper.setItem('visible_layers', layers);
+};
 
 const _setLocalStorageTransitTypeVisibility = ({
-  transitType,
-  isVisible,
+    transitType,
+    isVisible,
 }: {
-  transitType: TransitType
-  isVisible: boolean
+    transitType: TransitType;
+    isVisible: boolean;
 }) => {
-  const localStorageVisibleTransitTypes = LocalStorageHelper.getItem('visible_transit_types')
-  let transitTypes: string[] = Array.isArray(localStorageVisibleTransitTypes)
-    ? localStorageVisibleTransitTypes
-    : []
-  if (isVisible) {
-    if (!transitTypes.includes(transitType)) {
-      transitTypes.push(transitType)
+    const localStorageVisibleTransitTypes = LocalStorageHelper.getItem('visible_transit_types');
+    let transitTypes: string[] = Array.isArray(localStorageVisibleTransitTypes)
+        ? localStorageVisibleTransitTypes
+        : [];
+    if (isVisible) {
+        if (!transitTypes.includes(transitType)) {
+            transitTypes.push(transitType);
+        }
+    } else {
+        transitTypes = transitTypes.filter((t) => t !== transitType);
     }
-  } else {
-    transitTypes = transitTypes.filter((t) => t !== transitType)
-  }
-  LocalStorageHelper.setItem('visible_transit_types', transitTypes)
-}
+    LocalStorageHelper.setItem('visible_transit_types', transitTypes);
+};
 
-export default new NetworkStore()
+export default new NetworkStore();
 
-export { NetworkStore, MapLayer }
+export { NetworkStore, MapLayer };

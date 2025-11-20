@@ -1,94 +1,94 @@
-import * as L from 'leaflet'
-import { uniq } from 'lodash'
-import { inject, observer } from 'mobx-react'
-import React from 'react'
-import { Marker as LeafletMarker } from 'react-leaflet'
-import TransitType from '~/enums/transitType'
-import { ISearchNode } from '~/models/INode'
-import { IPopupProps, PopupStore, PopupType } from '~/stores/popupStore'
-import NodeHighlightColor from '~/types/NodeHighlightColor'
-import LeafletUtils from '~/utils/leafletUtils'
-import * as s from './clusterNodeMarker.scss'
+import * as L from 'leaflet';
+import { uniq } from 'lodash';
+import { inject, observer } from 'mobx-react';
+import React from 'react';
+import { Marker as LeafletMarker } from 'react-leaflet';
+import TransitType from '~/enums/transitType';
+import { ISearchNode } from '~/models/INode';
+import { IPopupProps, PopupStore, PopupType } from '~/stores/popupStore';
+import NodeHighlightColor from '~/types/NodeHighlightColor';
+import LeafletUtils from '~/utils/leafletUtils';
+import * as s from './clusterNodeMarker.scss';
 
-type IconSize = 'large' | 'small'
+type IconSize = 'large' | 'small';
 
 interface IClusterNodeMarkerProps {
-  coordinates: L.LatLng
-  nodes: ISearchNode[]
-  popupType: PopupType
-  popupData: any // Depends on which popupType is given
-  iconSize?: IconSize
-  onContextMenu?: Function
-  popupStore?: PopupStore
+    coordinates: L.LatLng;
+    nodes: ISearchNode[];
+    popupType: PopupType;
+    popupData: any; // Depends on which popupType is given
+    iconSize?: IconSize;
+    onContextMenu?: Function;
+    popupStore?: PopupStore;
 }
 
 const ClusterNodeMarker = inject('popupStore')(
-  observer(({ iconSize = 'small', ...props }: IClusterNodeMarkerProps) => {
-    const getTransitTypeClassName = () => {
-      let transitTypes: TransitType[] = []
-      props.nodes.forEach((node) => (transitTypes = transitTypes.concat(node.transitTypes)))
-      transitTypes = uniq(transitTypes)
-      if (transitTypes.includes(TransitType.TRAM)) {
-        return s.tram
-      }
-      if (transitTypes.includes(TransitType.TRAIN)) {
-        return s.train
-      }
-      if (transitTypes.includes(TransitType.SUBWAY)) {
-        return s.subway
-      }
-      if (transitTypes.includes(TransitType.FERRY)) {
-        return s.ferry
-      }
-      if (transitTypes.includes(TransitType.BUS)) {
-        return s.bus
-      }
-      return s.unusedStop
-    }
-    const renderNodeMarkerIcon = () => {
-      const iconWidth = iconSize === 'small' ? 20 : 24
-      const markerHeight = iconSize === 'small' ? s.markerHeightSmall : s.markerHeightLarge
-      return LeafletUtils.createDivIcon({
-        html: (
-          <div
-            className={s.clusterNodeMarkerContainer}
-            style={{ fontSize: markerHeight, width: markerHeight }}
-          >
-            {props.nodes.length}
-          </div>
-        ),
-        options: {
-          iconWidth,
-          classNames: [s.node, s.clusterNodeMarker, getTransitTypeClassName()],
-          popupOffset: -15,
-          iconHeight: iconWidth,
-        },
-      })
-    }
+    observer(({ iconSize = 'small', ...props }: IClusterNodeMarkerProps) => {
+        const getTransitTypeClassName = () => {
+            let transitTypes: TransitType[] = [];
+            props.nodes.forEach((node) => (transitTypes = transitTypes.concat(node.transitTypes)));
+            transitTypes = uniq(transitTypes);
+            if (transitTypes.includes(TransitType.TRAM)) {
+                return s.tram;
+            }
+            if (transitTypes.includes(TransitType.TRAIN)) {
+                return s.train;
+            }
+            if (transitTypes.includes(TransitType.SUBWAY)) {
+                return s.subway;
+            }
+            if (transitTypes.includes(TransitType.FERRY)) {
+                return s.ferry;
+            }
+            if (transitTypes.includes(TransitType.BUS)) {
+                return s.bus;
+            }
+            return s.unusedStop;
+        };
+        const renderNodeMarkerIcon = () => {
+            const iconWidth = iconSize === 'small' ? 20 : 24;
+            const markerHeight = iconSize === 'small' ? s.markerHeightSmall : s.markerHeightLarge;
+            return LeafletUtils.createDivIcon({
+                html: (
+                    <div
+                        className={s.clusterNodeMarkerContainer}
+                        style={{ fontSize: markerHeight, width: markerHeight }}
+                    >
+                        {props.nodes.length}
+                    </div>
+                ),
+                options: {
+                    iconWidth,
+                    classNames: [s.node, s.clusterNodeMarker, getTransitTypeClassName()],
+                    popupOffset: -15,
+                    iconHeight: iconWidth,
+                },
+            });
+        };
 
-    const onMarkerClick = (e: L.LeafletEvent) => {
-      const popup: IPopupProps = {
-        type: props.popupType,
-        data: props.popupData,
-        coordinates: props.coordinates,
-        isCloseButtonVisible: true,
-        isAutoCloseOn: false,
-        hasOpacity: true,
-      }
-      props.popupStore!.showPopup(popup)
-    }
+        const onMarkerClick = (e: L.LeafletEvent) => {
+            const popup: IPopupProps = {
+                type: props.popupType,
+                data: props.popupData,
+                coordinates: props.coordinates,
+                isCloseButtonVisible: true,
+                isAutoCloseOn: false,
+                hasOpacity: true,
+            };
+            props.popupStore!.showPopup(popup);
+        };
 
-    return (
-      <LeafletMarker
-        onClick={onMarkerClick}
-        icon={renderNodeMarkerIcon()}
-        position={props.coordinates}
-        interactive={true}
-      ></LeafletMarker>
-    )
-  })
-)
+        return (
+            <LeafletMarker
+                onClick={onMarkerClick}
+                icon={renderNodeMarkerIcon()}
+                position={props.coordinates}
+                interactive={true}
+            ></LeafletMarker>
+        );
+    })
+);
 
-export default ClusterNodeMarker
+export default ClusterNodeMarker;
 
-export { NodeHighlightColor }
+export { NodeHighlightColor };

@@ -1,4 +1,4 @@
 export default interface IExternalTerminalArea {
-  termid: string
-  nimi: string
+    termid: string;
+    nimi: string;
 }
