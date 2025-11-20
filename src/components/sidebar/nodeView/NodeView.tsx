@@ -231,9 +231,8 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
 
   private fetchRoutePathsUsingNode = async (nodeId: string) => {
     this._setState({ isRoutePathsUsingNodeQueryLoading: true })
-    const routePaths: IRoutePathWithDisabledInfo[] = await RoutePathService.fetchRoutePathsUsingNode(
-      nodeId
-    )
+    const routePaths: IRoutePathWithDisabledInfo[] =
+      await RoutePathService.fetchRoutePathsUsingNode(nodeId)
     this._setState({
       isRoutePathsUsingNodeQueryLoading: false,
       routePathsUsingNode: routePaths,

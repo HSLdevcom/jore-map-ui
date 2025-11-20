@@ -53,12 +53,10 @@ const RoutePathComparisonView = inject(
     const [defaultRp1Selection, defaultRp2Selection] = _getRoutePathSelectionsFromUrlParams(
       props.match!.params.id
     )
-    const [routePathSelection1, setRoutePathSelection1] = useState<IRoutePathSelection>(
-      defaultRp1Selection
-    )
-    const [routePathSelection2, setRoutePathSelection2] = useState<IRoutePathSelection>(
-      defaultRp2Selection
-    )
+    const [routePathSelection1, setRoutePathSelection1] =
+      useState<IRoutePathSelection>(defaultRp1Selection)
+    const [routePathSelection2, setRoutePathSelection2] =
+      useState<IRoutePathSelection>(defaultRp2Selection)
     const [routePath1, setRoutePath1] = useState<IRoutePath | null>(null)
     const [routePath2, setRoutePath2] = useState<IRoutePath | null>(null)
 

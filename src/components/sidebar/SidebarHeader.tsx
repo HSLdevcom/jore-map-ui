@@ -84,13 +84,8 @@ class SidebarHeader extends React.Component<ISidebarHeaderProps> {
   }
 
   render() {
-    const {
-      children,
-      className,
-      isEditing,
-      isBackButtonVisible,
-      isCloseButtonVisible,
-    } = this.props
+    const { children, className, isEditing, isBackButtonVisible, isCloseButtonVisible } =
+      this.props
     return (
       <div
         className={classnames(s.sidebarHeaderView, className ? className : undefined)}

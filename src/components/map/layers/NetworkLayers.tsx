@@ -148,12 +148,11 @@ class NetworkLayers extends Component<INetworkLayersProps> {
    * Sets a reaction object for TileserverLayer (replaces existing one) so
    * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
    */
-  private setVectorgridLayerReaction = (type: TileserverLayer) => (
-    reaction: IReactionDisposer
-  ) => {
-    if (this.reactionDisposer[type]) this.reactionDisposer[type]()
-    this.reactionDisposer[type] = reaction
-  }
+  private setVectorgridLayerReaction =
+    (type: TileserverLayer) => (reaction: IReactionDisposer) => {
+      if (this.reactionDisposer[type]) this.reactionDisposer[type]()
+      this.reactionDisposer[type] = reaction
+    }
 
   render() {
     if (this.props.mapStore!.areNetworkLayersHidden) return null

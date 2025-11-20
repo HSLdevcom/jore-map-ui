@@ -337,12 +337,11 @@ class NodeStore {
   @action
   public updateStopPropertiesAccordingToNodeLocation = async () => {
     const coordinates = this.node.coordinatesProjection
-    const features:
-      | IGeoJSONFeature[]
-      | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-      coordinates,
-      searchResultCount: 1,
-    })
+    const features: IGeoJSONFeature[] | null =
+      await GeocodingService.makeDigitransitReverseGeocodingRequest({
+        coordinates,
+        searchResultCount: 1,
+      })
 
     this.updateAddressData(features)
     this.updateMunicipality(features)

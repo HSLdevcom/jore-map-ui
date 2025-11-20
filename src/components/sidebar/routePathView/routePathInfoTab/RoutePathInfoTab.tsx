@@ -32,9 +32,8 @@ class RoutePathInfoTab extends React.Component<IRoutePathInfoTabProps> {
     const invalidPropertiesMap = this.props.routePathStore!.invalidPropertiesMap
     const onChange = this.onChangeRoutePathProperty
     const routePath = this.props.routePathStore!.routePath!
-    const routePathPrimaryKeyValidationResult = routePathStore!.invalidPropertiesMap[
-      'routePathPrimaryKey'
-    ]
+    const routePathPrimaryKeyValidationResult =
+      routePathStore!.invalidPropertiesMap['routePathPrimaryKey']
     const currentDate = toMidnightDate(new Date())
     return (
       <div className={s.routePathInfoTabView}>

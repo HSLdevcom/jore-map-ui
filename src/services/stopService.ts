@@ -33,11 +33,9 @@ class StopService {
       fetchPolicy: 'no-cache',
     })
     const externalStops: IExternalStop[] = queryResult.data.node.nodes
-    return externalStops.map(
-      (externalStop: IExternalStop): IStop => {
-        return NodeStopFactory.mapExternalStop(externalStop)
-      }
-    )
+    return externalStops.map((externalStop: IExternalStop): IStop => {
+      return NodeStopFactory.mapExternalStop(externalStop)
+    })
   }
 
   public static fetchAllStopSections = async (): Promise<IStopSectionItem[]> => {
@@ -122,14 +120,12 @@ class StopService {
     })
     const externalHastusAreas: IExternalHastusArea[] = queryResult.data.node.nodes
 
-    return externalHastusAreas.map(
-      (ha: IExternalHastusArea): IHastusArea => {
-        return {
-          id: ha.paitunnus,
-          name: ha.nimi,
-        }
+    return externalHastusAreas.map((ha: IExternalHastusArea): IHastusArea => {
+      return {
+        id: ha.paitunnus,
+        name: ha.nimi,
       }
-    )
+    })
   }
 
   public static createHastusArea = async (hastusAreaSaveModel: IHastusAreaSaveModel) => {

@@ -178,9 +178,8 @@ class StopForm extends Component<IStopFormProps, IStopFormState> {
   }
 
   private getTariffiDropdownOptions = () => {
-    const originalDropdownItemList = this.props.codeListStore!.getDropdownItemList(
-      'Tariffialue'
-    )
+    const originalDropdownItemList =
+      this.props.codeListStore!.getDropdownItemList('Tariffialue')
     return originalDropdownItemList.filter((dropdownItem) => {
       // filter out unwanted values 00 - TYHJÄ and 99 - EI HSL
       return !(dropdownItem.value === '00' || dropdownItem.value === '99')

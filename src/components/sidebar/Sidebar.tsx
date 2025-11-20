@@ -68,22 +68,22 @@ class Sidebar extends React.Component<ISidebarProps, ILinelistState> {
     ]
   }
 
-  private renderComponent = ({ view, isNew }: { view: view; isNew: boolean }) => (
-    props: any
-  ) => {
-    switch (view) {
-      case 'line':
-        return <LineView {...props} isNewLine={isNew} />
-      case 'node':
-        return <NodeView {...props} isNewNode={isNew} />
-      case 'stopArea':
-        return <StopAreaView {...props} isNewStopArea={isNew} />
-      case 'link':
-        return <LinkView {...props} isNewLink={isNew} />
-      case 'routePath':
-        return <RoutePathView {...props} isNewRoutePath={isNew} />
+  private renderComponent =
+    ({ view, isNew }: { view: view; isNew: boolean }) =>
+    (props: any) => {
+      switch (view) {
+        case 'line':
+          return <LineView {...props} isNewLine={isNew} />
+        case 'node':
+          return <NodeView {...props} isNewNode={isNew} />
+        case 'stopArea':
+          return <StopAreaView {...props} isNewStopArea={isNew} />
+        case 'link':
+          return <LinkView {...props} isNewLink={isNew} />
+        case 'routePath':
+          return <RoutePathView {...props} isNewRoutePath={isNew} />
+      }
     }
-  }
 
   render() {
     const isMapFullscreen = this.props.mapStore!.isMapFullscreen

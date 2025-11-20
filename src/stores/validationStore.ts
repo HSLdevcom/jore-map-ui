@@ -56,9 +56,8 @@ class ValidationStore<ValidationObject, ValidationModel> {
     const validatorRule = this._validationModel![property]
     const value = this._validationObject![property]
     let validatorResult: IValidationResult | undefined
-    const customValidationResult:
-      | IValidationResult
-      | undefined = this.validateWithCustomValidator(property, value)
+    const customValidationResult: IValidationResult | undefined =
+      this.validateWithCustomValidator(property, value)
     const defaultValidationResult: IValidationResult | undefined = validatorRule
       ? FormValidator.validateProperty(validatorRule, value)
       : undefined
@@ -74,12 +73,10 @@ class ValidationStore<ValidationObject, ValidationModel> {
           ? 2
           : 1
       }
-      const defaultValidationResultSeverity = getValidationResultSeverity(
-        defaultValidationResult
-      )
-      const customValidationResultSeverity = getValidationResultSeverity(
-        customValidationResult
-      )
+      const defaultValidationResultSeverity =
+        getValidationResultSeverity(defaultValidationResult)
+      const customValidationResultSeverity =
+        getValidationResultSeverity(customValidationResult)
 
       // We always want to output the worst validationResult as the validationResult
       // If custom and default validation severities are equivalent, we want to use customValidationResult

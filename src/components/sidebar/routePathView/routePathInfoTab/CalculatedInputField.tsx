@@ -36,8 +36,8 @@ const CalculatedInputField = inject(
     }
 
     const calculatedRoutePathLength = props.routePathStore!.calculatedRoutePathLength
-    const isCalculatedRoutePathLengthFormedByMeasuredLengths = props.routePathStore!
-      .isCalculatedRoutePathLengthFormedByMeasuredLengths
+    const isCalculatedRoutePathLengthFormedByMeasuredLengths =
+      props.routePathStore!.isCalculatedRoutePathLengthFormedByMeasuredLengths
     return (
       <div className={s.calculateInputFieldView}>
         <InputContainer

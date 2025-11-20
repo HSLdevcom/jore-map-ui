@@ -54,11 +54,9 @@ class RouteListStore {
 
   @computed
   get routes(): IRoute[] {
-    return this._routeItems.map(
-      (routeItem: IRouteItem): IRoute => {
-        return routeItem.route
-      }
-    )
+    return this._routeItems.map((routeItem: IRouteItem): IRoute => {
+      return routeItem.route
+    })
   }
 
   @computed
@@ -82,17 +80,15 @@ class RouteListStore {
 
   @action
   public addToRouteItems = (routes: IRoute[]) => {
-    const routeItems = routes.map(
-      (route: IRoute): IRouteItem => {
-        return {
-          route,
-          selectedTabIndex: 0,
-          areAllRoutePathsVisible: false,
-          areSchedulesVisible: false,
-          activeSchedules: [],
-        }
+    const routeItems = routes.map((route: IRoute): IRouteItem => {
+      return {
+        route,
+        selectedTabIndex: 0,
+        areAllRoutePathsVisible: false,
+        areSchedulesVisible: false,
+        activeSchedules: [],
       }
-    )
+    })
     this._routeItems = this._routeItems.concat(routeItems)
     routes.forEach((route) => {
       RoutePathLayerListStore.addRoutePaths({ routePaths: route.routePaths })

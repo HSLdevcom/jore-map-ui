@@ -64,27 +64,26 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     navigator.goTo({ link: routePathViewLink })
   }
 
-  private selectRoutePath = (routePathToSelect: IRoutePath) => (
-    event: React.MouseEvent<HTMLElement>
-  ) => {
-    const routePathMassEditStore = this.props.routePathMassEditStore!
-    const selectedRoutePath = routePathMassEditStore!.selectedRoutePath
-    if (event.ctrlKey || event.shiftKey) {
-      if (selectedRoutePath?.internalId === routePathToSelect.internalId) {
-        routePathMassEditStore.setSelectedRoutePath(null)
-        return
+  private selectRoutePath =
+    (routePathToSelect: IRoutePath) => (event: React.MouseEvent<HTMLElement>) => {
+      const routePathMassEditStore = this.props.routePathMassEditStore!
+      const selectedRoutePath = routePathMassEditStore!.selectedRoutePath
+      if (event.ctrlKey || event.shiftKey) {
+        if (selectedRoutePath?.internalId === routePathToSelect.internalId) {
+          routePathMassEditStore.setSelectedRoutePath(null)
+          return
+        }
+        if (selectedRoutePath && selectedRoutePath.direction !== routePathToSelect.direction) {
+          routePathMassEditStore.addSelectedRoutePathIdGroup([
+            selectedRoutePath,
+            routePathToSelect,
+          ])
+          routePathMassEditStore.setSelectedRoutePath(null)
+          return
+        }
+        routePathMassEditStore.setSelectedRoutePath(routePathToSelect)
       }
-      if (selectedRoutePath && selectedRoutePath.direction !== routePathToSelect.direction) {
-        routePathMassEditStore.addSelectedRoutePathIdGroup([
-          selectedRoutePath,
-          routePathToSelect,
-        ])
-        routePathMassEditStore.setSelectedRoutePath(null)
-        return
-      }
-      routePathMassEditStore.setSelectedRoutePath(routePathToSelect)
     }
-  }
 
   render() {
     const { routePaths, nextGroup, prevGroup, isEditing, index } = this.props
@@ -105,11 +104,12 @@ class RoutePathGroup extends React.Component<IRoutePathGroupProps> {
     const isEditingAllowed = isStartDateEditable || isEndDateEditable
 
     if (isEditingAllowed) {
-      const currentMassEditRoutePaths = this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
-        (massEditRp: IMassEditRoutePath) => {
-          return routePaths.find((rp) => rp.internalId === massEditRp.id)
-        }
-      )
+      const currentMassEditRoutePaths =
+        this.props.routePathMassEditStore!.massEditRoutePaths?.filter(
+          (massEditRp: IMassEditRoutePath) => {
+            return routePaths.find((rp) => rp.internalId === massEditRp.id)
+          }
+        )
       // Try to find validationResult with that is invalid (prefered) or has an errorMessage
       let validationResultInvalid
       let validationResultWithErrorMessage

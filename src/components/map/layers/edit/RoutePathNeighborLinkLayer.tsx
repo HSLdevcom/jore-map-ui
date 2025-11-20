@@ -227,13 +227,11 @@ class RoutePathNeighborLinkLayer extends Component<
 
   render() {
     const neighborLinks: INeighborLink[] = this.props.routePathLayerStore!.neighborLinks
-    const clusteredNeighborLinksMap: Map<
-      LatLngBounds,
-      INeighborLink[]
-    > = _getClusteredNeighborLinksMap(
-      neighborLinks,
-      this.props.routePathLayerStore!.neighborToAddType
-    )
+    const clusteredNeighborLinksMap: Map<LatLngBounds, INeighborLink[]> =
+      _getClusteredNeighborLinksMap(
+        neighborLinks,
+        this.props.routePathLayerStore!.neighborToAddType
+      )
 
     const clusteredNeighborLinkMapEntries = Array.from(clusteredNeighborLinksMap.entries())
 
