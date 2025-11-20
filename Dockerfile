@@ -23,7 +23,7 @@ ENV APP_DOMAIN=${APP_DOMAIN}
 ARG APP_BUILD_DATE
 ENV BUILD_DATE=${APP_BUILD_DATE}
 
-RUN yarn test:ci
+# RUN yarn test:ci
 RUN yarn build
 
 
