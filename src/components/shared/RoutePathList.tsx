@@ -40,6 +40,7 @@ class RoutePathList extends React.Component<IRoutePathListProps, IRoutePathListS
     }
 
     private renderRoutePathRow = (routePath: IRoutePathWithDisabledInfo, key: string) => {
+        console.log(routePath)
         return (
             <div
                 key={key}
