@@ -121,13 +121,13 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 return;
             }
             this.centerMapToLink(link);
-            console.log("linkstore init")
+            console.log('linkstore init')
             this.props.linkStore!.init({
                 link,
                 nodes: [link.startNode, link.endNode],
                 isNewLink: false,
             });
-            console.log("setIsLinkGeometryEditable")
+            console.log('setIsLinkGeometryEditable')
             this.props.linkStore!.setIsLinkGeometryEditable(true);
             const bounds = L.latLngBounds(link.geometry);
             this.props.mapStore!.setMapBounds(bounds);
