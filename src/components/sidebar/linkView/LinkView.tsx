@@ -64,6 +64,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     private _setState = (newState: object) => {
         if (this._isMounted) {
+            console.log(newState)
             this.setState(newState);
         }
     };
@@ -138,6 +139,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
                 link.endNode.id,
                 link.transitType!
             );
+            console.log(routePaths)
             this._setState({ routePathsUsingLink: routePaths });
         }
         this._setState({ isLoading: false });
