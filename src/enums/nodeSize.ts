@@ -1,7 +1,7 @@
 enum NodeSize {
-  SMALL = 'small',
-  NORMAL = 'normal',
-  LARGE = 'large',
+    SMALL = 'small',
+    NORMAL = 'normal',
+    LARGE = 'large',
 }
 
-export default NodeSize
+export default NodeSize;

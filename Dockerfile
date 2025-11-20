@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:12.16.1-alpine AS builder
 
 ENV WORK=/opt/joremapui
 
@@ -7,8 +7,7 @@ WORKDIR ${WORK}
 
 # Install app dependencies
 COPY yarn.lock package.json .yarnrc ${WORK}
-
-RUN yarn install --ignore-scripts
+RUN yarn
 
 COPY . ${WORK}
 
@@ -24,7 +23,7 @@ ENV APP_DOMAIN=${APP_DOMAIN}
 ARG APP_BUILD_DATE
 ENV BUILD_DATE=${APP_BUILD_DATE}
 
-# RUN yarn test:ci
+RUN yarn test:ci
 RUN yarn build
 
 

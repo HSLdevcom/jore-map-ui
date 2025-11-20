@@ -1,6 +1,6 @@
 interface IExternalArmamentInfo {
-  nousijat: number
-  pysakkityyppi: string
+    nousijat: number;
+    pysakkityyppi: string;
 }
 
-export default IExternalArmamentInfo
+export default IExternalArmamentInfo;

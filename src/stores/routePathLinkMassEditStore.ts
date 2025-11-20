@@ -1,67 +1,67 @@
-import _ from 'lodash'
-import { action, computed, observable, reaction } from 'mobx'
-import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils'
-import { IRoutePathLink } from '~/models'
-import RoutePathStore from './routePathStore'
-import ToolbarStore from './toolbarStore'
+import _ from 'lodash';
+import { action, computed, observable, reaction } from 'mobx';
+import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
+import { IRoutePathLink } from '~/models';
+import RoutePathStore from './routePathStore';
+import ToolbarStore from './toolbarStore';
 
 class RoutePathLinkMassEditStore {
-  @observable private _selectedMassEditRoutePathLinks: IRoutePathLink[]
+    @observable private _selectedMassEditRoutePathLinks: IRoutePathLink[];
 
-  constructor() {
-    this._selectedMassEditRoutePathLinks = []
+    constructor() {
+        this._selectedMassEditRoutePathLinks = [];
 
-    reaction(
-      () => this._selectedMassEditRoutePathLinks.length,
-      _.debounce(
-        () =>
-          updateDisabledRoutePathToolStatus({
-            toolbarStore: ToolbarStore,
-            routePathStore: RoutePathStore,
-            routePathLinkMassEditStore: this,
-          }),
-        25
-      )
-    )
-  }
-
-  @computed
-  get selectedMassEditRoutePathLinks() {
-    return this._selectedMassEditRoutePathLinks
-  }
-
-  @action
-  public toggleSelectedRoutePathLink = (routePathLink: IRoutePathLink) => {
-    const currentIndex = this.getSelectedRoutePathLinkIndex(routePathLink)
-    currentIndex > -1
-      ? this._selectedMassEditRoutePathLinks.splice(currentIndex, 1)
-      : (this._selectedMassEditRoutePathLinks = this._selectedMassEditRoutePathLinks.concat([
-          routePathLink,
-        ]))
-  }
-
-  public getSelectedRoutePathLinkIndex = (routePathLink: IRoutePathLink) => {
-    return this._selectedMassEditRoutePathLinks.findIndex(
-      (rpLink) =>
-        rpLink.startNode.internalId === routePathLink.startNode.internalId &&
-        rpLink.endNode.internalId === routePathLink.endNode.internalId
-    )
-  }
-
-  @action
-  public removeSelectedRoutePathLink = (routePathLink: IRoutePathLink) => {
-    const currentIndex = this.getSelectedRoutePathLinkIndex(routePathLink)
-    if (currentIndex) {
-      this._selectedMassEditRoutePathLinks.splice(currentIndex, 1)
+        reaction(
+            () => this._selectedMassEditRoutePathLinks.length,
+            _.debounce(
+                () =>
+                    updateDisabledRoutePathToolStatus({
+                        toolbarStore: ToolbarStore,
+                        routePathStore: RoutePathStore,
+                        routePathLinkMassEditStore: this,
+                    }),
+                25
+            )
+        );
     }
-  }
 
-  @action
-  public clear = () => {
-    this._selectedMassEditRoutePathLinks = []
-  }
+    @computed
+    get selectedMassEditRoutePathLinks() {
+        return this._selectedMassEditRoutePathLinks;
+    }
+
+    @action
+    public toggleSelectedRoutePathLink = (routePathLink: IRoutePathLink) => {
+        const currentIndex = this.getSelectedRoutePathLinkIndex(routePathLink);
+        currentIndex > -1
+            ? this._selectedMassEditRoutePathLinks.splice(currentIndex, 1)
+            : (this._selectedMassEditRoutePathLinks = this._selectedMassEditRoutePathLinks.concat([
+                  routePathLink,
+              ]));
+    };
+
+    public getSelectedRoutePathLinkIndex = (routePathLink: IRoutePathLink) => {
+        return this._selectedMassEditRoutePathLinks.findIndex(
+            (rpLink) =>
+                rpLink.startNode.internalId === routePathLink.startNode.internalId &&
+                rpLink.endNode.internalId === routePathLink.endNode.internalId
+        );
+    };
+
+    @action
+    public removeSelectedRoutePathLink = (routePathLink: IRoutePathLink) => {
+        const currentIndex = this.getSelectedRoutePathLinkIndex(routePathLink);
+        if (currentIndex) {
+            this._selectedMassEditRoutePathLinks.splice(currentIndex, 1);
+        }
+    };
+
+    @action
+    public clear = () => {
+        this._selectedMassEditRoutePathLinks = [];
+    };
 }
 
-export default new RoutePathLinkMassEditStore()
+export default new RoutePathLinkMassEditStore();
 
-export { RoutePathLinkMassEditStore }
+export { RoutePathLinkMassEditStore };

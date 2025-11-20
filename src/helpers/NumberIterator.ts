@@ -1,15 +1,15 @@
-const initialValue = 0
+const initialValue = 0;
 
 class NumberIterator {
-  num = initialValue
+    num = initialValue;
 
-  public getNumber = () => {
-    return (this.num += 1)
-  }
+    public getNumber = () => {
+        return (this.num += 1);
+    };
 
-  public reset = () => {
-    this.num = initialValue
-  }
+    public reset = () => {
+        this.num = initialValue;
+    };
 }
 
-export default NumberIterator
+export default NumberIterator;

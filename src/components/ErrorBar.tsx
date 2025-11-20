@@ -1,35 +1,35 @@
-import { inject, observer } from 'mobx-react'
-import React, { Component } from 'react'
-import { IoMdClose } from 'react-icons/io'
-import { ErrorStore } from '~/stores/errorStore'
-import * as s from './errorBar.scss'
+import { inject, observer } from 'mobx-react';
+import React, { Component } from 'react';
+import { IoMdClose } from 'react-icons/io';
+import { ErrorStore } from '~/stores/errorStore';
+import * as s from './errorBar.scss';
 
 interface IErrorBarProps {
-  errorStore?: ErrorStore
+    errorStore?: ErrorStore;
 }
 
 @inject('errorStore')
 @observer
 class ErrorBar extends Component<IErrorBarProps> {
-  private popError = () => {
-    this.props.errorStore!.pop()
-  }
+    private popError = () => {
+        this.props.errorStore!.pop();
+    };
 
-  render() {
-    if (!this.props.errorStore!.latestError) {
-      return null
+    render() {
+        if (!this.props.errorStore!.latestError) {
+            return null;
+        }
+
+        return (
+            <div className={s.errorBarView}>
+                <div>
+                    {this.props.errorStore!.latestError}
+                    {this.props.errorStore!.errors.length > 1 &&
+                        ` (${this.props.errorStore!.errors.length})`}
+                </div>
+                <IoMdClose onClick={this.popError} />
+            </div>
+        );
     }
-
-    return (
-      <div className={s.errorBarView}>
-        <div>
-          {this.props.errorStore!.latestError}
-          {this.props.errorStore!.errors.length > 1 &&
-            ` (${this.props.errorStore!.errors.length})`}
-        </div>
-        <IoMdClose onClick={this.popError} />
-      </div>
-    )
-  }
 }
-export default ErrorBar
+export default ErrorBar;
