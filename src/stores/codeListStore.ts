@@ -48,7 +48,6 @@ class CodeListStore {
 
     public getDropdownItemList = (codeListName: codeListName): IDropdownItem[] => {
         const codeListItems = this._codeListMap.get(codeListName);
-        console.log(codeListItems)
         if (codeListItems) {
             return codeListItems.map((codeListItem: ICodeListItem) => {
                 return {
@@ -63,7 +62,6 @@ class CodeListStore {
     // TODO: rename as getCodeListValueLabel?
     public getCodeListLabel = (codeListName: codeListName, value: string) => {
         const codeListItems = this._codeListMap.get(codeListName);
-        console.log(codeListItems)
         if (codeListItems) {
             const item = codeListItems.find(
                 (item) => item.listId === codeListName && item.value === value

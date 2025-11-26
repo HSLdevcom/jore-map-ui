@@ -92,6 +92,7 @@ class NodeForm extends Component<INodeFormProps> {
                 }
             }
         }
+        console.log(dropdownItems)
         return dropdownItems;
     };
 
