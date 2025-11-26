@@ -64,7 +64,6 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
     private _setState = (newState: object) => {
         if (this._isMounted) {
-            console.log(newState)
             this.setState(newState);
         }
     };
@@ -72,10 +71,8 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     async componentDidMount() {
         this._isMounted = true;
         if (this.props.isNewLink) {
-            console.log('new link')
             await this.initNewLink()
         } else {
-            console.log('existing link')
             await this.initExistingLink()
         }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
@@ -106,40 +103,31 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
 
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
 
-        console.log('initExistingLink')
-        console.log(this.props)
-        console.log(startNodeId, endNodeId, transitTypeCode)
         if (startNodeId && endNodeId && transitTypeCode) {
             const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
-            console.log(link)
             if (!link) {
                 this.props.errorStore!.addError(
                     `Haku löytää linkki (alkusolmu ${startNodeId}, loppusolmu ${endNodeId}, verkko ${transitTypeCode}) ei onnistunut.`
                 );
                 const homeViewLink = routeBuilder.to(SubSites.home).toLink();
-                console.log(homeViewLink)
                 navigator.goTo({ link: homeViewLink });
                 return;
             }
             this.centerMapToLink(link);
-            console.log('linkstore init')
             this.props.linkStore!.init({
                 link,
                 nodes: [link.startNode, link.endNode],
                 isNewLink: false,
             });
-            console.log('setIsLinkGeometryEditable')
             this.props.linkStore!.setIsLinkGeometryEditable(true);
             const bounds = L.latLngBounds(link.geometry);
             this.props.mapStore!.setMapBounds(bounds);
 
-            console.log(link.geometry)
             const routePaths: IRoutePathWithDisabledInfo[] = await RoutePathService.fetchRoutePathsUsingLink(
                 link.startNode.id,
                 link.endNode.id,
                 link.transitType!
             );
-            console.log(routePaths)
             this._setState({ routePathsUsingLink: routePaths });
         }
         this._setState({ isLoading: false });
