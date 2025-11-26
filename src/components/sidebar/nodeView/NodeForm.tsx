@@ -46,7 +46,7 @@ const SHORT_ID_OPTIONS_MAP = {
     93: ['Po'],
     94: ['Pn', 'As'],
     95: ['Jä'],
-    96: ['Tu', 'Ke'],
+    96: ['Tu', 'Nu'],
     97: ['Nu'],
     98: ['Mä'],
 };
@@ -70,13 +70,10 @@ class NodeForm extends Component<INodeFormProps> {
 
     private getShortIdLetterDropdownItems = (nodeId: string) => {
         const dropdownItems: IDropdownItem[] = [];
-        console.log(nodeId)
         for (const nodeIdBeginning in SHORT_ID_OPTIONS_MAP) {
-            console.log(nodeIdBeginning)
             if (Object.prototype.hasOwnProperty.call(SHORT_ID_OPTIONS_MAP, nodeIdBeginning)) {
                 if (nodeId.startsWith(nodeIdBeginning)) {
                     const nodeIdOptions = SHORT_ID_OPTIONS_MAP[nodeIdBeginning];
-                    console.log(nodeIdOptions)
                     nodeIdOptions.forEach((nodeIdOption: string) => {
                         const codeListLabel = this.props.codeListStore!.getCodeListLabel(
                             'Lyhyttunnus',
@@ -86,13 +83,11 @@ class NodeForm extends Component<INodeFormProps> {
                             value: nodeIdOption,
                             label: `${nodeIdOption} - ${codeListLabel}`,
                         };
-                        console.log(dropdownItem)
                         dropdownItems.push(dropdownItem);
                     });
                 }
             }
         }
-        console.log(dropdownItems)
         return dropdownItems;
     };
 
