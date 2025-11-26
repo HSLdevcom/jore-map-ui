@@ -38,7 +38,7 @@ const SHORT_ID_OPTIONS_MAP = {
     2: ['E', 'XE'],
     3: ['Ka'],
     4: ['V', 'XV'],
-    5: ['Hy', 'La', 'Ri', 'Vi', 'Ko', 'Or'],
+    5: ['Hy', 'La', 'Ri', 'Vi', 'Ko', 'Or', 'Tu', 'Ke'],
     6: ['Ki', 'Ra', 'So'],
     90: ['Ke'],
     91: ['Ke'],
@@ -46,7 +46,7 @@ const SHORT_ID_OPTIONS_MAP = {
     93: ['Po'],
     94: ['Pn', 'As'],
     95: ['Jä'],
-    96: ['Tu'],
+    96: ['Tu', 'Ke'],
     97: ['Nu'],
     98: ['Mä'],
 };
