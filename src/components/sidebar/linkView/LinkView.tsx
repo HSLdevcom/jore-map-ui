@@ -71,9 +71,9 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
     async componentDidMount() {
         this._isMounted = true;
         if (this.props.isNewLink) {
-            await this.initNewLink();
+            await this.initNewLink()
         } else {
-            await this.initExistingLink();
+            await this.initExistingLink()
         }
         this.props.linkStore!.setIsEditingDisabled(!this.props.isNewLink);
         EventListener.on('geometryChange', () => this.props.linkStore!.setIsEditingDisabled(false));
@@ -102,6 +102,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
         this.props.linkStore!.clear();
 
         const [startNodeId, endNodeId, transitTypeCode] = this.props.match!.params.id.split(',');
+
         if (startNodeId && endNodeId && transitTypeCode) {
             const link = await LinkService.fetchLink(startNodeId, endNodeId, transitTypeCode);
             if (!link) {

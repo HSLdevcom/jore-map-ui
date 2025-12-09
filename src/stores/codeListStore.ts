@@ -48,7 +48,6 @@ class CodeListStore {
 
     public getDropdownItemList = (codeListName: codeListName): IDropdownItem[] => {
         const codeListItems = this._codeListMap.get(codeListName);
-
         if (codeListItems) {
             return codeListItems.map((codeListItem: ICodeListItem) => {
                 return {

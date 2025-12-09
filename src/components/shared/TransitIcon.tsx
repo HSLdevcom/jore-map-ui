@@ -5,6 +5,7 @@ import FerryIcon from '~/icons/icon-ferry';
 import SubwayIcon from '~/icons/icon-subway';
 import TrainIcon from '~/icons/icon-train';
 import TramIcon from '~/icons/icon-tram';
+import ErrorIcon from '~/icons/icon-error';
 
 interface ITransitIconProps {
     transitType: TransitType;
@@ -26,7 +27,7 @@ export default class TransitIcon extends React.Component<ITransitIconProps> {
             case TransitType.FERRY:
                 return <FerryIcon height='24' isWithoutBox={isWithoutBox} />;
             default:
-                throw `Missing icon for transitType: ${transitType}`;
+                return <ErrorIcon height='24' isWithoutBox={isWithoutBox} />;
         }
     }
 }
