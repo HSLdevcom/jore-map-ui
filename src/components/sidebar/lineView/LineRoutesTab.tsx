@@ -25,12 +25,13 @@ interface ILineRoutesTabProps {
 class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     private redirectToNewRouteView = () => {
         const line = this.props.lineStore!.line;
-
+        console.log(line)
         const newRouteViewLink = routeBuilder
             .to(SubSites.newRoute)
             .set(QueryParams.lineId, line!.id)
             .toLink();
 
+        console.log(newRouteViewLink)
         navigator.goTo({ link: newRouteViewLink });
     };
 

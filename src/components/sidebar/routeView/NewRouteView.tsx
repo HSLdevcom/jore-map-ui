@@ -43,6 +43,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
         this.state = {
             isLoading: true,
         };
+        console.log(props)
     }
 
     componentDidMount() {
@@ -71,6 +72,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
     private createNewRoute = async () => {
         this.props.mapStore!.initCoordinates();
+        console.log("createNewRoute")
 
         try {
             const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
@@ -81,6 +83,10 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             });
             const nameFi = basicRoute ? basicRoute.routeName : '';
             const nameSw = basicRoute ? basicRoute.routeNameSw : '';
+            console.log(lineId)
+            console.log(line)
+            console.log(basicRoute)
+
             const newRoute = RouteFactory.createNewRoute({ lineId, nameFi, nameSw });
             this.props.routeStore!.init({ route: newRoute, isNewRoute: true });
         } catch (e) {
