@@ -133,6 +133,7 @@
   },
   "resolutions": {
     "@types/react": "^16.8.23",
+    "@babel/traverse": "7.23.2",
     "minimist": "1.2.6",
     "handlebars": "4.7.7",
     "set-getter": "0.1.1",
