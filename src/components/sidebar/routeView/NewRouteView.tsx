@@ -76,15 +76,15 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
         try {
             const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
+            console.log(lineId)
             const line = await LineService.fetchLine(lineId);
+            console.log(line)
             const basicRoute = await RouteService.fetchRoute({
                 routeId: line.lineBasicRoute,
                 areRoutePathLinksExcluded: true,
             });
             const nameFi = basicRoute ? basicRoute.routeName : '';
             const nameSw = basicRoute ? basicRoute.routeNameSw : '';
-            console.log(lineId)
-            console.log(line)
             console.log(basicRoute)
 
             const newRoute = RouteFactory.createNewRoute({ lineId, nameFi, nameSw });
