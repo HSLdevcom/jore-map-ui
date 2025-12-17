@@ -72,7 +72,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
 
     private createNewRoute = async () => {
         this.props.mapStore!.initCoordinates();
-        console.log("createNewRoute")
+        console.log('createNewRoute')
 
         try {
             const lineId = navigator.getQueryParam(QueryParams.lineId) as string;
