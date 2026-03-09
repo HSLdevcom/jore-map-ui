@@ -49,8 +49,7 @@ function getTileserverUrl(layerName: string) {
 @inject('mapStore', 'networkStore', 'nodeStore', 'linkStore', 'popupStore')
 @observer
 class NetworkLayers extends Component<INetworkLayersProps> {
-    private reactionDisposer = {};
-
+    private reactionDisposer: Partial<Record<TileserverLayer, IReactionDisposer>> = {};
     private getLinkStyle = () => {
         return {
             // Layer name 'linkki' is directly mirrored from Jore through tileserver
@@ -148,10 +147,12 @@ class NetworkLayers extends Component<INetworkLayersProps> {
      * Sets a reaction object for TileserverLayer (replaces existing one) so
      * that reaction object's wouldn't multiply each time a VectorGridLayer is re-rendered.
      */
+    
     private setVectorgridLayerReaction = (type: TileserverLayer) => (
         reaction: IReactionDisposer
     ) => {
-        if (this.reactionDisposer[type]) this.reactionDisposer[type]();
+        const existingReaction = this.reactionDisposer[type];
+        if (existingReaction) existingReaction();
         this.reactionDisposer[type] = reaction;
     };
 

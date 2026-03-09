@@ -161,7 +161,7 @@ const _format = (obj: object) => {
 };
 
 const _arrayToObject = (arr: [string, any][]) => {
-    const res = {};
+    const res: Record<string, any> = {};
     arr.forEach(([key, value]: [string, any]) => {
         res[key] = value;
     });

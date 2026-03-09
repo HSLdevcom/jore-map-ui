@@ -42,11 +42,14 @@ class CoordinateControl extends Component<ICoordinateControlProps, ICoordinateCo
         this.mounted = false;
 
         if (MapStore!.coordinates) {
-            const [lat, lon] = this.getDisplayCoordinates();
-            this.state = {
-                x: String(lon),
-                y: String(lat)
-            };
+            const displayCoordinates = this.getDisplayCoordinates();
+            if (displayCoordinates) {
+                const [lat, lon] = displayCoordinates;
+                this.state = {
+                    x: String(lon),
+                    y: String(lat)
+                };
+            }
         }
         this.coordinatesListener = reaction(() => MapStore!.coordinates, this.updateCoordinates);
     }

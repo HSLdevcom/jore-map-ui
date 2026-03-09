@@ -125,7 +125,7 @@ const _parseNeighborLinks = ({
     return queryResult.data.solmuBySoltunnus[linkPropertyName].nodes.map(
         (link: IExtendedExternalLink): INeighborLink => ({
             routePathLink: RoutePathLinkFactory.mapExternalLink(link, orderNumber),
-            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
+            nodeUsageRoutePaths: (link as any)[nodePropertyName].usageDuringDate!.nodes.map(
                 (rp: IExternalRoutePath) => {
                     const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
                     const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;

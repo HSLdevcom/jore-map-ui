@@ -77,7 +77,7 @@ class AlertStore {
         this._message = message;
         this._type = type;
 
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             setTimeout(() => {
                 this.close();
                 resolve();

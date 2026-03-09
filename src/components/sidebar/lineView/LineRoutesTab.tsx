@@ -12,7 +12,7 @@ import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import s from './lineRoutesTab.scss';
+import * as s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {
     lineStore?: LineStore;

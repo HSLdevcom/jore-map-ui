@@ -59,11 +59,12 @@ class ApolloClient {
         options: Apollo.QueryOptions<TVariables>
     ): Promise<Apollo.ApolloQueryResult<T>> {
         try {
-            return await this.client.query<T>(options);
+            return await this.client.query<T, TVariables>(options);
         } catch (e) {
             const err = e as Apollo.ApolloError;
             if (err.networkError) {
-                switch (err.networkError['statusCode']) {
+                const statusCode = (err.networkError as any)['statusCode'];
+                switch (statusCode) {
                     case 403:
                         AlertStore!
                             .setFadeMessage({ message: httpStatusDescriptionCodeList[403] })

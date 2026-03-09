@@ -295,8 +295,8 @@ const _getNodeValue = ({
     property: string;
 }): string => {
     if (!rpLink) return '';
-    const rawValue = rpLink[property];
-    const valueMapper = rpLinkValueMapperObj[property];
+    const rawValue = (rpLink as Record<string, any>)[property];
+    const valueMapper = (rpLinkValueMapperObj as Record<string, (value: any) => string>)[property];
     return valueMapper ? valueMapper(rawValue) : rawValue;
 };
 

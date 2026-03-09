@@ -144,9 +144,12 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                     this.props.stopAreaStore!.stopArea
                 );
                 const nodeQueryParam = navigator.getQueryParam(QueryParams.nodeId);
-                const nodeId = nodeQueryParam ? nodeQueryParam[0] : undefined;
+                const nodeIdRaw = Array.isArray(nodeQueryParam) ? nodeQueryParam[0] : nodeQueryParam;
+                const nodeId = typeof nodeIdRaw === 'string' ? nodeIdRaw : undefined;
+
                 const latLngQueryParam = navigator.getQueryParam(QueryParams.latLng);
-                const latLng = latLngQueryParam ? latLngQueryParam[0] : undefined;
+                const latLngRaw = Array.isArray(latLngQueryParam) ? latLngQueryParam[0] : latLngQueryParam;
+                const latLng = typeof latLngRaw === 'string' ? latLngRaw : undefined;
                 if (latLng) {
                     const newNodeLink = routeBuilder
                         .to(SubSites.newNode)
@@ -154,7 +157,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
                         .append(QueryParams.stopAreaId, stopAreaId)
                         .toLink();
                     navigator.goTo({ link: newNodeLink, shouldSkipUnsavedChangesPrompt: true });
-                } else {
+                } else if (nodeId) {
                     const nodeLink = routeBuilder
                         .to(SubSites.node)
                         .toTarget(':id', nodeId)
@@ -238,7 +241,7 @@ class StopAreaView extends React.Component<IStopAreaViewProps, IStopAreaViewStat
     render() {
         const stopAreaStore = this.props.stopAreaStore!;
         const stopArea = stopAreaStore.stopArea;
-        const invalidPropertiesMap = stopAreaStore.invalidPropertiesMap;
+        const invalidPropertiesMap = stopAreaStore.invalidPropertiesMap as Record<string, any>;
         if (this.state.isLoading) {
             return (
                 <div className={s.stopAreaView}>

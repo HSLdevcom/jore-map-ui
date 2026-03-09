@@ -199,4 +199,5 @@ const _generateAllShortIdVariations = (numberCount: number) => {
 
 export default StopService;
 
-export { IStopSectionItem, IStopItem };
+export type { IStopItem };
+export { IStopSectionItem };

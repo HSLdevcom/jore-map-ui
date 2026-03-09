@@ -28,7 +28,7 @@ import * as s from './splitLinkView.scss';
 interface ISplitLinkViewState {
     isLoading: boolean;
     selectedDate?: Date;
-    selectedRoutePathIds: object;
+    selectedRoutePathIds: { [key: string]: boolean };
     routePaths: IRoutePath[];
     isLoadingRoutePaths: boolean;
 }

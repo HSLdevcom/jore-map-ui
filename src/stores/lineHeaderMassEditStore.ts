@@ -8,7 +8,7 @@ import NavigationStore from './navigationStore';
 interface IMassEditLineHeader {
     id: number; // internal id
     lineHeader: ILineHeader;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, any>;
     isRemoved: boolean;
 }
 

@@ -23,7 +23,7 @@ interface INodeFormProps {
     node: INode;
     isNewNode: boolean;
     isEditingDisabled: boolean;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, any>;
     isNodeIdEditable?: boolean;
     onChangeNodeGeometry?: (property: NodeLocationType) => (value: L.LatLng) => void;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
@@ -73,7 +73,7 @@ class NodeForm extends Component<INodeFormProps> {
         for (const nodeIdBeginning in SHORT_ID_OPTIONS_MAP) {
             if (Object.prototype.hasOwnProperty.call(SHORT_ID_OPTIONS_MAP, nodeIdBeginning)) {
                 if (nodeId.startsWith(nodeIdBeginning)) {
-                    const nodeIdOptions = SHORT_ID_OPTIONS_MAP[nodeIdBeginning];
+                    const nodeIdOptions = (SHORT_ID_OPTIONS_MAP as Record<string, string[]>)[nodeIdBeginning];
                     nodeIdOptions.forEach((nodeIdOption: string) => {
                         const codeListLabel = this.props.codeListStore!.getCodeListLabel(
                             'Lyhyttunnus',

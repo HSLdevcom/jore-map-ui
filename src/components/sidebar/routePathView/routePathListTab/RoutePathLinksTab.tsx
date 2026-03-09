@@ -18,7 +18,7 @@ import RoutePathLinkMassEditView from './RoutePathLinkMassEditView';
 import RoutePathListLink from './RoutePathListLink';
 import RoutePathListNeighborLink from './RoutePathListNeighborLink';
 import RoutePathListNode from './RoutePathListNode';
-import s from './routePathLinksTab.scss';
+import * as s from './routePathLinksTab.scss';
 
 interface IRoutePathLinksTabProps {
     routePath: IRoutePath;
@@ -139,8 +139,7 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
               routePathLayerStore.highlightedNeighborLinkId
             : false;
         const isRoutePathNodeValid = isLastNode
-            ? this.props.routePathStore!.invalidPropertiesMap['startNodeBookScheduleColumnNumber']
-                  .isValid
+            ? (this.props.routePathStore!.invalidPropertiesMap as any)['startNodeBookScheduleColumnNumber']?.isValid
             : this.props.routePathStore!.getIsRoutePathLinkValid(routePathLink.id);
         return (
             <RoutePathListNode

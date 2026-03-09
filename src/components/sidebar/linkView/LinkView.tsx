@@ -287,7 +287,7 @@ class LinkView extends React.Component<ILinkViewProps, ILinkViewState> {
             return <div className={s.linkView}>Linkkiä ei löytynyt.</div>;
         }
 
-        const invalidPropertiesMap = this.props.linkStore!.invalidPropertiesMap;
+        const invalidPropertiesMap = this.props.linkStore!.invalidPropertiesMap as Record<string, any>;
         const isEditingDisabled = this.props.linkStore!.isEditingDisabled;
         const startNode = link!.startNode;
         const endNode = link!.endNode;

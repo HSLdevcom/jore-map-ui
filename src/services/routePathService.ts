@@ -292,10 +292,7 @@ const _createRoutePathSaveModel = (
         originals,
     };
 
-    const routePathToSave = {
-        ...newRoutePath,
-    };
-    delete routePathToSave['routePathLinks'];
+    const { routePathLinks, ...routePathToSave } = newRoutePath;
 
     return {
         routePathLinkSaveModel,
