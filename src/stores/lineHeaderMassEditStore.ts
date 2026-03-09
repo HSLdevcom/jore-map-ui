@@ -136,9 +136,8 @@ class LineHeaderMassEditStore {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
         massEditLineHeader!.lineHeader.startDate = value;
-        this._massEditLineHeaders = this._massEditLineHeaders!.slice().sort(
-            _sortMassEditLineHeaders
-        );
+        this._massEditLineHeaders =
+            this._massEditLineHeaders!.slice().sort(_sortMassEditLineHeaders);
         this.validateDates();
     };
 
@@ -147,9 +146,8 @@ class LineHeaderMassEditStore {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
         massEditLineHeader!.lineHeader.endDate = value;
-        this._massEditLineHeaders = this._massEditLineHeaders!.slice().sort(
-            _sortMassEditLineHeaders
-        );
+        this._massEditLineHeaders =
+            this._massEditLineHeaders!.slice().sort(_sortMassEditLineHeaders);
         this.validateDates();
     };
 

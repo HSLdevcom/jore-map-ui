@@ -44,7 +44,6 @@ async function start() {
 
   const compiler = webpack(config);
 
-  // WebpackDevServer v4 signature: new WebpackDevServer(options, compiler)
   const server = new WebpackDevServer(
     {
       host: HOST,
@@ -52,7 +51,6 @@ async function start() {
       hot: true,
       historyApiFallback: true,
 
-      // Serve /public (adjust if your setup differs)
       static: {
         directory: paths.appPublic,
         publicPath: '/',

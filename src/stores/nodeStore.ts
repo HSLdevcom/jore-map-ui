@@ -337,12 +337,11 @@ class NodeStore {
     @action
     public updateStopPropertiesAccordingToNodeLocation = async () => {
         const coordinates = this.node.coordinatesProjection;
-        const features:
-            | IGeoJSONFeature[]
-            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-            coordinates,
-            searchResultCount: 1,
-        });
+        const features: IGeoJSONFeature[] | null =
+            await GeocodingService.makeDigitransitReverseGeocodingRequest({
+                coordinates,
+                searchResultCount: 1,
+            });
 
         this.updateAddressData(features);
         this.updateMunicipality(features);
@@ -429,19 +428,13 @@ class NodeStore {
         this._nodeValidationStore.updateProperty(property, value);
     };
 
-    public updateStopProperty = (
-        property: keyof IStop,
-        value?: string | number | Date
-    ) => {
+    public updateStopProperty = (property: keyof IStop, value?: string | number | Date) => {
         if (!this.node) return;
         (this._node!.stop as Record<keyof IStop, any>)[property] = value;
         this._stopValidationStore.updateProperty(property, value);
     };
 
-    public updateOldStopProperty = (
-        property: keyof IStop,
-        value?: string | number | Date
-    ) => {
+    public updateOldStopProperty = (property: keyof IStop, value?: string | number | Date) => {
         if (!this.node) return;
         (this._oldNode!.stop as Record<keyof IStop, any>)[property] = value;
     };

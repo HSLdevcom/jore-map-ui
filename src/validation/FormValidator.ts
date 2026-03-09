@@ -56,7 +56,7 @@ class FormValidator {
         validationModel: Record<string, string>,
         validationEntity: Record<string, any>
     ) => {
-    const invalidPropertiesMap: Record<string, IValidationResult> = {};
+        const invalidPropertiesMap: Record<string, IValidationResult> = {};
 
         Object.entries(validationModel).forEach(([property, validatorRule]) => {
             const validationResult = FormValidator.validateProperty(

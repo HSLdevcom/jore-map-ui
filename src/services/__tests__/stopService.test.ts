@@ -1,10 +1,9 @@
-import { mocked } from 'jest-mock';
 import ApolloClient from '~/helpers/ApolloClient';
 import StopService from '../stopService';
 
 jest.mock('../../helpers/ApolloClient');
 
-const mockedApolloClient = mocked(ApolloClient, { shallow: true }) as any;
+const mockedApolloClient = ApolloClient as any;
 
 // These tests expect that StopService.SHORT_ID_LENGTH = 4
 

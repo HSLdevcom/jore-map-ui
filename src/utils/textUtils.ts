@@ -3,10 +3,7 @@ import textCodeList from '~/codeLists/textCodeList';
 /**
  * @param {keyValueMap} { key: value } - key is the same as ${key} in textCodeList, ${key} is replaced with value
  **/
-const getText = (
-    key: keyof typeof textCodeList,
-    keyValueMap?: Record<string, string>
-) => {
+const getText = (key: keyof typeof textCodeList, keyValueMap?: Record<string, string>) => {
     let lineString = textCodeList[key];
     const regexRule = /\$\{(\w+)\}/g; // ${...}
 

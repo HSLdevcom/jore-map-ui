@@ -38,11 +38,21 @@ class ErrorStore {
             return;
         }
         let msg = message;
-        if (error && error.errorCode && httpStatusDescriptionCodeList[error.errorCode as keyof typeof httpStatusDescriptionCodeList]) {
+        if (
+            error &&
+            error.errorCode &&
+            httpStatusDescriptionCodeList[
+                error.errorCode as keyof typeof httpStatusDescriptionCodeList
+            ]
+        ) {
             if (!isEmpty(msg)) {
                 msg += `, `;
             }
-            msg += `${httpStatusDescriptionCodeList[error.errorCode as keyof typeof httpStatusDescriptionCodeList]}`;
+            msg += `${
+                httpStatusDescriptionCodeList[
+                    error.errorCode as keyof typeof httpStatusDescriptionCodeList
+                ]
+            }`;
         } else if (error && !isEmpty(error.message)) {
             if (!isEmpty(msg)) {
                 msg += `, `;

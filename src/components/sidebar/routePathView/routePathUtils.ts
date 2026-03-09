@@ -90,20 +90,19 @@ const compareRoutePathLinks = (rpLink1: IRoutePathLink, rpLink2: IRoutePathLink)
 
     forOwn(rpLink1ToCompare, (a: any, property: string) => {
         const b = rpLink2ToCompare[property];
-            if ((!a || a === '') && (!b || b === '')) {
+        if ((!a || a === '') && (!b || b === '')) {
+            return;
+        }
+        // startNodeUsage's 0 or null mean the same value
+        if (property === 'startNodeUsage') {
+            if ((!a || a === '0') && (!b || b === '0')) {
                 return;
             }
-            // startNodeUsage's 0 or null mean the same value
-            if (property === 'startNodeUsage') {
-                if ((!a || a === '0') && (!b || b === '0')) {
-                    return;
-                }
-            }
-            if (!isEqual(a, b)) {
-                areRoutePathLinksEqual = false;
-            }
         }
-    );
+        if (!isEqual(a, b)) {
+            areRoutePathLinksEqual = false;
+        }
+    });
     if (!areRoutePathLinksEqual) {
         return false;
     }
