@@ -8,7 +8,7 @@ import NavigationStore from './navigationStore';
 interface IMassEditLineHeader {
     id: number; // internal id
     lineHeader: ILineHeader;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, any>;
     isRemoved: boolean;
 }
 
@@ -136,9 +136,8 @@ class LineHeaderMassEditStore {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
         massEditLineHeader!.lineHeader.startDate = value;
-        this._massEditLineHeaders = this._massEditLineHeaders!.slice().sort(
-            _sortMassEditLineHeaders
-        );
+        this._massEditLineHeaders =
+            this._massEditLineHeaders!.slice().sort(_sortMassEditLineHeaders);
         this.validateDates();
     };
 
@@ -147,9 +146,8 @@ class LineHeaderMassEditStore {
         const massEditLineHeader = this.getMassEditLineHeader(id);
 
         massEditLineHeader!.lineHeader.endDate = value;
-        this._massEditLineHeaders = this._massEditLineHeaders!.slice().sort(
-            _sortMassEditLineHeaders
-        );
+        this._massEditLineHeaders =
+            this._massEditLineHeaders!.slice().sort(_sortMassEditLineHeaders);
         this.validateDates();
     };
 

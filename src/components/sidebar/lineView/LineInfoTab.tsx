@@ -78,7 +78,7 @@ class LineInfoTab extends React.Component<ILineInfoTabProps, ILineInfoTabState> 
         const isEditingDisabled = this.props.isEditingDisabled;
         const isUpdating = !lineStore.isNewLine || this.props.isEditingDisabled;
         const onChange = this.onChangeLineProperty;
-        const invalidPropertiesMap = lineStore.invalidPropertiesMap;
+        const invalidPropertiesMap = lineStore.invalidPropertiesMap as Record<string, any>;
         const selectedTransitTypes = line!.transitType ? [line!.transitType!] : [];
         return (
             <div className={s.lineInfoTabView}>

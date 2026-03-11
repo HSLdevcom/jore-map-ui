@@ -7,7 +7,7 @@ import NodeSize from '~/enums/nodeSize';
 import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import { NodeLabel } from '~/stores/mapStore';
-import NodeHighlightColor from '~/types/NodeHighlightColor';
+import type NodeHighlightColor from '~/types/NodeHighlightColor';
 import NodeLocationType from '~/types/NodeLocationType';
 import NodeUtils from '~/utils/NodeUtils';
 import LeafletUtils from '~/utils/leafletUtils';

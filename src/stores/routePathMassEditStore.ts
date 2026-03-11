@@ -356,10 +356,12 @@ class RoutePathMassEditStore {
 
         // To clear unsaved routePaths, need to remove them from RoutePathLayerListStore
         if (this._massEditRoutePaths) {
-            const routePathsToRemove = this._massEditRoutePaths!.filter((mEditRp) => mEditRp.isNew).map(
-                (mEditRp) => mEditRp.routePath
+            const routePathsToRemove = this._massEditRoutePaths!.filter(
+                (mEditRp) => mEditRp.isNew
+            ).map((mEditRp) => mEditRp.routePath);
+            routePathsToRemove.forEach((rp) =>
+                RoutePathLayerListStore.removeRoutePath(rp.internalId)
             );
-            routePathsToRemove.forEach((rp) => RoutePathLayerListStore.removeRoutePath(rp.internalId));
             this._massEditRoutePaths = null;
         }
 

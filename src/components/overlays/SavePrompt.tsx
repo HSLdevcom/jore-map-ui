@@ -26,8 +26,8 @@ interface ISavePromptSection {
 interface ISaveModel {
     type: 'saveModel';
     model: Model;
-    newData: Object | null;
-    oldData: Object | null;
+    newData: Record<string, any> | null;
+    oldData: Record<string, any> | null;
     subTopic?: string;
     isRemoved?: boolean;
 }
@@ -52,8 +52,8 @@ interface ICustomPropertyValueFuncObj {
 const PREVENTED_CHANGE_ROW_PROPERTIES = ['modifiedOn', 'modifiedBy'];
 
 const renderSaveModelSection = (saveModel: ISaveModel, key: string) => {
-    const newData = _.cloneDeep(saveModel.newData);
-    const oldData = _.cloneDeep(saveModel.oldData);
+    const newData: Record<string, any> | null = _.cloneDeep(saveModel.newData);
+    const oldData: Record<string, any> | null = _.cloneDeep(saveModel.oldData);
     for (const property in newData) {
         const newValue = newData[property];
         const oldValue = oldData ? oldData[property] : '';
@@ -105,14 +105,19 @@ const renderTextModelSection = (textModel: ITextModel, key: string) => {
 };
 
 const _getLabel = (model: Model, property: string) => {
-    const propertyCodeList = propertyCodeLists[model];
+    const propertyCodeList = propertyCodeLists[model] as Record<string, string>;
     if (!propertyCodeList) {
         throw `Unsupported model given for savePrompt: ${model}`;
     }
     return propertyCodeList[property];
 };
 
-const _getPropertyValue = (model: Model, property: string, data: Object | null, isNew: boolean) => {
+const _getPropertyValue = (
+    model: Model,
+    property: string,
+    data: Record<string, any> | null,
+    isNew: boolean
+) => {
     if (!data) {
         return '';
     }
@@ -163,8 +168,9 @@ const _getPropertyValue = (model: Model, property: string, data: Object | null, 
         },
     };
 
-    const customPropertyValueFunc =
-        customPropertyValueFuncObj[model] && customPropertyValueFuncObj[model][property];
+    const customPropertyValueFuncGroup = (customPropertyValueFuncObj as unknown as Record<string,Record<string, () => any>>)[model];
+    const customPropertyValueFunc = customPropertyValueFuncGroup && customPropertyValueFuncGroup[property];
+    
     if (customPropertyValueFunc) return customPropertyValueFunc();
 
     return value || typeof value === 'number' ? value : '';

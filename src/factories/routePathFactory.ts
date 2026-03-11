@@ -1,7 +1,7 @@
 import TransitType from '~/enums/transitType';
 import { IRoutePath, IRoutePathLink } from '~/models';
-import IExternalRoutePath from '~/models/externals/IExternalRoutePath.ts';
-import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink.ts';
+import IExternalRoutePath from '~/models/externals/IExternalRoutePath';
+import IExternalRoutePathLink from '~/models/externals/IExternalRoutePathLink';
 import HashUtils from '~/utils/HashUtils';
 import RoutePathLinkFactory from './routePathLinkFactory';
 

@@ -16,7 +16,7 @@ interface PopupLayerProps {
 @inject('popupStore')
 @observer
 class PopupLayer extends Component<PopupLayerProps> {
-    private popupRefs: object;
+    private popupRefs: Record<number, any> = {};
 
     private closePopup = (popup: IPopup) => () => {
         this.props.popupStore!.closePopup(popup.id!);
@@ -24,7 +24,9 @@ class PopupLayer extends Component<PopupLayerProps> {
 
     private bringPopupToFront = (id: number) => {
         const popupRef = this.popupRefs[id];
-        popupRef.leafletElement.bringToFront();
+        if (popupRef && popupRef.leafletElement) {
+            popupRef.leafletElement.bringToFront();
+        }
     };
 
     private renderPopupContent = (popup: IPopup) => {

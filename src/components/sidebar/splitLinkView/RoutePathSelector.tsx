@@ -7,7 +7,7 @@ import * as s from './routePathSelector.scss';
 
 interface IRoutePathSelectorProps {
     routePaths: IRoutePath[];
-    selectedIds: {};
+    selectedIds: { [key: string]: boolean };
     isLoading?: boolean;
     toggleIsRoutePathSelected: (routePathId: string) => void;
     selectedDate: Date;

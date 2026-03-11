@@ -12,7 +12,7 @@ interface IStopFormProps {
     isNewNode: boolean;
     isBackgroundGrey: boolean;
     isEditingDisabled: boolean;
-    nodeInvalidPropertiesMap: object;
+    nodeInvalidPropertiesMap: Record<string, any>;
     nodeStore?: NodeStore;
     onNodePropertyChange?: (property: keyof INode) => (value: any) => void;
 }

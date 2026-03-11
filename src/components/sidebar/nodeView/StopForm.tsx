@@ -31,7 +31,7 @@ interface IStopFormProps {
     stopAreas: IStopArea[];
     stopSections: IStopSectionItem[];
     hastusAreas: IHastusArea[];
-    stopInvalidPropertiesMap: object;
+    stopInvalidPropertiesMap: Record<string, any>;
     saveHastusArea?: ({
         isNewHastusArea,
         isHastusAreaSavedToNode,

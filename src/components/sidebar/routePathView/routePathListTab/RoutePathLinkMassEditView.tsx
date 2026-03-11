@@ -8,7 +8,7 @@ import { RoutePathLinkMassEditStore } from '~/stores/routePathLinkMassEditStore'
 import { RoutePathStore } from '~/stores/routePathStore';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 import SidebarHeader from '../../SidebarHeader';
-import s from './routePathLinkMassEditView.scss';
+import * as s from './routePathLinkMassEditView.scss';
 
 interface IRoutePathLinkMassEditViewProps {
     routePathLinks: IRoutePathLink[];
@@ -25,9 +25,15 @@ interface IRoutePathLinkMassEditViewState {
     destinationSw2: string;
     destinationShieldFi: string;
     destinationShieldSw: string;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: { [key: string]: IValidationResult };
 }
-
+type EditableRoutePathLinkField =
+    | 'destinationFi1'
+    | 'destinationFi2'
+    | 'destinationSw1'
+    | 'destinationSw2'
+    | 'destinationShieldFi'
+    | 'destinationShieldSw';
 type EditMode = 'via' | 'kilpiVia';
 
 @inject('routePathStore', 'routePathLinkMassEditStore')
@@ -36,7 +42,7 @@ class RoutePathLinkMassEditView extends React.Component<
     IRoutePathLinkMassEditViewProps,
     IRoutePathLinkMassEditViewState
 > {
-    private initialState = {
+    private initialState: IRoutePathLinkMassEditViewState = {
         editMode: null,
         destinationFi1: '',
         destinationFi2: '',
@@ -73,17 +79,25 @@ class RoutePathLinkMassEditView extends React.Component<
     }
 
     private onPropertyChange = (property: string) => (value: string) => {
-        const currentState = this.state;
-        const invalidPropertiesMap = currentState.invalidPropertiesMap;
+        this.setState((prevState) => {
+            const invalidPropertiesMap = { ...prevState.invalidPropertiesMap };
 
-        invalidPropertiesMap[property] = FormValidator.validateProperty(
-            routePathLinkValidationModel[property],
-            value
-        );
+            const validationModel =
+                routePathLinkValidationModel[property as keyof typeof routePathLinkValidationModel];
 
-        currentState[property] = value;
-        currentState.invalidPropertiesMap = invalidPropertiesMap;
-        this.setState(currentState);
+            if (validationModel) {
+                invalidPropertiesMap[property] = FormValidator.validateProperty(
+                    validationModel,
+                    value
+                );
+            }
+
+            return {
+                ...prevState,
+                [property]: value,
+                invalidPropertiesMap,
+            } as IRoutePathLinkMassEditViewState;
+        });
     };
 
     private editRoutePathLinks = () => {
@@ -105,9 +119,11 @@ class RoutePathLinkMassEditView extends React.Component<
         }
     };
 
+
+    
     private updateRoutePathLinkProperty = (
         routePathLink: IRoutePathLink,
-        property: keyof IRoutePathLink
+        property: EditableRoutePathLinkField
     ) => {
         this.props.routePathStore!.updateRoutePathLinkProperty(
             routePathLink.orderNumber,

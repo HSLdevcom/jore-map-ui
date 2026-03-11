@@ -71,14 +71,14 @@ const RoutePathComparisonContainer = inject('routePathComparisonStore')(
 
             forOwn(comparableRp1, (rawValue1: any, property: string) => {
                 const value1 = _getValue(rawValue1, property);
-                const rawValue2 = comparableRp2[property];
+                const rawValue2 = (comparableRp2 as Record<string, any>)[property];
                 const value2 = _getValue(rawValue2, property);
                 const areValuesEqual = getAreValuesEqual(value1, value2);
                 if (areEqualPropertiesVisible || !areValuesEqual) {
                     rows.push(
                         <ComparableRow
                             key={`row-${index}`}
-                            label={propertyCodeLists['routePath'][property]}
+                            label={(propertyCodeLists['routePath'] as Record<string, string>)[property]}
                             value1={value1}
                             value2={value2}
                         />

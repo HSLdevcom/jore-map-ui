@@ -44,7 +44,7 @@ describe('errorStore.addError', () => {
         expect(errorStore.errors.length).toEqual(1);
         expect(errorStore.latestError).toContain(errorMessage);
         expect(errorStore.latestError).toContain(exception.message);
-        expect(console.error).toBeCalled();
+        expect(console.error).toHaveBeenCalled();
         // Clean up console.error to be back to normal
         console.error = consoleError;
         // tslint:enable:no-console
@@ -73,7 +73,7 @@ describe('errorStore.addError', () => {
 
         expect(error).toContain('This is a test exception message');
         expect(errorStore.errors.length).toEqual(0);
-        expect(console.error).toBeCalled();
+        expect(console.error).toHaveBeenCalled();
         // Clean up console.error to be back to normal
         console.error = consoleError;
         // tslint:enable:no-console

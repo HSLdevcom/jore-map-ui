@@ -4,7 +4,7 @@ import NodeType from '~/enums/nodeType';
 import TransitType from '~/enums/transitType';
 import TransitTypeUtils from '~/utils/TransitTypeUtils';
 import { NodeHighlightColor } from '../map/layers/markers/NodeMarker';
-import commonStyles from './styles/common.scss';
+import * as commonStyles from './styles/common.scss';
 import * as s from './transitTypeNodeIcon.scss';
 
 interface ITransitTypeNodeIconProps {

@@ -24,7 +24,7 @@ const TOOL_LIST = [
     SplitLinkTool,
 ];
 
-const TOOLS = {};
+const TOOLS: Partial<Record<ToolbarToolType, BaseTool>> = {};
 TOOL_LIST.forEach((tool) => {
     const toolInstance = new tool();
     TOOLS[toolInstance.toolType] = toolInstance;
@@ -98,11 +98,11 @@ class ToolbarStore {
             tool === ToolbarToolType.SelectNetworkEntity ||
             (this._selectedTool && this._selectedTool.toolType === tool)
         ) {
-            this._selectedTool = TOOLS[DEFAULT_TOOL_TYPE];
+            this._selectedTool = TOOLS[DEFAULT_TOOL_TYPE] || null;
             this._selectedTool!.activate();
             return;
         }
-        this._selectedTool = TOOLS[tool];
+        this._selectedTool = TOOLS[tool] || null;
         if (!this._selectedTool) {
             throw new Error('Tried to select tool that was not found');
         }

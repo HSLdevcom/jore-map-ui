@@ -6,7 +6,7 @@ import SubSites from './subSites';
 class RouteBuilderContext {
     private currentLink: string;
     private linkToBuild: string;
-    private queryValues: Object;
+    private queryValues: Record<string, string | string[] | null>;
 
     constructor(currentLink: string, linkToBuild: SubSites, queryValues: any) {
         this.currentLink = currentLink;
@@ -44,29 +44,34 @@ class RouteBuilderContext {
     };
 
     public append = (param: QueryParams, value: string) => {
-        if (param in this.queryValues) {
-            this.queryValues[param].push(value);
+        const key = String(param);
+        const current = this.queryValues[key];
+
+        if (Array.isArray(current)) {
+            current.push(value);
+        } else if (typeof current === 'string') {
+            this.queryValues[key] = [current, value];
         } else {
-            this.queryValues[param] = [value];
+            this.queryValues[key] = [value];
         }
         return this;
     };
 
     public remove = (param: QueryParams, value: string) => {
-        if (param in this.queryValues) {
-            if (Array.isArray(this.queryValues[param])) {
-                this.queryValues[param] = this.queryValues[param].filter(
-                    (v: string) => v !== value
-                );
-            } else {
-                this.queryValues[param] = null;
-            }
+        const key = String(param);
+        const current = this.queryValues[key];
+
+        if (Array.isArray(current)) {
+            this.queryValues[key] = current.filter((v: string) => v !== value);
+        } else if (current !== undefined) {
+            this.queryValues[key] = null;
         }
+
         return this;
     };
 
     public set = (param: QueryParams, value: string) => {
-        this.queryValues[param] = value;
+        this.queryValues[String(param)] = value;
         return this;
     };
 }

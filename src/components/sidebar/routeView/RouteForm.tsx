@@ -11,7 +11,7 @@ interface IRouteFormProps {
     isNewRoute: boolean;
     isEditing: boolean;
     onChangeRouteProperty: (property: keyof IRoute) => (value: any) => void;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, any>;
 }
 
 class RouteForm extends React.Component<IRouteFormProps> {

@@ -4,12 +4,13 @@ import QueryParams from '~/routing/queryParams';
 import ErrorStore from '~/stores/errorStore';
 import LoginStore from '~/stores/loginStore';
 import HttpUtils from '~/utils/HttpUtils';
+import textCodeList from '~/codeLists/textCodeList';
 import { getText } from '~/utils/textUtils';
 
 interface IAuthorizationResponse {
     isOk: boolean;
     hasWriteAccess: boolean;
-    errorTextKey?: string;
+    errorTextKey?: keyof typeof textCodeList;
     email?: string;
 }
 

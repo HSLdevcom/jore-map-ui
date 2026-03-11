@@ -44,7 +44,7 @@ const RoutePathComparisonLayer = inject(
                     nodeType,
                 }: {
                     node: INode;
-                    nodeType: string;
+                    nodeType: 'startNode' | 'endNode';
                 }) => {
                     const isNodeFound = routePathToCompare.routePathLinks.find(
                         (_rpLink) => _rpLink[nodeType].id === rpLink[nodeType].id

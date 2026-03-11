@@ -1,8 +1,8 @@
 import { ILine } from '~/models';
 import { ISearchLine } from '~/models/ILine';
 import { ISearchRoute } from '~/models/IRoute';
-import IExternalLine from '~/models/externals/IExternalLine.ts';
-import IExternalRoute from '~/models/externals/IExternalRoute.ts';
+import IExternalLine from '~/models/externals/IExternalLine';
+import IExternalRoute from '~/models/externals/IExternalRoute';
 
 class LineFactory {
     public static mapExternalLine = (externalLine: IExternalLine): ILine => {
