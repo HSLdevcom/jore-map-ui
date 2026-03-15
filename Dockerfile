@@ -1,15 +1,12 @@
-FROM node:12.16.1-alpine AS builder
+FROM node:20-alpine AS builder
 
 ENV WORK=/opt/joremapui
-
-RUN mkdir -p ${WORK}
 WORKDIR ${WORK}
 
-# Install app dependencies
-COPY yarn.lock package.json .yarnrc ${WORK}
-RUN yarn
+COPY package.json yarn.lock .yarnrc ./
+RUN yarn install --frozen-lockfile
 
-COPY . ${WORK}
+COPY . .
 
 ARG APP_ENVIRONMENT
 ENV ENVIRONMENT=${APP_ENVIRONMENT}
@@ -30,14 +27,10 @@ RUN yarn build
 FROM node:20-alpine AS server
 
 ENV WORK=/opt/joremapui
-
-# Create app directory
-RUN mkdir -p ${WORK}
 WORKDIR ${WORK}
 
-# Install serve
 RUN yarn global add serve@^14.2.3
 
-COPY --from=builder /opt/joremapui/build build/
+COPY --from=builder /opt/joremapui/build ./build
 
-CMD ["serve", "-s", "-l", "5000", "build/"]
+CMD ["serve", "-s", "-l", "5000", "build"]
