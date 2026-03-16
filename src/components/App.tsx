@@ -44,6 +44,8 @@ interface IAppProps {
 const browserHistory = createBrowserHistory();
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
+@inject('mapStore', 'loginStore', 'codeListStore', 'searchStore', 'searchResultStore', 'errorStore')
+@observer
 class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
         super(props);
@@ -191,11 +193,4 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default inject(
-  'mapStore',
-  'loginStore',
-  'codeListStore',
-  'searchStore',
-  'searchResultStore',
-  'errorStore'
-)(observer(App));
+export default App;
