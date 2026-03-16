@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { ILine, IRoute } from '~/models';
 import { ISearchLine } from '~/models/ILine';
 import lineValidationModel, {
@@ -19,6 +19,7 @@ class LineStore {
     private _validationStore: ValidationStore<ILine, ILineValidationModel>;
 
     constructor() {
+        makeObservable(this);
         this._isEditingDisabled = true;
         this._validationStore = new ValidationStore();
 

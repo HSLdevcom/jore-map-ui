@@ -1,10 +1,11 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 class ModalStore {
     private _content: React.ReactNode;
     @observable private _isOpen: boolean;
 
     constructor() {
+        makeObservable(this);
         this._content = null;
         this._isOpen = false;
     }

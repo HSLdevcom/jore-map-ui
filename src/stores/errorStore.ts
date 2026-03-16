@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import IError from '~/models/IError';
 import AlertStore, { AlertType } from './alertStore';
@@ -8,6 +8,7 @@ class ErrorStore {
     @observable private _errors: string[];
 
     constructor() {
+        makeObservable(this);
         this._errors = [];
     }
 

@@ -1,6 +1,6 @@
 import { INeighborLink } from '~/models';
 
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 // Is the neighbor to add either startNode or endNode
 enum NeighborToAddType {
@@ -18,6 +18,7 @@ class RoutePathLayerStore {
     @observable private _gapClosingNeighborLink: INeighborLink | null; // Visualizes that by selecting this neighborLink, a gap in routePath will be closed
 
     constructor() {
+        makeObservable(this);
         this._neighborLinks = [];
         this._extendedListItemId = null;
         this._hoveredItemId = null;

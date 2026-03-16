@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { ILine, IRoute, IRoutePath } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import navigator from '~/routing/navigator';
@@ -35,6 +35,7 @@ class RouteListStore {
     @observable private _loadedRouteIds: string[];
 
     constructor() {
+        makeObservable(this);
         this._routeItems = [];
         this._lines = [];
         this._routeIdToEdit = null;

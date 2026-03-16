@@ -1,6 +1,6 @@
 import L from 'leaflet';
 import _ from 'lodash';
-import { action, autorun, computed, observable } from 'mobx';
+import { action, autorun, computed, makeObservable, observable } from 'mobx';
 import ColorScale from '~/helpers/ColorScale';
 import { IRoutePath, IRoutePathLink } from '~/models';
 import RoutePathService from '~/services/routePathService';
@@ -13,6 +13,7 @@ class RoutePathLayerListStore {
     private colorScale: ColorScale;
 
     constructor() {
+        makeObservable(this);
         this._routePaths = [];
         this._highlightedRoutePathId = null;
         this._selectedRoutePathId = null;

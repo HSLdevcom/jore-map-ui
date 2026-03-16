@@ -1,5 +1,5 @@
 import * as L from 'leaflet';
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import constants from '~/constants/constants';
 import CoordinateSystem from '~/enums/coordinateSystem';
 import Environment from '~/enums/environment';
@@ -45,6 +45,7 @@ class MapStore {
     @observable private _mapCursor: MapCursor;
 
     constructor() {
+        makeObservable(this);
         this._coordinates = null;
         this._displayCoordinateSystem = CoordinateSystem.EPSG4326;
         this._zoom = INITIAL_ZOOM;

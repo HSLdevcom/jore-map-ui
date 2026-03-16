@@ -108,19 +108,14 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private fetchAllLines = async () => {
         this.props.searchStore!.setIsLoading(true);
-        console.log('fetchAllLines setIsLoading true');
         try {
             const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
-            console.log('fetchAllLines fetched lines', searchLines);
             this.props.searchResultStore!.setAllLines(searchLines);
-            console.log('fetchAllLines setAllLines');
             this.props.searchResultStore!.search();
-            console.log('fetchAllLines search');
         } catch (e) {
             this.props.errorStore!.addError('Linjojen haku ei onnistunut', e);
         }
         this.props.searchStore!.setIsLoading(false);
-        console.log('fetchAllLines setIsLoading false');
     };
 
     private initCodeLists = async () => {

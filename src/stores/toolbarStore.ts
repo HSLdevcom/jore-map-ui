@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import AddNetworkLinkTool from '~/components/map/tools/AddNetworkLinkTool';
 import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
 import BaseTool from '~/components/map/tools/BaseTool';
@@ -41,6 +41,7 @@ class ToolbarStore {
     @observable private _shouldBlinkToolHelp: boolean;
 
     constructor() {
+        makeObservable(this);
         this._disabledTools = DEFAULT_DISABLED_TOOLS;
         this.selectDefaultTool();
         this._shouldShowEntityOpenPrompt = false;

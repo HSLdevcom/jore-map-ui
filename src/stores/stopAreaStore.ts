@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, observable, reaction, makeObservable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { IStopArea } from '~/models';
 import { IStopItem } from '~/models/IStop';
@@ -21,6 +21,8 @@ class StopAreaStore {
     private _validationStore: ValidationStore<IStopArea, IStopAreaValidationModel>;
 
     constructor() {
+        makeObservable(this);
+
         this._stopArea = null;
         this._oldStopArea = null;
         this._stopItems = [];

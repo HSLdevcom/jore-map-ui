@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import IRoutePath from '~/models/IRoutePath';
 
 class RoutePathComparisonStore {
@@ -6,6 +6,7 @@ class RoutePathComparisonStore {
     @observable private _routePath2: IRoutePath | null;
 
     constructor() {
+        makeObservable(this);
         this._routePath1 = null;
         this._routePath2 = null;
     }

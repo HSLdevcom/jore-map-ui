@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import LocalStorageHelper from '~/helpers/LocalStorageHelper';
 
@@ -6,6 +6,7 @@ class UserStore {
     @observable private _userTransitType: TransitType;
 
     constructor() {
+        makeObservable(this);
         const savedUserTransitType = LocalStorageHelper.getItem('user_transit_type');
         this._userTransitType = savedUserTransitType ? savedUserTransitType : TransitType.BUS;
     }
