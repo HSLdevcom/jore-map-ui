@@ -108,6 +108,7 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private fetchAllLines = async () => {
         this.props.searchStore!.setIsLoading(true);
+        console.log('App searchStore id', this.props.searchStore!.debugId);
         try {
             const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
             this.props.searchResultStore!.setAllLines(searchLines);

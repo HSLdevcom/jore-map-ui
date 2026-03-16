@@ -10,10 +10,10 @@ class SearchStore {
     @observable private _areInactiveLinesHidden: boolean;
     @observable private _isSearchDisabled: boolean;
     @observable private _isLoading: boolean;
+    public debugId = Math.random().toString(36).slice(2);
 
     constructor() {
         makeObservable(this);
-
         this._searchInput = '';
         this._selectedTransitTypes = [
             TransitType.BUS,
