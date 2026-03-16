@@ -26,8 +26,6 @@ const SHOW_LIMIT_DEFAULT = 50;
 const INCREASE_SHOW_LIMIT = 10;
 const SCROLL_PAGINATION_TRIGGER_POINT = 1.25; // 1 = All the way down, 2 = half way down
 
-@inject('searchResultStore', 'searchStore')
-@observer
 class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsState> {
     private paginatedDiv: React.RefObject<HTMLDivElement>;
 
@@ -96,7 +94,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredLines = this.getFilteredLines();
         const filteredNodes = this.getFilteredNodes();
-        console.log('Injected searchStore id', this.props.searchStore?.debugId);
         console.log('SearchResults render', {
             isLoading: searchStore.isLoading,
             allLinesLength: searchResultStore.allLines.length,
@@ -141,4 +138,4 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     }
 }
 
-export default SearchResults;
+export default inject('searchResultStore', 'searchStore')(observer(SearchResults));

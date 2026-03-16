@@ -44,8 +44,6 @@ interface IAppProps {
 const browserHistory = createBrowserHistory();
 const history = syncHistoryWithStore(browserHistory, navigator.getStore());
 
-@inject('mapStore', 'loginStore', 'codeListStore', 'searchStore', 'searchResultStore', 'errorStore')
-@observer
 class App extends React.Component<IAppProps, IAppState> {
     constructor(props: IAppProps) {
         super(props);
@@ -108,7 +106,6 @@ class App extends React.Component<IAppProps, IAppState> {
 
     private fetchAllLines = async () => {
         this.props.searchStore!.setIsLoading(true);
-        console.log('App searchStore id', this.props.searchStore!.debugId);
         try {
             const searchLines: ISearchLine[] = await LineService.fetchAllSearchLines();
             this.props.searchResultStore!.setAllLines(searchLines);
@@ -194,4 +191,11 @@ class App extends React.Component<IAppProps, IAppState> {
     }
 }
 
-export default App;
+export default inject(
+  'mapStore',
+  'loginStore',
+  'codeListStore',
+  'searchStore',
+  'searchResultStore',
+  'errorStore'
+)(observer(App));
