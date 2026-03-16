@@ -6,7 +6,7 @@ import { ISearchLine } from '~/models/ILine';
 import { ISearchNode } from '~/models/INode';
 import Navigator from '~/routing/navigator';
 import subSites from '~/routing/subSites';
-import searchResultStore, { SearchResultStore } from '~/stores/searchResultStore';
+import { SearchResultStore } from '~/stores/searchResultStore';
 import { SearchStore } from '~/stores/searchStore';
 import Loader from '../loader/Loader';
 import LineItem from './LineItem';
@@ -91,11 +91,16 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
     };
 
     render() {
+        const searchResultStore = this.props.searchResultStore!;
         const searchStore = this.props.searchStore!;
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredLines = this.getFilteredLines();
         const filteredNodes = this.getFilteredNodes();
         console.log('Injected searchStore id', this.props.searchStore?.debugId);
+        console.log('SearchResults render', {
+            isLoading: searchStore.isLoading,
+            allLinesLength: searchResultStore.allLines.length,
+        });
         return (
             <div className={s.searchResultsView}>
                 {searchStore!.isLoading || searchResultStore!.allLines.length === 0 ? (
