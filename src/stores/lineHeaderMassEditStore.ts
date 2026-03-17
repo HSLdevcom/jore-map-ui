@@ -1,5 +1,5 @@
 import { chain, cloneDeep, isEqual } from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { ILineHeader } from '~/models';
 import lineHeaderValidationModel from '~/models/validationModels/lineHeaderValidationModel';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
@@ -21,6 +21,7 @@ class LineHeaderMassEditStore {
     @observable private _isEditingDisabled: boolean;
 
     constructor() {
+        makeObservable(this);
         this._massEditLineHeaders = null;
         this._selectedLineHeaderId = null;
         this._isEditingDisabled = true;

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    branches:
+      - develop
 
 jobs:
   deploy-dev:
@@ -13,8 +16,6 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(TZ='Europe/Helsinki' date +'%d.%m.%Y_%H:%M')"
       - uses: actions/checkout@v4
-        with:
-          ref: develop
       - name: Build UI and publish Docker image
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:

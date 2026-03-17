@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import { IRoutePathSegment } from '~/models/IRoutePath';
 import { IRoutePathSegmentLink } from '~/models/IRoutePathLink';
 
@@ -29,6 +29,7 @@ class RoutePathCopySegmentStore {
     @observable private _areNodePositionsValid: boolean;
 
     constructor() {
+        makeObservable(this);
         this._isLoading = true;
         this._startSegmentPoint = null;
         this._endSegmentPoint = null;

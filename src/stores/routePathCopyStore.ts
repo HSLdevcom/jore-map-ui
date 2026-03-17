@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 import { IRoutePath } from '~/models';
 import RoutePathLayerListStore from './routePathLayerListStore';
@@ -19,6 +19,7 @@ class RoutePathCopyStore {
     @observable private _storedRouteListRoutePaths: IRoutePath[] | null;
 
     constructor() {
+        makeObservable(this);
         this.clear();
     }
 

@@ -1,7 +1,8 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import TransitType from '~/enums/transitType';
 
 class SearchStore {
+    
     @observable private _searchInput: string;
     @observable private _selectedTransitTypes: TransitType[];
     @observable private _isSearchingForLines: boolean;
@@ -11,6 +12,8 @@ class SearchStore {
     @observable private _isLoading: boolean;
 
     constructor() {
+        makeObservable(this);
+
         this._searchInput = '';
         this._selectedTransitTypes = [
             TransitType.BUS,

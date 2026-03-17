@@ -1,10 +1,11 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 class NavigationStore {
     @observable private _shouldShowPrompt: boolean;
     @observable private _navigationAction: (() => void) | null; // Called when navigation happens. Can be e.g. used to clear store state when user enters home page
 
     constructor() {
+        makeObservable(this);
         this._shouldShowPrompt = false;
         this._navigationAction = null;
     }

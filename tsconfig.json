@@ -22,6 +22,7 @@
         "allowSyntheticDefaultImports": true,
         "esModuleInterop": true,
         "downlevelIteration": true,
+        "useDefineForClassFields": true,
         "paths": {
             "~/*": ["src/*"]
         }

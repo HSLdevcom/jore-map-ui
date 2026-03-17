@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import Moment from 'moment';
 import { IRoutePath } from '~/models';
 import { IMassEditRoutePath } from '~/models/IRoutePath';
@@ -17,6 +17,7 @@ class RoutePathMassEditStore {
     @observable private _routeId: string | null;
 
     constructor() {
+        makeObservable(this);
         this._massEditRoutePaths = null;
         this._newRoutePathIdCounter = 1;
         this._selectedRoutePathIdGroups = [];

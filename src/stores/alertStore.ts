@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import constants from '~/constants/constants';
 
 enum AlertType {
@@ -17,6 +17,7 @@ class AlertStore {
     private _onClose: null | (() => void);
 
     constructor() {
+        makeObservable(this);
         this._message = null;
         this._isCancelButtonVisible = false;
         this._closeButtonText = DEFAULT_CLOSE_BUTTON_TEXT;

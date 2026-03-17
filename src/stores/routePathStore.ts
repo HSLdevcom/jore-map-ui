@@ -1,5 +1,5 @@
 import { cloneDeep, debounce } from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import {
     compareRoutePaths,
     compareRoutePathLinks,
@@ -66,6 +66,7 @@ class RoutePathStore {
     >;
 
     constructor() {
+        makeObservable(this);
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
         this._existingRoutePaths = [];

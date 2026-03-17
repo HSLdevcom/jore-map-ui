@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
@@ -62,6 +62,7 @@ class NodeStore {
     private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
 
     constructor() {
+        makeObservable(this);
         this._links = [];
         this._node = null;
         this._oldNode = null;

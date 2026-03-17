@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import AuthService, { IAuthorizationResponse } from '~/services/authService';
@@ -13,6 +13,7 @@ class LoginStore {
     private saveLockFetchInterval: any;
 
     constructor() {
+        makeObservable(this);
         this.clear(false);
     }
 

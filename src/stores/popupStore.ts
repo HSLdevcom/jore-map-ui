@@ -1,4 +1,4 @@
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import NetworkStore, { MapLayer } from './networkStore';
 
 type PopupType =
@@ -27,6 +27,7 @@ class PopupStore {
     private _idCounter: number;
 
     constructor() {
+        makeObservable(this);
         this._popups = [];
         this._idCounter = 0;
 

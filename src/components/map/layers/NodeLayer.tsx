@@ -38,15 +38,18 @@ const NodeLayer = inject(
             updateRenderCount(renderCount + 1);
         };
         useEffect(() => {
-            getMap()!.on('moveend', forceUpdate);
+            const map = getMap();
+            if (!map) {
+                return;
+            }
+
+            map.on('moveend', forceUpdate);
             return () => {
-                const map = getMap();
-                if (map) {
-                    map.off('moveend', forceUpdate);
-                }
+                map.off('moveend', forceUpdate);
             };
-        });
-        const mapBounds = getMap()!.getBounds();
+        }, [props.map]);
+        const map = getMap();
+        const mapBounds = map && (map as any)._loaded ? map.getBounds() : undefined;
         const allNodes = props.searchResultStore!.allNodes;
         const nodesInMapBounds = useMemo(() => {
             if (!mapBounds) {

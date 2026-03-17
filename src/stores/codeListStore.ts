@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx';
+import { action, makeObservable, observable } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import ICodeListItem from '~/models/ICodeListItem';
 
@@ -22,6 +22,7 @@ type codeListName =
 class CodeListStore {
     @observable private _codeListMap: Map<codeListName, ICodeListItem[]>;
     constructor() {
+        makeObservable(this);
         this._codeListMap = new Map();
     }
 

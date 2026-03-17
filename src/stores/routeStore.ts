@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { IRoute } from '~/models';
 import routeValidationModel, {
     IRouteValidationModel,
@@ -17,6 +17,7 @@ class RouteStore {
     private _validationStore: ValidationStore<IRoute, IRouteValidationModel>;
 
     constructor() {
+        makeObservable(this);
         this._validationStore = new ValidationStore();
 
         reaction(
