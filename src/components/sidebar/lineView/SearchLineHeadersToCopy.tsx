@@ -34,7 +34,6 @@ const SearchLineHeadersToCopy = inject('lineStore')(
         useEffect(() => {
             const fetch = async () => {
                 setIsLoadingLines(true);
-                console.log('searchLineHeadersToCopy setIsLoadingLines true');
                 const lineQueryResult: ISearchLine[] = await LineService.fetchAllSearchLines();
                 const result: IDropdownItem[] = createLineDropdownItems({
                     areInactiveLinesHidden,
@@ -43,7 +42,6 @@ const SearchLineHeadersToCopy = inject('lineStore')(
                 });
                 setLineDropdownItems(result);
                 setIsLoadingLines(false);
-                console.log('searchLineHeadersToCopy setIsLoadingLines false');
             };
             fetch();
         }, [props.lineStore!.line!.transitType!, areInactiveLinesHidden]);

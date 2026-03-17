@@ -104,7 +104,6 @@ class SearchStore {
     @action
     public setIsLoading(isLoading: boolean) {
         this._isLoading = isLoading;
-        console.log('setIsLoading', isLoading);
     }
 }
 

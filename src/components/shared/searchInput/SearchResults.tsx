@@ -96,10 +96,6 @@ class SearchResults extends React.Component<ISearchResultsProps, ISearchResultsS
         const isRouteListView = matchPath(Navigator.getPathName(), subSites.routes);
         const filteredLines = this.getFilteredLines();
         const filteredNodes = this.getFilteredNodes();
-        console.log('SearchResults render', {
-            isLoading: searchStore.isLoading,
-            allLinesLength: searchResultStore.allLines.length,
-        });
         return (
             <div className={s.searchResultsView}>
                 {searchStore!.isLoading || searchResultStore!.allLines.length === 0 ? (
