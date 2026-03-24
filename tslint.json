@@ -29,7 +29,7 @@
         "await-promise": true,
         "only-arrow-functions": [true, "allow-declarations"],
         "use-isnan": true,
-        "deprecation": true,
+        "deprecation": false,
         "member-ordering": [
             true,
             {

@@ -118,20 +118,20 @@ class LineHeaderTable extends React.Component<ILineHeaderListProps, ILineHeaderS
     private getActiveLineHeaderName = (): string | null => {
         const currentTime = toMidnightDate(new Date()).getTime();
         let activeMassEditLineHeader: IMassEditLineHeader | null = null;
-        this.props.lineHeaderMassEditStore!.massEditLineHeaders!.forEach(
-            (m: IMassEditLineHeader) => {
-                if (m.isRemoved) return;
 
-                const lineHeader = m.lineHeader;
-                if (
-                    currentTime >= lineHeader.startDate!.getTime() &&
-                    currentTime <= lineHeader.endDate!.getTime()
-                ) {
-                    activeMassEditLineHeader = m;
-                }
+        for (const m of this.props.lineHeaderMassEditStore!.massEditLineHeaders!) {
+            if (m.isRemoved) continue;
+
+            const lineHeader = m.lineHeader;
+            if (
+                currentTime >= lineHeader.startDate!.getTime() &&
+                currentTime <= lineHeader.endDate!.getTime()
+            ) {
+                activeMassEditLineHeader = m;
             }
-        );
-        return activeMassEditLineHeader ? activeMassEditLineHeader!.lineHeader.lineNameFi : null;
+        }
+
+        return activeMassEditLineHeader ? activeMassEditLineHeader.lineHeader.lineNameFi : null;
     };
 
     private save = async () => {

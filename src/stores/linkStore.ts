@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { ILink, INode } from '~/models';
 import linkValidationModel, {
     ILinkValidationModel,
@@ -26,6 +26,7 @@ class LinkStore {
     private _validationStore: ValidationStore<ILink, ILinkValidationModel>;
 
     constructor() {
+        makeObservable(this);
         this._nodes = [];
         this._link = null;
         this._oldLink = null;

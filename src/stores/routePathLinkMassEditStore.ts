@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { updateDisabledRoutePathToolStatus } from '~/components/sidebar/routePathView/routePathUtils';
 import { IRoutePathLink } from '~/models';
 import RoutePathStore from './routePathStore';
@@ -9,6 +9,7 @@ class RoutePathLinkMassEditStore {
     @observable private _selectedMassEditRoutePathLinks: IRoutePathLink[];
 
     constructor() {
+        makeObservable(this);
         this._selectedMassEditRoutePathLinks = [];
 
         reaction(

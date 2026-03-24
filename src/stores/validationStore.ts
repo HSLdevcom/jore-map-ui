@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { observable } from 'mobx';
+import { makeObservable, observable } from 'mobx';
 import FormValidator, { IValidationResult } from '~/validation/FormValidator';
 
 interface ICustomValidatorObject {
@@ -21,8 +21,16 @@ interface ICustomValidatorMap {
  * @param {Object} ValidationObject - object to validate (e.g. ILink)
  * @param {Object} ValidationModel - { property: string}, where property = validation string (e.g. IValidationModel)
  */
-class ValidationStore<ValidationObject, ValidationModel> {
-    @observable private _invalidPropertiesMap: object;
+class ValidationStore<
+    ValidationObject extends Record<string, any>,
+    ValidationModel extends Record<string, any>
+> {
+    @observable private _invalidPropertiesMap: Record<string, IValidationResult>;
+
+    constructor() {
+        makeObservable(this);
+    };
+    
     private _validationObject: ValidationObject | null;
     private _validationModel: ValidationModel | null;
     private _customValidatorMap: ICustomValidatorMap | null;
@@ -42,7 +50,7 @@ class ValidationStore<ValidationObject, ValidationModel> {
     };
 
     public updateProperty = (property: string, value: any) => {
-        this._validationObject![property] = value;
+        (this._validationObject as unknown as Record<string, any>)[property] = value;
         this.validateProperty(property);
     };
 
@@ -56,9 +64,8 @@ class ValidationStore<ValidationObject, ValidationModel> {
         const validatorRule = this._validationModel![property];
         const value = this._validationObject![property];
         let validatorResult: IValidationResult | undefined;
-        const customValidationResult:
-            | IValidationResult
-            | undefined = this.validateWithCustomValidator(property, value);
+        const customValidationResult: IValidationResult | undefined =
+            this.validateWithCustomValidator(property, value);
         const defaultValidationResult: IValidationResult | undefined = validatorRule
             ? FormValidator.validateProperty(validatorRule, value)
             : undefined;
@@ -74,12 +81,10 @@ class ValidationStore<ValidationObject, ValidationModel> {
                     ? 2
                     : 1;
             };
-            const defaultValidationResultSeverity = getValidationResultSeverity(
-                defaultValidationResult
-            );
-            const customValidationResultSeverity = getValidationResultSeverity(
-                customValidationResult
-            );
+            const defaultValidationResultSeverity =
+                getValidationResultSeverity(defaultValidationResult);
+            const customValidationResultSeverity =
+                getValidationResultSeverity(customValidationResult);
 
             // We always want to output the worst validationResult as the validationResult
             // If custom and default validation severities are equivalent, we want to use customValidationResult

@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import Moment from 'moment';
 import NodeSize from '~/enums/nodeSize';
 import TransitType from '~/enums/transitType';
@@ -20,6 +20,7 @@ class NetworkStore {
     private _savedMapLayers: MapLayer[];
 
     constructor() {
+        makeObservable(this);
         this._selectedTransitTypes = this.getInitialVisibleTransitTypes();
         this._visibleMapLayers = this.getInitialVisibleMapLayers();
         this._nodeSize = NodeSize.SMALL;

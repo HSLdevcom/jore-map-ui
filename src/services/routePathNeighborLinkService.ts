@@ -87,13 +87,14 @@ class RoutePathNeighborLinkService {
         }
 
         try {
-            const neighborLinks = await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
-                nodeId,
-                neighborToAddType,
-                routePath,
-                orderNumber,
-                new Date()
-            );
+            const neighborLinks =
+                await RoutePathNeighborLinkService.fetchAndCreateRoutePathLinksWithNodeId(
+                    nodeId,
+                    neighborToAddType,
+                    routePath,
+                    orderNumber,
+                    new Date()
+                );
             if (neighborLinks.length === 0) {
                 ErrorStore.addError(
                     `Tästä solmusta (soltunnus: ${nodeId}) jatkettavaa linkkiä ei löytynyt.`
@@ -125,7 +126,7 @@ const _parseNeighborLinks = ({
     return queryResult.data.solmuBySoltunnus[linkPropertyName].nodes.map(
         (link: IExtendedExternalLink): INeighborLink => ({
             routePathLink: RoutePathLinkFactory.mapExternalLink(link, orderNumber),
-            nodeUsageRoutePaths: link[nodePropertyName].usageDuringDate!.nodes.map(
+            nodeUsageRoutePaths: (link as any)[nodePropertyName].usageDuringDate!.nodes.map(
                 (rp: IExternalRoutePath) => {
                     const transitType = rp.reittiByReitunnus.linjaByLintunnus.linverkko;
                     const lineId = rp.reittiByReitunnus.linjaByLintunnus.lintunnus;

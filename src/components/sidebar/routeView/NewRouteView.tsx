@@ -81,6 +81,7 @@ class NewRouteView extends React.Component<IRouteViewProps, IRouteViewState> {
             });
             const nameFi = basicRoute ? basicRoute.routeName : '';
             const nameSw = basicRoute ? basicRoute.routeNameSw : '';
+
             const newRoute = RouteFactory.createNewRoute({ lineId, nameFi, nameSw });
             this.props.routeStore!.init({ route: newRoute, isNewRoute: true });
         } catch (e) {

@@ -14,7 +14,7 @@ import * as s from './lineHeaderForm.scss';
 interface ILineHeaderFormProps {
     lineHeader: ILineHeader;
     isEditingDisabled: boolean;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, any>;
     onChangeLineHeaderProperty: (property: keyof ILineHeader, value: any) => void;
     lineHeaderMassEditStore?: LineHeaderMassEditStore;
     alertStore?: AlertStore;

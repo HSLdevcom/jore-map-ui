@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import TransitType from '~/enums/transitType';
 import RouteFactory from '~/factories/routeFactory';
 import { ISearchLine } from '~/models/ILine';
@@ -17,6 +17,7 @@ class SearchResultStore {
     private delayTimer: NodeJS.Timeout;
 
     constructor() {
+        makeObservable(this);
         this._allLines = [];
         this._allNodes = [];
         this._filteredLines = [];

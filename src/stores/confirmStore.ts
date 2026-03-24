@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 const DEFAULT_CONFIRM_BUTTON_TEXT = 'Hyväksy';
 const DEFAULT_CANCEL_BUTTON_TEXT = 'Peruuta';
@@ -31,6 +31,7 @@ class ConfirmStore {
     private _onCancel: null | (() => void);
 
     constructor() {
+        makeObservable(this);
         this._isOpen = false;
     }
 

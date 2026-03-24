@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { ILine, IRoute, IRoutePath } from '~/models';
 import ISchedule from '~/models/ISchedule';
 import navigator from '~/routing/navigator';
@@ -35,6 +35,7 @@ class RouteListStore {
     @observable private _loadedRouteIds: string[];
 
     constructor() {
+        makeObservable(this);
         this._routeItems = [];
         this._lines = [];
         this._routeIdToEdit = null;
@@ -54,11 +55,9 @@ class RouteListStore {
 
     @computed
     get routes(): IRoute[] {
-        return this._routeItems.map(
-            (routeItem: IRouteItem): IRoute => {
-                return routeItem.route;
-            }
-        );
+        return this._routeItems.map((routeItem: IRouteItem): IRoute => {
+            return routeItem.route;
+        });
     }
 
     @computed
@@ -82,17 +81,15 @@ class RouteListStore {
 
     @action
     public addToRouteItems = (routes: IRoute[]) => {
-        const routeItems = routes.map(
-            (route: IRoute): IRouteItem => {
-                return {
-                    route,
-                    selectedTabIndex: 0,
-                    areAllRoutePathsVisible: false,
-                    areSchedulesVisible: false,
-                    activeSchedules: [],
-                };
-            }
-        );
+        const routeItems = routes.map((route: IRoute): IRouteItem => {
+            return {
+                route,
+                selectedTabIndex: 0,
+                areAllRoutePathsVisible: false,
+                areSchedulesVisible: false,
+                activeSchedules: [],
+            };
+        });
         this._routeItems = this._routeItems.concat(routeItems);
         routes.forEach((route) => {
             RoutePathLayerListStore.addRoutePaths({ routePaths: route.routePaths });

@@ -28,7 +28,7 @@ import * as s from './splitLinkView.scss';
 interface ISplitLinkViewState {
     isLoading: boolean;
     selectedDate?: Date;
-    selectedRoutePathIds: object;
+    selectedRoutePathIds: { [key: string]: boolean };
     routePaths: IRoutePath[];
     isLoadingRoutePaths: boolean;
 }
@@ -164,12 +164,6 @@ class SplitLinkView extends React.Component<ISplitLinkViewProps, ISplitLinkViewS
 
     private save = () => {
         // tslint:disable-next-line
-        console.log({
-            routePaths: this.getRoutepathsBeingSplit(),
-            date: this.state.selectedDate,
-            link: this.props.linkStore!.link,
-            node: this.props.linkStore!.nodes[0],
-        });
         this.props.alertStore!.setFadeMessage({
             message: 'Linkin jaon kehitys kesken.',
             type: AlertType.Info,

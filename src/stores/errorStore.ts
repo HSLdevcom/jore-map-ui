@@ -1,5 +1,5 @@
 import { isEmpty } from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import httpStatusDescriptionCodeList from '~/codeLists/httpStatusDescriptionCodeList';
 import IError from '~/models/IError';
 import AlertStore, { AlertType } from './alertStore';
@@ -8,6 +8,7 @@ class ErrorStore {
     @observable private _errors: string[];
 
     constructor() {
+        makeObservable(this);
         this._errors = [];
     }
 
@@ -38,11 +39,21 @@ class ErrorStore {
             return;
         }
         let msg = message;
-        if (error && error.errorCode && httpStatusDescriptionCodeList[error.errorCode]) {
+        if (
+            error &&
+            error.errorCode &&
+            httpStatusDescriptionCodeList[
+                error.errorCode as keyof typeof httpStatusDescriptionCodeList
+            ]
+        ) {
             if (!isEmpty(msg)) {
                 msg += `, `;
             }
-            msg += `${httpStatusDescriptionCodeList[error.errorCode]}`;
+            msg += `${
+                httpStatusDescriptionCodeList[
+                    error.errorCode as keyof typeof httpStatusDescriptionCodeList
+                ]
+            }`;
         } else if (error && !isEmpty(error.message)) {
             if (!isEmpty(msg)) {
                 msg += `, `;

@@ -1,6 +1,6 @@
 import { IRoute, IRoutePath } from '~/models';
 import { ISearchRoute } from '~/models/IRoute';
-import IExternalRoute from '~/models/externals/IExternalRoute.ts';
+import IExternalRoute from '~/models/externals/IExternalRoute';
 
 class RouteFactory {
     public static mapExternalRoute = (

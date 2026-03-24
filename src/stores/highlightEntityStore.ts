@@ -1,4 +1,4 @@
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import { ILinkMapHighlight } from '~/models/ILink';
 import { INodeMapHighlight } from '~/models/INode';
 
@@ -7,6 +7,7 @@ class HighlightEntityStore {
     @observable private _links: ILinkMapHighlight[];
 
     constructor() {
+        makeObservable(this);
         this._nodes = [];
         this._links = [];
     }

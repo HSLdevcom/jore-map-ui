@@ -76,7 +76,7 @@ class LineHeaderTableRows extends React.Component<ILineHeaderListProps> {
                 const lineHeader = currentMassEditLineHeader.lineHeader;
                 const isSelectedLineHeader =
                     lineHeaderMassEditStore!.selectedLineHeaderId === currentMassEditLineHeader.id;
-                const invalidPropertiesMap = currentMassEditLineHeader.invalidPropertiesMap;
+                const invalidPropertiesMap = currentMassEditLineHeader.invalidPropertiesMap as Record<string, any>;
                 const isLineHeaderValid = FormValidator.isInvalidPropertiesMapValid(
                     currentMassEditLineHeader.invalidPropertiesMap
                 );

@@ -14,7 +14,7 @@ import * as s from './nodeForm.scss';
 interface INodeIdInputProps {
     node: INode;
     isEditingDisabled: boolean;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, any>;
     isNodeIdEditable?: boolean;
     onChangeNodeProperty?: (property: keyof INode) => (value: any) => void;
     nodeStore?: NodeStore;

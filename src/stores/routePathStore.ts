@@ -1,5 +1,5 @@
 import { cloneDeep, debounce } from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import {
     compareRoutePaths,
     compareRoutePathLinks,
@@ -41,6 +41,8 @@ interface IRoutePathNodes {
     [nodeId: string]: string;
 }
 
+type SharedRoutePathProperty = Extract<keyof IRoutePathLink, keyof IRoutePath>;
+
 class RoutePathStore {
     @observable private _routePath: IRoutePath | null;
     @observable private _oldRoutePath: IRoutePath | null;
@@ -64,6 +66,7 @@ class RoutePathStore {
     >;
 
     constructor() {
+        makeObservable(this);
         this._listFilters = [ListFilter.link];
         this._invalidLinkOrderNumbers = [];
         this._existingRoutePaths = [];
@@ -410,12 +413,11 @@ class RoutePathStore {
         });
     };
 
-    @action
     public updateRoutePathProperty = (
-        property: keyof IRoutePath | keyof IRoutePathLink,
+        property: keyof IRoutePath,
         value?: string | number | Date | boolean | null
     ) => {
-        this._routePath![property] = value;
+        (this._routePath as Record<keyof IRoutePath, any>)[property] = value;
         this._validationStore.updateProperty(property, value);
     };
 
@@ -798,7 +800,7 @@ class RoutePathStore {
     // Expects that both routePath and routePathLink have property to copy with the same name
     private copyPropertyToRoutePathFromRoutePathLink = (
         routePathLink: IRoutePathLink,
-        property: keyof IRoutePathLink | keyof IRoutePath
+        property: SharedRoutePathProperty
     ) => {
         const valueToCopy = cloneDeep(routePathLink[property]);
         this.updateRoutePathProperty(property, valueToCopy);
@@ -807,10 +809,20 @@ class RoutePathStore {
     // Expects that both routePath and routePathLink have property to copy with the same name
     private copyPropertyToRoutePathLinkFromRoutePath = (
         routePathLink: IRoutePathLink,
-        property: keyof IRoutePathLink
+        property: SharedRoutePathProperty
     ) => {
         const valueToCopy = cloneDeep(this.routePath![property]);
-        this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, valueToCopy);
+
+        if (
+            typeof valueToCopy === 'string' ||
+            typeof valueToCopy === 'number' ||
+            typeof valueToCopy === 'boolean'
+        ) {
+            this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, valueToCopy);
+        } else {
+            this.updateRoutePathLinkProperty(routePathLink.orderNumber, property, '');
+        }
+
         this.updateRoutePathProperty(property, null);
     };
 

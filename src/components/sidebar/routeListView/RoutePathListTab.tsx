@@ -177,7 +177,7 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
     // Create routePath pairs from routePathsToGroup, sort them by date
     private getReadOnlyGroupedRoutePaths = (routePaths: IRoutePath[]): IRoutePath[][] => {
         const routePathsToGroup = routePaths;
-        const res = {};
+        const res: { [key: string]: IRoutePath[] } = {};
         routePathsToGroup.forEach((rp) => {
             const identifier = rp.startDate.toLocaleDateString() + rp.endDate.toLocaleDateString();
             (res[identifier] = res[identifier] || []).push(rp);
@@ -311,20 +311,19 @@ class RoutePathListTab extends React.Component<IRoutePathListTabProps, IRoutePat
         const modifiedSaveModels: ISaveModel[] = [];
         const copiedSaveModels: ISaveModel[] = [];
         this.props.routePathMassEditStore!.massEditRoutePaths!.forEach((massEditRp) => {
-            const newRoutePath = _.cloneDeep(massEditRp.routePath);
-            delete newRoutePath.internalId;
-            const oldRoutePath = _.cloneDeep(massEditRp.oldRoutePath);
-            if (oldRoutePath) {
-                delete oldRoutePath['internalId'];
-                if (massEditRp.isNew) {
-                    delete oldRoutePath['startDate'];
-                    delete oldRoutePath['endDate'];
-                }
+            const newRoutePath = _.omit(_.cloneDeep(massEditRp.routePath), ['internalId']);
+            let oldRoutePath = massEditRp.oldRoutePath
+                ? _.omit(_.cloneDeep(massEditRp.oldRoutePath), ['internalId'])
+                : null;
+
+            let oldData = oldRoutePath ? oldRoutePath : {};
+            if (oldRoutePath && massEditRp.isNew) {
+                oldData = _.omit(oldRoutePath, ['startDate', 'endDate']);
             }
             const saveModel: ISaveModel = {
                 type: 'saveModel',
                 newData: newRoutePath,
-                oldData: oldRoutePath ? oldRoutePath : {},
+                oldData: oldData,
                 subTopic: `${newRoutePath.originFi} - ${newRoutePath.destinationFi}`,
                 model: 'routePath',
             };

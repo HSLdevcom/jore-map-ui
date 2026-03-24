@@ -35,7 +35,7 @@ class ViaNameFactory {
     };
 }
 
-const _parseViaNameValue = (targetObject: object | null, propertyName: string) => {
+const _parseViaNameValue = (targetObject: any, propertyName: string) => {
     return targetObject && targetObject[propertyName] ? targetObject[propertyName] : '';
 };
 

@@ -1,6 +1,6 @@
 import { LatLng } from 'leaflet';
 import _ from 'lodash';
-import { action, computed, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { IDropdownItem } from '~/components/controls/Dropdown';
 import NodeType from '~/enums/nodeType';
 import NodeStopFactory from '~/factories/nodeStopFactory';
@@ -62,6 +62,7 @@ class NodeStore {
     private _stopValidationStore: ValidationStore<IStop, IStopValidationModel>;
 
     constructor() {
+        makeObservable(this);
         this._links = [];
         this._node = null;
         this._oldNode = null;
@@ -337,12 +338,11 @@ class NodeStore {
     @action
     public updateStopPropertiesAccordingToNodeLocation = async () => {
         const coordinates = this.node.coordinatesProjection;
-        const features:
-            | IGeoJSONFeature[]
-            | null = await GeocodingService.makeDigitransitReverseGeocodingRequest({
-            coordinates,
-            searchResultCount: 1,
-        });
+        const features: IGeoJSONFeature[] | null =
+            await GeocodingService.makeDigitransitReverseGeocodingRequest({
+                coordinates,
+                searchResultCount: 1,
+            });
 
         this.updateAddressData(features);
         this.updateMunicipality(features);
@@ -429,17 +429,15 @@ class NodeStore {
         this._nodeValidationStore.updateProperty(property, value);
     };
 
-    @action
-    public updateStopProperty = (property: string, value?: string | number | Date) => {
+    public updateStopProperty = (property: keyof IStop, value?: string | number | Date) => {
         if (!this.node) return;
-        this._node!.stop![property] = value;
+        (this._node!.stop as Record<keyof IStop, any>)[property] = value;
         this._stopValidationStore.updateProperty(property, value);
     };
 
-    @action
-    public updateOldStopProperty = (property: string, value?: string | number | Date) => {
+    public updateOldStopProperty = (property: keyof IStop, value?: string | number | Date) => {
         if (!this.node) return;
-        this._oldNode!.stop![property] = value;
+        (this._oldNode!.stop as Record<keyof IStop, any>)[property] = value;
     };
 
     @action

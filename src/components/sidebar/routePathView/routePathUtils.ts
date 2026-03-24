@@ -54,8 +54,8 @@ const updateDisabledRoutePathToolStatus = ({
  * (as they really are, but we want them to be equal)
  */
 const compareRoutePaths = (rp1: IRoutePath, rp2: IRoutePath): boolean => {
-    const rp1ToCompare = omit(rp1, ['routePathLinks']);
-    const rp2ToCompare = omit(rp2, ['routePathLinks']);
+    const rp1ToCompare = omit(rp1, ['routePathLinks']) as Record<string, any>;
+    const rp2ToCompare = omit(rp2, ['routePathLinks']) as Record<string, any>;
     let areRoutePathsEqual = true;
     forOwn(rp1ToCompare, (a: any, property: string) => {
         const b = rp2ToCompare[property];
@@ -78,24 +78,31 @@ const compareRoutePaths = (rp1: IRoutePath, rp2: IRoutePath): boolean => {
  */
 const compareRoutePathLinks = (rpLink1: IRoutePathLink, rpLink2: IRoutePathLink): boolean => {
     let areRoutePathLinksEqual = true;
-    forOwn(
-        omit(rpLink1, ['id', 'modifiedOn', 'modifiedBy', 'startNode', 'endNode']),
-        (a: any, property: string) => {
-            const b = rpLink2[property];
-            if ((!a || a === '') && (!b || b === '')) {
+    const rpLink1ToCompare = omit(rpLink1, [
+        'id',
+        'modifiedOn',
+        'modifiedBy',
+        'startNode',
+        'endNode',
+    ]) as Record<string, any>;
+
+    const rpLink2ToCompare = rpLink2 as Record<string, any>;
+
+    forOwn(rpLink1ToCompare, (a: any, property: string) => {
+        const b = rpLink2ToCompare[property];
+        if ((!a || a === '') && (!b || b === '')) {
+            return;
+        }
+        // startNodeUsage's 0 or null mean the same value
+        if (property === 'startNodeUsage') {
+            if ((!a || a === '0') && (!b || b === '0')) {
                 return;
             }
-            // startNodeUsage's 0 or null mean the same value
-            if (property === 'startNodeUsage') {
-                if ((!a || a === '0') && (!b || b === '0')) {
-                    return;
-                }
-            }
-            if (!isEqual(a, b)) {
-                areRoutePathLinksEqual = false;
-            }
         }
-    );
+        if (!isEqual(a, b)) {
+            areRoutePathLinksEqual = false;
+        }
+    });
     if (!areRoutePathLinksEqual) {
         return false;
     }

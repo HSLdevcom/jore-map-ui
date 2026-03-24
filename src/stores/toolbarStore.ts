@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { action, computed, observable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 import AddNetworkLinkTool from '~/components/map/tools/AddNetworkLinkTool';
 import AddNetworkNodeTool from '~/components/map/tools/AddNetworkNodeTool';
 import BaseTool from '~/components/map/tools/BaseTool';
@@ -24,7 +24,7 @@ const TOOL_LIST = [
     SplitLinkTool,
 ];
 
-const TOOLS = {};
+const TOOLS: Partial<Record<ToolbarToolType, BaseTool>> = {};
 TOOL_LIST.forEach((tool) => {
     const toolInstance = new tool();
     TOOLS[toolInstance.toolType] = toolInstance;
@@ -41,6 +41,7 @@ class ToolbarStore {
     @observable private _shouldBlinkToolHelp: boolean;
 
     constructor() {
+        makeObservable(this);
         this._disabledTools = DEFAULT_DISABLED_TOOLS;
         this.selectDefaultTool();
         this._shouldShowEntityOpenPrompt = false;
@@ -98,11 +99,11 @@ class ToolbarStore {
             tool === ToolbarToolType.SelectNetworkEntity ||
             (this._selectedTool && this._selectedTool.toolType === tool)
         ) {
-            this._selectedTool = TOOLS[DEFAULT_TOOL_TYPE];
+            this._selectedTool = TOOLS[DEFAULT_TOOL_TYPE] || null;
             this._selectedTool!.activate();
             return;
         }
-        this._selectedTool = TOOLS[tool];
+        this._selectedTool = TOOLS[tool] || null;
         if (!this._selectedTool) {
             throw new Error('Tried to select tool that was not found');
         }

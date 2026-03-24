@@ -61,7 +61,7 @@ class RoutePathNeighborLinkLayer extends Component<IRoutePathLayerProps, IRouteP
     }
 
     private initializePolylineRefs = () => {
-        const polylineRefs = {};
+        const polylineRefs: Record<string, React.RefObject<any>> = {};
         this.props.routePathLayerStore!.neighborLinks.forEach((neighborLink) => {
             polylineRefs[neighborLink.routePathLink.id] = React.createRef<any>();
         });

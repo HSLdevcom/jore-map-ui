@@ -200,13 +200,18 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
     private updateSelectedStopAreaId = () => {
         const nodeStore = this.props.nodeStore!;
         const stopAreaIdQueryParam = navigator.getQueryParam(QueryParams.stopAreaId);
-        const stopAreaId = stopAreaIdQueryParam ? stopAreaIdQueryParam[0] : undefined;
+
+        const stopAreaIdRaw = Array.isArray(stopAreaIdQueryParam)
+            ? stopAreaIdQueryParam[0]
+            : stopAreaIdQueryParam;
+
+        const stopAreaId = typeof stopAreaIdRaw === 'string' ? stopAreaIdRaw : undefined;
 
         if (stopAreaId) {
             if (nodeStore.node?.stop?.stopAreaId !== stopAreaId) {
                 nodeStore.setIsEditingDisabled(false);
             }
-            nodeStore!.updateStopProperty('stopAreaId', stopAreaId);
+            nodeStore.updateStopProperty('stopAreaId', stopAreaId);
         }
     };
 
@@ -306,24 +311,33 @@ class NodeView extends React.Component<INodeViewProps, INodeViewState> {
         const oldLinks = cloneDeep(nodeStore.oldLinks);
 
         // Create node save model
+        let nodeSaveData: Record<string, any> = currentNode as Record<string, any>;
+        let oldNodeSaveData: Record<string, any> = oldNode as Record<string, any>;
+
         if (currentStop) {
-            delete currentNode['stop'];
-            delete oldNode['stop'];
+            const { stop, ...currentNodeWithoutStop } = currentNode as Record<string, any>;
+            const { stop: oldStopProp, ...oldNodeWithoutStop } = oldNode as Record<string, any>;
+            nodeSaveData = currentNodeWithoutStop;
+            oldNodeSaveData = oldNodeWithoutStop;
 
             if (
                 currentNode.type === NodeType.CROSSROAD ||
                 currentNode.type === NodeType.MUNICIPALITY_BORDER
             ) {
-                delete currentNode['measurementType'];
-                delete currentNode['coordinatesProjection'];
+                const {
+                    measurementType,
+                    coordinatesProjection,
+                    ...currentNodeWithoutExtraFields
+                } = nodeSaveData;
+                nodeSaveData = currentNodeWithoutExtraFields;
             }
         }
         const saveModels: (ISaveModel | ITextModel)[] = [
             {
                 type: 'saveModel',
                 subTopic: 'Solmun tiedot',
-                newData: currentNode,
-                oldData: oldNode,
+                newData: nodeSaveData,
+                oldData: oldNodeSaveData,
                 model: 'node',
             },
         ];

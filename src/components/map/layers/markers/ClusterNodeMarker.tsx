@@ -6,7 +6,7 @@ import { Marker as LeafletMarker } from 'react-leaflet';
 import TransitType from '~/enums/transitType';
 import { ISearchNode } from '~/models/INode';
 import { IPopupProps, PopupStore, PopupType } from '~/stores/popupStore';
-import NodeHighlightColor from '~/types/NodeHighlightColor';
+import type NodeHighlightColor from '~/types/NodeHighlightColor';
 import LeafletUtils from '~/utils/leafletUtils';
 import * as s from './clusterNodeMarker.scss';
 

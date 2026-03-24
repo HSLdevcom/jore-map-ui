@@ -12,7 +12,7 @@ import { LineStore } from '~/stores/lineStore';
 import { LoginStore } from '~/stores/loginStore';
 import { SearchStore } from '~/stores/searchStore';
 import NavigationUtils from '~/utils/NavigationUtils';
-import s from './lineRoutesTab.scss';
+import * as s from './lineRoutesTab.scss';
 
 interface ILineRoutesTabProps {
     lineStore?: LineStore;
@@ -25,7 +25,6 @@ interface ILineRoutesTabProps {
 class LineRoutesTab extends React.Component<ILineRoutesTabProps> {
     private redirectToNewRouteView = () => {
         const line = this.props.lineStore!.line;
-
         const newRouteViewLink = routeBuilder
             .to(SubSites.newRoute)
             .set(QueryParams.lineId, line!.id)

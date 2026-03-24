@@ -180,43 +180,49 @@ const EditNodeLayer = inject(
                 }
             });
             setEditableLinks(tempEditableLinks);
-
-            const map = props.leaflet.map;
-            map!.on('editable:vertex:dragend', (data: any) => {
-                updateLinkGeometry(data.layer._leaflet_id);
-            });
-            map!.on('editable:vertex:deleted', (data: any) => {
-                updateLinkGeometry(data.layer._leaflet_id);
-            });
         };
 
         const drawEditableLink = (link: ILink) => {
             const map = props.leaflet.map;
-            if (map) {
-                const isLinkOld = isNetworkElementOld(link.dateRanges);
-                const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
-                    interactive: false,
-                    color: isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR,
-                }).addTo(map);
+            if (!map) {
+                return null;
+            }
 
-                if (props.loginStore!.hasWriteAccess) {
-                    editableLink.enableEdit();
-                    const latLngs = editableLink.getLatLngs() as L.LatLng[][];
-                    const coords = latLngs[0];
+            const isLinkOld = isNetworkElementOld(link.dateRanges);
+            const editableLink = L.polyline([_.cloneDeep(link.geometry)], {
+                interactive: false,
+                color: isLinkOld ? OLD_LINK_COLOR : ACTIVE_LINK_COLOR,
+            }).addTo(map);
+
+            if (props.loginStore!.hasWriteAccess) {
+                editableLink.enableEdit();
+                const latLngs = editableLink.getLatLngs() as L.LatLng[][];
+                const coords = latLngs?.[0] || [];
+
+                if (coords.length >= 2) {
                     const coordsToDisable = [coords[0], coords[coords.length - 1]];
                     coordsToDisable.forEach((coordToDisable: any) => {
-                        const vertexMarker = coordToDisable.__vertex;
-                        vertexMarker.dragging.disable();
-                        vertexMarker._events.click = {};
-                        vertexMarker.setOpacity(0);
-                        // Put vertex marker z-index low so that it
-                        // would be below other layers that needs to be clickable
-                        vertexMarker.setZIndexOffset(-1000);
+                        const vertexMarker = coordToDisable?.__vertex;
+                        if (!vertexMarker) {
+                            return;
+                        }
+                        if (vertexMarker.dragging) {
+                            vertexMarker.dragging.disable();
+                        }
+                        if (vertexMarker._events?.click) {
+                            vertexMarker._events.click = {};
+                        }
+                        if (vertexMarker.setOpacity) {
+                            vertexMarker.setOpacity(0);
+                        }
+                        if (vertexMarker.setZIndexOffset) {
+                            vertexMarker.setZIndexOffset(-1000);
+                        }
                     });
-                    return editableLink;
                 }
             }
-            return null;
+
+            return editableLink;
         };
 
         const renderLinkDecorators = () => {

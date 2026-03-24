@@ -12,13 +12,14 @@ type SaveButtonType = 'saveButton' | 'warningButton' | 'deleteButton';
 interface ISaveButtonProps {
     children: React.ReactNode;
     onClick: () => void;
-    disabled: boolean; // disabled save button can still be clicked to show savePreventedNotification
+    disabled: boolean;
     type?: SaveButtonType;
     className?: string;
     title?: string;
     savePreventedNotification: string;
     isWide?: boolean;
-    hasPadding?: boolean; // defaults to true
+    hasPadding?: boolean;
+    'data-cy'?: string;
 }
 
 const SaveButton = observer((props: ISaveButtonProps) => {
@@ -32,6 +33,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
         savePreventedNotification,
         isWide,
         hasPadding,
+        'data-cy': dataCy,
         ...attrs
     } = props;
 
@@ -58,7 +60,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
                 isWide={isWide}
                 hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
                 title={title ? title : ''}
-                data-cy={attrs['data-cy'] ? attrs['data-cy'] : 'saveButton'}
+                data-cy={dataCy ? dataCy : 'saveButton'}
             >
                 {children}
             </Button>
@@ -85,7 +87,7 @@ const SaveButton = observer((props: ISaveButtonProps) => {
             isWide={isWide}
             hasPadding={typeof hasPadding === 'undefined' ? true : hasPadding}
             title={title ? title : ''}
-            data-cy={attrs['data-cy'] ? attrs['data-cy'] : 'saveButton'}
+            data-cy={dataCy ? dataCy : 'saveButton'}
         >
             {children}
         </Button>

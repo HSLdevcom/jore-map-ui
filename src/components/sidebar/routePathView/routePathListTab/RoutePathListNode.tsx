@@ -280,7 +280,7 @@ const RoutePathListNode = inject(
                 const startNodeBookScheduleColumnNumber = props.startNodeBookScheduleColumnNumber;
                 const invalidPropertiesMap = props.routePathStore!.getRoutePathLinkInvalidPropertiesMap(
                     routePathLink.id
-                );
+                ) as Record<string, any>;
                 return (
                     <div>
                         <div className={s.flexRow}>
@@ -412,9 +412,9 @@ const RoutePathListNode = inject(
                                 value={startNodeBookScheduleColumnNumber}
                                 validationResult={
                                     isLastNode
-                                        ? props.routePathStore!.invalidPropertiesMap[
-                                              'startNodeBookScheduleColumnNumber'
-                                          ]
+                                        ? (props.routePathStore!.invalidPropertiesMap as Record<string, any>)[
+                                            'startNodeBookScheduleColumnNumber'
+                                        ]
                                         : invalidPropertiesMap['startNodeBookScheduleColumnNumber']
                                 }
                             />

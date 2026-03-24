@@ -31,7 +31,7 @@ interface IHastusAreaModalProps {
 
 interface IHastusAreaModalState {
     isLoading: boolean;
-    invalidPropertiesMap: object;
+    invalidPropertiesMap: Record<string, IValidationResult>;
     otherStopsUsingHastus: IStop[];
 }
 
@@ -84,7 +84,7 @@ class HastusAreaModal extends Component<IHastusAreaModalProps, IHastusAreaModalS
         const invalidPropertiesMap = FormValidator.validateAllProperties(
             hastusAreaValidationModel,
             hastusArea
-        );
+        ) as Record<string, IValidationResult>;
 
         if (this.isHastusAreaIdAlreadyFound(hastusArea.id)) {
             const validationResult: IValidationResult = {
