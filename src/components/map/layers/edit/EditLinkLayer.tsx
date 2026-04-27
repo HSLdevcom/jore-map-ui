@@ -109,12 +109,23 @@ const EditLinkLayer = inject(
                 const coordsToDisable = [coords[0], coords[coords.length - 1]];
                 coordsToDisable.forEach((coordToDisable: any) => {
                     const vertexMarker = coordToDisable.__vertex;
-                    vertexMarker.dragging.disable();
-                    vertexMarker._events.click = {};
-                    vertexMarker.setOpacity(0);
+
+                    if (!vertexMarker) return;
+
+                    if (vertexMarker.dragging) {
+                        vertexMarker.dragging.disable();
+                    }
+
+                    if (vertexMarker.off) {
+                        vertexMarker.off('click');
+                    } else if (vertexMarker._events) {
+                        vertexMarker._events.click = {};
+                    }
+
+                    vertexMarker.setOpacity?.(0);
                     // Put vertex marker z-index low so that it
                     // would be below other layers that needs to be clickable
-                    vertexMarker.setZIndexOffset(-1000);
+                    vertexMarker.setZIndexOffset?.(-1000);
                 });
             }
             setSelectedLinks([selectedLink]);
