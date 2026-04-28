@@ -15,6 +15,7 @@ import UndoButtons from './undoButtons';
 class Toolbar extends React.Component {
     private renderViewSpecificTools = () => {
         if (!LoginStore!.hasWriteAccess) return null;
+        console.log(navigator.getPathName());
         if (matchPath(navigator.getPathName(), SubSites.routePath)) {
             return this.renderToolbarBlock([<RoutePathButtons />, <UndoButtons />]);
         }
