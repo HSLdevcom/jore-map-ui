@@ -25,6 +25,7 @@ class ToolbarCommonButtons extends React.Component<IToolbarCommonButtonsProps> {
     };
 
     render() {
+        console.log(this.props.hasWriteAccess);
         return (
             <>
                 {this.props.hasWriteAccess && (

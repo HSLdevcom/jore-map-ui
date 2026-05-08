@@ -30,8 +30,9 @@ import MapLayersControl from './mapControls/MapLayersControl';
 import MapLayersZoomHint from './mapControls/MapLayersZoomHint';
 import MeasurementControl from './mapControls/MeasurementControl';
 import Toolbar from './toolbar/Toolbar';
+import { RouteComponentProps, withRouter } from 'react-router';
 
-interface IMapProps {
+interface IMapProps extends RouteComponentProps {
     mapStore?: MapStore;
     routeListStore?: RouteListStore;
     nodeStore?: NodeStore;
@@ -197,7 +198,7 @@ class LeafletMap extends React.Component<IMapProps> {
                     <Pane name='highlightEntityLayer' style={{ zIndex: 999 }} />
                     <Control position='topleft'>
                         <div className={s.mapLayersContainer}>
-                            <Toolbar />
+                            <Toolbar pathname={this.props.location.pathname} />
                             <AddressSearch map={this.mapReference} />
                         </div>
                     </Control>
@@ -225,6 +226,5 @@ class LeafletMap extends React.Component<IMapProps> {
     }
 }
 
-export default LeafletMap;
-
+export default withRouter(LeafletMap);
 export { LeafletContext };
