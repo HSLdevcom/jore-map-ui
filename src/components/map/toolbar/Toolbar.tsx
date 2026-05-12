@@ -1,7 +1,6 @@
 import { observer } from 'mobx-react';
 import React from 'react';
 import { matchPath } from 'react-router';
-import navigator from '~/routing/navigator';
 import SubSites from '~/routing/subSites';
 import LoginStore from '~/stores/loginStore';
 import ToolbarCommonButtons from './ToolbarCommonButtons';
@@ -11,17 +10,23 @@ import LinkButtons from './toolbarLinkButtons';
 import RoutePathButtons from './toolbarRoutePathButtons';
 import UndoButtons from './undoButtons';
 
+interface IToolbarProps {
+    pathname: string;
+}
+
 @observer
-class Toolbar extends React.Component {
+class Toolbar extends React.Component<IToolbarProps> {
     private renderViewSpecificTools = () => {
         if (!LoginStore!.hasWriteAccess) return null;
-        if (matchPath(navigator.getPathName(), SubSites.routePath)) {
+        const pathname = this.props.pathname;
+        console.log(pathname);
+        if (matchPath(pathname, SubSites.routePath)) {
             return this.renderToolbarBlock([<RoutePathButtons />, <UndoButtons />]);
         }
-        if (matchPath(navigator.getPathName(), SubSites.link)) {
+        if (matchPath(pathname, SubSites.link)) {
             return this.renderToolbarBlock([<LinkButtons />, <UndoButtons />]);
         }
-        if (matchPath(navigator.getPathName(), SubSites.node)) {
+        if (matchPath(pathname, SubSites.node)) {
             return this.renderToolbarBlock([<UndoButtons />]);
         }
         return null;
