@@ -3,8 +3,8 @@
   "version": "1.4.1",
   "private": true,
   "dependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
+    "@babel/core": "^7.29.4",
+    "@babel/preset-env": "^7.29.5",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.4.1",
     "apollo-link-batch-http": "^1.2.13",
