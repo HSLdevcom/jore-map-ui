@@ -74,16 +74,18 @@ class RoutePathLinksTab extends React.Component<IRoutePathLinksTabProps> {
     };
 
     private scrollIntoListItem = (listItemId: string) => {
-        // Next tick is needed because this way the possible previously opened item gets closed before the next one gets opened
-        process.nextTick(() => {
-            const item = this.listObjectReferences[listItemId];
-            if (item && item.current) {
-                item.current.scrollIntoView({
-                    inline: 'start',
-                    block: 'start',
-                    behavior: 'smooth',
-                });
-            }
+        window.requestAnimationFrame(() => {
+            window.requestAnimationFrame(() => {
+                const item = this.listObjectReferences[listItemId];
+
+                if (item && item.current) {
+                    item.current.scrollIntoView({
+                        inline: 'start',
+                        block: 'start',
+                        behavior: 'smooth',
+                    });
+                }
+            });
         });
     };
 
