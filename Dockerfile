@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 
 ENV WORK=/opt/joremapui
 WORKDIR ${WORK}
@@ -24,7 +24,7 @@ RUN yarn test:ci
 RUN yarn build
 
 
-FROM node:20-alpine AS server
+FROM node:22.23.4-alpine AS server
 
 ENV WORK=/opt/joremapui
 WORKDIR ${WORK}

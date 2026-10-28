@@ -2,6 +2,9 @@
   "name": "jore-map-ui",
   "version": "1.4.3",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "@babel/core": "^7.29.4",
     "@babel/preset-env": "^7.29.5",
